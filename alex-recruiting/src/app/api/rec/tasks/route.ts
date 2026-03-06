@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createTask, getAllTasks, getTasksForMember, getTasksByStatus } from "@/lib/rec/tasks";
+import type { TeamMemberId, RecTask } from "@/lib/rec/types";
 
 export async function GET(req: NextRequest) {
   const assignedTo = req.nextUrl.searchParams.get("assignedTo");
@@ -7,9 +8,9 @@ export async function GET(req: NextRequest) {
 
   let tasks;
   if (assignedTo) {
-    tasks = getTasksForMember(assignedTo as any);
+    tasks = getTasksForMember(assignedTo as TeamMemberId);
   } else if (status) {
-    tasks = getTasksByStatus(status as any);
+    tasks = getTasksByStatus(status as RecTask["status"]);
   } else {
     tasks = getAllTasks();
   }

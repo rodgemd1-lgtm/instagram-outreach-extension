@@ -24,10 +24,16 @@ import {
   UserSearch,
   Twitter,
   ClipboardList,
+  Bot,
+  Rocket,
+  Film,
+  UsersRound,
 } from "lucide-react";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: Home },
+  { href: "/agency", label: "Agency", icon: UsersRound },
+  { href: "/launch", label: "Profile Launch", icon: Rocket },
   { href: "/manage", label: "Content Manager", icon: ClipboardList },
   { href: "/x-profile", label: "Jacob's X Profile", icon: Twitter },
   { href: "/create", label: "Create Post", icon: PenSquare },
@@ -37,6 +43,7 @@ const navItems = [
   { href: "/comments", label: "Comment Templates", icon: MessageSquarePlus },
   { href: "/cold-dms", label: "Cold DM Engine", icon: Send },
   { href: "/connections", label: "Who to Connect With", icon: UserSearch },
+  { href: "/videos", label: "Video Library", icon: Film },
   { href: "/coaches", label: "Coach Pipeline", icon: Users },
   { href: "/dms", label: "DM Campaigns", icon: Mail },
   { href: "/calendar", label: "Content Calendar", icon: Calendar },
@@ -47,6 +54,7 @@ const navItems = [
   { href: "/competitors", label: "Competitors", icon: Swords },
   { href: "/scrape", label: "Scraping Tools", icon: Search },
   { href: "/intelligence", label: "Intelligence", icon: Brain },
+  { href: "/agents", label: "Agent Command Center", icon: Bot },
 ];
 
 export function Sidebar() {
@@ -61,7 +69,7 @@ export function Sidebar() {
         </div>
         <div>
           <h1 className="text-sm font-bold text-slate-900">Alex Recruiting</h1>
-          <p className="text-[11px] text-slate-500">Jacob Rodgers | OL | &apos;29</p>
+          <p className="text-[11px] text-slate-500">Jacob Rodgers | DT/OG | &apos;29</p>
         </div>
       </div>
 

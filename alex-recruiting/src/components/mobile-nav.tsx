@@ -25,11 +25,16 @@ import {
   Send,
   UserSearch,
   Twitter,
+  Bot,
+  Rocket,
+  Film,
+  UsersRound,
 } from "lucide-react";
 import { useState } from "react";
 
 const primaryTabs = [
   { href: "/", label: "Home", icon: Home },
+  { href: "/launch", label: "Launch", icon: Rocket },
   { href: "/x-profile", label: "Profile", icon: Twitter },
   { href: "/create", label: "Create", icon: PenSquare },
   { href: "/coaches", label: "Coaches", icon: Users },
@@ -37,6 +42,7 @@ const primaryTabs = [
 ];
 
 const secondaryNav = [
+  { href: "/agency", label: "Agency", icon: UsersRound },
   { href: "/hooks", label: "Hooks Library", icon: Zap },
   { href: "/captions", label: "Captions Library", icon: BookOpen },
   { href: "/viral", label: "Viral Content", icon: Flame },
@@ -51,6 +57,8 @@ const secondaryNav = [
   { href: "/audit", label: "Profile Audit", icon: ShieldCheck },
   { href: "/competitors", label: "Competitors", icon: Swords },
   { href: "/scrape", label: "Scraping Tools", icon: Search },
+  { href: "/agents", label: "Agent Command Center", icon: Bot },
+  { href: "/videos", label: "Video Library", icon: Film },
 ];
 
 export function MobileBottomNav() {
@@ -121,7 +129,7 @@ export function MobileDrawer() {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-slate-900">Alex Recruiting</p>
-                  <p className="text-[10px] text-slate-500">Jacob Rodgers | OL | &apos;29</p>
+                  <p className="text-[10px] text-slate-500">Jacob Rodgers | DT/OG | &apos;29</p>
                 </div>
               </div>
               <button
