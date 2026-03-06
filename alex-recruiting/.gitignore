@@ -34,3 +34,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local video store
+.video-store.json
+public/thumbnails/
+
+# local task store
+.rec-tasks.json
