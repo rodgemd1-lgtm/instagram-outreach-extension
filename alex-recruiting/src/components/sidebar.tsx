@@ -23,10 +23,12 @@ import {
   Send,
   UserSearch,
   Twitter,
+  ClipboardList,
 } from "lucide-react";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: Home },
+  { href: "/manage", label: "Content Manager", icon: ClipboardList },
   { href: "/x-profile", label: "Jacob's X Profile", icon: Twitter },
   { href: "/create", label: "Create Post", icon: PenSquare },
   { href: "/hooks", label: "Hooks Library", icon: Zap },
