@@ -186,7 +186,7 @@ function extractHighlights(markdown: string): HudlHighlight[] {
 
   // Look for video/highlight links
   const linkPattern = /\[([^\]]*(?:highlight|reel|film)[^\]]*)\]\(([^)]+)\)/gi;
-  let match;
+  let match: RegExpExecArray | null;
   while ((match = linkPattern.exec(markdown)) !== null) {
     highlights.push({
       title: match[1],
@@ -200,10 +200,11 @@ function extractHighlights(markdown: string): HudlHighlight[] {
   // Also look for bare Hudl video URLs
   const videoUrlPattern = /https?:\/\/www\.hudl\.com\/video\/\S+/g;
   while ((match = videoUrlPattern.exec(markdown)) !== null) {
-    if (!highlights.some((h) => h.url === match[0])) {
+    const m = match;
+    if (!highlights.some((h) => h.url === m[0])) {
       highlights.push({
         title: "Highlight Reel",
-        url: match[0],
+        url: m[0],
         duration: null,
         viewCount: null,
         createdAt: null,

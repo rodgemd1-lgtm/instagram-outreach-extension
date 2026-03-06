@@ -43,7 +43,7 @@ export function ContentCalendar() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={prevMonth}>
             <ChevronLeft className="h-4 w-4" />
@@ -54,7 +54,7 @@ export function ContentCalendar() {
           </Button>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-4 mr-4">
+          <div className="hidden md:flex items-center gap-4 mr-4">
             {["performance", "work_ethic", "character"].map((pillar) => (
               <div key={pillar} className="flex items-center gap-1.5">
                 <div className={cn("h-2.5 w-2.5 rounded-full", getPillarColor(pillar))} />
@@ -89,7 +89,7 @@ export function ContentCalendar() {
                 <div
                   key={idx}
                   className={cn(
-                    "min-h-[120px] border-r border-b last:border-r-0 p-2",
+                    "min-h-[60px] md:min-h-[120px] border-r border-b last:border-r-0 p-1 md:p-2",
                     !day && "bg-slate-50",
                     isToday(day || 0) && "bg-blue-50"
                   )}

@@ -65,7 +65,7 @@ export function CoachCRM() {
   return (
     <div className="space-y-6">
       {/* Summary Cards */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setTierFilter(null)}>
           <CardContent className="p-4">
             <p className="text-2xl font-bold">{coaches.length}</p>
@@ -87,7 +87,7 @@ export function CoachCRM() {
       </div>
 
       {/* Search and Filters */}
-      <div className="flex gap-4 items-center">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:items-center">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
           <Input
@@ -108,7 +108,7 @@ export function CoachCRM() {
       </div>
 
       {/* Coach Table */}
-      <Card>
+      <Card className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>

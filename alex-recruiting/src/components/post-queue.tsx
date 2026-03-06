@@ -151,6 +151,7 @@ export function PostQueue() {
                   <p className="text-sm whitespace-pre-wrap">{draft.content}</p>
                   {draft.mediaSuggestion && (
                     <div className="flex items-center gap-2 text-xs text-slate-500 bg-slate-50 rounded p-2">
+                      {/* eslint-disable-next-line jsx-a11y/alt-text */}
                       <Image className="h-3 w-3" />
                       <span>{draft.mediaSuggestion}</span>
                     </div>

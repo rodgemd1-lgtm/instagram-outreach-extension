@@ -50,7 +50,7 @@ export function AnalyticsDashboard() {
   return (
     <div className="space-y-6">
       {/* Current Metrics */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         {metricCards.map((metric) => {
           const value = data.current[metric.key as keyof typeof data.current] || 0;
           const target1 = data.targets.month1[metric.targetKey] || 0;

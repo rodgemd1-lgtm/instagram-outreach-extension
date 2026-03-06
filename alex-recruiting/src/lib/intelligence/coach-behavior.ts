@@ -9,7 +9,7 @@ import type {
   ApproachStrategy,
   ContactWindow,
 } from "../types/recruiting-intelligence";
-import type { Coach, DivisionTier } from "../types";
+import type { Coach } from "../types";
 import type { XTweet, XUser } from "../integrations/x-api";
 
 // ============ BEHAVIOR ANALYSIS ============
@@ -75,10 +75,6 @@ function classifyEngagementStyle(
   hasRespondedToDM: boolean
 ): CoachEngagementStyle {
   const tweetCount = tweets.length;
-  const totalEngagement = tweets.reduce(
-    (sum, t) => sum + (t.public_metrics?.like_count || 0) + (t.public_metrics?.retweet_count || 0),
-    0
-  );
 
   // Check for recruit interaction signals
   const recruitMentions = tweets.filter(

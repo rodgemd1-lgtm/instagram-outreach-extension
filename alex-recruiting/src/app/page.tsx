@@ -16,14 +16,14 @@ export default function DashboardPage() {
   const tier3 = targetSchools.filter((s) => s.priorityTier === "Tier 3").length;
 
   return (
-    <div className="grid grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
       {/* Left Column — Alex Chat */}
-      <div className="col-span-2">
+      <div className="lg:col-span-2 order-2 lg:order-1">
         <AlexChat />
       </div>
 
       {/* Right Column — Intelligence Feed + Quick Stats */}
-      <div className="space-y-6">
+      <div className="space-y-4 md:space-y-6 order-1 lg:order-2">
         {/* Today's Content */}
         <Card>
           <CardHeader className="pb-3">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,6 @@ import {
   ChevronRight,
   Search,
   RefreshCw,
-  ExternalLink,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -203,7 +202,7 @@ function OverviewTab({ score, timeline }: { score: IntelligenceScore | null; tim
       <div className="text-center py-12 text-slate-500">
         <Brain className="h-12 w-12 mx-auto mb-4 text-slate-300" />
         <p className="text-lg font-medium">No analysis data yet</p>
-        <p className="text-sm">Click "Run Analysis" to generate recruiting intelligence</p>
+        <p className="text-sm">Click &quot;Run Analysis&quot; to generate recruiting intelligence</p>
       </div>
     );
   }
@@ -472,7 +471,7 @@ function CoachesTab({
       {profiles.length === 0 ? (
         <div className="text-center py-12 text-slate-500">
           <Users className="h-12 w-12 mx-auto mb-4 text-slate-300" />
-          <p>No coach behavior data yet. Click "Analyze Coaches" to start.</p>
+          <p>No coach behavior data yet. Click &quot;Analyze Coaches&quot; to start.</p>
         </div>
       ) : (
         <div className="space-y-4">

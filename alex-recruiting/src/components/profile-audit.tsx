@@ -67,7 +67,7 @@ export function ProfileAudit() {
       {/* Score Overview */}
       <Card>
         <CardContent className="p-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <h2 className="text-lg font-semibold">Profile Audit Score</h2>
               <p className="text-sm text-slate-500">10-point evaluation of Jacob&apos;s recruiting profile</p>

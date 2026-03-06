@@ -140,7 +140,7 @@ What would you like to work on?`,
   }
 
   return (
-    <Card className="flex flex-col h-[calc(100vh-10rem)]">
+    <Card className="flex flex-col h-[calc(100vh-12rem)] md:h-[calc(100vh-10rem)]">
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message) => (
@@ -158,7 +158,7 @@ What would you like to work on?`,
             )}
             <div
               className={cn(
-                "max-w-[80%] rounded-lg px-4 py-3 text-sm",
+                "max-w-[90%] md:max-w-[80%] rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm",
                 message.role === "user"
                   ? "bg-slate-900 text-white"
                   : "bg-slate-100 text-slate-900"
@@ -204,8 +204,8 @@ What would you like to work on?`,
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Ask Alex anything about Jacob's recruiting strategy..."
-            className="min-h-[44px] max-h-32 resize-none"
+            placeholder="Ask Alex anything..."
+            className="min-h-[44px] max-h-32 resize-none text-base md:text-sm"
             rows={1}
           />
           <Button
