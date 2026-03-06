@@ -13,6 +13,7 @@ import {
   Swords,
   Search,
   Home,
+  Brain,
 } from "lucide-react";
 
 const navItems = [
@@ -25,6 +26,7 @@ const navItems = [
   { href: "/audit", label: "Profile Audit", icon: ShieldCheck },
   { href: "/competitors", label: "Competitors", icon: Swords },
   { href: "/scrape", label: "Scraping Tools", icon: Search },
+  { href: "/intelligence", label: "Intelligence", icon: Brain },
 ];
 
 export function Sidebar() {

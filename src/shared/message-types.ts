@@ -44,6 +44,16 @@ export const MSG = {
   DB_OPERATION: 'DB_OPERATION',
   DB_RESULT: 'DB_RESULT',
 
+  // Intelligence
+  SCRAPE_HUDL: 'SCRAPE_HUDL',
+  HUDL_RESULT: 'HUDL_RESULT',
+  ANALYZE_TWEETS: 'ANALYZE_TWEETS',
+  TWEET_ANALYSIS_RESULT: 'TWEET_ANALYSIS_RESULT',
+  COACH_BEHAVIOR_ANALYSIS: 'COACH_BEHAVIOR_ANALYSIS',
+  COACH_BEHAVIOR_RESULT: 'COACH_BEHAVIOR_RESULT',
+  RUN_INTELLIGENCE: 'RUN_INTELLIGENCE',
+  INTELLIGENCE_RESULT: 'INTELLIGENCE_RESULT',
+
   // General
   GET_STATUS: 'GET_STATUS',
   STATUS_UPDATE: 'STATUS_UPDATE',
@@ -160,4 +170,12 @@ export type ExtensionMessage =
   | { type: typeof MSG.CAMPAIGN_ERROR; payload: { campaignId: string; error: string } }
   | { type: typeof MSG.SCRAPE_ERROR; payload: { error: string } }
   | { type: typeof MSG.DM_FAILED; payload: { username: string; error: string } }
-  | { type: typeof MSG.SEND_REPLY; payload: SendDMRequest };
+  | { type: typeof MSG.SEND_REPLY; payload: SendDMRequest }
+  | { type: typeof MSG.SCRAPE_HUDL; payload: { profileUrl: string } }
+  | { type: typeof MSG.HUDL_RESULT; payload: { profile: unknown; error?: string } }
+  | { type: typeof MSG.ANALYZE_TWEETS; payload: { handle: string; tweets: unknown[] } }
+  | { type: typeof MSG.TWEET_ANALYSIS_RESULT; payload: { patterns: unknown[]; offers: unknown[] } }
+  | { type: typeof MSG.COACH_BEHAVIOR_ANALYSIS; payload: { coaches: unknown[] } }
+  | { type: typeof MSG.COACH_BEHAVIOR_RESULT; payload: { profiles: unknown[] } }
+  | { type: typeof MSG.RUN_INTELLIGENCE; payload: { athleteId: string; athleteName: string } }
+  | { type: typeof MSG.INTELLIGENCE_RESULT; payload: { score: unknown; timeline: unknown } };
