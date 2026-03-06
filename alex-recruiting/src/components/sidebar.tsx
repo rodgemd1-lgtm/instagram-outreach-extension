@@ -61,7 +61,7 @@ export function Sidebar() {
         </div>
         <div>
           <h1 className="text-sm font-bold text-slate-900">Alex Recruiting</h1>
-          <p className="text-[11px] text-slate-500">Jacob Rodgers | OL | &apos;28</p>
+          <p className="text-[11px] text-slate-500">Jacob Rodgers | OL | &apos;29</p>
         </div>
       </div>
 
