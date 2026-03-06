@@ -16,7 +16,6 @@ import {
   ArrowUp,
   PenSquare,
   Mail,
-  Palette,
   Users,
   ShieldCheck,
   Brain,
@@ -29,6 +28,10 @@ import {
   MessageCircle,
   Star,
   Target,
+  Zap,
+  Send,
+  Twitter,
+  BookOpen,
 } from "lucide-react";
 
 /* ─── Constitution Reminders ─── */
@@ -82,9 +85,12 @@ interface QuickAction {
 }
 
 const quickActions: QuickAction[] = [
+  { label: "Jacob's X Profile", description: "Complete profile kit", href: "/x-profile", icon: Twitter, color: "text-sky-600 bg-sky-50" },
   { label: "Create Post", description: "Draft new content", href: "/create", icon: PenSquare, color: "text-blue-600 bg-blue-50" },
-  { label: "DM a Coach", description: "Send outreach", href: "/dms", icon: Mail, color: "text-purple-600 bg-purple-50" },
-  { label: "Profile Studio", description: "Optimize profile", href: "/profile-studio", icon: Palette, color: "text-pink-600 bg-pink-50" },
+  { label: "Hooks Library", description: "100+ opening lines", href: "/hooks", icon: Zap, color: "text-yellow-600 bg-yellow-50" },
+  { label: "Captions", description: "Ready-to-post", href: "/captions", icon: BookOpen, color: "text-indigo-600 bg-indigo-50" },
+  { label: "Cold DMs", description: "Coach outreach", href: "/cold-dms", icon: Send, color: "text-purple-600 bg-purple-50" },
+  { label: "DM a Coach", description: "Send campaigns", href: "/dms", icon: Mail, color: "text-violet-600 bg-violet-50" },
   { label: "Coach Pipeline", description: "Track coaches", href: "/coaches", icon: Users, color: "text-green-600 bg-green-50" },
   { label: "Run Audit", description: "Score your profile", href: "/audit", icon: ShieldCheck, color: "text-orange-600 bg-orange-50" },
   { label: "Intelligence", description: "Competitor intel", href: "/intelligence", icon: Brain, color: "text-teal-600 bg-teal-50" },

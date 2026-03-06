@@ -8,7 +8,6 @@ import {
   Users,
   PenSquare,
   Brain,
-  Palette,
   Menu,
   X,
   Calendar,
@@ -18,21 +17,36 @@ import {
   ShieldCheck,
   Swords,
   Search,
+  Palette,
+  Zap,
+  BookOpen,
+  MessageSquarePlus,
+  Flame,
+  Send,
+  UserSearch,
+  Twitter,
 } from "lucide-react";
 import { useState } from "react";
 
 const primaryTabs = [
   { href: "/", label: "Home", icon: Home },
+  { href: "/x-profile", label: "Profile", icon: Twitter },
   { href: "/create", label: "Create", icon: PenSquare },
   { href: "/coaches", label: "Coaches", icon: Users },
   { href: "/intelligence", label: "Intel", icon: Brain },
-  { href: "/profile-studio", label: "Profile", icon: Palette },
 ];
 
 const secondaryNav = [
+  { href: "/hooks", label: "Hooks Library", icon: Zap },
+  { href: "/captions", label: "Captions Library", icon: BookOpen },
+  { href: "/viral", label: "Viral Content", icon: Flame },
+  { href: "/comments", label: "Comment Templates", icon: MessageSquarePlus },
+  { href: "/cold-dms", label: "Cold DM Engine", icon: Send },
+  { href: "/connections", label: "Who to Connect With", icon: UserSearch },
   { href: "/dms", label: "DM Campaigns", icon: Mail },
   { href: "/calendar", label: "Content Calendar", icon: Calendar },
   { href: "/posts", label: "Post Queue", icon: FileText },
+  { href: "/profile-studio", label: "Profile Studio", icon: Palette },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/audit", label: "Profile Audit", icon: ShieldCheck },
   { href: "/competitors", label: "Competitors", icon: Swords },
