@@ -11,11 +11,11 @@ export function Header() {
         <MobileDrawer />
         <div className="min-w-0">
           <h2 className="text-sm font-semibold text-slate-900 truncate">
-            <span className="md:hidden">Jacob Rogers</span>
-            <span className="hidden md:inline">Jacob Rogers | OL | 6&apos;4&quot; 285</span>
+            <span className="md:hidden">Jacob Rodgers</span>
+            <span className="hidden md:inline">Jacob Rodgers | OL | 6&apos;4&quot; 285</span>
           </h2>
           <p className="text-[11px] text-slate-500 truncate hidden sm:block">
-            Pewaukee HS, Wisconsin | Class of 2028 | @JacobRogersOL28
+            Pewaukee HS, Wisconsin | Class of 2029 | @JacobRodgersOL29
           </p>
         </div>
       </div>

@@ -34,7 +34,7 @@ export async function searchTrendingHashtags(): Promise<BraveSearchResult[]> {
 
 // Research Wisconsin-region programs
 export async function searchWisconsinPrograms(): Promise<BraveSearchResult[]> {
-  return braveSearch("Wisconsin high school football OL recruit Big Ten MAC GLIAC NSIC 2028");
+  return braveSearch("Wisconsin high school football OL recruit Big Ten MAC GLIAC NSIC 2029");
 }
 
 // Monitor coaching staff changes at target schools
@@ -44,17 +44,17 @@ export async function searchCoachingChanges(schoolName: string): Promise<BraveSe
 
 // Track Jacob's recruiting mentions
 export async function searchJacobMentions(): Promise<BraveSearchResult[]> {
-  return braveSearch("Jacob Rogers Pewaukee football offensive line 2028 recruit");
+  return braveSearch("Jacob Rodgers Pewaukee football offensive line 2029 recruit");
 }
 
 // Monitor recruiting news for target schools
 export async function searchSchoolRecruitingNews(schoolName: string): Promise<BraveSearchResult[]> {
-  return braveSearch(`${schoolName} football recruiting 2028 offensive line class`);
+  return braveSearch(`${schoolName} football recruiting 2029 offensive line class`);
 }
 
 // Research competitor recruits
 export async function searchCompetitorRecruits(recruitName: string): Promise<BraveSearchResult[]> {
-  return braveSearch(`${recruitName} football recruit 2028 offensive line`);
+  return braveSearch(`${recruitName} football recruit 2029 offensive line`);
 }
 
 // Find school-specific hashtags

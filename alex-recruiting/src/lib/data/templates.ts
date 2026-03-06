@@ -3,11 +3,11 @@
 export const postTemplates = {
   pinned: {
     name: "Pinned Post",
-    template: `Jacob Rogers | OL | 6'4" 285 | Pewaukee HS | Class of 2028
+    template: `Jacob Rodgers | OL | 6'4" 285 | Pewaukee HS | Class of 2029
 Wisconsin | NCSA Recruiting Profile: {NCSA_LINK}
 Training with @IMGAcademy | Represented by @NCSASports
 Full Highlights: {HUDL_LINK} | Website: {WEBSITE_LINK}
-#2028Recruit #OL #FootballRecruiting #WI`,
+#2029Recruit #OL #FootballRecruiting #WI`,
     notes: "Update every 90 days with new/better film. Native highlight video upload.",
   },
 
@@ -16,7 +16,7 @@ Full Highlights: {HUDL_LINK} | Website: {WEBSITE_LINK}
     template: `{OPENING_LINE}
 
 Full film: {NCSA_LINK}
-#OL #OffensiveLine #FootballRecruiting #2028Recruit {SCHOOL_HASHTAG}`,
+#OL #OffensiveLine #FootballRecruiting #2029Recruit {SCHOOL_HASHTAG}`,
     notes: "Opening line must be specific and technical. 15-45 second native video.",
     examples: [
       "Working on my first-step quickness and hand placement this week",
@@ -55,7 +55,7 @@ Full film: {NCSA_LINK}
     name: "Game Day",
     template: `{GAME_DAY_CONTENT}
 
-#2028Recruit #OL #FootballRecruiting {SCHOOL_HASHTAGS}`,
+#2029Recruit #OL #FootballRecruiting {SCHOOL_HASHTAGS}`,
     notes: "Post within 2 hours of game end. Recency matters.",
     examples: [
       "Game day. Let's work.",
@@ -89,19 +89,19 @@ Full film: {NCSA_LINK}
 export const dmTemplates = {
   intro: {
     name: "Introduction DM",
-    template: `Coach {COACH_LAST_NAME}, my name is Jacob Rogers. I'm a Class of 2028 OL from Pewaukee High School in Wisconsin (6'4", 285). I've been following {SCHOOL_NAME} football and admire how your program develops offensive linemen. I'd love to be on your radar — here's my film: {NCSA_LINK}. Excited to keep working and hopefully connect!`,
+    template: `Coach {COACH_LAST_NAME}, my name is Jacob Rodgers. I'm a Class of 2029 OL from Pewaukee High School in Wisconsin (6'4", 285). I've been following {SCHOOL_NAME} football and admire how your program develops offensive linemen. I'd love to be on your radar — here's my film: {NCSA_LINK}. Excited to keep working and hopefully connect!`,
     useCase: "First contact with a target coach",
   },
 
   postCamp: {
     name: "Post-Camp Follow-Up",
-    template: `Coach {COACH_LAST_NAME}, just got back from {CAMP_NAME}. Worked hard and got some great feedback on my footwork and hand placement. Wanted to stay on your radar — I'm Jacob Rogers, 2028 OL from Pewaukee HS, WI. Updated film: {NCSA_LINK}. Looking forward to continuing to improve!`,
+    template: `Coach {COACH_LAST_NAME}, just got back from {CAMP_NAME}. Worked hard and got some great feedback on my footwork and hand placement. Wanted to stay on your radar — I'm Jacob Rodgers, 2029 OL from Pewaukee HS, WI. Updated film: {NCSA_LINK}. Looking forward to continuing to improve!`,
     useCase: "After attending a camp or showcase",
   },
 
   postFollow: {
     name: "After Coach Follows Jacob",
-    template: `Coach {COACH_LAST_NAME}, thank you for the follow! I've had {SCHOOL_NAME} on my radar for a while — I love what you're building there. I'm Jacob Rogers, 2028 OL, 6'4" 285, from Pewaukee HS in Wisconsin. Would love the opportunity to talk more about {SCHOOL_NAME} and what you look for in your OL. Here's my full film: {NCSA_LINK}. Thank you!`,
+    template: `Coach {COACH_LAST_NAME}, thank you for the follow! I've had {SCHOOL_NAME} on my radar for a while — I love what you're building there. I'm Jacob Rodgers, 2029 OL, 6'4" 285, from Pewaukee HS in Wisconsin. Would love the opportunity to talk more about {SCHOOL_NAME} and what you look for in your OL. Here's my full film: {NCSA_LINK}. Thank you!`,
     useCase: "Trigger: coach follows Jacob's account",
   },
 };

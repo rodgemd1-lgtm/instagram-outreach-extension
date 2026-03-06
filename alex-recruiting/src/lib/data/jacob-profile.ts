@@ -1,34 +1,35 @@
-// Jacob Rogers — Athlete Profile (Single Source of Truth)
+// Jacob Rodgers — Athlete Profile (Single Source of Truth)
 
 export const jacobProfile = {
-  name: "Jacob Rogers",
+  name: "Jacob Rodgers",
   position: "OL",
   positionFull: "Offensive Lineman",
   height: "6'4\"",
   weight: "285 lbs",
-  classYear: 2028,
+  jerseyNumber: 79,
+  classYear: 2029,
   school: "Pewaukee High School",
   state: "Wisconsin",
   city: "Pewaukee",
   conference: "WIAA",
   gpa: "", // Fill when available
-  xHandle: "@JacobRogersOL28",
+  xHandle: "@JacobRodgersOL29",
   ncsaProfileUrl: "", // Fill with NCSA link
   hudlUrl: "", // Fill with Hudl link
   websiteUrl: "", // Fill with personal website
   imgTraining: true,
 
-  bio: 'OL | 6\'4" 285 | Pewaukee HS \'28 | WI | Training @IMGAcademy',
+  bio: 'OL | 6\'4" 285 | Pewaukee HS \'29 | WI | Training @IMGAcademy',
 
   bioVariations: [
-    'Jacob Rogers | OL | 6\'4" 285 | Pewaukee HS | Class of 2028 | WI',
-    'OL | 6\'4" 285 | Pewaukee HS \'28 | WI | NCSA Athlete | Training @IMGAcademy',
-    'Jacob Rogers | Offensive Line | 6\'4" 285 | \'28 | Pewaukee, WI | Film below',
-    'OL | 6\'4" 285 | Pewaukee HS | Class of 2028 | Wisconsin | @IMGAcademy',
-    'Jacob Rogers | OL | 6\'4" 285 | Pewaukee HS \'28 | WI | @NCSASports Athlete',
+    'Jacob Rodgers | OL | 6\'4" 285 | Pewaukee HS | Class of 2029 | WI',
+    'OL | 6\'4" 285 | Pewaukee HS \'29 | WI | NCSA Athlete | Training @IMGAcademy',
+    'Jacob Rodgers | Offensive Line | 6\'4" 285 | \'29 | Pewaukee, WI | Film below',
+    'OL | 6\'4" 285 | Pewaukee HS | Class of 2029 | Wisconsin | @IMGAcademy',
+    'Jacob Rodgers | OL | 6\'4" 285 | Pewaukee HS \'29 | WI | @NCSASports Athlete',
   ],
 
-  displayName: "Jacob Rogers | OL | '28",
+  displayName: "Jacob Rodgers | OL | '29",
 
   contentPillars: [
     { id: "performance", name: "On-Field Performance", percentage: 40, description: "Film clips, game highlights, game day posts, stat updates, team wins" },
@@ -44,5 +45,5 @@ export const jacobProfile = {
     "Starting at Pewaukee: WIAA top classification — starting as a freshman signals immediate readiness",
   ],
 
-  coreMessage: "Jacob Rogers is a Class of 2028 OL who is already playing at a high level as a freshman, training at IMG Academy, represented by NCSA, and has three years to become one of the top OL prospects in Wisconsin.",
+  coreMessage: "Jacob Rodgers is a Class of 2029 OL who is already playing at a high level as a freshman, training at IMG Academy, represented by NCSA, and has three years to become one of the top OL prospects in Wisconsin.",
 } as const;

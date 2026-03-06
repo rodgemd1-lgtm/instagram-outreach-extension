@@ -37,7 +37,7 @@ export function compareWithCompetitor(
     },
     {
       metric: "Class Year",
-      jacob: 2028,
+      jacob: 2029,
       competitor: competitor.classYear,
       advantage: "even",
     },

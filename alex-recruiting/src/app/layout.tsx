@@ -18,8 +18,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Alex Recruiting | Jacob Rogers OL '28",
-  description: "AI-powered recruiting intelligence system for Jacob Rogers — Class of 2028 Offensive Lineman, Pewaukee HS, Wisconsin",
+  title: "Alex Recruiting | Jacob Rodgers OL '29",
+  description: "AI-powered recruiting intelligence system for Jacob Rodgers — Class of 2029 Offensive Lineman, Pewaukee HS, Wisconsin",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,

@@ -32,7 +32,7 @@ export async function searchCoachHandles(query?: string): Promise<ExaSearchResul
 // Search for specific school's OL recruiting needs
 export async function searchSchoolOLNeeds(schoolName: string): Promise<ExaSearchResult[]> {
   const result = await exa.searchAndContents(
-    `${schoolName} offensive line recruiting needs 2025 2026 2027 2028`,
+    `${schoolName} offensive line recruiting needs 2025 2026 2027 2029`,
     {
       type: "neural",
       numResults: 10,
@@ -51,7 +51,7 @@ export async function searchSchoolOLNeeds(schoolName: string): Promise<ExaSearch
 // Monitor Jacob's name in recruiting coverage
 export async function searchJacobMentions(): Promise<ExaSearchResult[]> {
   const result = await exa.searchAndContents(
-    "Jacob Rogers Pewaukee football 2028 offensive line recruit",
+    "Jacob Rodgers Pewaukee football 2029 offensive line recruit",
     {
       type: "neural",
       numResults: 10,
@@ -70,7 +70,7 @@ export async function searchJacobMentions(): Promise<ExaSearchResult[]> {
 // Search for competitor recruits
 export async function searchCompetitorRecruits(): Promise<ExaSearchResult[]> {
   const result = await exa.searchAndContents(
-    "2028 offensive line recruit Wisconsin Midwest high school football Twitter",
+    "2029 offensive line recruit Wisconsin Midwest high school football Twitter",
     {
       type: "neural",
       numResults: 15,

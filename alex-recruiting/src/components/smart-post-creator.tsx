@@ -86,7 +86,7 @@ const QUICK_INSERTS = [
   },
   {
     label: "Stats Line",
-    text: '6\'4" 285 | OL | Class of 2028 | Pewaukee HS (WI)',
+    text: '6\'4" 285 | OL | Class of 2029 | Pewaukee HS (WI)',
     icon: BarChart3,
   },
   {
@@ -168,13 +168,13 @@ const INITIAL_DRAFT = `Back to work this Monday. Film review session done, now h
 
 Every rep counts. Getting better every day.
 
-#2028Recruit #FootballRecruiting #OL #PutInTheWork #WisconsinFootball`;
+#2029Recruit #FootballRecruiting #OL #PutInTheWork #WisconsinFootball`;
 
 const INITIAL_QUEUE: QueuedPost[] = [
   {
     id: "q1",
     content:
-      "Drive block technique from Friday\u2019s game \u2014 finishing through the whistle.\n\nFull film: ncsa.com/jacob-rogers\n\n#OL #OffensiveLine #FootballRecruiting #2028Recruit",
+      "Drive block technique from Friday\u2019s game \u2014 finishing through the whistle.\n\nFull film: ncsa.com/jacob-rogers\n\n#OL #OffensiveLine #FootballRecruiting #2029Recruit",
     pillar: "performance",
     scheduledFor: "Tomorrow, 3:30 PM CST",
     status: "scheduled",
@@ -182,7 +182,7 @@ const INITIAL_QUEUE: QueuedPost[] = [
   {
     id: "q2",
     content:
-      "Honor roll this semester \u2014 balancing the books and the field. 3.8 GPA and climbing.\n\n#2028Recruit #StudentAthlete #FootballRecruiting",
+      "Honor roll this semester \u2014 balancing the books and the field. 3.8 GPA and climbing.\n\n#2029Recruit #StudentAthlete #FootballRecruiting",
     pillar: "character",
     scheduledFor: "Wednesday, 12:00 PM CST",
     status: "draft",
@@ -190,7 +190,7 @@ const INITIAL_QUEUE: QueuedPost[] = [
   {
     id: "q3",
     content:
-      "Early morning session at @IMGAcademy \u2014 competing against the best to become the best.\n\n#PutInTheWork #OffSeason #FootballTraining #2028Recruit",
+      "Early morning session at @IMGAcademy \u2014 competing against the best to become the best.\n\n#PutInTheWork #OffSeason #FootballTraining #2029Recruit",
     pillar: "work_ethic",
     scheduledFor: "Thursday, 4:00 PM CST",
     status: "draft",
@@ -316,12 +316,12 @@ function XPostPreview({ content }: { content: string }) {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-white text-[15px]">Jacob Rogers</span>
+                <span className="font-bold text-white text-[15px]">Jacob Rodgers</span>
                 <svg viewBox="0 0 22 22" className="h-4 w-4 text-blue-400 fill-current flex-shrink-0" aria-label="Verified account">
                   <path d="M20.396 11c-.018-.646-.215-1.275-.57-1.816-.354-.54-.852-.972-1.438-1.246.223-.607.27-1.264.14-1.897-.131-.634-.437-1.218-.882-1.687-.47-.445-1.053-.75-1.687-.882-.633-.13-1.29-.083-1.897.14-.273-.587-.704-1.086-1.245-1.44S11.647 1.62 11 1.604c-.646.017-1.273.213-1.813.568s-.969.855-1.24 1.44c-.608-.223-1.267-.272-1.902-.14-.635.13-1.22.436-1.69.882-.445.47-.749 1.055-.878 1.69-.13.633-.08 1.29.144 1.896-.587.274-1.087.705-1.443 1.245-.356.54-.555 1.17-.574 1.817.02.647.218 1.276.574 1.817.356.54.856.972 1.443 1.245-.224.606-.274 1.263-.144 1.896.13.636.433 1.221.878 1.69.47.446 1.055.752 1.69.883.635.13 1.294.083 1.902-.143.271.586.702 1.084 1.24 1.438.54.354 1.167.551 1.813.568.647-.016 1.276-.213 1.817-.567s.972-.854 1.245-1.44c.604.225 1.261.276 1.897.143.634-.131 1.217-.437 1.687-.883.445-.468.751-1.053.882-1.687.13-.634.083-1.291-.14-1.898.586-.274 1.084-.705 1.438-1.246.354-.54.551-1.17.569-1.816zM9.662 14.85l-3.429-3.428 1.293-1.302 2.072 2.072 4.4-4.794 1.347 1.246z" />
                 </svg>
               </div>
-              <span className="text-slate-500 text-sm">@JacobRogersOL28</span>
+              <span className="text-slate-500 text-sm">@JacobRodgersOL29</span>
             </div>
           </div>
 
@@ -782,7 +782,7 @@ export function SmartPostCreator() {
             Smart Post Creator
           </h1>
           <p className="mt-1 text-slate-500">
-            Create, check, and schedule posts for Jacob Rogers&apos; X/Twitter recruiting account
+            Create, check, and schedule posts for Jacob Rodgers&apos; X/Twitter recruiting account
           </p>
         </div>
 

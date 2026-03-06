@@ -13,7 +13,7 @@ const sampleCompetitors = [
     name: "Sample Recruit A",
     xHandle: "@recruit_a_28",
     position: "OT",
-    classYear: 2028,
+    classYear: 2029,
     school: "Example HS",
     state: "WI",
     height: "6'3\"",
@@ -29,7 +29,7 @@ const sampleCompetitors = [
     name: "Sample Recruit B",
     xHandle: "@recruit_b_ol",
     position: "OG",
-    classYear: 2028,
+    classYear: 2029,
     school: "Example HS 2",
     state: "MN",
     height: "6'2\"",
@@ -48,7 +48,7 @@ export function CompetitorMap() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold">Competitor Recruit Map</h2>
-          <p className="text-sm text-slate-500">2028 OL recruits in the Wisconsin/Midwest region</p>
+          <p className="text-sm text-slate-500">2029 OL recruits in the Wisconsin/Midwest region</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm">
@@ -68,11 +68,11 @@ export function CompetitorMap() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div>
-                <p className="font-semibold text-blue-900">Jacob Rogers</p>
-                <p className="text-xs text-blue-600">@JacobRogersOL28</p>
+                <p className="font-semibold text-blue-900">Jacob Rodgers</p>
+                <p className="text-xs text-blue-600">@JacobRodgersOL29</p>
               </div>
               <Badge variant="performance">OL</Badge>
-              <span className="text-sm">6&apos;4&quot; 285 | Pewaukee HS, WI | 2028</span>
+              <span className="text-sm">6&apos;4&quot; 285 | Pewaukee HS, WI | 2029</span>
             </div>
             <div className="flex items-center gap-6 text-center">
               <div>

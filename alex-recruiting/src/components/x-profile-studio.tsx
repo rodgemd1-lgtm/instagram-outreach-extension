@@ -48,11 +48,11 @@ import {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const DEFAULT_BIO =
-  "Offensive Lineman | 6'4\" 285 | Class of 2028\nPewaukee HS, Wisconsin\n3.7 GPA | All-Conference\nFilm: hudl.com/jacobrogers";
+  "Offensive Lineman | 6'4\" 285 | Class of 2029\nPewaukee HS, Wisconsin\n3.7 GPA | All-Conference\nFilm: hudl.com/jacobrogers";
 
 const BIO_BLOCKS = [
   { label: "Position / Size", text: "Offensive Lineman | 6'4\" 285", icon: Ruler },
-  { label: "School / Class", text: "Pewaukee HS '28 | Wisconsin", icon: GraduationCap },
+  { label: "School / Class", text: "Pewaukee HS '29 | Wisconsin", icon: GraduationCap },
   { label: "GPA", text: "3.7 GPA | Honor Roll", icon: Star },
   { label: "Film Link", text: "Film: hudl.com/jacobrogers", icon: Film },
   { label: "NCSA Link", text: "ncsasports.org/jacobrogers", icon: LinkIcon },
@@ -62,15 +62,15 @@ const BIO_BLOCKS = [
 const SUGGESTED_BIOS = [
   {
     label: "Clean & Professional",
-    text: "OL | 6'4\" 285 | Pewaukee HS '28\n3.7 GPA | All-Conference\nFilm: hudl.com/jacobrogers\nDream big. Work harder.",
+    text: "OL | 6'4\" 285 | Pewaukee HS '29\n3.7 GPA | All-Conference\nFilm: hudl.com/jacobrogers\nDream big. Work harder.",
   },
   {
     label: "Stats-Forward",
-    text: "Class of 2028 Offensive Lineman\n6'4\" 285 | 5.1 40yd | 315 Bench\nPewaukee HS, Pewaukee WI\n3.7 GPA | hudl.com/jacobrogers",
+    text: "Class of 2029 Offensive Lineman\n6'4\" 285 | 5.1 40yd | 315 Bench\nPewaukee HS, Pewaukee WI\n3.7 GPA | hudl.com/jacobrogers",
   },
   {
     label: "Personality + Recruiting",
-    text: "Future D1 Offensive Lineman\nPewaukee HS '28 | 6'4\" 285\nFaith. Family. Football.\nCoaches: DMs open | Film below",
+    text: "Future D1 Offensive Lineman\nPewaukee HS '29 | 6'4\" 285\nFaith. Family. Football.\nCoaches: DMs open | Film below",
   },
 ];
 
@@ -101,7 +101,7 @@ const SLANG_WORDS = [
   "ngl",
 ];
 
-const PINNED_POST_TEMPLATE = `Class of 2028 | Offensive Lineman
+const PINNED_POST_TEMPLATE = `Class of 2029 | Offensive Lineman
 📍 Pewaukee HS, Pewaukee WI
 📏 6'4" 285 | 5.1 40yd | 315 Bench
 📚 3.7 GPA | Honor Roll
@@ -114,7 +114,7 @@ ncsasports.org/jacobrogers
 
 Coaches — DMs are open. Looking forward to earning an opportunity at the next level.
 
-#Recruiting #ClassOf2028 #OffensiveLine`;
+#Recruiting #ClassOf2029 #OffensiveLine`;
 
 const SEASONAL_CALENDAR = [
   {
@@ -169,8 +169,8 @@ const HEADER_CHECKLIST = [
 
 export function XProfileStudio() {
   const [bio, setBio] = useState(DEFAULT_BIO);
-  const [displayName, setDisplayName] = useState("Jacob Rogers");
-  const [handle] = useState("@JacobRogersOL28");
+  const [displayName, setDisplayName] = useState("Jacob Rodgers");
+  const [handle] = useState("@JacobRodgersOL29");
   const [location, setLocation] = useState("Pewaukee, WI");
   const [websiteLink, setWebsiteLink] = useState("hudl.com/jacobrogers");
   const [pinnedPost, setPinnedPost] = useState(PINNED_POST_TEMPLATE);
@@ -401,7 +401,7 @@ export function XProfileStudio() {
             X Profile Design Studio
           </h1>
           <p className="text-slate-500 mt-1">
-            Build a professional X (Twitter) profile for Jacob Rogers — OL, Class of 2028, Pewaukee HS
+            Build a professional X (Twitter) profile for Jacob Rodgers — OL, Class of 2029, Pewaukee HS
           </p>
         </div>
 
@@ -443,7 +443,7 @@ export function XProfileStudio() {
                         value={displayName}
                         onChange={(e) => setDisplayName(e.target.value)}
                         maxLength={50}
-                        placeholder="Jacob Rogers"
+                        placeholder="Jacob Rodgers"
                       />
                     </div>
                     <div>

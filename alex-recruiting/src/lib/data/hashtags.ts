@@ -3,7 +3,7 @@ import type { HashtagCategory } from "../types";
 export const hashtagStack: HashtagCategory[] = [
   {
     category: "Core Recruiting",
-    hashtags: ["#2028Recruit", "#FootballRecruiting", "#CFBRecruiting", "#CollegeFootballRecruiting"],
+    hashtags: ["#2029Recruit", "#FootballRecruiting", "#CFBRecruiting", "#CollegeFootballRecruiting"],
     priority: "every_post",
     notes: "Searched by coaches and recruiting analysts daily",
   },

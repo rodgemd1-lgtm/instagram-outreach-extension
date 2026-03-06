@@ -1,4 +1,4 @@
-// Hooks Library — 100+ attention-grabbing opening lines for Jacob Rogers' X account
+// Hooks Library — 100+ attention-grabbing opening lines for Jacob Rodgers' X account
 
 export type HookCategory =
   | "film"
@@ -999,7 +999,7 @@ export const hooksLibrary: Hook[] = [
   },
   {
     id: "viral-003",
-    text: "Name a Class of 2028 OL bigger than me. I'll wait.",
+    text: "Name a Class of 2029 OL bigger than me. I'll wait.",
     category: "viral_format",
     pillar: "performance",
     viralScore: 10,
@@ -1031,7 +1031,7 @@ export const hooksLibrary: Hook[] = [
   },
   {
     id: "viral-007",
-    text: "A day in the life of a Class of 2028 OL recruit. Thread.",
+    text: "A day in the life of a Class of 2029 OL recruit. Thread.",
     category: "viral_format",
     pillar: "work_ethic",
     viralScore: 8,

@@ -96,12 +96,12 @@ function personalizeTemplate(
     .replace(/\{SCHOOL_NAME\}/g, schoolName)
     .replace(/\{COACH_LAST_NAME\}/g, coachLastName)
     .replace(/\{COACH_NAME\}/g, coachLastName)
-    .replace(/\{PLAYER_NAME\}/g, "Jacob Rogers")
+    .replace(/\{PLAYER_NAME\}/g, "Jacob Rodgers")
     .replace(/\{POSITION\}/g, "Offensive Line")
     .replace(/\{HUDL_LINK\}/g, "hudl.com/profile/jacob-rogers")
     .replace(/\{NCSA_LINK\}/g, "ncsa.com/jacob-rogers")
     .replace(/\{GPA\}/g, "3.8")
-    .replace(/\{CLASS_YEAR\}/g, "2028")
+    .replace(/\{CLASS_YEAR\}/g, "2029")
     .replace(/\{HEIGHT_WEIGHT\}/g, '6\'4" 285')
     .replace(/\{HIGH_SCHOOL\}/g, "Pewaukee HS");
 }

@@ -27,8 +27,8 @@ const sampleFeed: FeedItem[] = [
   {
     id: "2",
     type: "trend",
-    title: "#2028Recruit trending",
-    description: "The hashtag #2028Recruit has seen a 15% increase in engagement this week. Ideal time to post film content.",
+    title: "#2029Recruit trending",
+    description: "The hashtag #2029Recruit has seen a 15% increase in engagement this week. Ideal time to post film content.",
     timestamp: "Today",
     isCoach: false,
   },

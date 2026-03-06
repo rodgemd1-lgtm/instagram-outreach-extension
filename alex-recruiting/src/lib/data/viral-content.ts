@@ -39,7 +39,7 @@ Gained 25 lbs of muscle, dropped my 40 time by 0.3 seconds, and added 60 lbs to 
 
 Three more years to grow. The best is ahead.
 
-#2028Recruit #OL #Transformation #FootballRecruiting`,
+#2029Recruit #OL #Transformation #FootballRecruiting`,
     viralPotential: 10,
     bestDay: "Monday",
     mediaRequired: true,
@@ -61,7 +61,7 @@ Same inside zone play. Different execution. That's what 10 weeks of coaching and
 
 Watch the pad level, hand placement, and finish. Every detail got sharper.
 
-#OL #FilmDontLie #2028Recruit #FootballRecruiting #Improvement`,
+#OL #FilmDontLie #2029Recruit #FootballRecruiting #Improvement`,
     viralPotential: 9,
     bestDay: "Tuesday",
     mediaRequired: true,
@@ -85,7 +85,7 @@ July: Bench 255 | Squat 405 | Clean 275
 
 The weight room is where the season is won.
 
-#StrengthGains #2028Recruit #OL #PutInTheWork #FootballTraining`,
+#StrengthGains #2029Recruit #OL #PutInTheWork #FootballTraining`,
     viralPotential: 9,
     bestDay: "Wednesday",
     mediaRequired: true,
@@ -107,7 +107,7 @@ The weight room is where the season is won.
 
 This is just the beginning. Three more years of development ahead.
 
-#Transformation #2028Recruit #OL #Growth #FootballRecruiting`,
+#Transformation #2029Recruit #OL #Growth #FootballRecruiting`,
     viralPotential: 10,
     bestDay: "Monday",
     mediaRequired: true,
@@ -129,7 +129,7 @@ The difference shows up on film.
 
 The difference shows up on film. Bigger, stronger, faster, smarter.
 
-#OL #2028Recruit #GrowthMindset #FootballRecruiting #FilmStudy`,
+#OL #2029Recruit #GrowthMindset #FootballRecruiting #FilmStudy`,
     viralPotential: 8,
     bestDay: "Tuesday",
     mediaRequired: true,
@@ -155,7 +155,7 @@ Watch this.
 
 285 lbs and getting faster every day. Size AND speed.
 
-#OL #Speed #2028Recruit #BigManCan #FootballRecruiting`,
+#OL #Speed #2029Recruit #BigManCan #FootballRecruiting`,
     viralPotential: 10,
     bestDay: "Thursday",
     mediaRequired: true,
@@ -179,7 +179,7 @@ Now: Low center of gravity, wide base, patient hands, anchored.
 
 The coaching at @IMGAcademy changed everything. Technique is a daily investment.
 
-#PassProtection #OL #2028Recruit #IMGAcademy #Technique`,
+#PassProtection #OL #2029Recruit #IMGAcademy #Technique`,
     viralPotential: 8,
     bestDay: "Tuesday",
     mediaRequired: true,
@@ -203,7 +203,7 @@ Now: 6 meals/day, 4000+ calories, tracked macros, meal prep every Sunday.
 
 Nutrition is 50% of the game. You can't outwork a bad diet when you're building a D1 body.
 
-#Nutrition #2028Recruit #OL #MealPrep #FootballTraining`,
+#Nutrition #2029Recruit #OL #MealPrep #FootballTraining`,
     viralPotential: 7,
     bestDay: "Sunday",
     mediaRequired: true,
@@ -223,7 +223,7 @@ Nutrition is 50% of the game. You can't outwork a bad diet when you're building 
 [Closing line about the grind]
 
 [Hashtags]`,
-    examplePost: `A day in the life of a Class of 2028 OL recruit:
+    examplePost: `A day in the life of a Class of 2029 OL recruit:
 
 5:00 AM — Wake up
 5:30 AM — Gym session
@@ -237,7 +237,7 @@ Nutrition is 50% of the game. You can't outwork a bad diet when you're building 
 
 Every. Single. Day. No days off from the dream.
 
-#DayInTheLife #2028Recruit #OL #RecruitLife #FootballRecruiting`,
+#DayInTheLife #2029Recruit #OL #RecruitLife #FootballRecruiting`,
     viralPotential: 9,
     bestDay: "Monday",
     mediaRequired: false,
@@ -268,7 +268,7 @@ Every. Single. Day. No days off from the dream.
 
 12 hours of competing. Wouldn't trade it for anything.
 
-#CampDay #IMGAcademy #2028Recruit #OL #Compete`,
+#CampDay #IMGAcademy #2029Recruit #OL #Compete`,
     viralPotential: 8,
     bestDay: "Saturday",
     mediaRequired: false,
@@ -296,7 +296,7 @@ It's not superstition — it's preparation.
 
 It's not superstition — it's preparation. Every detail matters.
 
-#GameDay #2028Recruit #OL #FridayNightLights #Preparation`,
+#GameDay #2029Recruit #OL #FridayNightLights #Preparation`,
     viralPotential: 8,
     bestDay: "Friday",
     mediaRequired: false,
@@ -324,7 +324,7 @@ It's not superstition — it's preparation. Every detail matters.
 
 The off-season is where the next season is built. While others rest, I'm investing.
 
-#OffSeason #2028Recruit #OL #Saturday #FootballTraining`,
+#OffSeason #2029Recruit #OL #Saturday #FootballTraining`,
     viralPotential: 7,
     bestDay: "Saturday",
     mediaRequired: false,
@@ -354,7 +354,7 @@ Sunday: Recovery, meal prep, mental reset
 
 24+ hours of training. Every week. All summer.
 
-#SummerGrind #2028Recruit #OL #FootballTraining #WorkWeek`,
+#SummerGrind #2029Recruit #OL #FootballTraining #WorkWeek`,
     viralPotential: 8,
     bestDay: "Sunday",
     mediaRequired: false,
@@ -376,9 +376,9 @@ Sunday: Recovery, meal prep, mental reset
 
 Most college freshmen OL aren't this size. I have three more years to grow.
 
-Remember the name: Jacob Rogers. Pewaukee, Wisconsin. Class of 2028.
+Remember the name: Jacob Rodgers. Pewaukee, Wisconsin. Class of 2029.
 
-#2028Recruit #OL #Size #FootballRecruiting #RememberTheName`,
+#2029Recruit #OL #Size #FootballRecruiting #RememberTheName`,
     viralPotential: 10,
     bestDay: "Wednesday",
     mediaRequired: true,
@@ -400,7 +400,7 @@ You can have a 5-star QB, but without protection, he's on his back. You can have
 
 Championships are won in the trenches. Always have been. Always will be.
 
-#OL #OffensiveLine #Trenches #2028Recruit #FootballRecruiting`,
+#OL #OffensiveLine #Trenches #2029Recruit #FootballRecruiting`,
     viralPotential: 9,
     bestDay: "Tuesday",
     mediaRequired: false,
@@ -420,7 +420,7 @@ The cold weather, the blue-collar mentality, the toughness that runs through eve
 
 Small town. Big-time football. That's Wisconsin.
 
-#Wisconsin #WisconsinFootball #OL #2028Recruit #SmallTownBigDreams`,
+#Wisconsin #WisconsinFootball #OL #2029Recruit #SmallTownBigDreams`,
     viralPotential: 8,
     bestDay: "Thursday",
     mediaRequired: false,
@@ -438,7 +438,7 @@ Small town. Big-time football. That's Wisconsin.
 
 When your practice competition is that high, Friday night games feel like a warm-up. The standard is different here. The expectations are higher. And that's exactly what I need.
 
-#IMGAcademy #2028Recruit #OL #EliteCompetition #FootballRecruiting`,
+#IMGAcademy #2029Recruit #OL #EliteCompetition #FootballRecruiting`,
     viralPotential: 8,
     bestDay: "Wednesday",
     mediaRequired: false,
@@ -464,7 +464,7 @@ I have two full off-seasons and two more seasons to get better.
 
 What am I going to look like as a senior?
 
-#2028Recruit #OL #JustGettingStarted #FootballRecruiting #Potential`,
+#2029Recruit #OL #JustGettingStarted #FootballRecruiting #Potential`,
     viralPotential: 10,
     bestDay: "Monday",
     mediaRequired: false,
@@ -482,7 +482,7 @@ What am I going to look like as a senior?
 
 Good luck.
 
-#POV #OL #2028Recruit #BigManOnCampus #FootballRecruiting`,
+#POV #OL #2029Recruit #BigManOnCampus #FootballRecruiting`,
     viralPotential: 10,
     bestDay: "Thursday",
     mediaRequired: true,
@@ -504,7 +504,7 @@ Here's what that actually looks like: 6'4" 285. Running the agility ladder. Pull
 
 Coaches — I'm what you're looking for.
 
-#OL #2028Recruit #FootballRecruiting #CFBRecruiting #BigAndAthletic`,
+#OL #2029Recruit #FootballRecruiting #CFBRecruiting #BigAndAthletic`,
     viralPotential: 9,
     bestDay: "Tuesday",
     mediaRequired: true,
@@ -518,13 +518,13 @@ Coaches — I'm what you're looking for.
 [Evidence/schedule that backs it up]
 
 [Hashtags]`,
-    examplePost: `I might not be the most talented OL in the 2028 class. But nobody is going to outwork me.
+    examplePost: `I might not be the most talented OL in the 2029 class. But nobody is going to outwork me.
 
 5 AM workouts. Year-round training at @IMGAcademy. Film study every night. Extra reps after every practice.
 
 Talent gets you noticed. Work ethic gets you recruited. Consistency gets you a scholarship.
 
-#WorkEthic #2028Recruit #OL #Grind #FootballRecruiting`,
+#WorkEthic #2029Recruit #OL #Grind #FootballRecruiting`,
     viralPotential: 9,
     bestDay: "Monday",
     mediaRequired: false,
@@ -549,7 +549,7 @@ D) Character/Grades
 
 Drop your answers below. I want to hear from coaches, players, and recruiters.
 
-#OL #FootballRecruiting #2028Recruit #RecruitingAdvice #CFBRecruiting`,
+#OL #FootballRecruiting #2029Recruit #RecruitingAdvice #CFBRecruiting`,
     viralPotential: 9,
     bestDay: "Wednesday",
     mediaRequired: false,
@@ -571,7 +571,7 @@ Honest feedback only. I want to hear what I'm doing well and what needs work. Th
 
 Coaches, players, analysts — all opinions welcome.
 
-#RateMyFilm #OL #2028Recruit #PassProtection #FootballRecruiting`,
+#RateMyFilm #OL #2029Recruit #PassProtection #FootballRecruiting`,
     viralPotential: 9,
     bestDay: "Tuesday",
     mediaRequired: true,
@@ -589,7 +589,7 @@ Reply with your take.
 
 I'm trying to be both. But I want to hear your take. Reply below.
 
-#RecruitingDebate #OL #FootballRecruiting #2028Recruit #OLTalk`,
+#RecruitingDebate #OL #FootballRecruiting #2029Recruit #OLTalk`,
     viralPotential: 8,
     bestDay: "Thursday",
     mediaRequired: false,
@@ -605,11 +605,11 @@ I'm trying to be both. But I want to hear your take. Reply below.
 [Hashtags]`,
     examplePost: `Who is the best OL coach in college football right now?
 
-As a 2028 OL recruit, I'm studying every program. I want to play for a coach who develops linemen at the highest level.
+As a 2029 OL recruit, I'm studying every program. I want to play for a coach who develops linemen at the highest level.
 
 Drop your picks below. I'm taking notes.
 
-#OLCoach #FootballRecruiting #2028Recruit #CFB #OL`,
+#OLCoach #FootballRecruiting #2029Recruit #CFB #OL`,
     viralPotential: 8,
     bestDay: "Wednesday",
     mediaRequired: false,
@@ -627,7 +627,7 @@ What would you do? Reply below.
 
 Genuine question. I think about this stuff all the time. Reply below.
 
-#RecruitLife #FootballRecruiting #2028Recruit #OL #Decision`,
+#RecruitLife #FootballRecruiting #2029Recruit #OL #Decision`,
     viralPotential: 8,
     bestDay: "Thursday",
     mediaRequired: false,
@@ -655,11 +655,11 @@ Genuine question. I think about this stuff all the time. Reply below.
 
 4/ Started training at @IMGAcademy. The competition and coaching changed everything about my development.
 
-5/ Now: 6'4" 285. Sophomore. Working every day to become the best OL in the 2028 class. The journey is just getting started.
+5/ Now: 6'4" 285. Sophomore. Working every day to become the best OL in the 2029 class. The journey is just getting started.
 
 Full film: link in bio.
 
-#Thread #2028Recruit #OL #RecruitingJourney #FootballRecruiting`,
+#Thread #2029Recruit #OL #RecruitingJourney #FootballRecruiting`,
     viralPotential: 9,
     bestDay: "Sunday",
     mediaRequired: false,
@@ -689,7 +689,7 @@ Full film: link in bio.
 
 What technique do you want me to break down next?
 
-#OLTechnique #Thread #PassProtection #OL #2028Recruit`,
+#OLTechnique #Thread #PassProtection #OL #2029Recruit`,
     viralPotential: 8,
     bestDay: "Tuesday",
     mediaRequired: false,
@@ -722,7 +722,7 @@ What technique do you want me to break down next?
 
 What would you add to this list?
 
-#RecruitingAdvice #Thread #2028Recruit #OL #FootballRecruiting`,
+#RecruitingAdvice #Thread #2029Recruit #OL #FootballRecruiting`,
     viralPotential: 9,
     bestDay: "Sunday",
     mediaRequired: false,
@@ -751,7 +751,7 @@ What would you add to this list?
 
 Grateful for this opportunity. It's an investment that's already paying off.
 
-#IMGAcademy #Thread #2028Recruit #OL #EliteTraining`,
+#IMGAcademy #Thread #2029Recruit #OL #EliteTraining`,
     viralPotential: 8,
     bestDay: "Wednesday",
     mediaRequired: false,
@@ -781,7 +781,7 @@ Grateful for this opportunity. It's an investment that's already paying off.
 
 Junior year is going to be special. I can feel it.
 
-#SeasonRecap #Thread #2028Recruit #OL #PewaukeeFootball`,
+#SeasonRecap #Thread #2029Recruit #OL #PewaukeeFootball`,
     viralPotential: 7,
     bestDay: "Sunday",
     mediaRequired: false,
@@ -811,7 +811,7 @@ Junior year is going to be special. I can feel it.
 
 Best summer of my football career. Can't wait to go back.
 
-#IMGAcademy #2028Recruit #OL #LessonsLearned #FootballRecruiting`,
+#IMGAcademy #2029Recruit #OL #LessonsLearned #FootballRecruiting`,
     viralPotential: 8,
     bestDay: "Sunday",
     mediaRequired: false,
@@ -841,7 +841,7 @@ Best summer of my football career. Can't wait to go back.
 
 Coaches: my film is in my bio. Let's connect.
 
-#2028Recruit #OL #FootballRecruiting #RecruitMe #OffensiveLine`,
+#2029Recruit #OL #FootballRecruiting #RecruitMe #OffensiveLine`,
     viralPotential: 9,
     bestDay: "Monday",
     mediaRequired: false,
@@ -871,7 +871,7 @@ Next: Junior season film will be the best yet
 
 The process is happening. One step at a time.
 
-#RecruitingChecklist #2028Recruit #OL #FootballRecruiting #Process`,
+#RecruitingChecklist #2029Recruit #OL #FootballRecruiting #Process`,
     viralPotential: 7,
     bestDay: "Wednesday",
     mediaRequired: false,
@@ -899,7 +899,7 @@ The process is happening. One step at a time.
 
 It's not just about football. It's about the total experience.
 
-#CollegeSearch #2028Recruit #OL #FootballRecruiting #Priorities`,
+#CollegeSearch #2029Recruit #OL #FootballRecruiting #Priorities`,
     viralPotential: 8,
     bestDay: "Thursday",
     mediaRequired: false,
@@ -928,7 +928,7 @@ It's not just about football. It's about the total experience.
 
 Champions are built by daily habits, not single moments. Consistency wins.
 
-#NonNegotiables #2028Recruit #OL #DailyHabits #Discipline`,
+#NonNegotiables #2029Recruit #OL #DailyHabits #Discipline`,
     viralPotential: 8,
     bestDay: "Monday",
     mediaRequired: false,
@@ -955,7 +955,7 @@ What I'm working on: my initial punch timing needs to be quicker.
 
 Coaches — I'm always looking for feedback. Let me know what you see.
 
-#FilmBreakdown #OL #PassProtection #2028Recruit #Technique`,
+#FilmBreakdown #OL #PassProtection #2029Recruit #Technique`,
     viralPotential: 8,
     bestDay: "Tuesday",
     mediaRequired: true,
@@ -978,7 +978,7 @@ Step 4: Climb to the second level and seal.
 
 The timing on the peel-off is everything. One second too early and the DT splits. One second too late and the LB fills the hole.
 
-#InsideZone #OL #FilmBreakdown #2028Recruit #RunGame`,
+#InsideZone #OL #FilmBreakdown #2029Recruit #RunGame`,
     viralPotential: 8,
     bestDay: "Tuesday",
     mediaRequired: true,
@@ -1002,7 +1002,7 @@ Opening my hips, getting flat down the line, and kicking out the end man on the 
 
 Grade: B+. I need to get flatter on the pull path. Working on it.
 
-#PullBlock #OL #FilmBreakdown #2028Recruit #Technique`,
+#PullBlock #OL #FilmBreakdown #2029Recruit #Technique`,
     viralPotential: 7,
     bestDay: "Wednesday",
     mediaRequired: true,
@@ -1026,7 +1026,7 @@ Post-snap: I communicate the adjustment, slide my protection, and pick up the bl
 
 An OL's brain is his most important tool. You have to see it before it happens. This is what film study is for.
 
-#BlitzPickup #OL #FilmBreakdown #2028Recruit #FootballIQ`,
+#BlitzPickup #OL #FilmBreakdown #2029Recruit #FootballIQ`,
     viralPotential: 7,
     bestDay: "Tuesday",
     mediaRequired: true,
@@ -1051,7 +1051,7 @@ Bad rep (0:15): Pass set. Feet too narrow, lunged at the rusher, got beat inside
 
 I post both because accountability drives improvement. I'm not perfect — but I'm getting better every week.
 
-#HonestFilm #OL #FilmBreakdown #2028Recruit #SelfEvaluation`,
+#HonestFilm #OL #FilmBreakdown #2029Recruit #SelfEvaluation`,
     viralPotential: 9,
     bestDay: "Tuesday",
     mediaRequired: true,
@@ -1077,7 +1077,7 @@ This program's commitment to developing offensive linemen is something I deeply 
 
 Thank you, Coach {COACH_LAST_NAME}, for believing in me. The work continues.
 
-#Offer #2028Recruit #OL #FootballRecruiting #Blessed`,
+#Offer #2029Recruit #OL #FootballRecruiting #Blessed`,
     viralPotential: 10,
     bestDay: "Any",
     mediaRequired: true,
@@ -1099,7 +1099,7 @@ Six months ago, 225 was a grind. Today, 275 moved clean. That's what happens whe
 
 Next target: 300. It's coming.
 
-#NewPR #BenchPress #2028Recruit #OL #Strength #FootballTraining`,
+#NewPR #BenchPress #2029Recruit #OL #Strength #FootballTraining`,
     viralPotential: 8,
     bestDay: "Any",
     mediaRequired: true,
@@ -1121,7 +1121,7 @@ This award belongs to my teammates, my coaches, and my family. Nothing an OL doe
 
 Grateful for the recognition, but the goal is bigger. Back to work.
 
-#AllConference #2028Recruit #OL #Honored #PewaukeeFootball`,
+#AllConference #2029Recruit #OL #Honored #PewaukeeFootball`,
     viralPotential: 8,
     bestDay: "Any",
     mediaRequired: true,
@@ -1143,7 +1143,7 @@ Thank you to everyone who follows, engages, and supports. Coaches, analysts, fel
 
 The content gets better from here. The work never stops.
 
-#Milestone #2028Recruit #OL #Grateful #FootballRecruiting`,
+#Milestone #2029Recruit #OL #Grateful #FootballRecruiting`,
     viralPotential: 7,
     bestDay: "Any",
     mediaRequired: false,
@@ -1165,7 +1165,7 @@ The amount of work that goes into that stat line — the film study, the extra r
 
 Grateful. Motivated. Hungry for more.
 
-#SeasonStats #2028Recruit #OL #PewaukeeFootball #AllGasNoBrakes`,
+#SeasonStats #2029Recruit #OL #PewaukeeFootball #AllGasNoBrakes`,
     viralPotential: 9,
     bestDay: "Sunday",
     mediaRequired: false,

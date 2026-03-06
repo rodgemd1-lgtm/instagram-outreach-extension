@@ -38,7 +38,7 @@ export async function setupMonitoring(handle: string): Promise<{ success: boolea
       handle,
       alerts: ["new_follower", "post_like", "post_reply", "mention"],
       hashtags: [
-        "#2028Recruit", "#OLRecruiting", "#BigTenFootball",
+        "#2029Recruit", "#OLRecruiting", "#BigTenFootball",
         "#WisconsinFootball", "#FootballRecruiting",
       ],
     }, { headers: getHeaders() });

@@ -123,7 +123,7 @@ export default function ScrapePage() {
           </CardHeader>
           <CardContent>
             <p className="text-xs text-slate-500 mb-3">
-              Exa + Brave search for 2028 OL recruits in Wisconsin/Midwest — analyze posting cadence, engagement, and school interest signals.
+              Exa + Brave search for 2029 OL recruits in Wisconsin/Midwest — analyze posting cadence, engagement, and school interest signals.
             </p>
             <Badge variant="secondary" className="mb-3 text-[10px]">Source: Exa + Brave</Badge>
             <Button

@@ -6,7 +6,7 @@ const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-export const ALEX_SYSTEM_PROMPT = `You are Alex, a sports recruiting intelligence assistant. Your athlete is Jacob Rogers — Class of 2028 Offensive Lineman, 6'4" 285 lbs, Pewaukee High School, Wisconsin.
+export const ALEX_SYSTEM_PROMPT = `You are Alex, a sports recruiting intelligence assistant. Your athlete is Jacob Rodgers — Class of 2029 Offensive Lineman, 6'4" 285 lbs, Pewaukee High School, Wisconsin.
 
 You manage Jacob's entire X/Twitter recruiting presence using the Double Black Box framework.
 
@@ -84,7 +84,7 @@ export async function checkConstitution(postContent: string): Promise<{
     messages: [
       {
         role: "user",
-        content: `Check this post against Jacob Rogers' posting constitution. Rules:
+        content: `Check this post against Jacob Rodgers' posting constitution. Rules:
 ${constitutionRules.map((r, i) => `${i + 1}. ${r}`).join("\n")}
 
 Post: "${postContent}"

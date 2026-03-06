@@ -152,7 +152,7 @@ function ProfilePreview() {
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center space-y-1 opacity-80">
                 <p className="text-lg font-bold tracking-wide">
-                  6&apos;4&quot; | 285 | Class of 2028
+                  6&apos;4&quot; | 285 | Class of 2029
                 </p>
                 <p className="text-sm text-slate-300">Pewaukee, Wisconsin</p>
               </div>
