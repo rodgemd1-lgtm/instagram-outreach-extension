@@ -1,6 +1,7 @@
 "use client";
 
 import { CoachCRM } from "@/components/coach-crm";
+import { CoachPipeline } from "@/components/coach-pipeline";
 import { SchoolCard } from "@/components/school-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getSchoolsByTier } from "@/lib/data/target-schools";
@@ -15,12 +16,17 @@ export default function CoachesPage() {
 
       <Tabs defaultValue="crm">
         <TabsList>
-          <TabsTrigger value="crm">Coach Database</TabsTrigger>
+          <TabsTrigger value="crm">CRM Table</TabsTrigger>
+          <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
           <TabsTrigger value="schools">Target Schools</TabsTrigger>
         </TabsList>
 
         <TabsContent value="crm">
           <CoachCRM />
+        </TabsContent>
+
+        <TabsContent value="pipeline">
+          <CoachPipeline />
         </TabsContent>
 
         <TabsContent value="schools">

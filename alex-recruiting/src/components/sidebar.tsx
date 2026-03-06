@@ -14,11 +14,15 @@ import {
   Search,
   Home,
   Brain,
+  PenSquare,
+  Palette,
 } from "lucide-react";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: Home },
-  { href: "/coaches", label: "Coach CRM", icon: Users },
+  { href: "/create", label: "Create Post", icon: PenSquare },
+  { href: "/profile-studio", label: "Profile Studio", icon: Palette },
+  { href: "/coaches", label: "Coaches", icon: Users },
   { href: "/calendar", label: "Content Calendar", icon: Calendar },
   { href: "/posts", label: "Post Queue", icon: FileText },
   { href: "/dms", label: "DM Campaigns", icon: Mail },

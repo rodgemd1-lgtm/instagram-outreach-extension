@@ -6,13 +6,15 @@ import { cn } from "@/lib/utils";
 import {
   Home,
   Users,
-  Mail,
+  PenSquare,
   Brain,
-  BarChart3,
+  Palette,
   Menu,
   X,
   Calendar,
   FileText,
+  Mail,
+  BarChart3,
   ShieldCheck,
   Swords,
   Search,
@@ -21,15 +23,17 @@ import { useState } from "react";
 
 const primaryTabs = [
   { href: "/", label: "Home", icon: Home },
+  { href: "/create", label: "Create", icon: PenSquare },
   { href: "/coaches", label: "Coaches", icon: Users },
-  { href: "/dms", label: "DMs", icon: Mail },
   { href: "/intelligence", label: "Intel", icon: Brain },
-  { href: "/analytics", label: "Stats", icon: BarChart3 },
+  { href: "/profile-studio", label: "Profile", icon: Palette },
 ];
 
 const secondaryNav = [
+  { href: "/dms", label: "DM Campaigns", icon: Mail },
   { href: "/calendar", label: "Content Calendar", icon: Calendar },
   { href: "/posts", label: "Post Queue", icon: FileText },
+  { href: "/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/audit", label: "Profile Audit", icon: ShieldCheck },
   { href: "/competitors", label: "Competitors", icon: Swords },
   { href: "/scrape", label: "Scraping Tools", icon: Search },
