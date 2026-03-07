@@ -20,6 +20,10 @@
     {
       "path": "/api/agents/cron?agent=placement-analyst",
       "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/content/schedule?action=process",
+      "schedule": "*/5 * * * *"
     }
   ]
 }

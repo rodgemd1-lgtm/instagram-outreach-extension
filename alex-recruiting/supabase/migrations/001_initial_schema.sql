@@ -6,7 +6,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ============ CORE TABLES ============
 
-CREATE TABLE schools (
+CREATE TABLE IF NOT EXISTS schools (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   division TEXT NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE schools (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE coaches (
+CREATE TABLE IF NOT EXISTS coaches (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   name TEXT NOT NULL,
   title TEXT,
@@ -43,7 +43,7 @@ CREATE TABLE coaches (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE posts (
+CREATE TABLE IF NOT EXISTS posts (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   content TEXT NOT NULL,
   pillar TEXT NOT NULL,
@@ -60,7 +60,7 @@ CREATE TABLE posts (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE dm_messages (
+CREATE TABLE IF NOT EXISTS dm_messages (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   coach_id UUID REFERENCES coaches(id),
   coach_name TEXT NOT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE dm_messages (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE engagement_log (
+CREATE TABLE IF NOT EXISTS engagement_log (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   event_type TEXT NOT NULL,
   coach_id UUID REFERENCES coaches(id),
@@ -85,7 +85,7 @@ CREATE TABLE engagement_log (
   timestamp TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE profile_audits (
+CREATE TABLE IF NOT EXISTS profile_audits (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   date TIMESTAMPTZ DEFAULT NOW(),
   photo_quality BOOLEAN DEFAULT FALSE,
@@ -102,7 +102,7 @@ CREATE TABLE profile_audits (
   recommendations JSONB DEFAULT '[]'::jsonb
 );
 
-CREATE TABLE competitor_recruits (
+CREATE TABLE IF NOT EXISTS competitor_recruits (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   name TEXT NOT NULL,
   x_handle TEXT,
@@ -120,7 +120,7 @@ CREATE TABLE competitor_recruits (
   last_updated TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE analytics_snapshots (
+CREATE TABLE IF NOT EXISTS analytics_snapshots (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   date TIMESTAMPTZ DEFAULT NOW(),
   total_followers INTEGER DEFAULT 0,
@@ -135,7 +135,7 @@ CREATE TABLE analytics_snapshots (
 
 -- ============ INTELLIGENCE TABLES ============
 
-CREATE TABLE hudl_profiles (
+CREATE TABLE IF NOT EXISTS hudl_profiles (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   profile_id TEXT NOT NULL UNIQUE,
   profile_url TEXT NOT NULL,
@@ -167,7 +167,7 @@ CREATE TABLE hudl_profiles (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE tweet_patterns (
+CREATE TABLE IF NOT EXISTS tweet_patterns (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   tweet_id TEXT NOT NULL,
   author_handle TEXT NOT NULL,
@@ -186,7 +186,7 @@ CREATE TABLE tweet_patterns (
   analyzed_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE offer_events (
+CREATE TABLE IF NOT EXISTS offer_events (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   athlete_handle TEXT NOT NULL,
   athlete_name TEXT,
@@ -203,7 +203,7 @@ CREATE TABLE offer_events (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE coach_behavior_profiles (
+CREATE TABLE IF NOT EXISTS coach_behavior_profiles (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   coach_id UUID REFERENCES coaches(id),
   coach_name TEXT NOT NULL,
@@ -227,7 +227,7 @@ CREATE TABLE coach_behavior_profiles (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE intelligence_scores (
+CREATE TABLE IF NOT EXISTS intelligence_scores (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   athlete_id TEXT NOT NULL,
   athlete_name TEXT NOT NULL,
@@ -245,7 +245,7 @@ CREATE TABLE intelligence_scores (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE scrape_jobs (
+CREATE TABLE IF NOT EXISTS scrape_jobs (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   type TEXT NOT NULL,
   target_url TEXT NOT NULL,
@@ -259,7 +259,7 @@ CREATE TABLE scrape_jobs (
 
 -- ============ X PROFILE DESIGN TABLES ============
 
-CREATE TABLE x_profile_config (
+CREATE TABLE IF NOT EXISTS x_profile_config (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   display_name TEXT NOT NULL DEFAULT 'Jacob Rogers',
   handle TEXT NOT NULL DEFAULT '@JacobRogersOL28',
@@ -277,22 +277,22 @@ CREATE TABLE x_profile_config (
 
 -- ============ INDEXES ============
 
-CREATE INDEX idx_coaches_school ON coaches(school_id);
-CREATE INDEX idx_coaches_tier ON coaches(priority_tier);
-CREATE INDEX idx_coaches_follow ON coaches(follow_status);
-CREATE INDEX idx_posts_status ON posts(status);
-CREATE INDEX idx_posts_pillar ON posts(pillar);
-CREATE INDEX idx_posts_scheduled ON posts(scheduled_for);
-CREATE INDEX idx_dm_messages_coach ON dm_messages(coach_id);
-CREATE INDEX idx_dm_messages_status ON dm_messages(status);
-CREATE INDEX idx_engagement_log_type ON engagement_log(event_type);
-CREATE INDEX idx_engagement_log_coach ON engagement_log(coach_id);
-CREATE INDEX idx_tweet_patterns_author ON tweet_patterns(author_handle);
-CREATE INDEX idx_tweet_patterns_type ON tweet_patterns(pattern_type);
-CREATE INDEX idx_offer_events_school ON offer_events(school_name);
-CREATE INDEX idx_coach_behavior_coach ON coach_behavior_profiles(coach_id);
-CREATE INDEX idx_intelligence_athlete ON intelligence_scores(athlete_id);
-CREATE INDEX idx_scrape_jobs_status ON scrape_jobs(status);
+CREATE INDEX IF NOT EXISTS idx_coaches_school ON coaches(school_id);
+CREATE INDEX IF NOT EXISTS idx_coaches_tier ON coaches(priority_tier);
+CREATE INDEX IF NOT EXISTS idx_coaches_follow ON coaches(follow_status);
+CREATE INDEX IF NOT EXISTS idx_posts_status ON posts(status);
+CREATE INDEX IF NOT EXISTS idx_posts_pillar ON posts(pillar);
+CREATE INDEX IF NOT EXISTS idx_posts_scheduled ON posts(scheduled_for);
+CREATE INDEX IF NOT EXISTS idx_dm_messages_coach ON dm_messages(coach_id);
+CREATE INDEX IF NOT EXISTS idx_dm_messages_status ON dm_messages(status);
+CREATE INDEX IF NOT EXISTS idx_engagement_log_type ON engagement_log(event_type);
+CREATE INDEX IF NOT EXISTS idx_engagement_log_coach ON engagement_log(coach_id);
+CREATE INDEX IF NOT EXISTS idx_tweet_patterns_author ON tweet_patterns(author_handle);
+CREATE INDEX IF NOT EXISTS idx_tweet_patterns_type ON tweet_patterns(pattern_type);
+CREATE INDEX IF NOT EXISTS idx_offer_events_school ON offer_events(school_name);
+CREATE INDEX IF NOT EXISTS idx_coach_behavior_coach ON coach_behavior_profiles(coach_id);
+CREATE INDEX IF NOT EXISTS idx_intelligence_athlete ON intelligence_scores(athlete_id);
+CREATE INDEX IF NOT EXISTS idx_scrape_jobs_status ON scrape_jobs(status);
 
 -- ============ ROW LEVEL SECURITY ============
 
@@ -312,7 +312,25 @@ ALTER TABLE intelligence_scores ENABLE ROW LEVEL SECURITY;
 ALTER TABLE scrape_jobs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE x_profile_config ENABLE ROW LEVEL SECURITY;
 
--- Allow all operations for authenticated users (single-user app)
+-- Drop and recreate policies (idempotent)
+DO $$ BEGIN
+  DROP POLICY IF EXISTS "Allow all for anon" ON schools;
+  DROP POLICY IF EXISTS "Allow all for anon" ON coaches;
+  DROP POLICY IF EXISTS "Allow all for anon" ON posts;
+  DROP POLICY IF EXISTS "Allow all for anon" ON dm_messages;
+  DROP POLICY IF EXISTS "Allow all for anon" ON engagement_log;
+  DROP POLICY IF EXISTS "Allow all for anon" ON profile_audits;
+  DROP POLICY IF EXISTS "Allow all for anon" ON competitor_recruits;
+  DROP POLICY IF EXISTS "Allow all for anon" ON analytics_snapshots;
+  DROP POLICY IF EXISTS "Allow all for anon" ON hudl_profiles;
+  DROP POLICY IF EXISTS "Allow all for anon" ON tweet_patterns;
+  DROP POLICY IF EXISTS "Allow all for anon" ON offer_events;
+  DROP POLICY IF EXISTS "Allow all for anon" ON coach_behavior_profiles;
+  DROP POLICY IF EXISTS "Allow all for anon" ON intelligence_scores;
+  DROP POLICY IF EXISTS "Allow all for anon" ON scrape_jobs;
+  DROP POLICY IF EXISTS "Allow all for anon" ON x_profile_config;
+END $$;
+
 CREATE POLICY "Allow all for anon" ON schools FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all for anon" ON coaches FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all for anon" ON posts FOR ALL USING (true) WITH CHECK (true);
@@ -333,10 +351,10 @@ CREATE POLICY "Allow all for anon" ON x_profile_config FOR ALL USING (true) WITH
 
 -- Insert default X profile config
 INSERT INTO x_profile_config (display_name, handle, bio, location, website)
-VALUES (
+SELECT
   'Jacob Rogers',
   '@JacobRogersOL28',
-  '6''4" 285 | OL | Pewaukee HS (WI) | Class of 2028 | 3.8 GPA | Building every day',
+  '6''4" 285 | OL | Pewaukee HS (WI) | Class of 2029 | 3.25 GPA | Building every day',
   'Pewaukee, WI',
   'hudl.com/profile/jacobrogers'
-);
+WHERE NOT EXISTS (SELECT 1 FROM x_profile_config LIMIT 1);

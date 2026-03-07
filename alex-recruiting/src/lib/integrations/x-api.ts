@@ -1,7 +1,6 @@
 import axios from "axios";
 import crypto from "crypto";
 import { enforceRateLimit, recordRequest } from "./rate-limiter";
-
 const X_API_BASE = "https://api.twitter.com/2";
 
 function getHeaders() {
@@ -141,19 +140,28 @@ export async function postTweet(text: string, mediaId?: string): Promise<{ id: s
   }
 }
 
-// Send a DM (requires OAuth 2.0 user context)
+// Send a DM using OAuth 1.0a (user-context auth required for DMs).
 export async function sendDM(
   recipientId: string,
   text: string
 ): Promise<{ id: string } | null> {
   const endpoint = "dm_conversations";
   enforceRateLimit(endpoint);
+
   try {
-    const response = await axios.post(
-      `${X_API_BASE}/dm_conversations/with/${recipientId}/messages`,
-      { text },
-      { headers: getHeaders() }
-    );
+    const apiUrl = `https://api.twitter.com/2/dm_conversations/with/${recipientId}/messages`;
+    const body = { text };
+
+    // OAuth 1.0a — same pattern as postTweet.
+    // For v2 JSON endpoints, body params are NOT in the signature base string.
+    const authHeader = getOAuth1Headers("POST", apiUrl, {});
+
+    const response = await axios.post(apiUrl, body, {
+      headers: {
+        Authorization: authHeader,
+        "Content-Type": "application/json",
+      },
+    });
     recordRequest(endpoint);
     return response.data.data || null;
   } catch (error) {

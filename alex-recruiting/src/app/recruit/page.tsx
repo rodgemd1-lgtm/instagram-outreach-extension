@@ -8,6 +8,7 @@ import { CharacterSection } from "@/components/recruit/character";
 import { AcademicsSection } from "@/components/recruit/academics";
 import { TheFit } from "@/components/recruit/the-fit";
 import { ContactCTA } from "@/components/recruit/contact";
+import { SocialProofBanner } from "@/components/recruit/social-proof";
 import { ScrollProgress } from "@/components/recruit/scroll-progress";
 import { RecruitNav } from "@/components/recruit/nav";
 import { MobileNav } from "@/components/recruit/mobile-nav";
@@ -28,6 +29,9 @@ export default function RecruitPage() {
 
       {/* 2. Film + Stats — "Can he play? What are his numbers?" (LAAL: Known-ness) */}
       <FilmReel backgroundUrl={photoMap["film-reel"]} />
+
+      {/* 2.5 Social Proof — credibility signal between film and origin */}
+      <SocialProofBanner />
 
       {/* 3. The Work — "What's his work ethic?" (LAAL: Temporal Window) */}
       <OriginStory backgroundUrl={photoMap.origin} />

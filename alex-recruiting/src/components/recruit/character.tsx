@@ -158,7 +158,7 @@ export function CharacterSection({ backgroundUrl }: { backgroundUrl?: string }) 
           <div className="mt-6 flex items-center gap-3">
             <div className="w-8 h-px bg-red-500/40" />
             <span className="text-xs tracking-[0.2em] text-red-500/60 uppercase font-mono">
-              Coach [Name], [Title], Pewaukee HS
+              Pewaukee Pirates Coaching Staff
             </span>
           </div>
         </div>

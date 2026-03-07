@@ -54,51 +54,85 @@ export function RecruitNav() {
   };
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
-        scrolled
-          ? "bg-[#0A0A0A]/90 backdrop-blur-xl border-b border-white/5"
-          : "bg-transparent"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        {/* Logo / Name */}
-        <button
-          onClick={() => scrollTo("hero")}
-          className="font-mono text-sm tracking-[0.3em] text-white/60 hover:text-white transition-colors"
-        >
-          JACOB RODGERS
-        </button>
+    <>
+      {/* Desktop top nav */}
+      <nav
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
+          scrolled
+            ? "bg-[#0A0A0A]/90 backdrop-blur-xl border-b border-white/5"
+            : "bg-transparent"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <button
+            onClick={() => scrollTo("hero")}
+            className="font-mono text-sm tracking-[0.3em] text-white/60 hover:text-white transition-colors min-h-[48px] flex items-center"
+          >
+            JACOB RODGERS
+          </button>
 
-        {/* Section dots - desktop */}
-        <div className="hidden md:flex items-center gap-6">
-          {sections.map((s) => (
-            <button
-              key={s.id}
-              onClick={() => scrollTo(s.id)}
-              className={`text-xs tracking-widest uppercase transition-all duration-300 ${
-                activeSection === s.id
-                  ? "text-red-500"
-                  : "text-white/30 hover:text-white/60"
-              }`}
-            >
-              {s.label}
-            </button>
-          ))}
+          <div className="hidden md:flex items-center gap-6">
+            {sections.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => scrollTo(s.id)}
+                className={`text-xs tracking-widest uppercase transition-all duration-300 min-h-[48px] px-2 flex items-center ${
+                  activeSection === s.id
+                    ? "text-red-500"
+                    : "text-white/30 hover:text-white/60"
+                }`}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={() => scrollTo("contact")}
+            className={`text-xs tracking-widest uppercase px-4 py-2 rounded-full border transition-all duration-300 min-h-[48px] flex items-center ${
+              scrolled
+                ? "border-red-500/50 text-red-500 hover:bg-red-500/10"
+                : "border-white/20 text-white/60 hover:text-white"
+            }`}
+          >
+            Contact
+          </button>
         </div>
+      </nav>
 
-        {/* CTA */}
-        <button
-          onClick={() => scrollTo("contact")}
-          className={`text-xs tracking-widest uppercase px-4 py-2 rounded-full border transition-all duration-300 ${
-            scrolled
-              ? "border-red-500/50 text-red-500 hover:bg-red-500/10"
-              : "border-white/20 text-white/60 hover:text-white"
-          }`}
+      {/* Mobile bottom nav — section dots */}
+      {scrolled && (
+        <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-white/5"
+          style={{ paddingBottom: "env(safe-area-inset-bottom, 8px)" }}
         >
-          Contact
-        </button>
-      </div>
-    </nav>
+          <div className="flex items-center justify-around px-2 py-3">
+            {sections.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => scrollTo(s.id)}
+                className="flex flex-col items-center gap-1 min-w-[48px] min-h-[48px] justify-center"
+              >
+                <div
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    activeSection === s.id
+                      ? "bg-red-500 scale-125"
+                      : "bg-white/20"
+                  }`}
+                />
+                <span
+                  className={`text-[8px] tracking-wider uppercase transition-colors ${
+                    activeSection === s.id
+                      ? "text-red-500"
+                      : "text-white/30"
+                  }`}
+                >
+                  {s.label}
+                </span>
+              </button>
+            ))}
+          </div>
+        </nav>
+      )}
+    </>
   );
 }

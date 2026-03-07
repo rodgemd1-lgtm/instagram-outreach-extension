@@ -1,8 +1,8 @@
 /**
  * Post Pipeline — Scheduled posting queue for Jacob Rodgers recruiting content
  *
- * Stores scheduled posts in the `scheduled_posts` DB table when configured,
- * with a full in-memory fallback for development environments.
+ * Uses Supabase (via admin client) as primary storage, with a full in-memory
+ * fallback for environments where Supabase is not configured.
  *
  * Exports:
  *   createScheduledPost  — add a post to the queue
@@ -11,10 +11,8 @@
  *   cancelScheduledPost  — mark a post as cancelled
  */
 
-import { db, isDbConfigured } from "@/lib/db";
-import { scheduledPosts } from "@/lib/db/schema";
+import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { postTweet } from "@/lib/integrations/x-api";
-import { eq, lte, and } from "drizzle-orm";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -57,6 +55,38 @@ export interface ProcessResult {
 }
 
 // ---------------------------------------------------------------------------
+// Supabase row type
+// ---------------------------------------------------------------------------
+
+interface ScheduledPostRow {
+  id: string;
+  content: string;
+  media_type: string | null;
+  media_url: string | null;
+  scheduled_at: string;
+  status: string | null;
+  posted_at: string | null;
+  tweet_id: string | null;
+  pillar: string | null;
+  created_at: string | null;
+}
+
+function rowToPost(row: ScheduledPostRow): ScheduledPost {
+  return {
+    id: row.id,
+    content: row.content,
+    mediaType: row.media_type,
+    mediaUrl: row.media_url,
+    scheduledAt: row.scheduled_at,
+    status: (row.status ?? "pending") as PostStatus,
+    postedAt: row.posted_at,
+    tweetId: row.tweet_id,
+    pillar: row.pillar,
+    createdAt: row.created_at ?? new Date().toISOString(),
+  };
+}
+
+// ---------------------------------------------------------------------------
 // In-memory fallback store
 // ---------------------------------------------------------------------------
 
@@ -81,20 +111,23 @@ export async function createScheduledPost(
     pillar = null,
   } = options;
 
-  if (isDbConfigured()) {
-    const [row] = await db
-      .insert(scheduledPosts)
-      .values({
+  if (isSupabaseConfigured()) {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase
+      .from("scheduled_posts")
+      .insert({
         content,
-        mediaType,
-        mediaUrl,
-        scheduledAt,
+        media_type: mediaType,
+        media_url: mediaUrl,
+        scheduled_at: scheduledAt.toISOString(),
         status: "pending",
         pillar,
       })
-      .returning();
+      .select()
+      .single();
 
-    return dbRowToPost(row);
+    if (error) throw new Error(`Supabase insert failed: ${error.message}`);
+    return rowToPost(data as ScheduledPostRow);
   }
 
   // In-memory fallback
@@ -122,18 +155,20 @@ export async function createScheduledPost(
 export async function getPostQueue(
   statusFilter?: PostStatus
 ): Promise<ScheduledPost[]> {
-  if (isDbConfigured()) {
-    const rows = statusFilter
-      ? await db
-          .select()
-          .from(scheduledPosts)
-          .where(eq(scheduledPosts.status, statusFilter))
-      : await db.select().from(scheduledPosts);
+  if (isSupabaseConfigured()) {
+    const supabase = createAdminClient();
+    let query = supabase
+      .from("scheduled_posts")
+      .select("*")
+      .order("scheduled_at", { ascending: true });
 
-    return rows.map(dbRowToPost).sort(
-      (a, b) =>
-        new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime()
-    );
+    if (statusFilter) {
+      query = query.eq("status", statusFilter);
+    }
+
+    const { data, error } = await query;
+    if (error) throw new Error(`Supabase select failed: ${error.message}`);
+    return (data as ScheduledPostRow[]).map(rowToPost);
   }
 
   const items = statusFilter
@@ -159,31 +194,38 @@ export async function processPostQueue(): Promise<ProcessResult> {
     details: [],
   };
 
-  // ----- DB path -----
-  if (isDbConfigured()) {
-    const duePosts = await db
-      .select()
-      .from(scheduledPosts)
-      .where(
-        and(
-          eq(scheduledPosts.status, "pending"),
-          lte(scheduledPosts.scheduledAt, now)
-        )
-      );
+  // ----- Supabase path -----
+  if (isSupabaseConfigured()) {
+    const supabase = createAdminClient();
 
-    for (const row of duePosts) {
+    // Fetch posts that are pending and whose scheduled_at is <= now
+    const { data: duePosts, error: fetchError } = await supabase
+      .from("scheduled_posts")
+      .select("*")
+      .eq("status", "pending")
+      .lte("scheduled_at", now.toISOString());
+
+    if (fetchError) {
+      throw new Error(`Supabase fetch failed: ${fetchError.message}`);
+    }
+
+    for (const row of (duePosts ?? []) as ScheduledPostRow[]) {
       result.processed++;
       try {
         const tweeted = await postTweet(row.content);
         if (tweeted) {
-          await db
-            .update(scheduledPosts)
-            .set({
+          const { error: updateError } = await supabase
+            .from("scheduled_posts")
+            .update({
               status: "posted",
-              postedAt: new Date(),
-              tweetId: tweeted.id,
+              posted_at: new Date().toISOString(),
+              tweet_id: tweeted.id,
             })
-            .where(eq(scheduledPosts.id, row.id));
+            .eq("id", row.id);
+
+          if (updateError) {
+            console.error(`[processPostQueue] Failed to update row ${row.id}:`, updateError);
+          }
 
           result.succeeded++;
           result.details.push({
@@ -192,10 +234,10 @@ export async function processPostQueue(): Promise<ProcessResult> {
             tweetId: tweeted.id,
           });
         } else {
-          await db
-            .update(scheduledPosts)
-            .set({ status: "failed" })
-            .where(eq(scheduledPosts.id, row.id));
+          await supabase
+            .from("scheduled_posts")
+            .update({ status: "failed" })
+            .eq("id", row.id);
 
           result.failed++;
           result.details.push({
@@ -206,10 +248,10 @@ export async function processPostQueue(): Promise<ProcessResult> {
         }
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : String(err);
-        await db
-          .update(scheduledPosts)
-          .set({ status: "failed" })
-          .where(eq(scheduledPosts.id, row.id));
+        await supabase
+          .from("scheduled_posts")
+          .update({ status: "failed" })
+          .eq("id", row.id);
 
         result.failed++;
         result.details.push({
@@ -261,14 +303,17 @@ export async function processPostQueue(): Promise<ProcessResult> {
 // ---------------------------------------------------------------------------
 
 export async function cancelScheduledPost(id: string): Promise<boolean> {
-  if (isDbConfigured()) {
-    const result = await db
-      .update(scheduledPosts)
-      .set({ status: "cancelled" })
-      .where(and(eq(scheduledPosts.id, id), eq(scheduledPosts.status, "pending")))
-      .returning();
+  if (isSupabaseConfigured()) {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase
+      .from("scheduled_posts")
+      .update({ status: "cancelled" })
+      .eq("id", id)
+      .eq("status", "pending")
+      .select();
 
-    return result.length > 0;
+    if (error) throw new Error(`Supabase update failed: ${error.message}`);
+    return (data ?? []).length > 0;
   }
 
   const post = memQueue.find((p) => p.id === id && p.status === "pending");
@@ -277,36 +322,4 @@ export async function cancelScheduledPost(id: string): Promise<boolean> {
     return true;
   }
   return false;
-}
-
-// ---------------------------------------------------------------------------
-// Internal — row mapper
-// ---------------------------------------------------------------------------
-
-type DbRow = {
-  id: string;
-  content: string;
-  mediaType: string | null;
-  mediaUrl: string | null;
-  scheduledAt: Date;
-  status: string | null;
-  postedAt: Date | null;
-  tweetId: string | null;
-  pillar: string | null;
-  createdAt: Date | null;
-};
-
-function dbRowToPost(row: DbRow): ScheduledPost {
-  return {
-    id: row.id,
-    content: row.content,
-    mediaType: row.mediaType,
-    mediaUrl: row.mediaUrl,
-    scheduledAt: row.scheduledAt.toISOString(),
-    status: (row.status ?? "pending") as PostStatus,
-    postedAt: row.postedAt ? row.postedAt.toISOString() : null,
-    tweetId: row.tweetId,
-    pillar: row.pillar,
-    createdAt: row.createdAt ? row.createdAt.toISOString() : new Date().toISOString(),
-  };
 }

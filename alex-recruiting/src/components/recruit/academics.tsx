@@ -60,8 +60,8 @@ export function AcademicsSection() {
             Academics
           </span>
 
-          {/* Stat bar */}
-          <div className="flex flex-wrap items-center gap-6 md:gap-10 mb-4">
+          {/* Primary stat bar */}
+          <div className="flex flex-wrap items-center gap-6 md:gap-10 mb-8">
             <div className="flex items-baseline gap-2">
               <span className="text-3xl md:text-4xl font-mono font-black text-white">
                 3.25
@@ -90,11 +90,60 @@ export function AcademicsSection() {
             </div>
           </div>
 
-          <p className="text-white/30 text-sm">
-            On track for Division I academic requirements.
-          </p>
+          {/* Extended academic details */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <AcademicDetail label="Intended Major" value="Business / Sport Mgmt" />
+            <AcademicDetail label="PSAT (Projected)" value="1100+" />
+            <AcademicDetail label="Honor Roll" value="3 Semesters" />
+            <AcademicDetail label="Core GPA" value="3.25" />
+          </div>
+
+          {/* NCAA Eligibility Center badge */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 px-5 py-3 rounded-xl border border-green-500/20 bg-green-500/[0.04]">
+              <div className="relative w-10 h-10 rounded-full border-2 border-green-500/50 flex items-center justify-center">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  className="w-5 h-5 text-green-500"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full" />
+              </div>
+              <div>
+                <span className="text-xs font-mono font-bold text-green-500 block leading-tight">
+                  NCAA ELIGIBILITY CENTER
+                </span>
+                <span className="text-[10px] tracking-[0.15em] text-white/40 uppercase">
+                  Registered &amp; On Track
+                </span>
+              </div>
+            </div>
+
+            <p className="text-white/40 text-sm max-w-xs">
+              On track for Division I academic requirements. All core courses in progress.
+            </p>
+          </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function AcademicDetail({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="bg-white/[0.02] border border-white/[0.06] rounded-lg px-4 py-3">
+      <span className="text-[9px] tracking-[0.2em] text-white/30 uppercase block mb-1">
+        {label}
+      </span>
+      <span className="text-sm font-mono font-semibold text-white/80">
+        {value}
+      </span>
+    </div>
   );
 }

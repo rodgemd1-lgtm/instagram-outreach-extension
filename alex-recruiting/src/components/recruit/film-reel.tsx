@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect, useRef } from "react";
 import {
   useRecruitAssembly,
   type AssemblyConfig,
@@ -25,6 +25,7 @@ interface FilmReelProps {
   fullHighlightSrc?: string;
   backgroundUrl?: string;
   youtubeId?: string;
+  youtubeIds?: string[];
   clipThumbnails?: Array<{
     title: string;
     thumbnail: string;
@@ -37,11 +38,14 @@ export function FilmReel({
   reelPoster,
   fullHighlightSrc,
   backgroundUrl,
-  youtubeId = "P0HdL4EMziE",
+  youtubeId = "wkYGNZTN8Xc",
+  youtubeIds = ["wkYGNZTN8Xc", "03w9hRlXTzU"],
   clipThumbnails = [],
 }: FilmReelProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalSrc, setModalSrc] = useState("");
+  const [activeVideoIdx, setActiveVideoIdx] = useState(0);
+  const activeYoutubeId = youtubeIds[activeVideoIdx] || youtubeId;
 
   const config = useMemo<AssemblyConfig>(
     () => ({
@@ -135,57 +139,135 @@ export function FilmReel({
             style={{ opacity: 0 }}
             className="md:flex md:gap-6"
           >
-            {/* Main reel player */}
+            {/* Main reel player with film strip decoration */}
             <div className="flex-1">
-              <div className="aspect-[9/16] md:aspect-video max-w-sm md:max-w-none mx-auto bg-black/50 rounded-xl overflow-hidden border border-white/[0.06]">
-                {youtubeId ? (
-                  <iframe
-                    src={`https://www.youtube.com/embed/${youtubeId}?rel=0&modestbranding=1`}
-                    title="Jacob Rodgers Highlights"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full"
-                  />
-                ) : reelSrc ? (
-                  <RecruitVideoPlayer
-                    src={reelSrc}
-                    poster={reelPoster}
-                    mode="reel"
-                    onFullscreen={() => openFullscreen(reelSrc)}
-                    className="w-full h-full"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <div className="text-center">
-                      <Play className="w-16 h-16 text-white/20 mx-auto mb-4" />
-                      <p className="text-white/30 text-sm">
-                        Highlight reel coming soon
-                      </p>
-                    </div>
+              <div className="relative">
+                {/* Film strip — left side */}
+                <div className="absolute left-0 top-0 bottom-0 w-3 hidden md:flex flex-col items-center -translate-x-5">
+                  <div className="w-px h-full bg-red-500/20 relative">
+                    {Array.from({ length: 20 }).map((_, i) => (
+                      <div
+                        key={`l-${i}`}
+                        className="absolute w-2 h-px bg-red-500/30"
+                        style={{ top: `${(i + 1) * 5}%`, left: "-4px" }}
+                      />
+                    ))}
                   </div>
-                )}
+                </div>
+
+                {/* Film strip — right side */}
+                <div className="absolute right-0 top-0 bottom-0 w-3 hidden md:flex flex-col items-center translate-x-5">
+                  <div className="w-px h-full bg-red-500/20 relative">
+                    {Array.from({ length: 20 }).map((_, i) => (
+                      <div
+                        key={`r-${i}`}
+                        className="absolute w-2 h-px bg-red-500/30"
+                        style={{ top: `${(i + 1) * 5}%`, right: "-4px" }}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Responsive video embed with padding-bottom technique */}
+                <div className="relative w-full bg-black/50 rounded-xl overflow-hidden border border-white/[0.06]"
+                  style={{ paddingBottom: "56.25%" }}
+                >
+                  {activeYoutubeId ? (
+                    <iframe
+                      key={activeYoutubeId}
+                      src={`https://www.youtube.com/embed/${activeYoutubeId}?rel=0&modestbranding=1`}
+                      title="Jacob Rodgers Highlights"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="absolute inset-0 w-full h-full"
+                    />
+                  ) : reelSrc ? (
+                    <div className="absolute inset-0">
+                      <RecruitVideoPlayer
+                        src={reelSrc}
+                        poster={reelPoster}
+                        mode="reel"
+                        onFullscreen={() => openFullscreen(reelSrc)}
+                        className="w-full h-full"
+                      />
+                    </div>
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-center">
+                        <Play className="w-16 h-16 text-white/20 mx-auto mb-4" />
+                        <p className="text-white/30 text-sm">
+                          Highlight reel coming soon
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* Side panel — clip thumbnails (desktop only) */}
-            {clipThumbnails.length > 0 && (
+            {/* Side panel — video selector */}
+            {youtubeIds.length > 1 && (
               <div className="hidden md:flex md:flex-col md:gap-3 md:w-48 lg:w-56">
-                {clipThumbnails.slice(0, 4).map((clip, i) => (
+                {youtubeIds.map((vid, i) => (
                   <button
-                    key={i}
-                    onClick={() => openFullscreen(clip.src)}
-                    className="relative aspect-video rounded-lg overflow-hidden border border-white/[0.06] hover:border-red-500/30 transition-colors group"
+                    key={vid}
+                    onClick={() => setActiveVideoIdx(i)}
+                    className={`relative aspect-video rounded-lg overflow-hidden border transition-colors group ${
+                      i === activeVideoIdx
+                        ? "border-red-500/60 ring-1 ring-red-500/30"
+                        : "border-white/[0.06] hover:border-red-500/30"
+                    }`}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={clip.thumbnail}
-                      alt={clip.title}
+                      src={`https://img.youtube.com/vi/${vid}/mqdefault.jpg`}
+                      alt={`Highlight ${i + 1}`}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors" />
-                    <Play className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 text-white/70 group-hover:text-white transition-colors" />
+                    <div className={`absolute inset-0 transition-colors ${
+                      i === activeVideoIdx ? "bg-black/10" : "bg-black/40 group-hover:bg-black/20"
+                    }`} />
+                    {i !== activeVideoIdx && (
+                      <Play className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 text-white/70 group-hover:text-white transition-colors" />
+                    )}
                     <span className="absolute bottom-1 left-2 text-[9px] text-white/60 font-mono">
-                      {clip.title}
+                      {i === 0 ? "Highlights" : `Reel ${i + 1}`}
+                    </span>
+                    {i === activeVideoIdx && (
+                      <span className="absolute top-1 right-1 text-[8px] bg-red-500/80 text-white px-1.5 py-0.5 rounded font-mono">
+                        Playing
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Mobile video selector */}
+            {youtubeIds.length > 1 && (
+              <div className="flex md:hidden gap-2 mt-4">
+                {youtubeIds.map((vid, i) => (
+                  <button
+                    key={vid}
+                    onClick={() => setActiveVideoIdx(i)}
+                    className={`flex-1 relative aspect-video rounded-lg overflow-hidden border transition-colors ${
+                      i === activeVideoIdx
+                        ? "border-red-500/60"
+                        : "border-white/[0.08]"
+                    }`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`https://img.youtube.com/vi/${vid}/mqdefault.jpg`}
+                      alt={`Highlight ${i + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className={`absolute inset-0 ${i === activeVideoIdx ? "bg-black/10" : "bg-black/50"}`} />
+                    {i !== activeVideoIdx && (
+                      <Play className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 text-white/70" />
+                    )}
+                    <span className="absolute bottom-0.5 left-1.5 text-[8px] text-white/60 font-mono">
+                      {i === 0 ? "Highlights" : `Reel ${i + 1}`}
                     </span>
                   </button>
                 ))}
@@ -215,7 +297,7 @@ export function FilmReel({
             className="mt-8 text-center md:text-left"
           >
             <a
-              href={youtubeId ? `https://youtube.com/shorts/${youtubeId}` : fullHighlightSrc || "#"}
+              href={activeYoutubeId ? `https://youtu.be/${activeYoutubeId}` : fullHighlightSrc || "#"}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-3 px-8 py-4 rounded-full border border-red-500/30 text-red-500 hover:bg-red-500/10 transition-all duration-300 group"
@@ -240,13 +322,43 @@ export function FilmReel({
 }
 
 function StatPill({ value, label, suffix }: { value: string; label: string; suffix?: string }) {
+  const [displayed, setDisplayed] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const hasAnimated = useRef(false);
+  const numValue = parseInt(value, 10);
+
+  useEffect(() => {
+    if (!ref.current || isNaN(numValue)) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          const duration = 800;
+          const start = performance.now();
+          const animate = (now: number) => {
+            const progress = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setDisplayed(Math.round(eased * numValue));
+            if (progress < 1) requestAnimationFrame(animate);
+          };
+          requestAnimationFrame(animate);
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [numValue]);
+
   return (
-    <div className="text-center">
+    <div className="text-center" ref={ref}>
       <div className="text-2xl md:text-3xl font-mono font-black text-white">
-        {value}
-        {suffix && <span className="text-sm text-white/30 ml-0.5">{suffix}</span>}
+        {isNaN(numValue) ? value : displayed}
+        {suffix && <span className="text-sm text-white/40 ml-0.5">{suffix}</span>}
       </div>
-      <div className="text-[9px] tracking-[0.2em] text-white/30 uppercase">
+      <div className="text-[9px] tracking-[0.2em] text-white/40 uppercase">
         {label}
       </div>
     </div>

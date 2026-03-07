@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { useRecruitAssembly, type AssemblyConfig } from "@/hooks/useRecruitAssembly";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Play } from "lucide-react";
 
 /* ──────────────────────────────────────────────────────────────
    Hero Section — Wave 1 only (above-fold, no scroll content)
@@ -20,9 +20,9 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
           name: "hero-jersey",
           from: { opacity: 0, scale: 0.8 },
           to: {
-            opacity: 0.04,
+            opacity: 0.15,
             scale: 1,
-            duration: 0.6,
+            duration: 0.4,
             ease: "sine.out",
             position: "0",
           },
@@ -34,9 +34,9 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
           to: {
             opacity: 1,
             y: 0,
-            duration: 0.5,
+            duration: 0.35,
             ease: "back.out(1.7)",
-            position: "0.3",
+            position: "0.15",
           },
         },
         {
@@ -46,9 +46,9 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
           to: {
             opacity: 1,
             y: 0,
-            duration: 0.5,
+            duration: 0.35,
             ease: "back.out(1.7)",
-            position: "0.5",
+            position: "0.3",
           },
         },
         {
@@ -58,9 +58,9 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
           to: {
             opacity: 1,
             y: 0,
-            duration: 0.5,
+            duration: 0.35,
             ease: "back.out(1.7)",
-            position: "0.7",
+            position: "0.45",
           },
         },
         {
@@ -70,9 +70,9 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
           to: {
             opacity: 1,
             y: 0,
-            duration: 0.5,
+            duration: 0.35,
             ease: "power2.out",
-            position: "1.2",
+            position: "0.7",
           },
         },
         {
@@ -82,9 +82,9 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
           to: {
             opacity: 1,
             y: 0,
-            duration: 0.5,
+            duration: 0.35,
             ease: "power2.out",
-            position: "1.6",
+            position: "0.9",
           },
         },
         {
@@ -93,9 +93,9 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
           from: { opacity: 0 },
           to: {
             opacity: 1,
-            duration: 0.5,
+            duration: 0.35,
             ease: "sine.out",
-            position: "2.2",
+            position: "1.2",
           },
         },
       ],
@@ -140,8 +140,15 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
 
       {/* Main content */}
       <div className="relative z-10 text-center px-6">
-        {/* Jersey number - massive, ghosted */}
+        {/* Jersey number - massive, ghosted, with pulsing glow */}
         <div data-gsap="hero-jersey" style={{ opacity: 0 }}>
+          {/* Pulsing glow layer behind the number */}
+          <span
+            className="font-mono text-[20rem] md:text-[32rem] font-black leading-none tracking-tighter select-none text-red-500/20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 blur-[60px] animate-jersey-pulse"
+            aria-hidden="true"
+          >
+            79
+          </span>
           <span className="font-mono text-[20rem] md:text-[32rem] font-black leading-none tracking-tighter select-none text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             79
           </span>
@@ -193,23 +200,37 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
         <p
           data-gsap="hero-tagline"
           style={{ opacity: 0 }}
-          className="mt-8 md:mt-12 text-white/40 text-sm md:text-base max-w-xl mx-auto leading-relaxed font-mono tracking-wide"
+          className="mt-8 md:mt-12 text-white/60 text-sm md:text-base max-w-xl mx-auto leading-relaxed font-mono tracking-wide"
         >
           State Playoff Run &nbsp;|&nbsp; Freshman Starter &nbsp;|&nbsp; Two-Way
         </p>
 
-        {/* Scroll indicator — uses Lucide icon, no emoji */}
+        {/* Watch Film CTA — prominent red gradient, scrolls to film section */}
         <div
           data-gsap="hero-scroll-cue"
           style={{ opacity: 0 }}
-          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          className="mt-10 md:mt-14 flex flex-col items-center gap-6"
         >
-          <span className="text-[10px] tracking-[0.4em] text-white/20 uppercase">
-            Watch the film
-          </span>
-          <ChevronDown className="w-4 h-4 text-white/20 animate-pulse" />
+          <button
+            onClick={() => {
+              const filmSection = document.getElementById("film-reel");
+              if (filmSection) {
+                filmSection.scrollIntoView({ behavior: "smooth" });
+              }
+            }}
+            className="inline-flex items-center gap-3 px-10 py-4 rounded-full bg-gradient-to-r from-red-600 via-red-500 to-rose-500 text-white font-bold text-sm tracking-widest uppercase shadow-lg shadow-red-500/25 hover:shadow-red-500/40 hover:scale-105 transition-all duration-300 group"
+          >
+            <Play className="w-5 h-5 group-hover:scale-110 transition-transform fill-current" />
+            Watch Film
+          </button>
+
+          {/* Scroll indicator — secondary, subtle */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+            <ChevronDown className="w-4 h-4 text-white/20 animate-pulse" />
+          </div>
         </div>
       </div>
+
     </section>
   );
 }

@@ -29,6 +29,7 @@ import {
   Rocket,
   Film,
   UsersRound,
+  PlayCircle,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -59,6 +60,7 @@ const secondaryNav = [
   { href: "/scrape", label: "Scraping Tools", icon: Search },
   { href: "/agents", label: "Agent Command Center", icon: Bot },
   { href: "/videos", label: "Video Library", icon: Film },
+  { href: "/youtube-studio", label: "YouTube Studio", icon: PlayCircle },
 ];
 
 export function MobileBottomNav() {

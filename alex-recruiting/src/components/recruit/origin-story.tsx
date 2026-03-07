@@ -148,7 +148,7 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
 
               {/* Additional detail */}
               {m.detail && (
-                <p className="text-white/30 text-sm leading-relaxed">
+                <p className="text-white/50 text-sm leading-relaxed">
                   {m.detail}
                 </p>
               )}

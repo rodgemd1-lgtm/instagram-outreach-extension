@@ -1,9 +1,10 @@
 /**
- * POST /api/content/schedule
+ * /api/content/schedule
  *
- * Schedule a new post for future publishing via the X API.
+ * POST — Schedule a new post for future publishing via the X API.
+ * GET  — Cron endpoint: process the post queue (Vercel cron sends GET).
  *
- * Body:
+ * POST Body:
  * {
  *   content: string,         — tweet text (required, max 280 chars)
  *   scheduledAt: string,     — ISO timestamp for when to post (required, must be future)
@@ -12,11 +13,11 @@
  *   pillar?: string          — "performance" | "work_ethic" | "character"
  * }
  *
- * Also handles:
- * POST /api/content/schedule/process  — trigger queue processing (for cron or manual trigger)
+ * GET ?action=process — trigger queue processing (for Vercel cron)
+ *   Requires Authorization: Bearer <CRON_SECRET>
  *
  * Returns:
- * { post: ScheduledPost }
+ * { post: ScheduledPost } or { result: ProcessResult }
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -28,12 +29,83 @@ import {
 const MAX_TWEET_LENGTH = 280;
 const VALID_PILLARS = ["performance", "work_ethic", "character"];
 
+// ---------------------------------------------------------------------------
+// Cron secret validation
+// ---------------------------------------------------------------------------
+
+function isValidCronRequest(req: NextRequest): boolean {
+  const cronSecret = process.env.CRON_SECRET;
+
+  // If no CRON_SECRET is configured, allow the request in dev
+  if (!cronSecret) {
+    console.warn("[schedule/cron] CRON_SECRET not set — allowing request (dev mode)");
+    return true;
+  }
+
+  const authHeader = req.headers.get("authorization");
+  if (!authHeader) return false;
+
+  // Accept "Bearer <secret>" format
+  const token = authHeader.startsWith("Bearer ")
+    ? authHeader.slice(7)
+    : authHeader;
+
+  return token === cronSecret;
+}
+
+// ---------------------------------------------------------------------------
+// GET — Cron-triggered queue processing
+// ---------------------------------------------------------------------------
+
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const action = searchParams.get("action");
+
+  if (action === "process") {
+    if (!isValidCronRequest(req)) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    try {
+      const result = await processPostQueue();
+      return NextResponse.json({ result });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Unknown error";
+      console.error("[GET /api/content/schedule?action=process]", err);
+      return NextResponse.json(
+        { error: "Failed to process post queue", details: message },
+        { status: 500 }
+      );
+    }
+  }
+
+  return NextResponse.json(
+    { error: "Unknown action. Use ?action=process" },
+    { status: 400 }
+  );
+}
+
+// ---------------------------------------------------------------------------
+// POST — Schedule a new post or manually trigger processing
+// ---------------------------------------------------------------------------
+
 export async function POST(req: NextRequest) {
   try {
-    const { pathname } = new URL(req.url);
+    const { searchParams } = new URL(req.url);
+    const action = searchParams.get("action");
 
-    // Handle the /process sub-action without a separate route file
-    if (pathname.endsWith("/process")) {
+    // Manual trigger via POST ?action=process (legacy support)
+    if (action === "process") {
+      if (!isValidCronRequest(req)) {
+        return NextResponse.json(
+          { error: "Unauthorized" },
+          { status: 401 }
+        );
+      }
+
       const result = await processPostQueue();
       return NextResponse.json({ result });
     }

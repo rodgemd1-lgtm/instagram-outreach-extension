@@ -29,6 +29,7 @@ import {
   Film,
   UsersRound,
   Camera,
+  PlayCircle,
 } from "lucide-react";
 
 const navItems = [
@@ -45,6 +46,7 @@ const navItems = [
   { href: "/cold-dms", label: "Cold DM Engine", icon: Send },
   { href: "/connections", label: "Who to Connect With", icon: UserSearch },
   { href: "/videos", label: "Video Library", icon: Film },
+  { href: "/youtube-studio", label: "YouTube Studio", icon: PlayCircle },
   { href: "/media", label: "Photo Library", icon: Camera },
   { href: "/coaches", label: "Coach Pipeline", icon: Users },
   { href: "/dms", label: "DM Campaigns", icon: Mail },

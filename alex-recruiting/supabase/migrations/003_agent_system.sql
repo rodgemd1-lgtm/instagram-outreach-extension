@@ -15,8 +15,8 @@ CREATE TABLE IF NOT EXISTS agent_runs (
   error_message TEXT
 );
 
-CREATE INDEX idx_agent_runs_agent_id ON agent_runs(agent_id);
-CREATE INDEX idx_agent_runs_status ON agent_runs(status);
+CREATE INDEX IF NOT EXISTS idx_agent_runs_agent_id ON agent_runs(agent_id);
+CREATE INDEX IF NOT EXISTS idx_agent_runs_status ON agent_runs(status);
 
 -- Action approval queue
 CREATE TABLE IF NOT EXISTS agent_actions (
@@ -33,8 +33,8 @@ CREATE TABLE IF NOT EXISTS agent_actions (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_agent_actions_status ON agent_actions(status);
-CREATE INDEX idx_agent_actions_agent_id ON agent_actions(agent_id);
+CREATE INDEX IF NOT EXISTS idx_agent_actions_status ON agent_actions(status);
+CREATE INDEX IF NOT EXISTS idx_agent_actions_agent_id ON agent_actions(agent_id);
 
 -- Persistent agent state
 CREATE TABLE IF NOT EXISTS agent_state (
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS school_fit_scores (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_school_fit_scores_school ON school_fit_scores(school_id);
+CREATE INDEX IF NOT EXISTS idx_school_fit_scores_school ON school_fit_scores(school_id);
 
 -- Posting window scores (168-slot timing grid)
 CREATE TABLE IF NOT EXISTS posting_windows (
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS posting_windows (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_posting_windows_day_hour ON posting_windows(day_of_week, hour_start);
+CREATE INDEX IF NOT EXISTS idx_posting_windows_day_hour ON posting_windows(day_of_week, hour_start);
 
 -- AI media prompts
 CREATE TABLE IF NOT EXISTS media_prompts (
@@ -91,4 +91,4 @@ CREATE TABLE IF NOT EXISTS media_prompts (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_media_prompts_type ON media_prompts(prompt_type);
+CREATE INDEX IF NOT EXISTS idx_media_prompts_type ON media_prompts(prompt_type);
