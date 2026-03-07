@@ -12,21 +12,21 @@ interface PhotoRecord {
 }
 
 /**
- * Static generated images — served from public/recruit/generated/
- * These are AI-generated via fal.ai Nano Banana Pro.
- * API photos override these when available.
+ * Real photos of Jacob Rodgers — served from public/recruit/photos/
+ * These replace AI-generated placeholders with actual game photos.
+ * API photos still override these when available.
  */
 const STATIC_PHOTOS: Record<string, string> = {
-  hero: "/recruit/generated/hero-action.png",
-  "film-reel": "/recruit/generated/film-bg.png",
-  origin: "/recruit/generated/training-deadlift.png",
-  character: "/recruit/generated/character-huddle.png",
-  fit: "/recruit/generated/fit-discus.png",
+  hero: "/recruit/photos/hero-walkout.jpg",
+  "film-reel": "/recruit/photos/film-action.jpg",
+  origin: "/recruit/photos/origin-stance.jpg",
+  character: "/recruit/photos/character-sideline.jpg",
+  fit: "/recruit/photos/fit-blocking.jpg",
 };
 
 /**
  * Returns a map of section ID -> photo URL.
- * Uses AI-generated static images by default,
+ * Uses real game photos by default,
  * with API-sourced photos as overrides.
  */
 export function useRecruitPhotos() {

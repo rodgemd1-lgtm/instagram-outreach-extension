@@ -9,6 +9,14 @@ export const metadata: Metadata = {
     description:
       "6'4\" 285 two-way lineman. 405 deadlift. Freshman starter. Pewaukee HS, Wisconsin. Class of 2029. Watch his film.",
     type: "website",
+    images: [
+      {
+        url: "/recruit/photos/promo-graphic.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Jacob Rodgers #79 — Pewaukee Pirates Football",
+      },
+    ],
     videos: [
       {
         url: "/recruit/micro-reel.mp4",
@@ -19,10 +27,11 @@ export const metadata: Metadata = {
     ],
   },
   twitter: {
-    card: "player",
+    card: "summary_large_image",
     title: "Jacob Rodgers | #79 DT/OG | Pewaukee Pirates",
     description:
       "6'4\" 285 two-way lineman. 405 deadlift. Freshman starter. Class of 2029. Watch film.",
+    images: ["/recruit/photos/promo-graphic.jpg"],
   },
 };
 
