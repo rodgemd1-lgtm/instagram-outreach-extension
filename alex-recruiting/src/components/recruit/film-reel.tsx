@@ -24,6 +24,7 @@ interface FilmReelProps {
   reelPoster?: string;
   fullHighlightSrc?: string;
   backgroundUrl?: string;
+  youtubeId?: string;
   clipThumbnails?: Array<{
     title: string;
     thumbnail: string;
@@ -36,6 +37,7 @@ export function FilmReel({
   reelPoster,
   fullHighlightSrc,
   backgroundUrl,
+  youtubeId = "P0HdL4EMziE",
   clipThumbnails = [],
 }: FilmReelProps) {
   const [modalOpen, setModalOpen] = useState(false);
@@ -93,7 +95,7 @@ export function FilmReel({
               loading="lazy"
               className="absolute inset-0 w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-[#0A0A0A]/80" />
+            <div className="absolute inset-0 bg-[#0A0A0A]/92" />
           </div>
         )}
 
@@ -135,8 +137,16 @@ export function FilmReel({
           >
             {/* Main reel player */}
             <div className="flex-1">
-              <div className="aspect-video bg-black/50 rounded-xl overflow-hidden border border-white/[0.06]">
-                {reelSrc ? (
+              <div className="aspect-[9/16] md:aspect-video max-w-sm md:max-w-none mx-auto bg-black/50 rounded-xl overflow-hidden border border-white/[0.06]">
+                {youtubeId ? (
+                  <iframe
+                    src={`https://www.youtube.com/embed/${youtubeId}?rel=0&modestbranding=1`}
+                    title="Jacob Rodgers Highlights"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full"
+                  />
+                ) : reelSrc ? (
                   <RecruitVideoPlayer
                     src={reelSrc}
                     poster={reelPoster}
@@ -204,19 +214,17 @@ export function FilmReel({
             style={{ opacity: 0 }}
             className="mt-8 text-center md:text-left"
           >
-            <button
-              onClick={() =>
-                fullHighlightSrc
-                  ? openFullscreen(fullHighlightSrc)
-                  : undefined
-              }
+            <a
+              href={youtubeId ? `https://youtube.com/shorts/${youtubeId}` : fullHighlightSrc || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-3 px-8 py-4 rounded-full border border-red-500/30 text-red-500 hover:bg-red-500/10 transition-all duration-300 group"
             >
               <Play className="w-5 h-5 group-hover:scale-110 transition-transform" />
               <span className="text-sm tracking-widest uppercase">
-                Watch Full Film on Hudl
+                Watch Full Highlights
               </span>
-            </button>
+            </a>
           </div>
         </div>
       </section>

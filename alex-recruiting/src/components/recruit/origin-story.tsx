@@ -86,7 +86,7 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
         <div className="absolute inset-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={backgroundUrl} alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-[#0A0A0A]/85" />
+          <div className="absolute inset-0 bg-[#0A0A0A]/95" />
         </div>
       )}
 

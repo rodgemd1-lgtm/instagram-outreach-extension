@@ -81,7 +81,7 @@ export function CharacterSection({ backgroundUrl }: { backgroundUrl?: string }) 
         <div className="absolute inset-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={backgroundUrl} alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-[#0A0A0A]/90" />
+          <div className="absolute inset-0 bg-[#0A0A0A]/95" />
         </div>
       )}
 
@@ -119,7 +119,7 @@ export function CharacterSection({ backgroundUrl }: { backgroundUrl?: string }) 
               className="group relative"
               style={{ opacity: 0 }}
             >
-              <div className="relative bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 md:p-12 hover:border-red-500/20 transition-colors duration-500">
+              <div className="relative bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded-2xl p-8 md:p-12 hover:border-red-500/20 transition-colors duration-500">
                 <span className="absolute -top-4 -left-2 md:left-6 text-6xl md:text-8xl font-mono font-black text-white/[0.03] select-none">
                   {t.icon}
                 </span>
@@ -132,7 +132,7 @@ export function CharacterSection({ backgroundUrl }: { backgroundUrl?: string }) 
                   </div>
 
                   <div className="md:w-2/3">
-                    <p className="text-white/50 text-base leading-relaxed mb-4">
+                    <p className="text-white/70 text-base leading-relaxed mb-4">
                       {t.description}
                     </p>
                     <div className="flex items-start gap-3">

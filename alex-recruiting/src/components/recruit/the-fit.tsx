@@ -71,7 +71,7 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
         <div className="absolute inset-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={backgroundUrl} alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-[#0A0A0A]/88" />
+          <div className="absolute inset-0 bg-[#0A0A0A]/95" />
         </div>
       )}
 
@@ -108,7 +108,7 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
               style={{ opacity: 0 }}
               className="group"
             >
-              <div className="relative bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 md:p-10 hover:border-red-500/20 transition-all duration-500 md:flex md:items-start md:gap-10">
+              <div className="relative bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded-2xl p-8 md:p-10 hover:border-red-500/20 transition-all duration-500 md:flex md:items-start md:gap-10">
                 <div className="md:w-20 mb-4 md:mb-0">
                   <span className="text-3xl md:text-4xl font-mono font-black text-red-500/20 group-hover:text-red-500/40 transition-colors">
                     {r.number}
@@ -119,7 +119,7 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
                   <h3 className="text-xl md:text-2xl font-bold tracking-tight mb-3">
                     {r.title}
                   </h3>
-                  <p className="text-white/40 text-sm md:text-base leading-relaxed">
+                  <p className="text-white/60 text-sm md:text-base leading-relaxed">
                     {r.body}
                   </p>
                 </div>
