@@ -72,12 +72,12 @@ export function AcademicsSection() {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-16 md:mb-24">
-          <span className="text-[10px] tracking-[0.5em] text-amber-400/60 uppercase font-mono block mb-6">
+          <span className="text-[10px] tracking-[0.5em] text-red-500/60 uppercase font-mono block mb-6">
             Academics
           </span>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[0.95] mb-6">
             Student
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-rose-400">
               {" "}
               athlete.
             </span>
@@ -96,7 +96,7 @@ export function AcademicsSection() {
             style={{ opacity: 0 }}
             className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 text-center"
           >
-            <div className="text-5xl md:text-6xl font-mono font-black text-amber-400 mb-3">
+            <div className="text-5xl md:text-6xl font-mono font-black text-red-500 mb-3">
               3.25
             </div>
             <div className="text-[10px] tracking-[0.3em] text-white/30 uppercase mb-4">
@@ -148,7 +148,7 @@ export function AcademicsSection() {
           <div
             data-gsap-wave="2"
             style={{ opacity: 0 }}
-            className="bg-gradient-to-r from-amber-500/5 to-orange-500/5 border border-amber-500/10 rounded-2xl p-10 md:p-14"
+            className="bg-gradient-to-r from-red-500/5 to-rose-500/5 border border-red-500/10 rounded-2xl p-10 md:p-14"
           >
             <blockquote className="text-xl md:text-2xl font-light text-white/70 leading-relaxed italic">
               &ldquo;The weight room teaches discipline. The classroom teaches
@@ -156,8 +156,8 @@ export function AcademicsSection() {
               the same focus to both.&rdquo;
             </blockquote>
             <div className="mt-6 flex items-center gap-3">
-              <div className="w-8 h-px bg-amber-500/40" />
-              <span className="text-xs tracking-[0.2em] text-amber-400/60 uppercase">
+              <div className="w-8 h-px bg-red-500/40" />
+              <span className="text-xs tracking-[0.2em] text-red-500/60 uppercase">
                 A commitment to excellence, everywhere
               </span>
             </div>

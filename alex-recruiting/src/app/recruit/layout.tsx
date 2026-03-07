@@ -1,14 +1,28 @@
 import type { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
-  title: "Jacob Rodgers | DT/OG | Class of 2029 | Pewaukee HS",
+  title: "Jacob Rodgers | #79 | DT/OG | Class of 2029 | Pewaukee Pirates",
   description:
-    "6'4\" 285 | Two-way lineman | 11 Pancakes, 3 Sacks | State Champions | Pewaukee HS, Wisconsin | Class of 2029",
+    "6'4\" 285 | Two-way lineman | 11 Pancakes, 3 Sacks | State Champions | Pewaukee HS, Wisconsin | Class of 2029 | Watch film highlights",
   openGraph: {
-    title: "Jacob Rodgers | DT/OG | Class of 2029",
+    title: "Jacob Rodgers | #79 DT/OG | Class of 2029 | Pewaukee Pirates",
     description:
-      "Two-way lineman out of Pewaukee HS, Wisconsin. Training since age 12. State Champion. Built different.",
+      "Two-way lineman out of Pewaukee HS, Wisconsin. Training since age 12. State Champion. Watch his film.",
     type: "website",
+    videos: [
+      {
+        url: "/recruit/micro-reel.mp4",
+        width: 1280,
+        height: 720,
+        type: "video/mp4",
+      },
+    ],
+  },
+  twitter: {
+    card: "player",
+    title: "Jacob Rodgers | #79 DT/OG | Pewaukee Pirates",
+    description:
+      "6'4\" 285 two-way lineman. State Champion. Class of 2029. Watch film.",
   },
 };
 
@@ -24,7 +38,13 @@ export default function RecruitLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="recruit-page bg-[#0A0A0A] text-white min-h-screen overflow-x-hidden">
+    <div
+      className="recruit-page bg-[#0A0A0A] text-white min-h-screen overflow-x-hidden"
+      style={{
+        paddingBottom: "env(safe-area-inset-bottom, 0px)",
+        touchAction: "pan-y",
+      }}
+    >
       {children}
     </div>
   );

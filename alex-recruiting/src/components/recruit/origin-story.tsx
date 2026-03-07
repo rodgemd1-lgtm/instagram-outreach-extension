@@ -23,7 +23,7 @@ const milestones = [
       "Started training five days a week. While other kids played video games, Jacob was in the weight room. Not because someone made him — because he chose it.",
     stat: "5 days/week",
     statLabel: "Training commitment",
-    accent: "from-amber-500/20 to-amber-600/5",
+    accent: "from-red-500/20 to-red-600/5",
   },
   {
     age: "13",
@@ -33,7 +33,7 @@ const milestones = [
       "Built the work ethic that coaches can't teach. Two hours before school, every morning. Film study on weekends. The fundamentals became second nature.",
     stat: "730+",
     statLabel: "Training sessions",
-    accent: "from-orange-500/20 to-orange-600/5",
+    accent: "from-red-600/20 to-red-700/5",
   },
   {
     age: "14",
@@ -53,7 +53,7 @@ const milestones = [
       "6'4\", 285 lbs with room to grow. Bench 265, squat 350. NCSA verified. Three more years to become one of the top two-way lineman prospects in Wisconsin.",
     stat: "3 years",
     statLabel: "Of growth remaining",
-    accent: "from-amber-400/20 to-amber-500/5",
+    accent: "from-rose-500/20 to-rose-600/5",
   },
 ];
 
@@ -90,7 +90,7 @@ export function OriginStory() {
       >
         {/* Section intro */}
         <div className="absolute top-8 left-8 md:left-12 z-10">
-          <span className="text-[10px] tracking-[0.5em] text-amber-400/60 uppercase font-mono">
+          <span className="text-[10px] tracking-[0.5em] text-red-500/60 uppercase font-mono">
             The Origin
           </span>
         </div>
@@ -113,7 +113,7 @@ export function OriginStory() {
               />
 
               {/* Age number - ghosted in background */}
-              <span className="absolute top-1/2 right-12 -translate-y-1/2 text-[16rem] md:text-[24rem] font-black text-white/[0.02] font-mono select-none leading-none">
+              <span className="absolute top-1/2 right-12 -translate-y-1/2 text-[10rem] md:text-[24rem] font-black text-white/[0.02] font-mono select-none leading-none">
                 {m.age}
               </span>
 
@@ -121,8 +121,8 @@ export function OriginStory() {
               <div className="relative z-10 max-w-2xl">
                 {/* LAAL: Temporal Window — timeline indicator */}
                 <div data-gsap-wave="2" className="flex items-center gap-4 mb-8">
-                  <div className="w-12 h-px bg-amber-500/50" />
-                  <span className="text-xs tracking-[0.3em] text-amber-400/70 font-mono">
+                  <div className="w-12 h-px bg-red-500/50" />
+                  <span className="text-xs tracking-[0.3em] text-red-500/70 font-mono">
                     AGE {m.age} &mdash; {m.year}
                   </span>
                   <div className="flex-1 h-px bg-white/5" />
@@ -146,7 +146,7 @@ export function OriginStory() {
 
                 {/* LAAL: Temporal Window — stat proof point */}
                 <div data-gsap-wave="2" className="flex items-end gap-4">
-                  <span className="text-5xl md:text-7xl font-mono font-black text-amber-400">
+                  <span className="text-5xl md:text-7xl font-mono font-black text-red-500">
                     {m.stat}
                   </span>
                   <span className="text-xs tracking-[0.2em] text-white/30 uppercase mb-3">
@@ -161,7 +161,7 @@ export function OriginStory() {
                   <div
                     key={j}
                     className={`w-2 h-2 rounded-full transition-all ${
-                      j === i ? "bg-amber-400 scale-125" : "bg-white/10"
+                      j === i ? "bg-red-500 scale-125" : "bg-white/10"
                     }`}
                   />
                 ))}

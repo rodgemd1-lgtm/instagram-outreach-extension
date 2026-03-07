@@ -92,13 +92,13 @@ export function CharacterSection() {
     >
       {/* Section header */}
       <div className="max-w-5xl mx-auto mb-20 md:mb-32">
-        <span className="text-[10px] tracking-[0.5em] text-amber-400/60 uppercase font-mono block mb-6">
+        <span className="text-[10px] tracking-[0.5em] text-red-500/60 uppercase font-mono block mb-6">
           Character
         </span>
         <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[0.95] mb-6">
           What the
           <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-rose-400">
             measurables
           </span>
           <br />
@@ -123,7 +123,7 @@ export function CharacterSection() {
             className="group relative"
             style={{ opacity: 0 }}
           >
-            <div className="relative bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 md:p-12 hover:border-amber-500/20 transition-colors duration-500">
+            <div className="relative bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 md:p-12 hover:border-red-500/20 transition-colors duration-500">
               {/* Number accent */}
               <span className="absolute -top-4 -left-2 md:left-6 text-6xl md:text-8xl font-mono font-black text-white/[0.03] select-none">
                 {t.icon}
@@ -143,8 +143,8 @@ export function CharacterSection() {
                     {t.description}
                   </p>
                   <div className="flex items-start gap-3">
-                    <div className="w-1 h-full min-h-[20px] bg-amber-500/30 rounded-full mt-1" />
-                    <p className="text-amber-400/70 text-sm font-mono leading-relaxed">
+                    <div className="w-1 h-full min-h-[20px] bg-red-500/30 rounded-full mt-1" />
+                    <p className="text-red-500/70 text-sm font-mono leading-relaxed">
                       {t.evidence}
                     </p>
                   </div>

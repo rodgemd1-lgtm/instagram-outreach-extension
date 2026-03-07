@@ -11,6 +11,15 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        "pirate-red": {
+          DEFAULT: "#CC0022",
+          dark: "#990019",
+          light: "#E6003D",
+        },
+        "pirate-black": {
+          DEFAULT: "#111111",
+          deep: "#0A0A0A",
+        },
       },
     },
   },

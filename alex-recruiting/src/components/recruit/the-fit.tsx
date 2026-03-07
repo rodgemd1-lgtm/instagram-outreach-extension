@@ -81,18 +81,18 @@ export function TheFit() {
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
       {/* Ambient glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-600/3 rounded-full blur-[150px]" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-600/[0.03] rounded-full blur-[150px]" />
 
       <div className="max-w-5xl mx-auto relative z-10">
         {/* Header */}
         <div className="mb-20 md:mb-32">
-          <span className="text-[10px] tracking-[0.5em] text-amber-400/60 uppercase font-mono block mb-6">
+          <span className="text-[10px] tracking-[0.5em] text-red-500/60 uppercase font-mono block mb-6">
             The Fit
           </span>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[0.95] mb-6">
             Why your
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-rose-400">
               program
             </span>
             <br />
@@ -115,10 +115,10 @@ export function TheFit() {
               style={{ opacity: 0 }}
               className="group"
             >
-              <div className="relative bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 md:p-10 hover:border-amber-500/20 transition-all duration-500 md:flex md:items-start md:gap-10">
+              <div className="relative bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 md:p-10 hover:border-red-500/20 transition-all duration-500 md:flex md:items-start md:gap-10">
                 {/* Number */}
                 <div className="md:w-20 mb-4 md:mb-0">
-                  <span className="text-3xl md:text-4xl font-mono font-black text-amber-500/20 group-hover:text-amber-500/40 transition-colors">
+                  <span className="text-3xl md:text-4xl font-mono font-black text-red-500/20 group-hover:text-red-500/40 transition-colors">
                     {r.number}
                   </span>
                 </div>

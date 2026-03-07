@@ -11,7 +11,7 @@ import { ChevronDown } from "lucide-react";
    Timing budget: 2.5–3s total hero entrance
    ────────────────────────────────────────────────────────────── */
 
-export function RecruitHero() {
+export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
   const config = useMemo<AssemblyConfig>(
     () => ({
       wave1: [
@@ -111,12 +111,21 @@ export function RecruitHero() {
       ref={scopeRef}
       className="relative h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Atmospheric background gradient */}
+      {/* Background photo + gradient overlay */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A] via-[#0D1117] to-[#0A0A0A]" />
+        {backgroundUrl && (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
+            src={backgroundUrl}
+            alt="Jacob Rodgers action shot"
+            loading="eager"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/70 via-[#0D1117]/60 to-[#0A0A0A]/90" />
         {/* Ambient glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-amber-600/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500/20 to-transparent" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-red-600/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500/20 to-transparent" />
       </div>
 
       {/* Grid overlay for texture */}
@@ -143,7 +152,7 @@ export function RecruitHero() {
           <span
             data-gsap="hero-class"
             style={{ opacity: 0 }}
-            className="block font-mono text-sm md:text-base tracking-[0.5em] text-amber-400/80 mb-4"
+            className="block font-mono text-sm md:text-base tracking-[0.5em] text-red-500/80 mb-4"
           >
             CLASS OF 2029
           </span>
@@ -157,7 +166,7 @@ export function RecruitHero() {
           <span
             data-gsap="hero-last"
             style={{ opacity: 0 }}
-            className="block text-5xl md:text-8xl lg:text-9xl font-black tracking-tighter leading-[0.9] text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-amber-300"
+            className="block text-5xl md:text-8xl lg:text-9xl font-black tracking-tighter leading-[0.9] text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-rose-400 to-red-400"
           >
             RODGERS
           </span>

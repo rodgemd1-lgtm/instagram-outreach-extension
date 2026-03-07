@@ -11,9 +11,10 @@ import { useEffect, useState } from "react";
 
 const sections = [
   { id: "hero", label: "79" },
+  { id: "film-reel", label: "Film" },
   { id: "origin", label: "Origin" },
   { id: "character", label: "Character" },
-  { id: "film", label: "Film" },
+  { id: "film", label: "Stats" },
   { id: "academics", label: "Academics" },
   { id: "fit", label: "The Fit" },
   { id: "contact", label: "Contact" },
@@ -78,7 +79,7 @@ export function RecruitNav() {
               onClick={() => scrollTo(s.id)}
               className={`text-xs tracking-widest uppercase transition-all duration-300 ${
                 activeSection === s.id
-                  ? "text-amber-400"
+                  ? "text-red-500"
                   : "text-white/30 hover:text-white/60"
               }`}
             >
@@ -92,7 +93,7 @@ export function RecruitNav() {
           onClick={() => scrollTo("contact")}
           className={`text-xs tracking-widest uppercase px-4 py-2 rounded-full border transition-all duration-300 ${
             scrolled
-              ? "border-amber-500/50 text-amber-400 hover:bg-amber-500/10"
+              ? "border-red-500/50 text-red-500 hover:bg-red-500/10"
               : "border-white/20 text-white/60 hover:text-white"
           }`}
         >

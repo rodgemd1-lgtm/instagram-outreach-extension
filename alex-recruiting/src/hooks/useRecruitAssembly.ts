@@ -74,6 +74,22 @@ export interface HorizontalScrollConfig {
   };
 }
 
+export interface ParallaxBackgroundConfig {
+  /** Selector for background image elements to parallax */
+  selector: string;
+  /** Y translation in pixels (desktop). Default 50 */
+  desktopY?: number;
+  /** Y translation in pixels (mobile). Default 25 */
+  mobileY?: number;
+}
+
+export interface VideoAutoplayConfig {
+  /** Selector for video elements to auto-play on scroll */
+  selector: string;
+  /** IntersectionObserver threshold. Default 0.5 */
+  threshold?: number;
+}
+
 export interface AssemblyConfig {
   /** Wave 1 targets — entry timeline (fires once) */
   wave1?: Wave1Target[];
@@ -83,6 +99,10 @@ export interface AssemblyConfig {
   wave2?: Wave2Target[];
   /** Horizontal scroll section config */
   horizontalScroll?: HorizontalScrollConfig;
+  /** Parallax background images on scroll */
+  parallaxBackground?: ParallaxBackgroundConfig;
+  /** Auto-play/pause videos on scroll visibility */
+  videoAutoplay?: VideoAutoplayConfig;
 }
 
 // ─── Hook ────────────────────────────────────────────────────
@@ -359,6 +379,62 @@ export function useRecruitAssembly(config: AssemblyConfig) {
                 );
               });
             }
+          }
+          // ════════════════════════════════════════
+          // Parallax Background Images
+          // ════════════════════════════════════════
+          if (config.parallaxBackground) {
+            const pb = config.parallaxBackground;
+            const bgEls = el.querySelectorAll(pb.selector);
+            const yAmount = isDesktop
+              ? (pb.desktopY ?? 50)
+              : (pb.mobileY ?? 25);
+
+            bgEls.forEach((bgEl) => {
+              gsap.fromTo(
+                bgEl,
+                { y: -yAmount },
+                {
+                  y: yAmount,
+                  ease: "none",
+                  scrollTrigger: {
+                    trigger: bgEl.parentElement || bgEl,
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: true,
+                  },
+                }
+              );
+            });
+          }
+
+          // ════════════════════════════════════════
+          // Video Autoplay on Scroll
+          // ════════════════════════════════════════
+          if (config.videoAutoplay && isDesktop) {
+            // Only auto-play on desktop; mobile uses poster
+            const va = config.videoAutoplay;
+            const videoEls = el.querySelectorAll(va.selector);
+            const threshold = va.threshold ?? 0.5;
+
+            const observer = new IntersectionObserver(
+              (entries) => {
+                entries.forEach((entry) => {
+                  const video = entry.target as HTMLVideoElement;
+                  if (entry.isIntersecting) {
+                    video.play().catch(() => {});
+                  } else {
+                    video.pause();
+                  }
+                });
+              },
+              { threshold }
+            );
+
+            videoEls.forEach((v) => observer.observe(v));
+
+            // Cleanup observer when GSAP context reverts
+            return () => observer.disconnect();
           }
         }
       );

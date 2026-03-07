@@ -58,7 +58,7 @@ export function ContactCTA() {
       ref={scopeRef}
       className="relative py-32 md:py-48 px-6 md:px-12"
     >
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500/20 to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500/20 to-transparent" />
 
       {/* Large background text */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[12rem] md:text-[20rem] font-black text-white/[0.015] select-none leading-none whitespace-nowrap">
@@ -75,7 +75,7 @@ export function ContactCTA() {
           style={{ opacity: 0 }}
           className="text-center mb-16 md:mb-24"
         >
-          <span className="text-[10px] tracking-[0.5em] text-amber-400/60 uppercase font-mono block mb-6">
+          <span className="text-[10px] tracking-[0.5em] text-red-500/60 uppercase font-mono block mb-6">
             Let&apos;s Connect
           </span>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[0.95] mb-6">
@@ -103,7 +103,7 @@ export function ContactCTA() {
                 <input
                   type="text"
                   required
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-white placeholder-white/20 focus:border-amber-500/40 focus:outline-none transition-colors"
+                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-white placeholder-white/20 focus:border-red-500/40 focus:outline-none transition-colors"
                   placeholder="Coach Smith"
                 />
               </div>
@@ -114,7 +114,7 @@ export function ContactCTA() {
                 <input
                   type="text"
                   required
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-white placeholder-white/20 focus:border-amber-500/40 focus:outline-none transition-colors"
+                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-white placeholder-white/20 focus:border-red-500/40 focus:outline-none transition-colors"
                   placeholder="University of Wisconsin"
                 />
               </div>
@@ -128,7 +128,7 @@ export function ContactCTA() {
                 <input
                   type="email"
                   required
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-white placeholder-white/20 focus:border-amber-500/40 focus:outline-none transition-colors"
+                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-white placeholder-white/20 focus:border-red-500/40 focus:outline-none transition-colors"
                   placeholder="coach@university.edu"
                 />
               </div>
@@ -138,7 +138,7 @@ export function ContactCTA() {
                 </label>
                 <input
                   type="tel"
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-white placeholder-white/20 focus:border-amber-500/40 focus:outline-none transition-colors"
+                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-white placeholder-white/20 focus:border-red-500/40 focus:outline-none transition-colors"
                   placeholder="(555) 123-4567"
                 />
               </div>
@@ -150,14 +150,14 @@ export function ContactCTA() {
               </label>
               <textarea
                 rows={4}
-                className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-white placeholder-white/20 focus:border-amber-500/40 focus:outline-none transition-colors resize-none"
+                className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-white placeholder-white/20 focus:border-red-500/40 focus:outline-none transition-colors resize-none"
                 placeholder="Tell me about your program and what you're looking for in a lineman..."
               />
             </div>
 
             <button
               type="submit"
-              className="w-full py-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-black font-bold text-sm tracking-widest uppercase hover:from-amber-400 hover:to-orange-400 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/20"
+              className="w-full py-4 rounded-xl bg-gradient-to-r from-red-600 to-red-500 text-white font-bold text-sm tracking-widest uppercase hover:from-red-500 hover:to-rose-500 transition-all duration-300 hover:shadow-lg hover:shadow-red-500/20"
             >
               Send Message
             </button>
@@ -166,11 +166,11 @@ export function ContactCTA() {
           <div
             data-gsap-wave="2"
             style={{ opacity: 0 }}
-            className="bg-gradient-to-r from-amber-500/5 to-orange-500/5 border border-amber-500/20 rounded-2xl p-12 text-center"
+            className="bg-gradient-to-r from-red-500/5 to-rose-500/5 border border-red-500/20 rounded-2xl p-12 text-center"
           >
             {/* Lucide Check icon — no emoji */}
             <div className="flex justify-center mb-4">
-              <Check className="w-10 h-10 text-amber-400" />
+              <Check className="w-10 h-10 text-red-500" />
             </div>
             <h3 className="text-2xl font-bold mb-3">Message sent.</h3>
             <p className="text-white/50">
@@ -227,12 +227,12 @@ function QuickLink({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center gap-3 px-6 py-3 rounded-full border border-white/[0.06] hover:border-amber-500/20 transition-colors group"
+      className="flex items-center gap-3 px-6 py-3 rounded-full border border-white/[0.06] hover:border-red-500/20 transition-colors group"
     >
       <span className="text-[10px] tracking-[0.2em] text-white/30 uppercase">
         {label}
       </span>
-      <span className="text-sm text-amber-400/70 group-hover:text-amber-400 transition-colors flex items-center gap-1">
+      <span className="text-sm text-red-500/70 group-hover:text-red-500 transition-colors flex items-center gap-1">
         {handle}
         <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
       </span>
