@@ -3,14 +3,14 @@ import { describe, it, expect, beforeEach } from "vitest";
 describe("NCSA Lead Pipeline", () => {
   beforeEach(async () => {
     const { clearLeads } = await import("@/lib/rec/knowledge/ncsa-leads");
-    clearLeads();
+    await clearLeads();
   });
 
   it("addLead creates a new lead with auto-generated id and timestamp", async () => {
     const { addLead, getAllLeads } = await import(
       "@/lib/rec/knowledge/ncsa-leads"
     );
-    const lead = addLead({
+    const lead = await addLead({
       coachName: "Coach Smith",
       schoolName: "Iowa State",
       division: "D1 FBS",
@@ -26,7 +26,7 @@ describe("NCSA Lead Pipeline", () => {
     expect(lead.outreachStatus).toBe("new");
     expect(lead.assignedTo).toBe("nina");
     expect(lead.detectedAt).toBeDefined();
-    const all = getAllLeads();
+    const all = await getAllLeads();
     expect(all).toHaveLength(1);
   });
 
@@ -34,7 +34,7 @@ describe("NCSA Lead Pipeline", () => {
     const { addLead, updateLeadStatus } = await import(
       "@/lib/rec/knowledge/ncsa-leads"
     );
-    const lead = addLead({
+    const lead = await addLead({
       coachName: "Coach Jones",
       schoolName: "Ball State",
       division: "D1 FBS",
@@ -46,7 +46,7 @@ describe("NCSA Lead Pipeline", () => {
       assignedTo: "nina",
       notes: "",
     });
-    const updated = updateLeadStatus(lead.id, "researched");
+    const updated = await updateLeadStatus(lead.id, "researched");
     expect(updated?.outreachStatus).toBe("researched");
   });
 
@@ -54,7 +54,7 @@ describe("NCSA Lead Pipeline", () => {
     const { addLead, getLeadsByStatus, updateLeadStatus } = await import(
       "@/lib/rec/knowledge/ncsa-leads"
     );
-    const lead1 = addLead({
+    const lead1 = await addLead({
       coachName: "Coach A",
       schoolName: "School A",
       division: "D1",
@@ -66,7 +66,7 @@ describe("NCSA Lead Pipeline", () => {
       assignedTo: "nina",
       notes: "",
     });
-    addLead({
+    await addLead({
       coachName: "Coach B",
       schoolName: "School B",
       division: "D2",
@@ -78,8 +78,10 @@ describe("NCSA Lead Pipeline", () => {
       assignedTo: "nina",
       notes: "",
     });
-    updateLeadStatus(lead1.id, "researched");
-    expect(getLeadsByStatus("new")).toHaveLength(1);
-    expect(getLeadsByStatus("researched")).toHaveLength(1);
+    await updateLeadStatus(lead1.id, "researched");
+    const newLeads = await getLeadsByStatus("new");
+    expect(newLeads).toHaveLength(1);
+    const researchedLeads = await getLeadsByStatus("researched");
+    expect(researchedLeads).toHaveLength(1);
   });
 });

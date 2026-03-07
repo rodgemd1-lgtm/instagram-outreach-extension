@@ -1,13 +1,10 @@
-// File-backed task store for development without a database
-// Persists to .rec-tasks.json so data survives hot reloads
-// Pattern follows src/lib/rec/knowledge/ncsa-leads.ts
+// Supabase-backed task store using Drizzle ORM
+// Migrated from file-backed .rec-tasks.json to PostgreSQL
 
-import fs from "fs";
-import path from "path";
-import type { RecTask } from "@/lib/rec/types";
-import type { TeamMemberId } from "@/lib/rec/types";
-
-const STORE_PATH = path.join(process.cwd(), ".rec-tasks.json");
+import { eq } from "drizzle-orm";
+import { db, isDbConfigured } from "@/lib/db";
+import { recTasks } from "@/lib/db/schema";
+import type { RecTask, TeamMemberId } from "@/lib/rec/types";
 
 let nextId = 1;
 
@@ -15,26 +12,31 @@ function generateId(): string {
   return `task-${Date.now()}-${nextId++}`;
 }
 
-function readStore(): RecTask[] {
-  try {
-    const data = fs.readFileSync(STORE_PATH, "utf-8");
-    return JSON.parse(data);
-  } catch {
-    return [];
-  }
+// Map a database row to the RecTask type expected by API consumers
+function rowToTask(row: typeof recTasks.$inferSelect): RecTask {
+  return {
+    id: row.id,
+    assignedTo: row.assignedTo as TeamMemberId,
+    title: row.title,
+    description: row.description ?? "",
+    status: row.status as RecTask["status"],
+    priority: (row.priority ?? 3) as RecTask["priority"],
+    createdAt: row.createdAt?.toISOString() ?? new Date().toISOString(),
+    completedAt: row.completedAt?.toISOString() ?? null,
+    output: row.output ?? null,
+  };
 }
 
-function writeStore(tasks: RecTask[]): void {
-  fs.writeFileSync(STORE_PATH, JSON.stringify(tasks, null, 2));
-}
+// ---- In-memory fallback for development without a database ----
 
-export function createTask(data: {
+const memoryTasks: RecTask[] = [];
+
+function memCreateTask(data: {
   assignedTo: TeamMemberId;
   title: string;
   description: string;
   priority: 1 | 2 | 3 | 4 | 5;
 }): RecTask {
-  const store = readStore();
   const task: RecTask = {
     id: generateId(),
     assignedTo: data.assignedTo,
@@ -46,40 +48,144 @@ export function createTask(data: {
     completedAt: null,
     output: null,
   };
-  store.push(task);
-  writeStore(store);
+  memoryTasks.push(task);
   return task;
 }
 
-export function getAllTasks(): RecTask[] {
-  return readStore();
+function memGetAllTasks(): RecTask[] {
+  return [...memoryTasks];
 }
 
-export function getTasksForMember(memberId: TeamMemberId): RecTask[] {
-  return readStore().filter((t) => t.assignedTo === memberId);
+function memGetTasksForMember(memberId: TeamMemberId): RecTask[] {
+  return memoryTasks.filter((t) => t.assignedTo === memberId);
 }
 
-export function getTasksByStatus(status: RecTask["status"]): RecTask[] {
-  return readStore().filter((t) => t.status === status);
+function memGetTasksByStatus(status: RecTask["status"]): RecTask[] {
+  return memoryTasks.filter((t) => t.status === status);
 }
 
-export function updateTask(
+function memUpdateTask(
   id: string,
   updates: Partial<Pick<RecTask, "status" | "output">>
 ): RecTask | undefined {
-  const store = readStore();
-  const index = store.findIndex((t) => t.id === id);
+  const index = memoryTasks.findIndex((t) => t.id === id);
   if (index === -1) return undefined;
-
-  const task = { ...store[index], ...updates };
+  const task = { ...memoryTasks[index], ...updates };
   if (updates.status === "completed" && !task.completedAt) {
     task.completedAt = new Date().toISOString();
   }
-  store[index] = task;
-  writeStore(store);
+  memoryTasks[index] = task;
   return task;
 }
 
-export function clearTasks(): void {
-  writeStore([]);
+// ---- Public API (async, database-backed with in-memory fallback) ----
+
+export async function createTask(data: {
+  assignedTo: TeamMemberId;
+  title: string;
+  description: string;
+  priority: 1 | 2 | 3 | 4 | 5;
+}): Promise<RecTask> {
+  if (!isDbConfigured()) {
+    return memCreateTask(data);
+  }
+
+  const id = generateId();
+  const now = new Date();
+
+  const [row] = await db
+    .insert(recTasks)
+    .values({
+      id,
+      assignedTo: data.assignedTo,
+      title: data.title,
+      description: data.description,
+      status: "pending",
+      priority: data.priority,
+      createdAt: now,
+      updatedAt: now,
+      completedAt: null,
+      output: null,
+    })
+    .returning();
+
+  return rowToTask(row);
+}
+
+export async function getAllTasks(): Promise<RecTask[]> {
+  if (!isDbConfigured()) {
+    return memGetAllTasks();
+  }
+
+  const rows = await db.select().from(recTasks);
+  return rows.map(rowToTask);
+}
+
+export async function getTasksForMember(
+  memberId: TeamMemberId
+): Promise<RecTask[]> {
+  if (!isDbConfigured()) {
+    return memGetTasksForMember(memberId);
+  }
+
+  const rows = await db
+    .select()
+    .from(recTasks)
+    .where(eq(recTasks.assignedTo, memberId));
+  return rows.map(rowToTask);
+}
+
+export async function getTasksByStatus(
+  status: RecTask["status"]
+): Promise<RecTask[]> {
+  if (!isDbConfigured()) {
+    return memGetTasksByStatus(status);
+  }
+
+  const rows = await db
+    .select()
+    .from(recTasks)
+    .where(eq(recTasks.status, status));
+  return rows.map(rowToTask);
+}
+
+export async function updateTask(
+  id: string,
+  updates: Partial<Pick<RecTask, "status" | "output">>
+): Promise<RecTask | undefined> {
+  if (!isDbConfigured()) {
+    return memUpdateTask(id, updates);
+  }
+
+  const values: Record<string, unknown> = {
+    updatedAt: new Date(),
+  };
+
+  if (updates.status !== undefined) {
+    values.status = updates.status;
+    if (updates.status === "completed") {
+      values.completedAt = new Date();
+    }
+  }
+  if (updates.output !== undefined) {
+    values.output = updates.output;
+  }
+
+  const [row] = await db
+    .update(recTasks)
+    .set(values)
+    .where(eq(recTasks.id, id))
+    .returning();
+
+  if (!row) return undefined;
+  return rowToTask(row);
+}
+
+export async function clearTasks(): Promise<void> {
+  if (!isDbConfigured()) {
+    memoryTasks.length = 0;
+    return;
+  }
+
+  await db.delete(recTasks);
 }

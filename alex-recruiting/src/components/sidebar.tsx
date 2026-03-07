@@ -28,6 +28,7 @@ import {
   Rocket,
   Film,
   UsersRound,
+  Camera,
 } from "lucide-react";
 
 const navItems = [
@@ -44,6 +45,7 @@ const navItems = [
   { href: "/cold-dms", label: "Cold DM Engine", icon: Send },
   { href: "/connections", label: "Who to Connect With", icon: UserSearch },
   { href: "/videos", label: "Video Library", icon: Film },
+  { href: "/media", label: "Photo Library", icon: Camera },
   { href: "/coaches", label: "Coach Pipeline", icon: Users },
   { href: "/dms", label: "DM Campaigns", icon: Mail },
   { href: "/calendar", label: "Content Calendar", icon: Calendar },
@@ -55,6 +57,7 @@ const navItems = [
   { href: "/scrape", label: "Scraping Tools", icon: Search },
   { href: "/intelligence", label: "Intelligence", icon: Brain },
   { href: "/agents", label: "Agent Command Center", icon: Bot },
+  { href: "/recruit", label: "Recruit Website", icon: Rocket },
 ];
 
 export function Sidebar() {

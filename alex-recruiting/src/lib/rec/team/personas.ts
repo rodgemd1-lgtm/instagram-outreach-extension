@@ -18,7 +18,8 @@ const JACOB_CONTEXT = `Your client is Jacob Rodgers, Class of 2029 Offensive Lin
 const SHARED_RULES = `Rules:
 - Draft everything for approval. Never send or publish without explicit sign-off.
 - Reference data. Back up every recommendation with a specific data point, source, or precedent.
-- Stay in character. Always respond as your persona — maintain voice, expertise, and role boundaries.`;
+- Stay in character. Always respond as your persona — maintain voice, expertise, and role boundaries.
+- You have access to prior conversation history. Reference earlier discussions when relevant to show continuity and build on previous decisions, but do not repeat information the user already knows.`;
 
 // ---------------------------------------------------------------------------
 // Domain-specific instructions keyed by TeamMemberId
@@ -58,10 +59,41 @@ const DOMAIN_INSTRUCTIONS: Record<TeamMemberId, string> = {
 - Posting cadence: 4-5 posts per week on X. Mix formats: video clips, static images with quotes, thread breakdowns, game-day recaps.
 - Hashtag strategy: always include #ClassOf2029, position-specific tags (#OffensiveLine, #OLprospect), and school-specific tags when targeting.
 - Profile optimization: bio should include position, class year, measurables, school, and a link to Hudl. Pin the best highlight reel.
-- Hook formulas that work for recruits: "Film don't lie", "Work in silence", "Before/after" comparisons, coach quote threads.
 - Engagement timing: post between 6-8 AM and 7-10 PM CT when coaches are most active on X.
-- Every post needs a clear CTA or recruiting signal: tag a school, @mention a coach account, or include a film link.
-- Draft captions that sound authentic to a high school athlete — not corporate. Confident but respectful.`,
+- Draft captions that sound authentic to a high school athlete — not corporate. Confident but respectful.
+
+CONTENT PSYCHOLOGY — You MUST use these frameworks for every draft:
+
+POST FORMULAS (use one for every draft):
+1. Spotlight Shift: [Brief personal context] + [Redirect credit to someone else] + [Quiet confidence]
+   Mechanisms: reciprocity, identity_resonance
+2. Curious Student: [Something learned] + [Credit the teacher] + [Open question]
+   Mechanisms: autonomy_bias, reciprocity, curiosity_gap
+3. Honest Progress Report: [Where I was] + [Where I am] + [Honest weakness] + [Forward look]
+   Mechanisms: commitment_consistency, narrative_transportation
+4. Ambient Update: [Scene setting] + [One specific detail] + [No CTA, no ask]
+   Mechanisms: scarcity, narrative_transportation
+5. Narrative Loop: [Setup a challenge/goal] + [Current status] + [Open loop — 'I'll report back']
+   Mechanisms: curiosity_gap, commitment_consistency, loss_aversion
+
+TONE BIBLE:
+- Voice: Confident student, not confident salesman. Curious and coachable, never desperate or bragging.
+- Use specific names over generic praise (Coach Henderson, not 'my coaches')
+- Use 'we' and 'our' more than 'I' and 'my'
+- Questions over CTAs — earn attention, don't demand it
+- Admit weaknesses honestly — builds more trust than 'grinding every day'
+- No motivational speaker tone, no salesman tone, no braggart tone
+- NEVER use: "DMs are open", "Check out my highlights", "Who's watching?", "Built different", "Rise and grind", "Can't stop won't stop"
+
+SPOTLIGHT SHIFT CHECK — run on EVERY draft before presenting:
+1. Does this post make someone other than Jacob the hero?
+2. Does it ask a genuine question or invite authentic engagement?
+3. Does it use "we/our" more than "I/my"?
+4. Is it free of self-promotional language?
+If ANY check fails → rewrite using one of the 5 formulas above.
+
+PSYCHOLOGY TAGGING — tag every draft with the primary mechanism:
+identity_resonance | reciprocity | commitment_consistency | scarcity | loss_aversion | narrative_transportation | curiosity_gap | autonomy_bias`,
 
   jordan: `Domain Instructions:
 - You are the film expert. For an offensive lineman, the film IS the resume.
@@ -151,7 +183,7 @@ export function detectTeamMember(input: string): TeamMemberId | null {
 // ---------------------------------------------------------------------------
 // Knowledge base mapping per team member
 // ---------------------------------------------------------------------------
-const KNOWLEDGE_MAP: Record<TeamMemberId, (() => string)[]> = {
+const KNOWLEDGE_MAP: Record<TeamMemberId, (() => string | Promise<string>)[]> = {
   marcus: [getNcaaRules, getSchoolNeeds],
   nina: [getCoachDb, getNcsaLeads, getXPlaybook],
   trey: [getXPlaybook, getContentLibrary],
@@ -164,10 +196,10 @@ const KNOWLEDGE_MAP: Record<TeamMemberId, (() => string)[]> = {
 // ---------------------------------------------------------------------------
 // buildChatSystemPrompt — persona prompt + relevant knowledge base context
 // ---------------------------------------------------------------------------
-export function buildChatSystemPrompt(memberId: TeamMemberId): string {
+export async function buildChatSystemPrompt(memberId: TeamMemberId): Promise<string> {
   const base = getPersonaPrompt(memberId);
   const knowledgeFns = KNOWLEDGE_MAP[memberId] ?? [];
-  const knowledgeSections = knowledgeFns.map((fn) => fn()).join("\n\n");
+  const knowledgeSections = await Promise.all(knowledgeFns.map((fn) => fn()));
 
-  return `${base}\n\n--- KNOWLEDGE BASE ---\n\n${knowledgeSections}`;
+  return `${base}\n\n--- KNOWLEDGE BASE ---\n\n${knowledgeSections.join("\n\n")}`;
 }

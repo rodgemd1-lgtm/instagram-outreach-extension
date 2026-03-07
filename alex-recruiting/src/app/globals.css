@@ -97,3 +97,34 @@ body {
     text-wrap: balance;
   }
 }
+
+/* Recruit page styles */
+.recruit-page {
+  --recruit-bg: #0A0A0A;
+  --recruit-accent: #F59E0B;
+  --recruit-accent-warm: #F97316;
+}
+
+.recruit-page ::-webkit-scrollbar-thumb {
+  background: rgba(245, 158, 11, 0.2);
+}
+
+.recruit-page ::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 158, 11, 0.4);
+}
+
+.recruit-page ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* GSAP pin-spacer fix for dark background */
+.recruit-page .pin-spacer {
+  background: var(--recruit-bg) !important;
+}
+
+/* Smooth font rendering on dark backgrounds */
+.recruit-page {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}

@@ -18,6 +18,7 @@ import {
   AlertTriangle,
   Sparkles,
   ChevronRight,
+  Play,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { hashtagStack, getHashtagsForPost } from "@/lib/data/hashtags";
 import { constitutionRules } from "@/lib/data/constitution";
 import { weeklyCalendar, getTodayEntry } from "@/lib/data/weekly-calendar";
+import { MediaPicker } from "@/components/media-picker";
 import type { ContentPillar } from "@/lib/types";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -174,25 +176,25 @@ const INITIAL_QUEUE: QueuedPost[] = [
   {
     id: "q1",
     content:
-      "Drive block technique from Friday\u2019s game \u2014 finishing through the whistle.\n\nFull film: ncsa.com/jacob-rogers\n\n#OL #OffensiveLine #FootballRecruiting #2029Recruit",
+      "Film study Thursday. Watching last season\u2019s playoff game back and realizing how much our whole line improved from Week 1 to Week 12.\n\nOur center Ryan went from hesitating on combo calls to reading the linebacker before the snap. That\u2019s 12 weeks of Coach Henderson pushing us.\n\nThe O-line doesn\u2019t get highlights. We\u2019ll make our own.",
     pillar: "performance",
-    scheduledFor: "Tomorrow, 3:30 PM CST",
-    status: "scheduled",
+    scheduledFor: "Today, 7:00 PM CST",
+    status: "draft",
   },
   {
     id: "q2",
     content:
-      "Honor roll this semester \u2014 balancing the books and the field. 3.8 GPA and climbing.\n\n#2029Recruit #StudentAthlete #FootballRecruiting",
-    pillar: "character",
-    scheduledFor: "Wednesday, 12:00 PM CST",
+      "Question for any OL coaches on here.\n\nWhen you\u2019re teaching a young lineman to anchor against a bull rush, do you start with the hips or the hands?\n\nI\u2019ve been taught hands first \u2014 strike, then sink the hips. But I watched some college film this week where guys were dropping hips before the punch even landed.\n\nTrying to figure out which approach works better for a bigger body type. Any input is welcome. I\u2019m a student of this position.\n\n#OffensiveLine #OLTechnique",
+    pillar: "work_ethic",
+    scheduledFor: "Today, 8:30 PM CST",
     status: "draft",
   },
   {
     id: "q3",
     content:
-      "Early morning session at @IMGAcademy \u2014 competing against the best to become the best.\n\n#PutInTheWork #OffSeason #FootballTraining #2029Recruit",
-    pillar: "work_ethic",
-    scheduledFor: "Thursday, 4:00 PM CST",
+      "Honest check-in. 6 months into the recruiting journey.\n\nWhat\u2019s working:\n- Training is the best it\u2019s ever been\n- Film study is becoming a habit, not a chore\n- Met some great people in the Class of 2029\n\nWhat I\u2019m still figuring out:\n- How to balance school, training, and rest\n- How to put myself out there without it feeling like bragging\n- How to be patient when the process feels slow\n\nNot where I want to be yet. But not where I started either.\n\nGrateful for everyone following along. The best is still ahead.",
+    pillar: "character",
+    scheduledFor: "Today, 9:30 PM CST",
     status: "draft",
   },
 ];
@@ -292,7 +294,20 @@ function checkConstitution(content: string): ConstitutionCheck[] {
 
 // ─── Sub-Components ──────────────────────────────────────────────────────────
 
-function XPostPreview({ content }: { content: string }) {
+interface SelectedMediaInfo {
+  id: string;
+  name: string;
+  filePath: string | null;
+  thumbnailUrl: string | null;
+  duration: number | null;
+  category: string | null;
+  optimizedFilePath: string | null;
+  fileSize: number | null;
+  width: number | null;
+  height: number | null;
+}
+
+function XPostPreview({ content, media }: { content: string; media?: SelectedMediaInfo | null }) {
   const charCount = content.length;
 
   return (
@@ -321,7 +336,7 @@ function XPostPreview({ content }: { content: string }) {
                   <path d="M20.396 11c-.018-.646-.215-1.275-.57-1.816-.354-.54-.852-.972-1.438-1.246.223-.607.27-1.264.14-1.897-.131-.634-.437-1.218-.882-1.687-.47-.445-1.053-.75-1.687-.882-.633-.13-1.29-.083-1.897.14-.273-.587-.704-1.086-1.245-1.44S11.647 1.62 11 1.604c-.646.017-1.273.213-1.813.568s-.969.855-1.24 1.44c-.608-.223-1.267-.272-1.902-.14-.635.13-1.22.436-1.69.882-.445.47-.749 1.055-.878 1.69-.13.633-.08 1.29.144 1.896-.587.274-1.087.705-1.443 1.245-.356.54-.555 1.17-.574 1.817.02.647.218 1.276.574 1.817.356.54.856.972 1.443 1.245-.224.606-.274 1.263-.144 1.896.13.636.433 1.221.878 1.69.47.446 1.055.752 1.69.883.635.13 1.294.083 1.902-.143.271.586.702 1.084 1.24 1.438.54.354 1.167.551 1.813.568.647-.016 1.276-.213 1.817-.567s.972-.854 1.245-1.44c.604.225 1.261.276 1.897.143.634-.131 1.217-.437 1.687-.883.445-.468.751-1.053.882-1.687.13-.634.083-1.291-.14-1.898.586-.274 1.084-.705 1.438-1.246.354-.54.551-1.17.569-1.816zM9.662 14.85l-3.429-3.428 1.293-1.302 2.072 2.072 4.4-4.794 1.347 1.246z" />
                 </svg>
               </div>
-              <span className="text-slate-500 text-sm">@JacobRodgersOL29</span>
+              <span className="text-slate-500 text-sm">@JacobRodge52987</span>
             </div>
           </div>
 
@@ -331,6 +346,28 @@ function XPostPreview({ content }: { content: string }) {
               <span className="text-slate-500 italic">Start typing to see your post preview...</span>
             )}
           </div>
+
+          {/* Attached media */}
+          {media?.thumbnailUrl && (
+            <div className="mt-3 relative rounded-xl overflow-hidden border border-slate-700">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={media.thumbnailUrl}
+                alt={media.name}
+                className="w-full aspect-video object-cover"
+              />
+              <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                <div className="rounded-full bg-blue-500/90 p-3">
+                  <Play className="h-6 w-6 text-white fill-white" />
+                </div>
+              </div>
+              {media.duration != null && media.duration > 0 && (
+                <div className="absolute bottom-2 right-2 rounded bg-black/75 px-2 py-0.5 text-xs font-medium text-white">
+                  {Math.floor(media.duration / 60)}:{String(Math.floor(media.duration % 60)).padStart(2, "0")}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Timestamp */}
           <div className="mt-3 text-slate-500 text-[13px]">
@@ -683,7 +720,17 @@ function SchedulingSection({
   );
 }
 
-function PostQueue({ posts }: { posts: QueuedPost[] }) {
+function PostQueue({
+  posts,
+  onPostToX,
+  postingId,
+  postResult,
+}: {
+  posts: QueuedPost[];
+  onPostToX: (post: QueuedPost) => void;
+  postingId: string | null;
+  postResult: { id: string; tweetUrl?: string; error?: string } | null;
+}) {
   return (
     <Card>
       <CardHeader className="pb-3">
@@ -712,6 +759,31 @@ function PostQueue({ posts }: { posts: QueuedPost[] }) {
                 {post.content.slice(0, 120)}
                 {post.content.length > 120 ? "..." : ""}
               </p>
+              <div className="mt-2 flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5 text-xs"
+                  onClick={() => onPostToX(post)}
+                  disabled={postingId === post.id || post.content.length > 280}
+                >
+                  <Send className="h-3 w-3" />
+                  {postingId === post.id ? "Posting..." : "Post to X Now"}
+                </Button>
+                {postResult?.id === post.id && postResult.tweetUrl && (
+                  <a
+                    href={postResult.tweetUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-blue-600 hover:underline"
+                  >
+                    View on X
+                  </a>
+                )}
+                {postResult?.id === post.id && postResult.error && (
+                  <span className="text-xs text-red-500">{postResult.error}</span>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -730,6 +802,9 @@ export function SmartPostCreator() {
   const [pillar, setPillar] = useState<ContentPillar>(initialPillar);
   const [scheduleOption, setScheduleOption] = useState<ScheduleOption>("best_time");
   const [queue, setQueue] = useState<QueuedPost[]>(INITIAL_QUEUE);
+  const [selectedMedia, setSelectedMedia] = useState<SelectedMediaInfo | null>(null);
+  const [postingId, setPostingId] = useState<string | null>(null);
+  const [postResult, setPostResult] = useState<{ id: string; tweetUrl?: string; error?: string } | null>(null);
 
   const constitutionChecks = useMemo(() => checkConstitution(content), [content]);
 
@@ -771,7 +846,33 @@ export function SmartPostCreator() {
     };
     setQueue((prev) => [newPost, ...prev].slice(0, 5));
     setContent("");
+    setSelectedMedia(null);
   }, [content, pillar, scheduleOption, todayEntry.bestTime]);
+
+  const handlePostToX = useCallback(async (post: QueuedPost) => {
+    setPostingId(post.id);
+    setPostResult(null);
+    try {
+      const res = await fetch(`/api/posts/${post.id}/send`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: post.content }),
+      });
+      const data = await res.json();
+      if (res.ok && data.tweetUrl) {
+        setPostResult({ id: post.id, tweetUrl: data.tweetUrl });
+        setQueue((prev) =>
+          prev.map((p) => (p.id === post.id ? { ...p, status: "scheduled" as const } : p))
+        );
+      } else {
+        setPostResult({ id: post.id, error: data.error || "Failed to post" });
+      }
+    } catch {
+      setPostResult({ id: post.id, error: "Network error" });
+    } finally {
+      setPostingId(null);
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -789,7 +890,7 @@ export function SmartPostCreator() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Column - Preview */}
           <div className="lg:col-span-5 space-y-6">
-            <XPostPreview content={content} />
+            <XPostPreview content={content} media={selectedMedia} />
 
             {/* Constitution Checker */}
             <ConstitutionPanel checks={constitutionChecks} />
@@ -813,6 +914,15 @@ export function SmartPostCreator() {
                   className="min-h-[160px] resize-y text-sm"
                   maxLength={500}
                 />
+
+                {/* Media Picker */}
+                <div>
+                  <div className="text-xs font-medium text-slate-500 mb-2">Attach Media</div>
+                  <MediaPicker
+                    selectedMedia={selectedMedia}
+                    onSelect={setSelectedMedia}
+                  />
+                </div>
 
                 {/* Quick Insert Buttons */}
                 <div>
@@ -862,15 +972,20 @@ export function SmartPostCreator() {
               <Button
                 variant="outline"
                 size="lg"
-                onClick={() => setContent("")}
-                disabled={content.length === 0}
+                onClick={() => { setContent(""); setSelectedMedia(null); }}
+                disabled={content.length === 0 && !selectedMedia}
               >
                 Clear
               </Button>
             </div>
 
             {/* Post Queue */}
-            <PostQueue posts={queue.slice(0, 3)} />
+            <PostQueue
+              posts={queue.slice(0, 3)}
+              onPostToX={handlePostToX}
+              postingId={postingId}
+              postResult={postResult}
+            />
           </div>
         </div>
       </div>

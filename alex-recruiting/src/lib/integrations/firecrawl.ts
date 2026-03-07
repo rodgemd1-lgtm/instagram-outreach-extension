@@ -1,6 +1,13 @@
 import { FirecrawlClient } from "@mendable/firecrawl-js";
 
-const firecrawl = new FirecrawlClient({ apiKey: process.env.FIRECRAWL_API_KEY || "" });
+let _firecrawl: FirecrawlClient | null = null;
+
+function getFirecrawl(): FirecrawlClient {
+  if (!_firecrawl) {
+    _firecrawl = new FirecrawlClient({ apiKey: process.env.FIRECRAWL_API_KEY || "" });
+  }
+  return _firecrawl;
+}
 
 export interface ScrapedCoach {
   name: string;
@@ -25,7 +32,7 @@ export async function scrapeCoachingStaff(staffUrl: string): Promise<{
   content: string;
   coaches: ScrapedCoach[];
 }> {
-  const result = await firecrawl.scrape(staffUrl, {
+  const result = await getFirecrawl().scrape(staffUrl, {
     formats: ["markdown"],
   });
 
@@ -40,7 +47,7 @@ export async function scrapeRoster(rosterUrl: string): Promise<{
   content: string;
   players: ScrapedRosterPlayer[];
 }> {
-  const result = await firecrawl.scrape(rosterUrl, {
+  const result = await getFirecrawl().scrape(rosterUrl, {
     formats: ["markdown"],
   });
 
@@ -53,7 +60,7 @@ export async function scrapeRoster(rosterUrl: string): Promise<{
 // Scrape 247Sports coaching staff directory
 export async function scrape247SportsStaff(schoolSlug: string): Promise<string> {
   const url = `https://247sports.com/college/${schoolSlug}/Season/2025-Football/Coaches/`;
-  const result = await firecrawl.scrape(url, {
+  const result = await getFirecrawl().scrape(url, {
     formats: ["markdown"],
   });
 
@@ -62,7 +69,7 @@ export async function scrape247SportsStaff(schoolSlug: string): Promise<string> 
 
 // Scrape RecruitingMasterList for coach X handles with open DMs
 export async function scrapeRecruitingMasterList(): Promise<string> {
-  const result = await firecrawl.scrape(
+  const result = await getFirecrawl().scrape(
     "https://recruitingmasterlist.com",
     { formats: ["markdown"] }
   );
@@ -72,7 +79,7 @@ export async function scrapeRecruitingMasterList(): Promise<string> {
 
 // Scrape recent posts from a school's football Twitter to identify active hashtags
 export async function scrapeSchoolRecentPosts(url: string): Promise<string> {
-  const result = await firecrawl.scrape(url, {
+  const result = await getFirecrawl().scrape(url, {
     formats: ["markdown"],
   });
 

@@ -1,6 +1,12 @@
 import Exa from "exa-js";
 
-const exa = new Exa(process.env.EXA_API_KEY);
+let _exa: Exa | null = null;
+function getExa(): Exa {
+  if (!_exa) {
+    _exa = new Exa(process.env.EXA_API_KEY);
+  }
+  return _exa;
+}
 
 export interface ExaSearchResult {
   url: string;
@@ -14,7 +20,7 @@ export interface ExaSearchResult {
 export async function searchCoachHandles(query?: string): Promise<ExaSearchResult[]> {
   const searchQuery = query || "D1 D2 OL recruiting coordinator Twitter X handle college football 2025";
 
-  const result = await exa.searchAndContents(searchQuery, {
+  const result = await getExa().searchAndContents(searchQuery, {
     type: "neural",
     numResults: 25,
     text: true,
@@ -31,7 +37,7 @@ export async function searchCoachHandles(query?: string): Promise<ExaSearchResul
 
 // Search for specific school's OL recruiting needs
 export async function searchSchoolOLNeeds(schoolName: string): Promise<ExaSearchResult[]> {
-  const result = await exa.searchAndContents(
+  const result = await getExa().searchAndContents(
     `${schoolName} offensive line recruiting needs 2025 2026 2027 2029`,
     {
       type: "neural",
@@ -50,7 +56,7 @@ export async function searchSchoolOLNeeds(schoolName: string): Promise<ExaSearch
 
 // Monitor Jacob's name in recruiting coverage
 export async function searchJacobMentions(): Promise<ExaSearchResult[]> {
-  const result = await exa.searchAndContents(
+  const result = await getExa().searchAndContents(
     "Jacob Rodgers Pewaukee football 2029 offensive line recruit",
     {
       type: "neural",
@@ -69,7 +75,7 @@ export async function searchJacobMentions(): Promise<ExaSearchResult[]> {
 
 // Search for competitor recruits
 export async function searchCompetitorRecruits(): Promise<ExaSearchResult[]> {
-  const result = await exa.searchAndContents(
+  const result = await getExa().searchAndContents(
     "2029 offensive line recruit Wisconsin Midwest high school football Twitter",
     {
       type: "neural",
@@ -88,7 +94,7 @@ export async function searchCompetitorRecruits(): Promise<ExaSearchResult[]> {
 
 // Search for recruiting analyst X handles
 export async function searchRecruitingAnalysts(): Promise<ExaSearchResult[]> {
-  const result = await exa.searchAndContents(
+  const result = await getExa().searchAndContents(
     "recruiting analyst Wisconsin Midwest Big Ten offensive line Twitter 247Sports Rivals",
     {
       type: "neural",

@@ -8,11 +8,11 @@ export async function GET(req: NextRequest) {
 
   let tasks;
   if (assignedTo) {
-    tasks = getTasksForMember(assignedTo as TeamMemberId);
+    tasks = await getTasksForMember(assignedTo as TeamMemberId);
   } else if (status) {
-    tasks = getTasksByStatus(status as RecTask["status"]);
+    tasks = await getTasksByStatus(status as RecTask["status"]);
   } else {
-    tasks = getAllTasks();
+    tasks = await getAllTasks();
   }
 
   return NextResponse.json({ tasks, total: tasks.length });
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "assignedTo and title required" }, { status: 400 });
   }
 
-  const task = createTask({
+  const task = await createTask({
     assignedTo: data.assignedTo,
     title: data.title,
     description: data.description || "",

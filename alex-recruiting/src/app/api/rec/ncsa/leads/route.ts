@@ -10,14 +10,14 @@ import type { NCSALead } from "@/lib/rec/types";
 export async function GET(req: NextRequest) {
   const status = req.nextUrl.searchParams.get("status");
   const leads = status
-    ? getLeadsByStatus(status as NCSALead["outreachStatus"])
-    : getAllLeads();
+    ? await getLeadsByStatus(status as NCSALead["outreachStatus"])
+    : await getAllLeads();
   return NextResponse.json({ leads, total: leads.length });
 }
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
-  const lead = addLead({
+  const lead = await addLead({
     coachName: data.coachName || "",
     schoolName: data.schoolName || "",
     division: data.division || "",
@@ -40,7 +40,7 @@ export async function PUT(req: NextRequest) {
       { status: 400 }
     );
   }
-  const updated = updateLeadStatus(id, status);
+  const updated = await updateLeadStatus(id, status);
   if (!updated) {
     return NextResponse.json({ error: "Lead not found" }, { status: 404 });
   }

@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest';
 describe('REC Team Chat', () => {
   it('buildChatSystemPrompt includes persona + knowledge for nina', async () => {
     const { buildChatSystemPrompt } = await import('@/lib/rec/team/personas');
-    const prompt = buildChatSystemPrompt('nina');
+    const prompt = await buildChatSystemPrompt('nina');
     expect(prompt).toContain('Nina Banks');
     expect(prompt).toContain('Jacob Rodgers');
     expect(prompt).toContain('KNOWLEDGE BASE');
@@ -13,7 +13,7 @@ describe('REC Team Chat', () => {
 
   it('buildChatSystemPrompt for devin includes all knowledge bases', async () => {
     const { buildChatSystemPrompt } = await import('@/lib/rec/team/personas');
-    const prompt = buildChatSystemPrompt('devin');
+    const prompt = await buildChatSystemPrompt('devin');
     expect(prompt).toContain('Devin');
     expect(prompt).toContain('KNOWLEDGE BASE');
     // Devin gets everything
@@ -22,14 +22,14 @@ describe('REC Team Chat', () => {
 
   it('buildChatSystemPrompt for marcus includes NCAA rules and school needs', async () => {
     const { buildChatSystemPrompt } = await import('@/lib/rec/team/personas');
-    const prompt = buildChatSystemPrompt('marcus');
+    const prompt = await buildChatSystemPrompt('marcus');
     expect(prompt).toContain('Marcus Cole');
     expect(prompt).toContain('KNOWLEDGE BASE');
   });
 
   it('buildChatSystemPrompt for trey includes x-playbook and content library', async () => {
     const { buildChatSystemPrompt } = await import('@/lib/rec/team/personas');
-    const prompt = buildChatSystemPrompt('trey');
+    const prompt = await buildChatSystemPrompt('trey');
     expect(prompt).toContain('Trey Jackson');
     expect(prompt).toContain('KNOWLEDGE BASE');
   });

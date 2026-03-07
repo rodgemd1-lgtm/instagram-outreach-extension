@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
 
   const leads = [];
 
-  // Parse profile viewers — look for table rows with coach info
+  // Parse profile viewers -- look for table rows with coach info
   // Pattern: rows containing school names, coach names, dates
   const viewerRegex =
     /<tr[^>]*>[\s\S]*?<td[^>]*>([\s\S]*?)<\/td>[\s\S]*?<td[^>]*>([\s\S]*?)<\/td>[\s\S]*?<td[^>]*>([\s\S]*?)<\/td>[\s\S]*?<td[^>]*>([\s\S]*?)<\/td>[\s\S]*?<\/tr>/gi;
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       (s) => s?.replace(/<[^>]*>/g, "").trim() || ""
     );
     if (col1 && col2 && !col1.includes("Coach Name")) {
-      const lead = addLead({
+      const lead = await addLead({
         coachName: col1,
         schoolName: col2,
         division: col3 || "Unknown",
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
       const data = JSON.parse(jsonMatch[1]);
       if (Array.isArray(data.viewers)) {
         for (const v of data.viewers) {
-          const lead = addLead({
+          const lead = await addLead({
             coachName: v.coachName || "Unknown Coach",
             schoolName: v.schoolName || "Unknown School",
             division: v.division || "Unknown",
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
       }
       if (Array.isArray(data.campInvites)) {
         for (const c of data.campInvites) {
-          const lead = addLead({
+          const lead = await addLead({
             coachName: c.coachName || "Camp Coordinator",
             schoolName: c.schoolName || "Unknown School",
             division: c.division || "Unknown",
@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
       }
       if (Array.isArray(data.messages)) {
         for (const m of data.messages) {
-          const lead = addLead({
+          const lead = await addLead({
             coachName: m.coachName || "Unknown Coach",
             schoolName: m.schoolName || "Unknown School",
             division: m.division || "Unknown",

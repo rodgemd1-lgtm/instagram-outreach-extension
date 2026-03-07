@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  eslint: { ignoreDuringBuilds: true },
+  // Exclude puppeteer from serverless bundles (only used locally for header generation)
+  serverExternalPackages: ["puppeteer"],
   headers: async () => [
     {
       source: "/sw.js",

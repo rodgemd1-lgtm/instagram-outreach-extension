@@ -69,7 +69,7 @@ export function CompetitorMap() {
             <div className="flex items-center gap-4">
               <div>
                 <p className="font-semibold text-blue-900">Jacob Rodgers</p>
-                <p className="text-xs text-blue-600">@JacobRodgersOL29</p>
+                <p className="text-xs text-blue-600">@JacobRodge52987</p>
               </div>
               <Badge variant="performance">OL</Badge>
               <span className="text-sm">6&apos;4&quot; 285 | Pewaukee HS, WI | 2029</span>

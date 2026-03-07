@@ -84,7 +84,7 @@ export function IntelligenceDashboard() {
         body: JSON.stringify({
           athleteId: "jacob-rogers",
           athleteName: "Jacob Rodgers",
-          athleteHandle: "@JacobRodgersOL29",
+          athleteHandle: "@JacobRodge52987",
           classYear: 2029,
           height: '6\'4"',
           weight: "285 lbs",
@@ -131,7 +131,7 @@ export function IntelligenceDashboard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           coaches: [],
-          recruitHandle: "@JacobRodgersOL29",
+          recruitHandle: "@JacobRodge52987",
         }),
       });
       const data = await res.json();

@@ -8,7 +8,7 @@ export async function PUT(
   const { id } = await params;
   const data = await req.json();
 
-  const updated = updateTask(id, {
+  const updated = await updateTask(id, {
     status: data.status,
     output: data.output,
   });

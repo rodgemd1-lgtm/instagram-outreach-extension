@@ -1,9 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { Sidebar } from "@/components/sidebar";
-import { Header } from "@/components/header";
-import { MobileBottomNav } from "@/components/mobile-nav";
+import { AppShell } from "@/components/app-shell";
 import { PWARegister } from "@/components/pwa-register";
 
 const geistSans = localFont({
@@ -49,22 +47,7 @@ export default function RootLayout({
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-50`}>
         <PWARegister />
-
-        {/* Desktop sidebar - hidden on mobile */}
-        <div className="hidden md:block">
-          <Sidebar />
-        </div>
-
-        {/* Main content area */}
-        <div className="md:ml-64">
-          <Header />
-          <main className="p-4 md:p-6 pb-24 md:pb-6">
-            {children}
-          </main>
-        </div>
-
-        {/* Mobile bottom nav - hidden on desktop */}
-        <MobileBottomNav />
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

@@ -163,3 +163,47 @@ export interface ChatAction {
   label: string;
   payload: Record<string, unknown>;
 }
+
+// ─── Video Management Types ──────────────────────────────────────────────────
+
+export type VideoSource = "photos" | "gdrive" | "hudl" | "manual" | "local";
+export type UploadStatus = "pending" | "uploading" | "uploaded" | "failed" | "local";
+export type VideoCategory = "highlight_reel" | "game_film" | "clip" | "micro_clip";
+
+export interface VideoAsset {
+  id: string;
+  name: string;
+  source: VideoSource;
+  sourceAlbum: string | null;
+  filePath: string | null;
+  supabaseUrl: string | null;
+  storagePath: string | null;
+  fileSize: number | null;
+  duration: number | null;
+  mimeType: string | null;
+  tags: string[];
+  thumbnailUrl: string | null;
+  uploadStatus: UploadStatus;
+  uploadedAt: string | null;
+  createdAt: string;
+}
+
+export interface ScannedVideoFile {
+  filename: string;
+  filePath: string;
+  fileSize: number;
+  mimeType: string;
+  selected: boolean;
+}
+
+export interface ScannedVideoFileWithMeta extends ScannedVideoFile {
+  duration: number;
+  width: number;
+  height: number;
+  category: VideoCategory;
+}
+
+export interface PhotosAlbumInfo {
+  name: string;
+  itemCount: number;
+}

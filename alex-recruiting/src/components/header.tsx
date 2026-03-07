@@ -15,7 +15,7 @@ export function Header() {
             <span className="hidden md:inline">Jacob Rodgers | OL | 6&apos;4&quot; 285</span>
           </h2>
           <p className="text-[11px] text-slate-500 truncate hidden sm:block">
-            Pewaukee HS, Wisconsin | Class of 2029 | @JacobRodgersOL29
+            Pewaukee HS, Wisconsin | Class of 2029 | @JacobRodge52987
           </p>
         </div>
       </div>
