@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
       const stats: StatCardStats = body.stats ?? {};
       const imageBuffer = await generateStatCard(stats);
 
-      return new NextResponse(imageBuffer, {
+      return new NextResponse(new Uint8Array(imageBuffer), {
         status: 200,
         headers: {
           "Content-Type": "image/png",
@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
 
     const imageBuffer = await generatePostGraphic(options);
 
-    return new NextResponse(imageBuffer, {
+    return new NextResponse(new Uint8Array(imageBuffer), {
       status: 200,
       headers: {
         "Content-Type": "image/png",

@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
 
     // Apply type filter if requested
     const filteredTargets = type
-      ? targets.filter((t) => t.targetCategory === type || t.category === type)
+      ? targets.filter((t) => t.category === type)
       : targets;
 
     const response: Record<string, unknown> = {

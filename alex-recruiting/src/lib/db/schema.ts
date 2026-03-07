@@ -481,3 +481,90 @@ export const growthSnapshots = pgTable("growth_snapshots", {
   snapshotDate: timestamp("snapshot_date").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+// ============ CAMP TRACKER ============
+
+export const camps = pgTable("camps", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull(),
+  school: text("school"),
+  location: text("location"),
+  campType: text("camp_type").notNull().default("school_camp"), // "school_camp" | "prospect_day" | "combine" | "showcase" | "satellite"
+  date: timestamp("date"),
+  dateEnd: timestamp("date_end"),
+  registrationDeadline: timestamp("registration_deadline"),
+  registrationStatus: text("registration_status").notNull().default("not_registered"), // "not_registered" | "registered" | "waitlisted" | "confirmed"
+  cost: real("cost"),
+  coachesPresent: jsonb("coaches_present").$type<{ name: string; title: string; school: string; contacted: boolean }[]>().default([]),
+  results: jsonb("results").$type<{
+    measurables: { name: string; value: string; unit: string }[];
+    drills: { name: string; score: string; notes: string }[];
+    feedback: string[];
+  }>(),
+  coachContacts: jsonb("coach_contacts").$type<{
+    coachName: string;
+    school: string;
+    title: string;
+    businessCard: boolean;
+    followUpNeeded: boolean;
+    followUpDone: boolean;
+    notes: string;
+  }[]>().default([]),
+  followUpStatus: text("follow_up_status").default("none"), // "none" | "pending" | "in_progress" | "completed"
+  offerCorrelation: text("offer_correlation"), // track if camp led to offer interest
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// ============ MEASURABLES TRACKER ============
+
+export const measurables = pgTable("measurables", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  athleteId: text("athlete_id").notNull().default("jacob-rodgers"),
+  measureType: text("measure_type").notNull(), // "40yd" | "shuttle" | "broad_jump" | "vertical" | "bench" | "squat" | "clean" | "height" | "weight"
+  value: real("value").notNull(),
+  unit: text("unit").notNull(), // "seconds" | "inches" | "lbs" | "feet"
+  measuredAt: timestamp("measured_at").defaultNow(),
+  source: text("source").notNull().default("self_reported"), // "camp" | "training" | "self_reported" | "combine"
+  campId: uuid("camp_id").references(() => camps.id),
+  verified: boolean("verified").default(false),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// ============ QUESTIONNAIRE TRACKING ============
+
+export const questionnaires = pgTable("questionnaires", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  schoolName: text("school_name").notNull(),
+  schoolId: text("school_id"),
+  receivedAt: timestamp("received_at").defaultNow(),
+  respondedAt: timestamp("responded_at"),
+  status: text("status").notNull().default("received"), // "received" | "in_progress" | "submitted" | "confirmed"
+  responseData: jsonb("response_data"),
+  notes: text("notes").default(""),
+  isTargetSchool: boolean("is_target_school").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// ============ EMAIL OUTREACH ============
+
+export const emailOutreach = pgTable("email_outreach", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  coachId: text("coach_id"),
+  coachName: text("coach_name").notNull(),
+  schoolName: text("school_name").notNull(),
+  coachEmail: text("coach_email"),
+  templateType: text("template_type").notNull(),
+  subject: text("subject").notNull(),
+  body: text("body").notNull(),
+  status: text("status").default("draft"), // "draft" | "queued" | "sent" | "opened" | "responded"
+  sentAt: timestamp("sent_at"),
+  openedAt: timestamp("opened_at"),
+  respondedAt: timestamp("responded_at"),
+  sequenceId: text("sequence_id"),
+  stepNumber: integer("step_number"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
