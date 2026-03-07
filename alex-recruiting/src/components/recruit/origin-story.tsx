@@ -1,80 +1,74 @@
 "use client";
 
 import { useMemo } from "react";
-import { useRecruitAssembly, type AssemblyConfig } from "@/hooks/useRecruitAssembly";
+import {
+  useRecruitAssembly,
+  type AssemblyConfig,
+} from "@/hooks/useRecruitAssembly";
 
 /* ──────────────────────────────────────────────────────────────
-   Origin Story — Horizontal scroll timeline
+   The Work — Vertical timeline with lift progression
    LAAL Mechanism: Temporal Window
-   Shows the training timeline from age 12 to now — conveys that
-   the window to recruit this athlete is open NOW, and each year
-   adds more proof.
+   Shows the training trajectory from age 12 to now. The year-over-year
+   lift progression IS the story — coaches project forward from the data.
 
    Wave 1: none (section is below fold)
-   Wave 2: horizontal scroll with per-panel reveals
+   Wave 2: timeline entries scroll-reveal individually
    ────────────────────────────────────────────────────────────── */
 
 const milestones = [
   {
     age: "12",
     year: "2022",
-    title: "The Beginning",
-    description:
-      "Started training five days a week. While other kids played video games, Jacob was in the weight room. Not because someone made him — because he chose it.",
-    stat: "5 days/week",
-    statLabel: "Training commitment",
-    accent: "from-red-500/20 to-red-600/5",
+    headline: "First training session. 185 lbs.",
+    lifts: "Bench: 95  |  Squat: 135  |  Deadlift: 185",
+    detail: null,
   },
   {
     age: "13",
     year: "2023",
-    title: "The Foundation",
-    description:
-      "Built the work ethic that coaches can't teach. Two hours before school, every morning. Film study on weekends. The fundamentals became second nature.",
-    stat: "730+",
-    statLabel: "Training sessions",
-    accent: "from-red-600/20 to-red-700/5",
+    headline: "365 sessions logged. NX Level agility training begins.",
+    lifts: "Bench: 155  |  Squat: 225  |  Deadlift: 275",
+    detail: "Added personal trainer — compound movements for OL/DL.",
   },
   {
     age: "14",
-    year: "2024",
-    title: "The Breakout",
-    description:
-      "Earned a varsity spot as a freshman at Pewaukee HS. Played both sides of the ball — Defensive Tackle and Offensive Guard. 12-1 season. State Champions.",
-    stat: "12-1",
-    statLabel: "State Champions",
-    accent: "from-red-500/20 to-red-600/5",
+    year: "2024-25",
+    headline:
+      "Freshman starter — varsity AND JV. Two games in one day.",
+    lifts: "Bench: 265  |  Squat: 350  |  Deadlift: 405",
+    detail: "11 pancakes. 3 sacks. State playoff run.",
   },
   {
     age: "15",
-    year: "2025",
-    title: "The Ascent",
-    description:
-      "6'4\", 285 lbs with room to grow. Bench 265, squat 350. NCSA verified. Three more years to become one of the top two-way lineman prospects in Wisconsin.",
-    stat: "3 years",
-    statLabel: "Of growth remaining",
-    accent: "from-rose-500/20 to-rose-600/5",
+    year: "NOW",
+    headline:
+      "730+ total sessions. Track & field: 1st place discus, 1st place shot put.",
+    lifts: null,
+    detail: "The trajectory has not flattened.",
   },
 ];
 
 export function OriginStory() {
   const config = useMemo<AssemblyConfig>(
     () => ({
-      horizontalScroll: {
-        sectionSelector: '[data-gsap="origin-section"]',
-        trackSelector: '[data-gsap="origin-track"]',
-        panelSelector: '[data-gsap="origin-panel"]',
-        panelReveal: {
-          /* LAAL: Temporal Window — each milestone appears as a time-boxed moment */
+      wave2: [
+        {
+          containerSelector: '[data-gsap="work-timeline"]',
           from: { y: 40, opacity: 0 },
           to: {
             y: 0,
             opacity: 1,
             duration: 0.5,
-            ease: "back.out(1.7)",
+            ease: "power2.out",
+          },
+          individual: true,
+          scrollTrigger: {
+            start: "top 85%",
+            toggleActions: "play none none reverse",
           },
         },
-      },
+      ],
     }),
     []
   );
@@ -82,94 +76,77 @@ export function OriginStory() {
   const scopeRef = useRecruitAssembly(config);
 
   return (
-    <div ref={scopeRef}>
-      <section
-        id="origin"
-        data-gsap="origin-section"
-        className="relative overflow-hidden"
-      >
-        {/* Section intro */}
-        <div className="absolute top-8 left-8 md:left-12 z-10">
-          <span className="text-[10px] tracking-[0.5em] text-red-500/60 uppercase font-mono">
-            The Origin
+    <section
+      id="origin"
+      ref={scopeRef}
+      className="relative py-32 md:py-48 px-6 md:px-12"
+    >
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="mb-16 md:mb-24">
+          <span className="text-[10px] tracking-[0.5em] text-red-500/60 uppercase font-mono block mb-6">
+            The Work
           </span>
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[0.95] mb-6">
+            Training since age 12.
+            <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-rose-400">
+              Five days a week.
+            </span>
+            <br />
+            730+ sessions.
+          </h2>
         </div>
 
-        {/* Horizontal track */}
+        {/* Vertical timeline */}
         <div
-          data-gsap="origin-track"
-          className="flex h-screen"
-          style={{ width: `${milestones.length * 100}vw` }}
+          data-gsap="work-timeline"
+          className="relative"
         >
-          {milestones.map((m, i) => (
+          {/* Timeline line */}
+          <div className="absolute left-4 md:left-8 top-0 bottom-0 w-px bg-white/10" />
+
+          {milestones.map((m) => (
             <div
               key={m.age}
-              data-gsap="origin-panel"
-              className="w-screen h-screen flex items-center justify-center px-8 md:px-20 relative"
+              data-gsap-wave="2"
+              style={{ opacity: 0 }}
+              className="relative pl-12 md:pl-20 pb-16 last:pb-0"
             >
-              {/* Background gradient unique to panel */}
-              <div
-                className={`absolute inset-0 bg-gradient-to-br ${m.accent} opacity-50`}
-              />
+              {/* Timeline dot */}
+              <div className="absolute left-[11px] md:left-[27px] top-1 w-3 h-3 rounded-full bg-red-500 border-2 border-[#0A0A0A]" />
 
-              {/* Age number - ghosted in background */}
-              <span className="absolute top-1/2 right-12 -translate-y-1/2 text-[10rem] md:text-[24rem] font-black text-white/[0.02] font-mono select-none leading-none">
-                {m.age}
-              </span>
+              {/* Age label */}
+              <div className="flex items-center gap-4 mb-4">
+                <span className="text-xs tracking-[0.3em] text-red-500/70 font-mono">
+                  AGE {m.age} &mdash; {m.year}
+                </span>
+              </div>
 
-              {/* Content — each child is a Wave 2 reveal target */}
-              <div className="relative z-10 max-w-2xl">
-                {/* LAAL: Temporal Window — timeline indicator */}
-                <div data-gsap-wave="2" className="flex items-center gap-4 mb-8">
-                  <div className="w-12 h-px bg-red-500/50" />
-                  <span className="text-xs tracking-[0.3em] text-red-500/70 font-mono">
-                    AGE {m.age} &mdash; {m.year}
-                  </span>
-                  <div className="flex-1 h-px bg-white/5" />
-                </div>
+              {/* Headline */}
+              <p className="text-white/80 text-base md:text-lg font-semibold leading-relaxed mb-3">
+                {m.headline}
+              </p>
 
-                {/* LAAL: Temporal Window — milestone title */}
-                <h2
-                  data-gsap-wave="2"
-                  className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight mb-6 leading-[0.95]"
-                >
-                  {m.title}
-                </h2>
-
-                {/* LAAL: Temporal Window — milestone narrative */}
-                <p
-                  data-gsap-wave="2"
-                  className="text-white/50 text-base md:text-lg leading-relaxed max-w-lg mb-10"
-                >
-                  {m.description}
+              {/* Lift numbers */}
+              {m.lifts && (
+                <p className="text-white/40 text-sm font-mono tracking-wide mb-2">
+                  {m.lifts}
                 </p>
+              )}
 
-                {/* LAAL: Temporal Window — stat proof point */}
-                <div data-gsap-wave="2" className="flex items-end gap-4">
-                  <span className="text-5xl md:text-7xl font-mono font-black text-red-500">
-                    {m.stat}
-                  </span>
-                  <span className="text-xs tracking-[0.2em] text-white/30 uppercase mb-3">
-                    {m.statLabel}
-                  </span>
-                </div>
-              </div>
-
-              {/* Panel index dots */}
-              <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-3">
-                {milestones.map((_, j) => (
-                  <div
-                    key={j}
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      j === i ? "bg-red-500 scale-125" : "bg-white/10"
-                    }`}
-                  />
-                ))}
-              </div>
+              {/* Additional detail */}
+              {m.detail && (
+                <p className="text-white/30 text-sm leading-relaxed">
+                  {m.detail}
+                </p>
+              )}
             </div>
           ))}
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }

@@ -3,11 +3,11 @@ import type { Metadata, Viewport } from "next";
 export const metadata: Metadata = {
   title: "Jacob Rodgers | #79 | DT/OG | Class of 2029 | Pewaukee Pirates",
   description:
-    "6'4\" 285 | Two-way lineman | 11 Pancakes, 3 Sacks | State Champions | Pewaukee HS, Wisconsin | Class of 2029 | Watch film highlights",
+    "6'4\" 285 | Two-way lineman | 405 Deadlift | 11 Pancakes, 3 Sacks | Pewaukee HS, Wisconsin | Class of 2029 | Watch film highlights",
   openGraph: {
     title: "Jacob Rodgers | #79 DT/OG | Class of 2029 | Pewaukee Pirates",
     description:
-      "Two-way lineman out of Pewaukee HS, Wisconsin. Training since age 12. State Champion. Watch his film.",
+      "6'4\" 285 two-way lineman. 405 deadlift. Freshman starter. Pewaukee HS, Wisconsin. Class of 2029. Watch his film.",
     type: "website",
     videos: [
       {
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     card: "player",
     title: "Jacob Rodgers | #79 DT/OG | Pewaukee Pirates",
     description:
-      "6'4\" 285 two-way lineman. State Champion. Class of 2029. Watch film.",
+      "6'4\" 285 two-way lineman. 405 deadlift. Freshman starter. Class of 2029. Watch film.",
   },
 };
 

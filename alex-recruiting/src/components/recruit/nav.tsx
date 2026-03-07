@@ -12,9 +12,8 @@ import { useEffect, useState } from "react";
 const sections = [
   { id: "hero", label: "79" },
   { id: "film-reel", label: "Film" },
-  { id: "origin", label: "Origin" },
+  { id: "origin", label: "The Work" },
   { id: "character", label: "Character" },
-  { id: "film", label: "Stats" },
   { id: "academics", label: "Academics" },
   { id: "fit", label: "The Fit" },
   { id: "contact", label: "Contact" },
@@ -97,7 +96,7 @@ export function RecruitNav() {
               : "border-white/20 text-white/60 hover:text-white"
           }`}
         >
-          Recruit Me
+          Contact
         </button>
       </div>
     </nav>

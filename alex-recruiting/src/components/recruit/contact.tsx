@@ -5,16 +5,16 @@ import {
   useRecruitAssembly,
   type AssemblyConfig,
 } from "@/hooks/useRecruitAssembly";
-import { Check, ExternalLink } from "lucide-react";
+import { Check, ExternalLink, Mail, Phone } from "lucide-react";
 
 /* ──────────────────────────────────────────────────────────────
-   Contact CTA — Close the deal
+   Contact CTA — Zero friction from desire to action
    LAAL Mechanism: Forgiving Stakes
-   The form is framed as a low-pressure conversation starter,
-   not a commitment. "Let's talk" reduces friction.
+   Family email and phone are primary. Form is secondary.
+   No "RECRUIT ME" — clean, professional, easy.
 
    Wave 1: none (below fold)
-   Wave 2: header, form, links, footer scroll-reveal
+   Wave 2: header, direct contact, form, links scroll-reveal
    ────────────────────────────────────────────────────────────── */
 
 export function ContactCTA() {
@@ -24,7 +24,6 @@ export function ContactCTA() {
     () => ({
       wave2: [
         {
-          /* LAAL: Forgiving Stakes — low-pressure reveal of contact area */
           containerSelector: '[data-gsap="contact-content"]',
           from: { y: 40, opacity: 0 },
           to: {
@@ -60,34 +59,80 @@ export function ContactCTA() {
     >
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500/20 to-transparent" />
 
-      {/* Large background text */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[12rem] md:text-[20rem] font-black text-white/[0.015] select-none leading-none whitespace-nowrap">
-        RECRUIT ME
+      {/* Subtle 79 watermark — no "RECRUIT ME" */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[12rem] md:text-[20rem] font-black text-white/[0.015] select-none leading-none font-mono">
+        79
       </div>
 
       <div
         data-gsap="contact-content"
         className="max-w-4xl mx-auto relative z-10"
       >
-        {/* Header — LAAL: Forgiving Stakes */}
+        {/* Header */}
         <div
           data-gsap-wave="2"
           style={{ opacity: 0 }}
           className="text-center mb-16 md:mb-24"
         >
           <span className="text-[10px] tracking-[0.5em] text-red-500/60 uppercase font-mono block mb-6">
-            Let&apos;s Connect
+            Contact
           </span>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[0.95] mb-6">
-            Ready to talk?
+            Let&apos;s Talk
           </h2>
           <p className="text-white/40 text-base md:text-lg max-w-lg mx-auto leading-relaxed">
-            I&apos;m looking for a program where I can compete, develop, and
-            contribute from day one. Let&apos;s start the conversation.
+            Interested in Jacob? Reach out directly.
           </p>
         </div>
 
-        {/* Contact form — LAAL: Forgiving Stakes */}
+        {/* Direct contact — primary CTA */}
+        <div
+          data-gsap-wave="2"
+          style={{ opacity: 0 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12"
+        >
+          {/* Family contact */}
+          <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8">
+            <span className="text-[10px] tracking-[0.3em] text-white/30 uppercase block mb-4">
+              Family Contact
+            </span>
+            <a
+              href="mailto:rodgers.family@email.com"
+              className="flex items-center gap-3 text-white hover:text-red-500 transition-colors mb-3"
+            >
+              <Mail className="w-4 h-4 text-red-500/60" />
+              <span className="text-sm font-mono">rodgers.family@email.com</span>
+            </a>
+            <a
+              href="tel:+15551234567"
+              className="flex items-center gap-3 text-white hover:text-red-500 transition-colors mb-4"
+            >
+              <Phone className="w-4 h-4 text-red-500/60" />
+              <span className="text-sm font-mono">(555) 123-4567</span>
+            </a>
+            <p className="text-white/20 text-xs">
+              Response time: Within 24 hours.
+            </p>
+          </div>
+
+          {/* Jacob direct */}
+          <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8">
+            <span className="text-[10px] tracking-[0.3em] text-white/30 uppercase block mb-4">
+              Jacob
+            </span>
+            <div className="space-y-3">
+              <QuickLink
+                label="X / Twitter"
+                handle="@JacobRodge52987"
+                href="https://x.com/JacobRodge52987"
+              />
+              <QuickLink label="NCSA Profile" handle="View Profile" href="#" />
+              <QuickLink label="Hudl Film" handle="Watch Film" href="#" />
+            </div>
+          </div>
+        </div>
+
+        {/* Contact form — secondary */}
         {!submitted ? (
           <form
             onSubmit={handleSubmit}
@@ -95,10 +140,13 @@ export function ContactCTA() {
             style={{ opacity: 0 }}
             className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 md:p-12 space-y-6"
           >
+            <span className="text-[10px] tracking-[0.3em] text-white/30 uppercase block mb-2">
+              Or send a message
+            </span>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="text-[10px] tracking-[0.3em] text-white/30 uppercase block mb-2">
-                  Coach Name
+                  Your Name
                 </label>
                 <input
                   type="text"
@@ -109,7 +157,7 @@ export function ContactCTA() {
               </div>
               <div>
                 <label className="text-[10px] tracking-[0.3em] text-white/30 uppercase block mb-2">
-                  School / University
+                  School
                 </label>
                 <input
                   type="text"
@@ -151,7 +199,7 @@ export function ContactCTA() {
               <textarea
                 rows={4}
                 className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-white placeholder-white/20 focus:border-red-500/40 focus:outline-none transition-colors resize-none"
-                placeholder="Tell me about your program and what you're looking for in a lineman..."
+                placeholder="Your message..."
               />
             </div>
 
@@ -168,31 +216,15 @@ export function ContactCTA() {
             style={{ opacity: 0 }}
             className="bg-gradient-to-r from-red-500/5 to-rose-500/5 border border-red-500/20 rounded-2xl p-12 text-center"
           >
-            {/* Lucide Check icon — no emoji */}
             <div className="flex justify-center mb-4">
               <Check className="w-10 h-10 text-red-500" />
             </div>
             <h3 className="text-2xl font-bold mb-3">Message sent.</h3>
             <p className="text-white/50">
-              Thank you, Coach. I&apos;ll respond within 24 hours.
+              Thank you, Coach. We&apos;ll respond within 24 hours.
             </p>
           </div>
         )}
-
-        {/* Quick links — LAAL: Forgiving Stakes */}
-        <div
-          data-gsap-wave="2"
-          style={{ opacity: 0 }}
-          className="mt-12 flex flex-wrap justify-center gap-6"
-        >
-          <QuickLink
-            label="X / Twitter"
-            handle="@JacobRodge52987"
-            href="https://x.com/JacobRodge52987"
-          />
-          <QuickLink label="NCSA Profile" handle="View Profile" href="#" />
-          <QuickLink label="Hudl Film" handle="Watch Film" href="#" />
-        </div>
 
         {/* Footer */}
         <div
@@ -201,11 +233,8 @@ export function ContactCTA() {
           className="mt-20 pt-12 border-t border-white/5 text-center"
         >
           <p className="text-white/20 text-xs tracking-widest">
-            JACOB RODGERS &mdash; DT/OG &mdash; CLASS OF 2029 &mdash; PEWAUKEE
-            HS, WISCONSIN
-          </p>
-          <p className="text-white/10 text-[10px] mt-3">
-            Built with dedication. Like everything else.
+            JACOB RODGERS &mdash; #79 &mdash; DT/OG &mdash; CLASS OF 2029
+            &mdash; PEWAUKEE HS, WISCONSIN
           </p>
         </div>
       </div>
@@ -227,7 +256,7 @@ function QuickLink({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center gap-3 px-6 py-3 rounded-full border border-white/[0.06] hover:border-red-500/20 transition-colors group"
+      className="flex items-center justify-between py-2 group"
     >
       <span className="text-[10px] tracking-[0.2em] text-white/30 uppercase">
         {label}

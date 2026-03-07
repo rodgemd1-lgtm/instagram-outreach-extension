@@ -5,7 +5,6 @@ import { RecruitHero } from "@/components/recruit/hero";
 import { FilmReel } from "@/components/recruit/film-reel";
 import { OriginStory } from "@/components/recruit/origin-story";
 import { CharacterSection } from "@/components/recruit/character";
-import { FilmStats } from "@/components/recruit/film-stats";
 import { AcademicsSection } from "@/components/recruit/academics";
 import { TheFit } from "@/components/recruit/the-fit";
 import { ContactCTA } from "@/components/recruit/contact";
@@ -24,28 +23,25 @@ export default function RecruitPage() {
       <MobileNav />
       <ScrollProgress />
 
-      {/* Beat 1: Hero — "Do I keep scrolling?" (LAAL: Known-ness) */}
+      {/* 1. Hero — "Is this kid in my window?" (LAAL: Known-ness) */}
       <RecruitHero backgroundUrl={photoMap.hero} />
 
-      {/* Beat 2: Film Reel — "Can he play?" (LAAL: Known-ness) */}
+      {/* 2. Film + Stats — "Can he play? What are his numbers?" (LAAL: Known-ness) */}
       <FilmReel backgroundUrl={photoMap["film-reel"]} />
 
-      {/* Beat 3: Origin — "What's his work ethic?" (LAAL: Temporal Window) */}
+      {/* 3. The Work — "What's his work ethic?" (LAAL: Temporal Window) */}
       <OriginStory />
 
-      {/* Beat 4: Character — "Will he fit our locker room?" (LAAL: Ownership) */}
+      {/* 4. Character — "Will he fit our locker room?" (LAAL: Ownership) */}
       <CharacterSection />
 
-      {/* Beat 5: Film & Stats — "What are his numbers?" (LAAL: Known-ness) */}
-      <FilmStats />
-
-      {/* Beat 6: Academics — "Will he qualify?" (LAAL: Continuity Thread) */}
+      {/* 5. Academics — "Will he qualify?" (LAAL: Continuity Thread) */}
       <AcademicsSection />
 
-      {/* Beat 7: The Fit — "Why should we recruit him?" (LAAL: Ownership) */}
+      {/* 6. The Fit — "Why should we recruit him?" (LAAL: Ownership + Loss Aversion) */}
       <TheFit />
 
-      {/* Beat 8: Contact — "How do I reach out?" (LAAL: Forgiving Stakes) */}
+      {/* 7. Contact — "How do I reach out?" (LAAL: Forgiving Stakes) */}
       <ContactCTA />
     </div>
   );

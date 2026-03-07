@@ -189,15 +189,13 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
           <Measurable label="STATE" value="WI" />
         </div>
 
-        {/* Core identity line */}
+        {/* Qualifying credentials */}
         <p
           data-gsap="hero-tagline"
           style={{ opacity: 0 }}
-          className="mt-8 md:mt-12 text-white/40 text-sm md:text-base max-w-xl mx-auto leading-relaxed font-light"
+          className="mt-8 md:mt-12 text-white/40 text-sm md:text-base max-w-xl mx-auto leading-relaxed font-mono tracking-wide"
         >
-          Two-way lineman. State Champion.
-          <br />
-          Training five days a week since he was twelve.
+          State Playoff Run &nbsp;|&nbsp; Freshman Starter &nbsp;|&nbsp; Two-Way
         </p>
 
         {/* Scroll indicator — uses Lucide icon, no emoji */}
@@ -207,7 +205,7 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
           className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
         >
           <span className="text-[10px] tracking-[0.4em] text-white/20 uppercase">
-            Scroll
+            Watch the film
           </span>
           <ChevronDown className="w-4 h-4 text-white/20 animate-pulse" />
         </div>

@@ -10,25 +10,20 @@ import { VideoModal } from "./video-modal";
 import { Play } from "lucide-react";
 
 /* ──────────────────────────────────────────────────────────────
-   Film Reel Section — Position #2 (right after hero)
+   Film + Stats — Position #2 (merged section)
    LAAL Mechanism: Known-ness
-   The first 10 seconds of film is what keeps a coach on the page.
-   Auto-plays a 15-sec micro reel on desktop, poster + play on mobile.
+   Film is the most important content on the page. Stats live
+   directly beneath the video so the coach sees both together.
 
    Wave 1: none (below hero)
-   Wave 2: scroll-triggered reveal of video player and CTAs
+   Wave 2: scroll-triggered reveal of video, stats, and CTAs
    ────────────────────────────────────────────────────────────── */
 
 interface FilmReelProps {
-  /** URL to the micro reel video (e.g., /recruit/micro-reel.mp4) */
   reelSrc?: string;
-  /** Poster image for the reel */
   reelPoster?: string;
-  /** Full highlight reel URL */
   fullHighlightSrc?: string;
-  /** Background photo URL */
   backgroundUrl?: string;
-  /** Clip thumbnails for the side panel */
   clipThumbnails?: Array<{
     title: string;
     thumbnail: string;
@@ -112,7 +107,7 @@ export function FilmReel({
           data-gsap="film-reel-content"
           className="relative z-10 max-w-6xl mx-auto px-6 md:px-12 w-full"
         >
-          {/* Section label */}
+          {/* Section label + context */}
           <div
             data-gsap-wave="2"
             style={{ opacity: 0 }}
@@ -121,12 +116,15 @@ export function FilmReel({
             <span className="text-[10px] tracking-[0.5em] text-red-500/60 uppercase font-mono block mb-4">
               Film
             </span>
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[0.95]">
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[0.95] mb-3">
               See him{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-rose-400">
                 play.
               </span>
             </h2>
+            <p className="text-white/30 text-sm font-mono">
+              Freshman Season &nbsp;|&nbsp; DT &amp; OG &nbsp;|&nbsp; Pewaukee HS &nbsp;|&nbsp; State Playoff Run
+            </p>
           </div>
 
           {/* Main video + side clips layout */}
@@ -147,7 +145,6 @@ export function FilmReel({
                     className="w-full h-full"
                   />
                 ) : (
-                  /* Placeholder if no reel exists yet */
                   <div className="w-full h-full flex items-center justify-center">
                     <div className="text-center">
                       <Play className="w-16 h-16 text-white/20 mx-auto mb-4" />
@@ -186,6 +183,21 @@ export function FilmReel({
             )}
           </div>
 
+          {/* Stat bar — immediately below film */}
+          <div
+            data-gsap-wave="2"
+            style={{ opacity: 0 }}
+            className="mt-8 flex flex-wrap items-center justify-center gap-6 md:gap-10 py-6 border-t border-b border-white/5"
+          >
+            <StatPill value="11" label="Pancakes" />
+            <StatPill value="3" label="Sacks" />
+            <StatPill value="1" label="Fumble Rec" />
+            <div className="w-px h-8 bg-white/10 hidden md:block" />
+            <StatPill value="405" label="Deadlift" suffix="lb" />
+            <StatPill value="265" label="Bench" suffix="lb" />
+            <StatPill value="350" label="Squat" suffix="lb" />
+          </div>
+
           {/* CTA — Watch Full Highlights */}
           <div
             data-gsap-wave="2"
@@ -202,7 +214,7 @@ export function FilmReel({
             >
               <Play className="w-5 h-5 group-hover:scale-110 transition-transform" />
               <span className="text-sm tracking-widest uppercase">
-                Watch Full Highlights
+                Watch Full Film on Hudl
               </span>
             </button>
           </div>
@@ -216,5 +228,19 @@ export function FilmReel({
         onClose={() => setModalOpen(false)}
       />
     </>
+  );
+}
+
+function StatPill({ value, label, suffix }: { value: string; label: string; suffix?: string }) {
+  return (
+    <div className="text-center">
+      <div className="text-2xl md:text-3xl font-mono font-black text-white">
+        {value}
+        {suffix && <span className="text-sm text-white/30 ml-0.5">{suffix}</span>}
+      </div>
+      <div className="text-[9px] tracking-[0.2em] text-white/30 uppercase">
+        {label}
+      </div>
+    </div>
   );
 }

@@ -10,12 +10,11 @@ import { useEffect, useState } from "react";
 const sections = [
   { id: "hero", label: "79" },
   { id: "film-reel", label: "Film" },
-  { id: "origin", label: "Origin" },
+  { id: "origin", label: "Work" },
   { id: "character", label: "Char" },
-  { id: "film", label: "Stats" },
   { id: "academics", label: "Acad" },
   { id: "fit", label: "Fit" },
-  { id: "contact", label: "CTA" },
+  { id: "contact", label: "Talk" },
 ];
 
 export function MobileNav() {
