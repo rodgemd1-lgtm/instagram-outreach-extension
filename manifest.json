@@ -12,7 +12,10 @@
     "notifications"
   ],
   "host_permissions": [
-    "https://www.instagram.com/*"
+    "https://www.instagram.com/*",
+    "https://www.hudl.com/*",
+    "https://r.jina.ai/*",
+    "http://localhost:3000/*"
   ],
   "background": {
     "service_worker": "service-worker.js",

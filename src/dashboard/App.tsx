@@ -10,6 +10,7 @@ import { LeadImport } from './pages/LeadImport';
 import { UnifiedInbox } from './pages/UnifiedInbox';
 import { Analytics } from './pages/Analytics';
 import { Settings } from './pages/Settings';
+import { Intelligence } from './pages/Intelligence';
 
 export function App() {
   return (
@@ -28,6 +29,7 @@ export function App() {
             <Route path="/inbox" element={<UnifiedInbox />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/intelligence" element={<Intelligence />} />
           </Routes>
         </main>
       </div>

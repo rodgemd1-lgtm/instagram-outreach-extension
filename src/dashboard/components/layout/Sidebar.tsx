@@ -7,6 +7,7 @@ const navItems = [
   { to: '/leads', label: 'Leads', icon: '👥' },
   { to: '/inbox', label: 'Inbox', icon: '💬' },
   { to: '/analytics', label: 'Analytics', icon: '📈' },
+  { to: '/intelligence', label: 'Intelligence', icon: '🧠' },
   { to: '/settings', label: 'Settings', icon: '⚙️' },
 ];
 

@@ -130,6 +130,23 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       broadcastToDashboard(message);
       return false;
 
+    // Intelligence — these are forwarded to the alex-recruiting backend
+    case MSG.SCRAPE_HUDL:
+    case MSG.ANALYZE_TWEETS:
+    case MSG.COACH_BEHAVIOR_ANALYSIS:
+    case MSG.RUN_INTELLIGENCE:
+      handleIntelligenceMessage(message)
+        .then((result) => sendResponse(result))
+        .catch((err) => sendResponse({ error: err.message }));
+      return true;
+
+    case MSG.HUDL_RESULT:
+    case MSG.TWEET_ANALYSIS_RESULT:
+    case MSG.COACH_BEHAVIOR_RESULT:
+    case MSG.INTELLIGENCE_RESULT:
+      broadcastToDashboard(message);
+      return false;
+
     // Dashboard
     case MSG.OPEN_DASHBOARD:
       chrome.tabs.create({ url: chrome.runtime.getURL('dashboard.html') });
@@ -181,4 +198,75 @@ async function getExtensionStatus() {
     instagramTabOpen: !!tab,
     instagramTabUrl: tab?.url ?? null,
   };
+}
+
+// ============ Intelligence Integration ============
+
+const ALEX_API_BASE = 'http://localhost:3000/api/intelligence';
+
+async function handleIntelligenceMessage(message: { type: string; payload?: unknown }): Promise<unknown> {
+  try {
+    switch (message.type) {
+      case MSG.SCRAPE_HUDL: {
+        const { profileUrl } = message.payload as { profileUrl: string };
+        const res = await fetch(`${ALEX_API_BASE}/hudl`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ profileUrl }),
+        });
+        return res.json();
+      }
+
+      case MSG.ANALYZE_TWEETS: {
+        const payload = message.payload as { handle: string; tweets: unknown[] };
+        const res = await fetch(`${ALEX_API_BASE}/analyze`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            athleteId: 'jacob-rogers',
+            athleteName: 'Jacob Rogers',
+            athleteHandle: payload.handle,
+            classYear: 2028,
+            height: '6\'4"',
+            weight: '285 lbs',
+            tweets: payload.tweets,
+          }),
+        });
+        return res.json();
+      }
+
+      case MSG.COACH_BEHAVIOR_ANALYSIS: {
+        const { coaches } = message.payload as { coaches: unknown[] };
+        const res = await fetch(`${ALEX_API_BASE}/coach-behavior`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ coaches }),
+        });
+        return res.json();
+      }
+
+      case MSG.RUN_INTELLIGENCE: {
+        const { athleteId, athleteName } = message.payload as { athleteId: string; athleteName: string };
+        const res = await fetch(`${ALEX_API_BASE}/analyze`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            athleteId,
+            athleteName,
+            athleteHandle: '@JacobRogersOL28',
+            classYear: 2028,
+            height: '6\'4"',
+            weight: '285 lbs',
+          }),
+        });
+        return res.json();
+      }
+
+      default:
+        return { error: `Unknown intelligence message type: ${message.type}` };
+    }
+  } catch (error) {
+    log.error('Intelligence API call failed', error);
+    return { error: error instanceof Error ? error.message : 'Intelligence API call failed' };
+  }
 }

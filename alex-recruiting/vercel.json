@@ -1,0 +1,25 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "outputDirectory": ".next",
+  "regions": ["iad1"],
+  "crons": [
+    {
+      "path": "/api/agents/cron?agent=coach-intelligence",
+      "schedule": "0 */4 * * *"
+    },
+    {
+      "path": "/api/agents/cron?agent=timing-optimizer",
+      "schedule": "0 0,6,12,18 * * *"
+    },
+    {
+      "path": "/api/agents/cron?agent=profile-optimizer",
+      "schedule": "0 12 * * *"
+    },
+    {
+      "path": "/api/agents/cron?agent=placement-analyst",
+      "schedule": "0 3 * * *"
+    }
+  ]
+}
