@@ -12,11 +12,25 @@ interface PhotoRecord {
 }
 
 /**
- * Fetches curated photos from /api/photos for the recruit page.
+ * Static generated images — served from public/recruit/generated/
+ * These are AI-generated via fal.ai Nano Banana Pro.
+ * API photos override these when available.
+ */
+const STATIC_PHOTOS: Record<string, string> = {
+  hero: "/recruit/generated/hero-action.png",
+  "film-reel": "/recruit/generated/film-bg.png",
+  origin: "/recruit/generated/training-deadlift.png",
+  character: "/recruit/generated/character-huddle.png",
+  fit: "/recruit/generated/fit-discus.png",
+};
+
+/**
  * Returns a map of section ID -> photo URL.
+ * Uses AI-generated static images by default,
+ * with API-sourced photos as overrides.
  */
 export function useRecruitPhotos() {
-  const [photoMap, setPhotoMap] = useState<Record<string, string>>({});
+  const [photoMap, setPhotoMap] = useState<Record<string, string>>(STATIC_PHOTOS);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,27 +38,25 @@ export function useRecruitPhotos() {
 
     async function fetchPhotos() {
       try {
-        // Fetch all photos
         const res = await fetch("/api/photos");
         if (!res.ok) return;
 
         const photos: PhotoRecord[] = await res.json();
+        if (cancelled || photos.length === 0) return;
 
-        if (cancelled) return;
-
-        // Build section -> photo URL map
-        const map: Record<string, string> = {};
-
+        // Build overrides from real photos
+        const overrides: Record<string, string> = {};
         for (const [sectionId, config] of Object.entries(SECTION_PHOTOS)) {
           const photo = findBestPhoto(photos, config);
           if (photo) {
-            map[sectionId] = `/api/photos/${photo.id}/file`;
+            overrides[sectionId] = `/api/photos/${photo.id}/file`;
           }
         }
 
-        setPhotoMap(map);
+        // Merge: real photos override static defaults
+        setPhotoMap((prev) => ({ ...prev, ...overrides }));
       } catch {
-        // Silently fail — sections render fine without photos
+        // Static images remain — sections still look great
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -63,18 +75,10 @@ function findBestPhoto(
   photos: PhotoRecord[],
   config: SectionPhotoConfig
 ): PhotoRecord | undefined {
-  // If a specific ID is requested, use it
   if (config.photoId) {
     return photos.find((p) => p.id === config.photoId);
   }
-
-  // Filter by category
   const candidates = photos.filter((p) => p.category === config.category);
-
-  // Prefer favorites
   const favorite = candidates.find((p) => p.favorite);
-  if (favorite) return favorite;
-
-  // Return first match
-  return candidates[0];
+  return favorite || candidates[0];
 }

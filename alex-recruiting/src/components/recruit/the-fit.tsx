@@ -34,7 +34,7 @@ const blocks = [
   },
 ];
 
-export function TheFit() {
+export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
   const config = useMemo<AssemblyConfig>(
     () => ({
       wave2: [
@@ -66,6 +66,15 @@ export function TheFit() {
       ref={scopeRef}
       className="relative py-32 md:py-48 px-6 md:px-12"
     >
+      {/* Background photo */}
+      {backgroundUrl && (
+        <div className="absolute inset-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={backgroundUrl} alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-[#0A0A0A]/88" />
+        </div>
+      )}
+
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-600/[0.03] rounded-full blur-[150px]" />

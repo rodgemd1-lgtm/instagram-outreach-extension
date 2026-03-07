@@ -30,16 +30,16 @@ export default function RecruitPage() {
       <FilmReel backgroundUrl={photoMap["film-reel"]} />
 
       {/* 3. The Work — "What's his work ethic?" (LAAL: Temporal Window) */}
-      <OriginStory />
+      <OriginStory backgroundUrl={photoMap.origin} />
 
       {/* 4. Character — "Will he fit our locker room?" (LAAL: Ownership) */}
-      <CharacterSection />
+      <CharacterSection backgroundUrl={photoMap.character} />
 
       {/* 5. Academics — "Will he qualify?" (LAAL: Continuity Thread) */}
       <AcademicsSection />
 
       {/* 6. The Fit — "Why should we recruit him?" (LAAL: Ownership + Loss Aversion) */}
-      <TheFit />
+      <TheFit backgroundUrl={photoMap.fit} />
 
       {/* 7. Contact — "How do I reach out?" (LAAL: Forgiving Stakes) */}
       <ContactCTA />

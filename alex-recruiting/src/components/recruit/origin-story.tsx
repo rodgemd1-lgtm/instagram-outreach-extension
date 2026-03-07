@@ -49,7 +49,7 @@ const milestones = [
   },
 ];
 
-export function OriginStory() {
+export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
   const config = useMemo<AssemblyConfig>(
     () => ({
       wave2: [
@@ -81,9 +81,18 @@ export function OriginStory() {
       ref={scopeRef}
       className="relative py-32 md:py-48 px-6 md:px-12"
     >
+      {/* Background photo */}
+      {backgroundUrl && (
+        <div className="absolute inset-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={backgroundUrl} alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-[#0A0A0A]/85" />
+        </div>
+      )}
+
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto relative z-10">
         {/* Header */}
         <div className="mb-16 md:mb-24">
           <span className="text-[10px] tracking-[0.5em] text-red-500/60 uppercase font-mono block mb-6">
