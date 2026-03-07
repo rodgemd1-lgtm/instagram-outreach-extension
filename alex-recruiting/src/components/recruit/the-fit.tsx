@@ -1,6 +1,21 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useMemo } from "react";
+import {
+  useRecruitAssembly,
+  type AssemblyConfig,
+} from "@/hooks/useRecruitAssembly";
+
+/* ──────────────────────────────────────────────────────────────
+   The Fit — Why your program needs Jacob
+   LAAL Mechanism: Ownership
+   Each reason is framed from the COACH's perspective, letting
+   them envision what Jacob adds to THEIR roster. Directional
+   flight on desktop (alternating x-axis), simplified y on mobile.
+
+   Wave 1: none (below fold)
+   Wave 2: individual card reveals with alternating x direction
+   ────────────────────────────────────────────────────────────── */
 
 const reasons = [
   {
@@ -11,7 +26,7 @@ const reasons = [
   {
     number: "02",
     title: "Two-way proof of concept",
-    body: "Most linemen specialize early. Jacob produces on both sides — 11 pancake blocks on offense, 3 sacks and a fumble recovery on defense. Your coaching staff gets options.",
+    body: "Most linemen specialize early. Jacob produces on both sides -- 11 pancake blocks on offense, 3 sacks and a fumble recovery on defense. Your coaching staff gets options.",
   },
   {
     number: "03",
@@ -31,58 +46,36 @@ const reasons = [
 ];
 
 export function TheFit() {
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const config = useMemo<AssemblyConfig>(
+    () => ({
+      wave2: [
+        {
+          /* LAAL: Ownership — each reason lets the coach claim this recruit */
+          containerSelector: '[data-gsap="fit-reasons"]',
+          from: { x: -50, opacity: 0 },
+          to: {
+            x: 0,
+            opacity: 1,
+            duration: 0.5,
+            ease: "back.out(1.7)",
+          },
+          individual: true,
+          scrollTrigger: {
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+        },
+      ],
+    }),
+    []
+  );
 
-  useEffect(() => {
-    let cleanup: (() => void) | undefined;
-
-    const initGSAP = async () => {
-      try {
-        const gsapModule = await import("gsap");
-        const scrollTriggerModule = await import("gsap/ScrollTrigger");
-        const gsap = gsapModule.default || gsapModule;
-        const ScrollTrigger =
-          scrollTriggerModule.ScrollTrigger || scrollTriggerModule.default;
-
-        gsap.registerPlugin(ScrollTrigger);
-
-        if (!sectionRef.current) return;
-
-        const items = sectionRef.current.querySelectorAll(".fit-item");
-        items.forEach((item, i) => {
-          gsap.fromTo(
-            item,
-            { x: i % 2 === 0 ? -60 : 60, opacity: 0 },
-            {
-              x: 0,
-              opacity: 1,
-              duration: 0.9,
-              ease: "back.out(1.2)",
-              scrollTrigger: {
-                trigger: item,
-                start: "top 85%",
-                toggleActions: "play none none reverse",
-              },
-            }
-          );
-        });
-
-        cleanup = () => {
-          ScrollTrigger.getAll().forEach((t: { kill: () => void }) => t.kill());
-        };
-      } catch {
-        // Fallback
-      }
-    };
-
-    initGSAP();
-    return () => cleanup?.();
-  }, []);
+  const scopeRef = useRecruitAssembly(config);
 
   return (
     <section
       id="fit"
-      ref={sectionRef}
+      ref={scopeRef}
       className="relative py-32 md:py-48 px-6 md:px-12"
     >
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
@@ -110,12 +103,17 @@ export function TheFit() {
           </p>
         </div>
 
-        {/* Reasons */}
-        <div className="space-y-6 md:space-y-8">
+        {/* Reasons — Wave 2 individual scroll-triggered */}
+        <div
+          data-gsap="fit-reasons"
+          className="space-y-6 md:space-y-8"
+        >
           {reasons.map((r) => (
             <div
               key={r.number}
-              className="fit-item group"
+              data-gsap-wave="2"
+              style={{ opacity: 0 }}
+              className="group"
             >
               <div className="relative bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 md:p-10 hover:border-amber-500/20 transition-all duration-500 md:flex md:items-start md:gap-10">
                 {/* Number */}

@@ -5,7 +5,7 @@
 // Uses Puppeteer to render styled HTML and capture a screenshot.
 // ---------------------------------------------------------------------------
 
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 
@@ -255,7 +255,7 @@ export async function generateHeaderImage(): Promise<string> {
 }
 
 export async function getHeaderImageBase64(): Promise<string> {
-  const puppeteerModule = await import("puppeteer");
+  const puppeteerModule = await import("puppeteer-core");
   const browser = await puppeteerModule.default.launch({
     headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],

@@ -2,6 +2,12 @@
 
 import { useEffect, useState } from "react";
 
+/* ──────────────────────────────────────────────────────────────
+   Scroll Progress Bar — Utility element (not narrative-animated)
+   No LAAL mechanism — progress bar is ambient feedback, not part
+   of the motion narrative. CSS transform is acceptable here.
+   ────────────────────────────────────────────────────────────── */
+
 export function ScrollProgress() {
   const [progress, setProgress] = useState(0);
 

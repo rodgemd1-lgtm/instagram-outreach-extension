@@ -1,55 +1,51 @@
 "use client";
 
-import { useEffect, useRef, useState, FormEvent } from "react";
+import { useMemo, useState, FormEvent } from "react";
+import {
+  useRecruitAssembly,
+  type AssemblyConfig,
+} from "@/hooks/useRecruitAssembly";
+import { Check, ExternalLink } from "lucide-react";
+
+/* ──────────────────────────────────────────────────────────────
+   Contact CTA — Close the deal
+   LAAL Mechanism: Forgiving Stakes
+   The form is framed as a low-pressure conversation starter,
+   not a commitment. "Let's talk" reduces friction.
+
+   Wave 1: none (below fold)
+   Wave 2: header, form, links, footer scroll-reveal
+   ────────────────────────────────────────────────────────────── */
 
 export function ContactCTA() {
-  const sectionRef = useRef<HTMLDivElement>(null);
   const [submitted, setSubmitted] = useState(false);
 
-  useEffect(() => {
-    let cleanup: (() => void) | undefined;
-
-    const initGSAP = async () => {
-      try {
-        const gsapModule = await import("gsap");
-        const scrollTriggerModule = await import("gsap/ScrollTrigger");
-        const gsap = gsapModule.default || gsapModule;
-        const ScrollTrigger =
-          scrollTriggerModule.ScrollTrigger || scrollTriggerModule.default;
-
-        gsap.registerPlugin(ScrollTrigger);
-
-        if (!sectionRef.current) return;
-
-        const reveals = sectionRef.current.querySelectorAll(".contact-reveal");
-        gsap.fromTo(
-          reveals,
-          { y: 40, opacity: 0 },
-          {
+  const config = useMemo<AssemblyConfig>(
+    () => ({
+      wave2: [
+        {
+          /* LAAL: Forgiving Stakes — low-pressure reveal of contact area */
+          containerSelector: '[data-gsap="contact-content"]',
+          from: { y: 40, opacity: 0 },
+          to: {
             y: 0,
             opacity: 1,
-            duration: 0.8,
-            stagger: 0.12,
+            duration: 0.5,
             ease: "power2.out",
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: "top 70%",
-              toggleActions: "play none none reverse",
-            },
-          }
-        );
+          },
+          individual: false,
+          stagger: 0.12,
+          scrollTrigger: {
+            start: "top 70%",
+            toggleActions: "play none none reverse",
+          },
+        },
+      ],
+    }),
+    []
+  );
 
-        cleanup = () => {
-          ScrollTrigger.getAll().forEach((t: { kill: () => void }) => t.kill());
-        };
-      } catch {
-        // Fallback
-      }
-    };
-
-    initGSAP();
-    return () => cleanup?.();
-  }, []);
+  const scopeRef = useRecruitAssembly(config);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -59,7 +55,7 @@ export function ContactCTA() {
   return (
     <section
       id="contact"
-      ref={sectionRef}
+      ref={scopeRef}
       className="relative py-32 md:py-48 px-6 md:px-12"
     >
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500/20 to-transparent" />
@@ -69,9 +65,16 @@ export function ContactCTA() {
         RECRUIT ME
       </div>
 
-      <div className="max-w-4xl mx-auto relative z-10">
-        {/* Header */}
-        <div className="contact-reveal text-center mb-16 md:mb-24">
+      <div
+        data-gsap="contact-content"
+        className="max-w-4xl mx-auto relative z-10"
+      >
+        {/* Header — LAAL: Forgiving Stakes */}
+        <div
+          data-gsap-wave="2"
+          style={{ opacity: 0 }}
+          className="text-center mb-16 md:mb-24"
+        >
           <span className="text-[10px] tracking-[0.5em] text-amber-400/60 uppercase font-mono block mb-6">
             Let&apos;s Connect
           </span>
@@ -84,11 +87,13 @@ export function ContactCTA() {
           </p>
         </div>
 
-        {/* Contact form */}
+        {/* Contact form — LAAL: Forgiving Stakes */}
         {!submitted ? (
           <form
             onSubmit={handleSubmit}
-            className="contact-reveal bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 md:p-12 space-y-6"
+            data-gsap-wave="2"
+            style={{ opacity: 0 }}
+            className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 md:p-12 space-y-6"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -158,8 +163,15 @@ export function ContactCTA() {
             </button>
           </form>
         ) : (
-          <div className="contact-reveal bg-gradient-to-r from-amber-500/5 to-orange-500/5 border border-amber-500/20 rounded-2xl p-12 text-center">
-            <div className="text-4xl mb-4">&#10003;</div>
+          <div
+            data-gsap-wave="2"
+            style={{ opacity: 0 }}
+            className="bg-gradient-to-r from-amber-500/5 to-orange-500/5 border border-amber-500/20 rounded-2xl p-12 text-center"
+          >
+            {/* Lucide Check icon — no emoji */}
+            <div className="flex justify-center mb-4">
+              <Check className="w-10 h-10 text-amber-400" />
+            </div>
             <h3 className="text-2xl font-bold mb-3">Message sent.</h3>
             <p className="text-white/50">
               Thank you, Coach. I&apos;ll respond within 24 hours.
@@ -167,8 +179,12 @@ export function ContactCTA() {
           </div>
         )}
 
-        {/* Quick links */}
-        <div className="contact-reveal mt-12 flex flex-wrap justify-center gap-6">
+        {/* Quick links — LAAL: Forgiving Stakes */}
+        <div
+          data-gsap-wave="2"
+          style={{ opacity: 0 }}
+          className="mt-12 flex flex-wrap justify-center gap-6"
+        >
           <QuickLink
             label="X / Twitter"
             handle="@JacobRodge52987"
@@ -179,7 +195,11 @@ export function ContactCTA() {
         </div>
 
         {/* Footer */}
-        <div className="contact-reveal mt-20 pt-12 border-t border-white/5 text-center">
+        <div
+          data-gsap-wave="2"
+          style={{ opacity: 0 }}
+          className="mt-20 pt-12 border-t border-white/5 text-center"
+        >
           <p className="text-white/20 text-xs tracking-widest">
             JACOB RODGERS &mdash; DT/OG &mdash; CLASS OF 2029 &mdash; PEWAUKEE
             HS, WISCONSIN
@@ -212,8 +232,9 @@ function QuickLink({
       <span className="text-[10px] tracking-[0.2em] text-white/30 uppercase">
         {label}
       </span>
-      <span className="text-sm text-amber-400/70 group-hover:text-amber-400 transition-colors">
+      <span className="text-sm text-amber-400/70 group-hover:text-amber-400 transition-colors flex items-center gap-1">
         {handle}
+        <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
       </span>
     </a>
   );

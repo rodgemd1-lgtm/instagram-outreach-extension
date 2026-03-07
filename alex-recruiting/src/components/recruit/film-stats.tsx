@@ -1,78 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useMemo } from "react";
+import {
+  useRecruitAssembly,
+  type AssemblyConfig,
+} from "@/hooks/useRecruitAssembly";
+import { Play } from "lucide-react";
 
-interface StatBlockProps {
-  value: string;
-  label: string;
-  suffix?: string;
-}
+/* ──────────────────────────────────────────────────────────────
+   Film & Stats Section — The proof
+   LAAL Mechanism: Known-ness
+   Concrete numbers that establish Jacob's performance — coaches
+   evaluate on measurable output, and this section provides it.
 
-function AnimatedStat({ value, label, suffix = "" }: StatBlockProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [displayValue, setDisplayValue] = useState("0");
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    if (!ref.current) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !visible) {
-          setVisible(true);
-          const numericValue = parseInt(value.replace(/[^0-9]/g, ""));
-          if (isNaN(numericValue)) {
-            setDisplayValue(value);
-            return;
-          }
-
-          const duration = 1500;
-          const steps = 40;
-          const stepDuration = duration / steps;
-          let step = 0;
-
-          const interval = setInterval(() => {
-            step++;
-            const progress = step / steps;
-            const eased = 1 - Math.pow(1 - progress, 3);
-            const current = Math.round(numericValue * eased);
-            setDisplayValue(
-              value.includes("'")
-                ? value
-                : value.includes(".")
-                ? (numericValue * eased).toFixed(1)
-                : String(current)
-            );
-            if (step >= steps) {
-              setDisplayValue(value);
-              clearInterval(interval);
-            }
-          }, stepDuration);
-        }
-      },
-      { threshold: 0.5 }
-    );
-
-    observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [value, visible]);
-
-  return (
-    <div ref={ref} className="text-center">
-      <div className="text-4xl md:text-6xl font-mono font-black text-white mb-2">
-        {displayValue}
-        {suffix && (
-          <span className="text-lg md:text-2xl text-white/40 ml-1">
-            {suffix}
-          </span>
-        )}
-      </div>
-      <div className="text-[10px] tracking-[0.3em] text-white/30 uppercase">
-        {label}
-      </div>
-    </div>
-  );
-}
+   Wave 1: none (below fold)
+   Wave 2: stat cards + highlight cards scroll-reveal
+   ────────────────────────────────────────────────────────────── */
 
 const highlights = [
   {
@@ -98,58 +41,56 @@ const highlights = [
 ];
 
 export function FilmStats() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    let cleanup: (() => void) | undefined;
-
-    const initGSAP = async () => {
-      try {
-        const gsapModule = await import("gsap");
-        const scrollTriggerModule = await import("gsap/ScrollTrigger");
-        const gsap = gsapModule.default || gsapModule;
-        const ScrollTrigger =
-          scrollTriggerModule.ScrollTrigger || scrollTriggerModule.default;
-
-        gsap.registerPlugin(ScrollTrigger);
-
-        if (!sectionRef.current) return;
-
-        const cards = sectionRef.current.querySelectorAll(".highlight-card");
-        gsap.fromTo(
-          cards,
-          { y: 60, opacity: 0, scale: 0.95 },
-          {
+  const config = useMemo<AssemblyConfig>(
+    () => ({
+      wave2: [
+        {
+          /* LAAL: Known-ness — stats establish measurable identity */
+          containerSelector: '[data-gsap="stats-grid"]',
+          from: { y: 40, opacity: 0, scale: 0.95 },
+          to: {
             y: 0,
             opacity: 1,
             scale: 1,
-            duration: 0.8,
-            stagger: 0.15,
-            ease: "back.out(1.4)",
-            scrollTrigger: {
-              trigger: sectionRef.current.querySelector(".highlights-grid"),
-              start: "top 80%",
-              toggleActions: "play none none reverse",
-            },
-          }
-        );
+            duration: 0.5,
+            ease: "back.out(1.7)",
+          },
+          individual: false,
+          stagger: 0.1,
+          scrollTrigger: {
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+        },
+        {
+          /* LAAL: Known-ness — highlight cards show game film proof */
+          containerSelector: '[data-gsap="highlights-grid"]',
+          from: { y: 50, opacity: 0, scale: 0.95 },
+          to: {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.5,
+            ease: "back.out(1.7)",
+          },
+          individual: false,
+          stagger: 0.12,
+          scrollTrigger: {
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+        },
+      ],
+    }),
+    []
+  );
 
-        cleanup = () => {
-          ScrollTrigger.getAll().forEach((t: { kill: () => void }) => t.kill());
-        };
-      } catch {
-        // Fallback
-      }
-    };
-
-    initGSAP();
-    return () => cleanup?.();
-  }, []);
+  const scopeRef = useRecruitAssembly(config);
 
   return (
     <section
       id="film"
-      ref={sectionRef}
+      ref={scopeRef}
       className="relative py-32 md:py-48 px-6 md:px-12"
     >
       {/* Atmospheric divider */}
@@ -170,12 +111,33 @@ export function FilmStats() {
           </h2>
         </div>
 
-        {/* Stats grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-20 md:mb-32 pb-16 border-b border-white/5">
-          <AnimatedStat value="11" label="Pancake Blocks" />
-          <AnimatedStat value="3" label="Sacks" />
-          <AnimatedStat value="265" label="Bench Press" suffix="lbs" />
-          <AnimatedStat value="350" label="Squat" suffix="lbs" />
+        {/* Stats grid — Wave 2 batched */}
+        <div
+          data-gsap="stats-grid"
+          className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-20 md:mb-32 pb-16 border-b border-white/5"
+        >
+          <StatBlock
+            data-gsap-wave="2"
+            value="11"
+            label="Pancake Blocks"
+          />
+          <StatBlock
+            data-gsap-wave="2"
+            value="3"
+            label="Sacks"
+          />
+          <StatBlock
+            data-gsap-wave="2"
+            value="265"
+            label="Bench Press"
+            suffix="lbs"
+          />
+          <StatBlock
+            data-gsap-wave="2"
+            value="350"
+            label="Squat"
+            suffix="lbs"
+          />
         </div>
 
         {/* Secondary stats */}
@@ -188,12 +150,17 @@ export function FilmStats() {
           <MiniStat value="FR" label="Year" />
         </div>
 
-        {/* Film highlights */}
-        <div className="highlights-grid grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Film highlights — Wave 2 batched */}
+        <div
+          data-gsap="highlights-grid"
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
           {highlights.map((h) => (
             <div
               key={h.title}
-              className="highlight-card bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 hover:border-amber-500/20 transition-colors duration-500"
+              data-gsap-wave="2"
+              style={{ opacity: 0 }}
+              className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 hover:border-amber-500/20 transition-colors duration-500"
             >
               <h3 className="text-xl font-bold mb-3 flex items-center gap-3">
                 <div className="w-2 h-2 rounded-full bg-amber-400" />
@@ -206,31 +173,13 @@ export function FilmStats() {
           ))}
         </div>
 
-        {/* Hudl CTA */}
+        {/* Hudl CTA — Lucide Play icon instead of inline SVG */}
         <div className="mt-16 text-center">
           <a
             href="#"
             className="inline-flex items-center gap-3 px-8 py-4 rounded-full border border-amber-500/30 text-amber-400 hover:bg-amber-500/10 transition-all duration-300 group"
           >
-            <svg
-              className="w-5 h-5 group-hover:scale-110 transition-transform"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+            <Play className="w-5 h-5 group-hover:scale-110 transition-transform" />
             <span className="text-sm tracking-widest uppercase">
               Watch Full Highlights on Hudl
             </span>
@@ -238,6 +187,36 @@ export function FilmStats() {
         </div>
       </div>
     </section>
+  );
+}
+
+/* ── Sub-components ─────────────────────────────────────────── */
+
+function StatBlock({
+  value,
+  label,
+  suffix = "",
+  ...rest
+}: {
+  value: string;
+  label: string;
+  suffix?: string;
+  "data-gsap-wave"?: string;
+}) {
+  return (
+    <div className="text-center" style={{ opacity: 0 }} {...rest}>
+      <div className="text-4xl md:text-6xl font-mono font-black text-white mb-2">
+        {value}
+        {suffix && (
+          <span className="text-lg md:text-2xl text-white/40 ml-1">
+            {suffix}
+          </span>
+        )}
+      </div>
+      <div className="text-[10px] tracking-[0.3em] text-white/30 uppercase">
+        {label}
+      </div>
+    </div>
   );
 }
 

@@ -2,6 +2,13 @@
 
 import { useEffect, useState } from "react";
 
+/* ──────────────────────────────────────────────────────────────
+   Recruit Nav — Utility navigation (not narrative-animated)
+   No LAAL mechanism — nav is a persistent UI element, not part
+   of the motion narrative. Uses CSS transitions only (acceptable
+   for non-narrative utility elements per protocol).
+   ────────────────────────────────────────────────────────────── */
+
 const sections = [
   { id: "hero", label: "79" },
   { id: "origin", label: "Origin" },

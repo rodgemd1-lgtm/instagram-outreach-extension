@@ -1,66 +1,77 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useMemo } from "react";
+import {
+  useRecruitAssembly,
+  type AssemblyConfig,
+} from "@/hooks/useRecruitAssembly";
+
+/* ──────────────────────────────────────────────────────────────
+   Academics Section — The whole package
+   LAAL Mechanism: Continuity Thread
+   Connects the physical-athlete narrative to academic readiness,
+   showing Jacob is the complete recruit — no gap in the story.
+
+   Wave 1: none (below fold)
+   Wave 2: academic cards + quote block scroll-reveal
+   ────────────────────────────────────────────────────────────── */
 
 export function AcademicsSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    let cleanup: (() => void) | undefined;
-
-    const initGSAP = async () => {
-      try {
-        const gsapModule = await import("gsap");
-        const scrollTriggerModule = await import("gsap/ScrollTrigger");
-        const gsap = gsapModule.default || gsapModule;
-        const ScrollTrigger =
-          scrollTriggerModule.ScrollTrigger || scrollTriggerModule.default;
-
-        gsap.registerPlugin(ScrollTrigger);
-
-        if (!sectionRef.current) return;
-
-        const reveals = sectionRef.current.querySelectorAll(".acad-reveal");
-        gsap.fromTo(
-          reveals,
-          { y: 50, opacity: 0 },
-          {
+  const config = useMemo<AssemblyConfig>(
+    () => ({
+      wave2: [
+        {
+          /* LAAL: Continuity Thread — academic cards extend the narrative */
+          containerSelector: '[data-gsap="acad-cards"]',
+          from: { y: 50, opacity: 0 },
+          to: {
             y: 0,
             opacity: 1,
-            duration: 0.8,
-            stagger: 0.1,
+            duration: 0.5,
             ease: "power2.out",
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: "top 70%",
-              toggleActions: "play none none reverse",
-            },
-          }
-        );
+          },
+          individual: false,
+          stagger: 0.1,
+          scrollTrigger: {
+            start: "top 75%",
+            toggleActions: "play none none reverse",
+          },
+        },
+        {
+          /* LAAL: Continuity Thread — quote reinforces the thread */
+          containerSelector: '[data-gsap="acad-quote"]',
+          from: { y: 30, opacity: 0 },
+          to: {
+            y: 0,
+            opacity: 1,
+            duration: 0.5,
+            ease: "sine.out",
+          },
+          individual: false,
+          stagger: 0,
+          scrollTrigger: {
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+        },
+      ],
+    }),
+    []
+  );
 
-        cleanup = () => {
-          ScrollTrigger.getAll().forEach((t: { kill: () => void }) => t.kill());
-        };
-      } catch {
-        // Fallback
-      }
-    };
-
-    initGSAP();
-    return () => cleanup?.();
-  }, []);
+  const scopeRef = useRecruitAssembly(config);
 
   return (
     <section
       id="academics"
-      ref={sectionRef}
+      ref={scopeRef}
       className="relative py-32 md:py-48 px-6 md:px-12"
     >
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
       <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="acad-reveal mb-16 md:mb-24">
+        <div className="mb-16 md:mb-24">
           <span className="text-[10px] tracking-[0.5em] text-amber-400/60 uppercase font-mono block mb-6">
             Academics
           </span>
@@ -75,9 +86,16 @@ export function AcademicsSection() {
           </h2>
         </div>
 
-        {/* Academic stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          <div className="acad-reveal bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 text-center">
+        {/* Academic stat cards — Wave 2 batched */}
+        <div
+          data-gsap="acad-cards"
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16"
+        >
+          <div
+            data-gsap-wave="2"
+            style={{ opacity: 0 }}
+            className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 text-center"
+          >
             <div className="text-5xl md:text-6xl font-mono font-black text-amber-400 mb-3">
               3.25
             </div>
@@ -90,7 +108,11 @@ export function AcademicsSection() {
             </p>
           </div>
 
-          <div className="acad-reveal bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 text-center">
+          <div
+            data-gsap-wave="2"
+            style={{ opacity: 0 }}
+            className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 text-center"
+          >
             <div className="text-5xl md:text-6xl font-mono font-black text-white mb-3">
               NCAA
             </div>
@@ -103,7 +125,11 @@ export function AcademicsSection() {
             </p>
           </div>
 
-          <div className="acad-reveal bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 text-center">
+          <div
+            data-gsap-wave="2"
+            style={{ opacity: 0 }}
+            className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 text-center"
+          >
             <div className="text-5xl md:text-6xl font-mono font-black text-white/80 mb-3">
               NCSA
             </div>
@@ -117,18 +143,24 @@ export function AcademicsSection() {
           </div>
         </div>
 
-        {/* The commitment message */}
-        <div className="acad-reveal bg-gradient-to-r from-amber-500/5 to-orange-500/5 border border-amber-500/10 rounded-2xl p-10 md:p-14">
-          <blockquote className="text-xl md:text-2xl font-light text-white/70 leading-relaxed italic">
-            &ldquo;The weight room teaches discipline. The classroom teaches
-            discipline too. Jacob doesn&apos;t separate the two — he brings the
-            same focus to both.&rdquo;
-          </blockquote>
-          <div className="mt-6 flex items-center gap-3">
-            <div className="w-8 h-px bg-amber-500/40" />
-            <span className="text-xs tracking-[0.2em] text-amber-400/60 uppercase">
-              A commitment to excellence, everywhere
-            </span>
+        {/* The commitment message — Wave 2 */}
+        <div data-gsap="acad-quote">
+          <div
+            data-gsap-wave="2"
+            style={{ opacity: 0 }}
+            className="bg-gradient-to-r from-amber-500/5 to-orange-500/5 border border-amber-500/10 rounded-2xl p-10 md:p-14"
+          >
+            <blockquote className="text-xl md:text-2xl font-light text-white/70 leading-relaxed italic">
+              &ldquo;The weight room teaches discipline. The classroom teaches
+              discipline too. Jacob doesn&apos;t separate the two -- he brings
+              the same focus to both.&rdquo;
+            </blockquote>
+            <div className="mt-6 flex items-center gap-3">
+              <div className="w-8 h-px bg-amber-500/40" />
+              <span className="text-xs tracking-[0.2em] text-amber-400/60 uppercase">
+                A commitment to excellence, everywhere
+              </span>
+            </div>
           </div>
         </div>
       </div>

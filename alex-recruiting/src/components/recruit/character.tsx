@@ -1,6 +1,20 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useMemo } from "react";
+import {
+  useRecruitAssembly,
+  type AssemblyConfig,
+} from "@/hooks/useRecruitAssembly";
+
+/* ──────────────────────────────────────────────────────────────
+   Character Section — What measurables don't show
+   LAAL Mechanism: Ownership
+   Coaches reading these traits start to envision Jacob on THEIR
+   team. Each trait is evidence that transfers to any program.
+
+   Wave 1: section header entry (fires on scroll into view)
+   Wave 2: individual card reveals (ScrollTrigger per card)
+   ────────────────────────────────────────────────────────────── */
 
 const traits = [
   {
@@ -8,13 +22,14 @@ const traits = [
     icon: "01",
     description:
       "First one to ask for feedback. Watches his own film without being told. Takes correction and turns it into improvement by the next rep.",
-    evidence: "Started varsity as a freshman — earning trust through attitude, not just talent.",
+    evidence:
+      "Started varsity as a freshman -- earning trust through attitude, not just talent.",
   },
   {
     trait: "Relentless Work Ethic",
     icon: "02",
     description:
-      "Five days a week since age twelve. Not because someone made a schedule — because he made one himself. Two hours before school, every morning.",
+      "Five days a week since age twelve. Not because someone made a schedule -- because he made one himself. Two hours before school, every morning.",
     evidence: "730+ training sessions before his first varsity snap.",
   },
   {
@@ -29,77 +44,50 @@ const traits = [
     icon: "04",
     description:
       "Thrives under pressure. Doesn't fold when the game is on the line. The bigger the moment, the more locked in he becomes.",
-    evidence: "11 pancake blocks in a championship season — most in high-leverage situations.",
+    evidence:
+      "11 pancake blocks in a championship season -- most in high-leverage situations.",
   },
   {
     trait: "Growth Mindset",
     icon: "05",
     description:
-      "Already 6'4\" 285 as a freshman with elite measurables. But what sets him apart is the hunger — he knows he's not done. Three more years of development ahead.",
+      "Already 6'4\" 285 as a freshman with elite measurables. But what sets him apart is the hunger -- he knows he's not done. Three more years of development ahead.",
     evidence: "Bench 265 / Squat 350 and still gaining every month.",
   },
 ];
 
 export function CharacterSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const config = useMemo<AssemblyConfig>(
+    () => ({
+      wave2: [
+        {
+          /* LAAL: Ownership — each trait card lets the coach "claim" this player */
+          containerSelector: '[data-gsap="character-cards"]',
+          from: { x: -60, opacity: 0, rotation: -1 },
+          to: {
+            x: 0,
+            opacity: 1,
+            rotation: 0,
+            duration: 0.5,
+            ease: "back.out(1.7)",
+          },
+          individual: true,
+          scrollTrigger: {
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+        },
+      ],
+    }),
+    []
+  );
 
-  useEffect(() => {
-    let cleanup: (() => void) | undefined;
-
-    const initGSAP = async () => {
-      try {
-        const gsapModule = await import("gsap");
-        const scrollTriggerModule = await import("gsap/ScrollTrigger");
-        const gsap = gsapModule.default || gsapModule;
-        const ScrollTrigger =
-          scrollTriggerModule.ScrollTrigger || scrollTriggerModule.default;
-
-        gsap.registerPlugin(ScrollTrigger);
-
-        if (!sectionRef.current) return;
-
-        const cards = sectionRef.current.querySelectorAll(".trait-card");
-        cards.forEach((card, i) => {
-          const fromLeft = i % 2 === 0;
-          gsap.fromTo(
-            card,
-            {
-              x: fromLeft ? -80 : 80,
-              opacity: 0,
-              rotateZ: fromLeft ? -2 : 2,
-            },
-            {
-              x: 0,
-              opacity: 1,
-              rotateZ: 0,
-              duration: 1,
-              ease: "back.out(1.4)",
-              scrollTrigger: {
-                trigger: card,
-                start: "top 85%",
-                end: "top 50%",
-                toggleActions: "play none none reverse",
-              },
-            }
-          );
-        });
-
-        cleanup = () => {
-          ScrollTrigger.getAll().forEach((t: { kill: () => void }) => t.kill());
-        };
-      } catch {
-        // Fallback — show all cards immediately
-      }
-    };
-
-    initGSAP();
-    return () => cleanup?.();
-  }, []);
+  const scopeRef = useRecruitAssembly(config);
 
   return (
     <section
       id="character"
-      ref={sectionRef}
+      ref={scopeRef}
       className="relative py-32 md:py-48 px-6 md:px-12"
     >
       {/* Section header */}
@@ -118,17 +106,22 @@ export function CharacterSection() {
         </h2>
         <p className="text-white/40 text-base md:text-lg max-w-xl leading-relaxed">
           Numbers tell you what a player can do. Character tells you what he
-          will do — when it&apos;s 4th and goal, when nobody&apos;s watching,
+          will do -- when it&apos;s 4th and goal, when nobody&apos;s watching,
           when the easy choice is to quit.
         </p>
       </div>
 
-      {/* Trait cards */}
-      <div className="max-w-5xl mx-auto space-y-8 md:space-y-12">
+      {/* Trait cards — Wave 2 scroll-triggered */}
+      <div
+        data-gsap="character-cards"
+        className="max-w-5xl mx-auto space-y-8 md:space-y-12"
+      >
         {traits.map((t) => (
           <div
             key={t.icon}
-            className="trait-card group relative"
+            data-gsap-wave="2"
+            className="group relative"
+            style={{ opacity: 0 }}
           >
             <div className="relative bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 md:p-12 hover:border-amber-500/20 transition-colors duration-500">
               {/* Number accent */}
