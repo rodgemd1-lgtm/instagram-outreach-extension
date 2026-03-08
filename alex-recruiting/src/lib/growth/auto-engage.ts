@@ -13,7 +13,24 @@
  */
 
 import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
-import { searchTweets } from "@/lib/integrations/x-api";
+import {
+  followUser,
+  likeTweet,
+  searchTweets,
+  verifyHandle,
+} from "@/lib/integrations/x-api";
+import { RateLimitError } from "@/lib/integrations/rate-limiter";
+
+function getErrorStatus(error: unknown): number | undefined {
+  if (!error || typeof error !== "object") return undefined;
+
+  const response = (error as { response?: { status?: unknown } }).response;
+  return typeof response?.status === "number" ? response.status : undefined;
+}
+
+function isRateLimitFailure(error: unknown): boolean {
+  return error instanceof RateLimitError || getErrorStatus(error) === 429;
+}
 
 export interface FollowResult {
   followed: number;
@@ -63,9 +80,20 @@ export async function autoFollowCoaches(limit = 10): Promise<FollowResult> {
 
   for (const coach of coaches ?? []) {
     try {
-      // In production, this would call the X API follow endpoint:
-      // POST https://api.twitter.com/2/users/:id/following
-      // For now, we mark the intent in the database
+      const verifiedUser = await verifyHandle(coach.x_handle);
+      if (!verifiedUser) {
+        result.errors.push(`Could not resolve X handle for ${coach.name} (${coach.x_handle})`);
+        result.details.push({ coach: coach.name, school: coach.school, status: "skipped" });
+        continue;
+      }
+
+      const followed = await followUser(verifiedUser.id);
+      if (!followed) {
+        result.errors.push(`Failed to follow ${coach.name} on X`);
+        result.details.push({ coach: coach.name, school: coach.school, status: "error" });
+        continue;
+      }
+
       const { error: updateError } = await supabase
         .from("coaches")
         .update({
@@ -82,6 +110,14 @@ export async function autoFollowCoaches(limit = 10): Promise<FollowResult> {
         result.details.push({ coach: coach.name, school: coach.school, status: "followed" });
       }
     } catch (err) {
+      if (isRateLimitFailure(err)) {
+        result.errors.push(
+          `X rate limit reached while processing ${coach.name}; stopped after ${result.followed} follows`
+        );
+        result.details.push({ coach: coach.name, school: coach.school, status: "error" });
+        break;
+      }
+
       const msg = err instanceof Error ? err.message : String(err);
       result.errors.push(`${coach.name}: ${msg}`);
       result.details.push({ coach: coach.name, school: coach.school, status: "error" });
@@ -104,14 +140,37 @@ export async function autoEngageCoachContent(limit = 5): Promise<EngageResult> {
       Math.min(limit, 10)
     );
 
-    // In production, we'd like these tweets via the X API
-    // POST https://api.twitter.com/2/users/:id/likes
-    result.liked = Math.min(tweets.length, limit);
-
     if (tweets.length === 0) {
       result.errors.push("No relevant tweets found to engage with");
+      return result;
+    }
+
+    for (const tweet of tweets.slice(0, limit)) {
+      try {
+        const liked = await likeTweet(tweet.id);
+        if (liked) {
+          result.liked++;
+        } else {
+          result.errors.push(`Failed to like tweet ${tweet.id}`);
+        }
+      } catch (err) {
+        if (isRateLimitFailure(err)) {
+          result.errors.push(
+            `X rate limit reached after ${result.liked} likes; stopped before tweet ${tweet.id}`
+          );
+          break;
+        }
+
+        const msg = err instanceof Error ? err.message : String(err);
+        result.errors.push(`Failed to like tweet ${tweet.id}: ${msg}`);
+      }
     }
   } catch (err) {
+    if (isRateLimitFailure(err)) {
+      result.errors.push("X rate limit reached before engagement search could complete");
+      return result;
+    }
+
     const msg = err instanceof Error ? err.message : String(err);
     result.errors.push(`Search error: ${msg}`);
   }

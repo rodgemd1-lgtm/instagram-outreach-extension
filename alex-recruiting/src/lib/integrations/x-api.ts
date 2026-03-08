@@ -1,6 +1,6 @@
 import axios from "axios";
 import crypto from "crypto";
-import { enforceRateLimit, recordRequest } from "./rate-limiter";
+import { enforceRateLimit, recordRequest, RateLimitError } from "./rate-limiter";
 const X_API_BASE = "https://api.twitter.com/2";
 
 function getHeaders() {
@@ -8,6 +8,26 @@ function getHeaders() {
     Authorization: `Bearer ${process.env.X_API_BEARER_TOKEN}`,
     "Content-Type": "application/json",
   };
+}
+
+function getErrorStatus(error: unknown): number | undefined {
+  if (!error || typeof error !== "object") return undefined;
+
+  const response = (error as { response?: { status?: unknown } }).response;
+  return typeof response?.status === "number" ? response.status : undefined;
+}
+
+function isRateLimitFailure(error: unknown): boolean {
+  return error instanceof RateLimitError || getErrorStatus(error) === 429;
+}
+
+function requireEnv(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`${name} is not configured`);
+  }
+
+  return value;
 }
 
 export interface XUser {
@@ -48,7 +68,10 @@ export async function verifyHandle(username: string): Promise<XUser | null> {
     });
     recordRequest(endpoint);
     return response.data.data || null;
-  } catch {
+  } catch (error) {
+    if (isRateLimitFailure(error)) {
+      throw error;
+    }
     return null;
   }
 }
@@ -106,7 +129,10 @@ export async function searchTweets(query: string, maxResults: number = 25): Prom
     });
     recordRequest(endpoint);
     return response.data.data || [];
-  } catch {
+  } catch (error) {
+    if (isRateLimitFailure(error)) {
+      throw error;
+    }
     return [];
   }
 }
@@ -137,6 +163,68 @@ export async function postTweet(text: string, mediaId?: string): Promise<{ id: s
   } catch (error) {
     console.error("Failed to post tweet:", error);
     return null;
+  }
+}
+
+export async function followUser(targetUserId: string): Promise<boolean> {
+  const endpoint = "users/:id/following";
+  enforceRateLimit(endpoint);
+
+  try {
+    const sourceUserId = requireEnv("X_USER_ID");
+    const apiUrl = `${X_API_BASE}/users/${sourceUserId}/following`;
+    const authHeader = getOAuth1Headers("POST", apiUrl, {});
+    const response = await axios.post(
+      apiUrl,
+      { target_user_id: targetUserId },
+      {
+        headers: {
+          Authorization: authHeader,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    recordRequest(endpoint);
+    return response.data?.data?.following ?? response.status < 300;
+  } catch (error) {
+    if (isRateLimitFailure(error)) {
+      throw error;
+    }
+
+    console.error("Failed to follow user:", error);
+    return false;
+  }
+}
+
+export async function likeTweet(tweetId: string): Promise<boolean> {
+  const endpoint = "users/:id/likes";
+  enforceRateLimit(endpoint);
+
+  try {
+    const sourceUserId = requireEnv("X_USER_ID");
+    const apiUrl = `${X_API_BASE}/users/${sourceUserId}/likes`;
+    const authHeader = getOAuth1Headers("POST", apiUrl, {});
+    const response = await axios.post(
+      apiUrl,
+      { tweet_id: tweetId },
+      {
+        headers: {
+          Authorization: authHeader,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    recordRequest(endpoint);
+    return response.data?.data?.liked ?? response.status < 300;
+  } catch (error) {
+    if (isRateLimitFailure(error)) {
+      throw error;
+    }
+
+    console.error("Failed to like tweet:", error);
+    return false;
   }
 }
 
