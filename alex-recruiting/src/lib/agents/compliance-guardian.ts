@@ -143,8 +143,8 @@ function getMilestones(classYear: number) {
   const freshStart = classYear - 4; // e.g. 2025 for Class of 2029
   return {
     materialsAllowed: new Date(`${freshStart + 1}-06-15`), // June 15 after soph year
-    fbsCallTexts: new Date(`${freshStart + 2}-09-01`), // Sep 1 of junior year
-    officialVisits: new Date(`${freshStart + 2}-01-01`), // Jan 1 of junior year
+    fbsCallTexts: new Date(`${freshStart + 1}-06-15`), // June 15 after soph year
+    officialVisits: new Date(`${freshStart + 2}-04-01`), // April 1 of junior year for D1 football
     earlySigningPeriod: new Date(`${freshStart + 3}-12-04`), // Early Dec of senior year
     nationalSigningDay: new Date(`${classYear}-02-01`), // Feb 1 of grad year
     d2Contact: new Date(`${freshStart + 1}-06-15`), // June 15 after soph year
@@ -418,8 +418,8 @@ export function getCurrentPhase(classYear: number): PhaseInfo {
   if (yearIndex < 2) {
     // Before junior year
     restrictedActions.push(
-      "D1 FBS coaches cannot initiate calls/texts until September 1 of junior year",
-      "Official visits not available until January 1 of junior year"
+      "D1 football coaches cannot initiate calls/texts/private messages until June 15 after sophomore year",
+      "D1 football official visits are not available until April 1 of junior year"
     );
 
     if (now < milestones.materialsAllowed) {
@@ -450,7 +450,7 @@ export function getCurrentPhase(classYear: number): PhaseInfo {
     );
 
     if (now >= milestones.officialVisits) {
-      allowedActions.push("Official visits available (max 5)");
+      allowedActions.push("Official visits available (one official visit per school)");
     } else {
       restrictedActions.push(
         `Official visits open ${milestones.officialVisits.toLocaleDateString()}`
@@ -471,8 +471,8 @@ export function getCurrentPhase(classYear: number): PhaseInfo {
   const upcomingMilestones = [
     { date: milestones.materialsAllowed, description: "FBS programs can send recruiting materials (June 15 after sophomore year)" },
     { date: milestones.d2Contact, description: "D2 coaches can initiate electronic contact (June 15 after sophomore year)" },
-    { date: milestones.fbsCallTexts, description: "FBS coaches can call/text (September 1 of junior year)" },
-    { date: milestones.officialVisits, description: "Official visits open (January 1 of junior year)" },
+    { date: milestones.fbsCallTexts, description: "FBS coaches can call/text/private message (June 15 after sophomore year)" },
+    { date: milestones.officialVisits, description: "Football official visits open (April 1 of junior year)" },
     { date: milestones.earlySigningPeriod, description: "Early Signing Period" },
     { date: milestones.nationalSigningDay, description: "National Signing Day" },
   ]
@@ -535,7 +535,7 @@ export function canContactDivision(
       }
 
       if (yearIndex >= 2 && now >= milestones.officialVisits) {
-        result.method.push("official visits (max 5)");
+        result.method.push("official visits (one per school)");
       }
 
       result.method.push("unofficial visits (any time, prospect pays)");

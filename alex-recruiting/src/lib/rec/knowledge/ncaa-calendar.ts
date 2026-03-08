@@ -178,22 +178,22 @@ const CLASS_OF_2029_MILESTONES: Omit<ClassOf2029Milestone, "isPast" | "daysAway"
 
   // Junior year (2027-28)
   {
-    date: "2027-09-01",
+    date: "2027-06-15",
     label: "FBS coaches can call and text",
-    description: "The big milestone: D1 FBS coaches can initiate phone calls and texts to Class of 2029 prospects starting September 1 of junior year. This opens the floodgates for FBS recruiting.",
+    description: "D1 FBS coaches can initiate phone calls, texts and private electronic communication to Class of 2029 prospects starting June 15 after sophomore year. That is the true opening of coach-initiated football communication.",
     division: "D1 FBS",
     actionItems: [
       "Have your phone on and charged — FBS coaches will call",
       "Prepare a phone call script: polite, professional, ask good questions",
       "Keep a call log of every coach contact",
-      "Schedule unofficial and official visits based on conversations",
+      "Schedule unofficial visits and April 1 junior-year official visits based on conversations",
       "Post daily on X — you are now fully in the recruiting spotlight",
     ],
   },
   {
-    date: "2027-09-01",
+    date: "2027-06-15",
     label: "FCS can call and text",
-    description: "D1 FCS coaches can also call/text starting September 1 of junior year.",
+    description: "D1 FCS coaches can also initiate calls, texts and private electronic communication starting June 15 after sophomore year.",
     division: "D1 FCS",
     actionItems: [
       "Respond to all FCS calls within 24 hours",
@@ -201,13 +201,13 @@ const CLASS_OF_2029_MILESTONES: Omit<ClassOf2029Milestone, "isPast" | "daysAway"
     ],
   },
   {
-    date: "2028-01-01",
+    date: "2028-04-01",
     label: "Official visits open",
-    description: "Class of 2029 prospects can take official visits (school-paid) starting January 1 of junior year. Maximum of 5 official visits.",
+    description: "Class of 2029 football prospects can take official visits (school-paid) starting April 1 of junior year. Current NCAA policy allows unlimited total official visits for prospects, but only one official visit per school unless a coaching-change exception applies.",
     division: "D1 FBS",
     actionItems: [
       "Narrow school list to 8-10 serious contenders",
-      "Schedule official visits strategically — you only get 5",
+      "Schedule official visits strategically — prioritize the schools most likely to offer or take a second eval",
       "Prepare campus visit questions and evaluation criteria",
       "Post visit recaps on X (without committing publicly)",
     ],
@@ -227,7 +227,7 @@ const CLASS_OF_2029_MILESTONES: Omit<ClassOf2029Milestone, "isPast" | "daysAway"
   {
     date: "2028-12-04",
     label: "Early Signing Period",
-    description: "Class of 2029 Early Signing Period (typically first Wednesday of December). Prospects can sign National Letters of Intent.",
+    description: "Class of 2029 Early Signing Period (typically first Wednesday of December). Expect written athletics-aid or enrollment paperwork rather than the former National Letter of Intent model.",
     division: "all",
     actionItems: [
       "Make commitment decision before this date",
@@ -238,10 +238,10 @@ const CLASS_OF_2029_MILESTONES: Omit<ClassOf2029Milestone, "isPast" | "daysAway"
   {
     date: "2029-02-01",
     label: "National Signing Day",
-    description: "Traditional National Signing Day for Class of 2029. Final opportunity for NLI signing.",
+    description: "Traditional February signing window for Class of 2029. Final paperwork details should be confirmed against that cycle's athletics-aid calendar.",
     division: "all",
     actionItems: [
-      "Sign NLI if not already signed in early period",
+      "Finalize athletics-aid and enrollment paperwork if not already signed in the early period",
       "Post commitment content and gratitude",
       "Transition X profile to committed athlete mode",
     ],
@@ -386,27 +386,25 @@ export function canCoachContact(
 
   // Key dates for Class of 2029
   const fbsMaterialsDate = new Date("2027-06-15");
-  const fbsCallTextDate = new Date("2027-09-01");
+  const fbsCallTextDate = new Date("2027-06-15");
   const d2ContactDate = new Date("2027-06-15");
-  const officialVisitDate = new Date("2028-01-01");
+  const d1FootballOfficialVisitDate = new Date("2028-04-01");
+  const d2OfficialVisitDate = new Date("2027-06-15");
 
   switch (division) {
     case "D1 FBS": {
       const canSendMaterials = now >= fbsMaterialsDate;
       const canCallText = now >= fbsCallTextDate;
-      const canVisitOfficial = now >= officialVisitDate;
+      const canVisitOfficial = now >= d1FootballOfficialVisitDate;
 
       let nextMilestone: string;
       let nextMilestoneDate: string;
       if (!canSendMaterials) {
-        nextMilestone = "FBS can send recruiting materials";
+        nextMilestone = "FBS recruiting communication opens";
         nextMilestoneDate = "2027-06-15";
-      } else if (!canCallText) {
-        nextMilestone = "FBS can call/text";
-        nextMilestoneDate = "2027-09-01";
       } else if (!canVisitOfficial) {
         nextMilestone = "Official visits open";
-        nextMilestoneDate = "2028-01-01";
+        nextMilestoneDate = "2028-04-01";
       } else {
         nextMilestone = "Early Signing Period";
         nextMilestoneDate = "2028-12-04";
@@ -430,17 +428,19 @@ export function canCoachContact(
       const canSendMaterials = now >= fbsMaterialsDate;
       const canCallText = now >= fbsCallTextDate;
 
+      const canVisitOfficial = now >= d1FootballOfficialVisitDate;
+
       let nextMilestone: string;
       let nextMilestoneDate: string;
       if (!canSendMaterials) {
-        nextMilestone = "FCS can send materials / some conferences allow electronic contact";
+        nextMilestone = "FCS recruiting communication opens";
         nextMilestoneDate = "2027-06-15";
-      } else if (!canCallText) {
-        nextMilestone = "FCS can call/text";
-        nextMilestoneDate = "2027-09-01";
-      } else {
+      } else if (!canVisitOfficial) {
         nextMilestone = "Official visits open";
-        nextMilestoneDate = "2028-01-01";
+        nextMilestoneDate = "2028-04-01";
+      } else {
+        nextMilestone = "Early Signing Period";
+        nextMilestoneDate = "2028-12-04";
       }
 
       return {
@@ -449,7 +449,7 @@ export function canCoachContact(
         canCoachSendMaterials: canSendMaterials,
         canCoachCallText: canCallText,
         canProspectContact: true,
-        canOfficialVisit: now >= officialVisitDate,
+        canOfficialVisit: canVisitOfficial,
         nextMilestone,
         nextMilestoneDate,
         daysUntilNextMilestone: daysBetween(now, new Date(nextMilestoneDate)),
@@ -465,14 +465,14 @@ export function canCoachContact(
         canCoachSendMaterials: canContact,
         canCoachCallText: canContact,
         canProspectContact: true,
-        canOfficialVisit: now >= officialVisitDate,
+        canOfficialVisit: now >= d2OfficialVisitDate,
         nextMilestone: canContact
-          ? "Official visits open"
+          ? "Official visits available"
           : "D2 can contact (June 15 after sophomore year)",
-        nextMilestoneDate: canContact ? "2028-01-01" : "2027-06-15",
+        nextMilestoneDate: "2027-06-15",
         daysUntilNextMilestone: daysBetween(
           now,
-          new Date(canContact ? "2028-01-01" : "2027-06-15")
+          new Date("2027-06-15")
         ),
       };
     }
@@ -777,7 +777,7 @@ function getPeriodDescription(period: NCAARecruitingPeriod): string {
 function getProspectRules(period: NCAARecruitingPeriod): string[] {
   const base = [
     "You can email coaches at any time regardless of period",
-    "You can DM coaches at any time — they can respond",
+    "You can DM coaches at any time, but coach responses still depend on division and class-year contact rules",
     "You can post content on X at any time",
   ];
 

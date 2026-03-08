@@ -8,24 +8,22 @@ export const ncaaRules = {
     "Evaluation Period: Coaches may watch prospects compete or visit their schools, but no in-person off-campus contact.",
     "Contact Period: Coaches may have in-person contact with prospects on or off campus. Phone calls and electronic communication allowed.",
     "FBS programs may begin sending recruiting materials to prospects on June 15 after sophomore year.",
-    "FBS coaches may begin calling/texting prospects on September 1 of junior year.",
+    "Football coaches at the Division I level may begin coach-initiated calls, texts and private electronic communication on June 15 after sophomore year.",
     "Unofficial visits are allowed at any time (prospect pays own way).",
-    "Official visits (school pays) are allowed starting January 1 of junior year (max 5 official visits).",
+    "Football official visits (school pays) are allowed starting April 1 of junior year, with one official visit per school under the current prospect-visit model.",
     "D2 coaches may contact prospects at any time after June 15 following sophomore year.",
     "D1 FCS follows similar rules to FBS but some conferences have more flexible contact windows.",
   ],
 
   recruitingCalendar: {
-    "2025-06-15": "Earliest date FBS programs can send recruiting materials to Class of 2029 (after sophomore year)",
+    "2025-06-to-07": "Summer camp and evaluation window. Younger prospects should gather verified measurables and film.",
     "2025-08": "Summer evaluation period — camps and combines",
-    "2025-09-01": "FBS coaches can begin calling/texting Class of 2028 juniors (Class of 2029 still restricted)",
     "2025-09-to-11": "Fall evaluation period — coaches attend high school games",
-    "2025-12": "Early Signing Period for Class of 2026 (Dec 4-6, 2025)",
-    "2026-01": "Contact period opens; official visits allowed for juniors (Class of 2028)",
-    "2026-02-01": "National Signing Day for Class of 2026",
+    "2025-12": "Early signing paperwork window for the current senior class",
+    "2026-01-to-03": "Annual football contact/quiet/dead periods shift by year. Refresh against the NCAA football calendar before visit planning.",
     "2026-04-to-05": "Spring evaluation period",
-    "2026-06-15": "Materials allowed for Class of 2030; camps open for all classes",
-    "2026-09-01": "FBS coaches can call/text Class of 2029 juniors (Jacob's class)",
+    "2027-06-15": "Class of 2029 football coach-initiated calls, texts, private messages and recruiting materials open",
+    "2028-04-01": "Class of 2029 football official visits open",
   },
 
   classOf2029Timeline: [
@@ -39,8 +37,8 @@ export const ncaaRules = {
         "Create Hudl profile with freshman film",
         "Attend local camps for exposure and measurables",
         "Build follower base among peer recruits and recruiting media",
-        "No direct coach DMs yet (D1 FBS) — focus on visibility",
-        "D2/FCS coaches may engage — respond professionally if they reach out",
+        "Athlete-initiated DMs are allowed, but meaningful FBS coach replies usually do not open until June 15 after sophomore year",
+        "D2/D3 coaches may engage earlier — respond professionally if they reach out",
       ],
     },
     {
@@ -48,11 +46,11 @@ export const ncaaRules = {
       phase: "Visibility & Engagement",
       actions: [
         "Post 5-7x per week with increasing film quality",
-        "June 15, 2027: FBS programs can send materials — be ready",
+        "June 15, 2027: FBS/FCS coach-initiated communication and recruiting materials open",
         "Attend elite regional camps (Wisconsin, Iowa, etc.)",
         "Begin unofficial visits to target schools",
         "Engage with coach content (like, repost) to build name recognition",
-        "D2/FCS coaches can now reach out — respond to all DMs within 24 hours",
+        "D2 coaches can now reach out — respond to all DMs within 24 hours",
         "Get NCSA profile verified and updated with sophomore film",
         "Build relationships with recruiting media and evaluation services",
       ],
@@ -61,10 +59,10 @@ export const ncaaRules = {
       year: "Junior (2027-28)",
       phase: "Active Recruiting",
       actions: [
-        "September 1, 2027: FBS coaches can call/text — be prepared",
-        "January 2028: Official visits open (up to 5)",
+        "June 15 communication should already be active — keep your phone on, log every contact and reply quickly",
+        "April 1, 2028: football official visits open",
         "Ramp posting to daily — heavy film content",
-        "DM coaches directly at FCS and D2 programs",
+        "DM coaches directly at FBS, FCS and D2 programs when there is a clear reason to follow up",
         "Respond to all coach outreach within 12 hours",
         "Schedule and complete unofficial/official visits",
         "Narrow school list based on offers and fit",
@@ -76,9 +74,9 @@ export const ncaaRules = {
       phase: "Decision & Commitment",
       actions: [
         "Continue daily posting through signing period",
-        "Complete official visits (max 5)",
-        "Early Signing Period: December 2028",
-        "National Signing Day: February 2029",
+        "Complete official visits and compare the real offer package at each school",
+        "Early signing paperwork window: December 2028",
+        "Traditional February signing window: February 2029",
         "Make commitment decision — announce on X",
         "Thank all coaches who recruited you (public and DM)",
         "Transition content to committed athlete mode",
@@ -91,7 +89,7 @@ export const ncaaRules = {
     'The "Click Don\'t Type" rule: NCAA coaches at the D1 level can interact with recruit social media posts by clicking (liking, reposting, bookmarking) but CANNOT publicly type comments on a prospect\'s posts until after the prospect has committed. This means every like or repost from a college coach is a deliberate recruiting signal. Track these interactions carefully — a coach liking 3+ posts is equivalent to early interest. After commitment, coaches can comment publicly. This rule does not apply to DMs, which have their own timing rules by division.',
 
   dmRules:
-    "DM rules vary by division. D1 FBS: Coaches cannot initiate electronic communication (including DMs) until September 1 of a prospect's junior year, but prospects can DM coaches at any time and coaches can respond. D1 FCS: Similar restrictions but some conferences allow earlier electronic contact after June 15 of sophomore year. D2: Coaches can contact prospects via any electronic means after June 15 following sophomore year. D3: No recruiting restrictions on electronic communication — coaches can DM at any time. Key strategy: For D1 FBS targets, post content that earns likes/reposts from coaches (they signal interest through clicks). For D2/FCS, initiate DMs after the contact window opens. Always be the one to reach out first when rules allow — coaches appreciate proactive recruits.",
+    "DM rules vary by division. D1 FBS football: coaches may initiate private electronic communication starting June 15 after sophomore year, while prospects may always message first. D1 FCS football follows the same broad timing model. D2: coaches can contact prospects via calls, texts, DMs and email after June 15 following sophomore year. D3: no recruiting restrictions on electronic communication. Key strategy: before the football contact window opens, use content, camp attendance and athlete-initiated outreach to build familiarity; after it opens, move to personalized follow-up and fast response times.",
 };
 
 export function getKnowledgeContext(): string {

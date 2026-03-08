@@ -57,7 +57,7 @@ export const xPlaybook = {
       d2Programs: "DM immediately after following and engaging for 1-2 weeks",
       fcsPrograms: "DM after 2-4 weeks of following and engaging with their content",
       fbsPrograms:
-        "Follow + engage only until September 1 of junior year, then DM. Before that, let your content do the talking.",
+        "You can send athlete-initiated DMs now, but most meaningful FBS coach replies open June 15 after sophomore year. Before then, lead with camps, film updates and profile-building rather than repeated cold follow-ups.",
     },
   },
 
