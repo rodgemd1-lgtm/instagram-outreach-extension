@@ -30,6 +30,10 @@
       "schedule": "0 14,19 * * 1-5"
     },
     {
+      "path": "/api/ncsa/scrape",
+      "schedule": "0 */4 * * *"
+    },
+    {
       "path": "/api/growth/auto-engage",
       "schedule": "0 15 * * *"
     }
