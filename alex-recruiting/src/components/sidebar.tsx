@@ -30,6 +30,9 @@ import {
   UsersRound,
   Camera,
   PlayCircle,
+  Upload,
+  Trophy,
+  CalendarDays,
 } from "lucide-react";
 
 const navItems = [
@@ -48,6 +51,9 @@ const navItems = [
   { href: "/videos", label: "Video Library", icon: Film },
   { href: "/youtube-studio", label: "YouTube Studio", icon: PlayCircle },
   { href: "/media", label: "Photo Library", icon: Camera },
+  { href: "/media-import", label: "Import Media", icon: Upload },
+  { href: "/accomplishments", label: "Accomplishments", icon: Trophy },
+  { href: "/camps", label: "Camp Tracker", icon: CalendarDays },
   { href: "/coaches", label: "Coach Pipeline", icon: Users },
   { href: "/dms", label: "DM Campaigns", icon: Mail },
   { href: "/calendar", label: "Content Calendar", icon: Calendar },

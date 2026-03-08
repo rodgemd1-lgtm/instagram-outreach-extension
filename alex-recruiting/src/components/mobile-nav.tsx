@@ -30,6 +30,9 @@ import {
   Film,
   UsersRound,
   PlayCircle,
+  Upload,
+  Trophy,
+  CalendarDays,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -61,6 +64,9 @@ const secondaryNav = [
   { href: "/agents", label: "Agent Command Center", icon: Bot },
   { href: "/videos", label: "Video Library", icon: Film },
   { href: "/youtube-studio", label: "YouTube Studio", icon: PlayCircle },
+  { href: "/media-import", label: "Import Media", icon: Upload },
+  { href: "/accomplishments", label: "Accomplishments", icon: Trophy },
+  { href: "/camps", label: "Camp Tracker", icon: CalendarDays },
 ];
 
 export function MobileBottomNav() {
