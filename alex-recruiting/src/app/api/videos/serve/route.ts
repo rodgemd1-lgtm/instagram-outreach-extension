@@ -15,6 +15,51 @@ function isPathAllowed(filePath: string): boolean {
   return ALLOWED_DIRS.some((dir) => resolved.startsWith(dir));
 }
 
+interface ByteRange {
+  start: number;
+  end: number;
+  chunkSize: number;
+}
+
+function parseByteRange(
+  rangeHeader: string | null,
+  fileSize: number
+): ByteRange | null | "unsatisfiable" {
+  if (!rangeHeader) {
+    return null;
+  }
+
+  const match = rangeHeader.match(/bytes=(\d+)-(\d*)/);
+  if (!match) {
+    return null;
+  }
+
+  const start = Number.parseInt(match[1], 10);
+  if (!Number.isFinite(start) || Number.isNaN(start) || start < 0) {
+    return "unsatisfiable";
+  }
+
+  let end = match[2] ? Number.parseInt(match[2], 10) : fileSize - 1;
+  if (!Number.isFinite(end) || Number.isNaN(end)) {
+    return "unsatisfiable";
+  }
+
+  if (start >= fileSize) {
+    return "unsatisfiable";
+  }
+
+  end = Math.min(end, fileSize - 1);
+  if (end < start) {
+    return "unsatisfiable";
+  }
+
+  return {
+    start,
+    end,
+    chunkSize: end - start + 1,
+  };
+}
+
 export async function GET(req: NextRequest) {
   try {
     const filePath = req.nextUrl.searchParams.get("path");
@@ -57,34 +102,42 @@ export async function GET(req: NextRequest) {
     };
     const contentType = mimeMap[ext] || "application/octet-stream";
 
-    const rangeHeader = req.headers.get("range");
+    const range = parseByteRange(req.headers.get("range"), fileSize);
 
-    if (rangeHeader) {
-      const match = rangeHeader.match(/bytes=(\d+)-(\d*)/);
-      if (match) {
-        const start = parseInt(match[1], 10);
-        const end = match[2] ? parseInt(match[2], 10) : fileSize - 1;
-        const chunkSize = end - start + 1;
+    if (range === "unsatisfiable") {
+      return new NextResponse(null, {
+        status: 416,
+        headers: {
+          "Content-Range": `bytes */${fileSize}`,
+          "Accept-Ranges": "bytes",
+        },
+      });
+    }
 
-        const stream = createReadStream(resolved, { start, end });
-        const readable = new ReadableStream({
-          start(controller) {
-            stream.on("data", (chunk) => controller.enqueue(typeof chunk === "string" ? Buffer.from(chunk) : chunk));
-            stream.on("end", () => controller.close());
-            stream.on("error", (err) => controller.error(err));
-          },
-        });
+    if (range) {
+      const stream = createReadStream(resolved, {
+        start: range.start,
+        end: range.end,
+      });
+      const readable = new ReadableStream({
+        start(controller) {
+          stream.on("data", (chunk) =>
+            controller.enqueue(typeof chunk === "string" ? Buffer.from(chunk) : chunk)
+          );
+          stream.on("end", () => controller.close());
+          stream.on("error", (err) => controller.error(err));
+        },
+      });
 
-        return new NextResponse(readable, {
-          status: 206,
-          headers: {
-            "Content-Range": `bytes ${start}-${end}/${fileSize}`,
-            "Accept-Ranges": "bytes",
-            "Content-Length": String(chunkSize),
-            "Content-Type": contentType,
-          },
-        });
-      }
+      return new NextResponse(readable, {
+        status: 206,
+        headers: {
+          "Content-Range": `bytes ${range.start}-${range.end}/${fileSize}`,
+          "Accept-Ranges": "bytes",
+          "Content-Length": String(range.chunkSize),
+          "Content-Type": contentType,
+        },
+      });
     }
 
     // Full file response

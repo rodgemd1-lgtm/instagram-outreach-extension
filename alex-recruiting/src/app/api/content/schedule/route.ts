@@ -25,6 +25,7 @@ import {
   createScheduledPost,
   processPostQueue,
 } from "@/lib/content-engine/post-pipeline";
+import { autoScheduleToday } from "@/lib/content-engine/auto-scheduler";
 
 const MAX_TWEET_LENGTH = 280;
 const VALID_PILLARS = ["performance", "work_ethic", "character"];
@@ -70,8 +71,12 @@ export async function GET(req: NextRequest) {
     }
 
     try {
+      // Auto-schedule a post if today is Mon/Wed/Fri and none exists yet
+      const autoResult = await autoScheduleToday();
+
+      // Process any due posts
       const result = await processPostQueue();
-      return NextResponse.json({ result });
+      return NextResponse.json({ autoSchedule: autoResult, result });
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unknown error";
       console.error("[GET /api/content/schedule?action=process]", err);

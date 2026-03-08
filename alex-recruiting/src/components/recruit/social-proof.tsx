@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   useRecruitAssembly,
   type AssemblyConfig,
@@ -30,7 +30,39 @@ const SCHOOLS = [
   "Wisconsin-Whitewater",
 ];
 
+interface SocialProofMetrics {
+  ncsaProfileViews: number;
+  campInvites: number;
+  coachFollowers: number;
+  competitorOffers: number;
+}
+
+function MetricPill({ label, value }: { label: string; value: number }) {
+  if (value === 0) return null;
+  return (
+    <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.06]">
+      <span className="text-red-500 font-mono font-bold text-sm">{value}</span>
+      <span className="text-white/30 text-[10px] tracking-[0.15em] uppercase">{label}</span>
+    </div>
+  );
+}
+
 export function SocialProofBanner() {
+  const [metrics, setMetrics] = useState<SocialProofMetrics | null>(null);
+
+  useEffect(() => {
+    fetch("/api/recruit/social-proof")
+      .then((r) => r.json())
+      .then((data) => setMetrics(data))
+      .catch(() => {}); // silently fail — metrics are optional
+  }, []);
+
+  const hasMetrics = metrics && (
+    metrics.ncsaProfileViews > 0 ||
+    metrics.campInvites > 0 ||
+    metrics.coachFollowers > 0
+  );
+
   const config = useMemo<AssemblyConfig>(
     () => ({
       wave2: [
@@ -71,6 +103,15 @@ export function SocialProofBanner() {
         className="max-w-6xl mx-auto px-6"
       >
         <div data-gsap-wave="2" style={{ opacity: 0 }}>
+          {/* Real metrics bar */}
+          {hasMetrics && (
+            <div className="flex justify-center gap-3 md:gap-6 flex-wrap mb-6">
+              <MetricPill label="Profile Views" value={metrics.ncsaProfileViews} />
+              <MetricPill label="Camp Invites" value={metrics.campInvites} />
+              <MetricPill label="Coaches Following" value={metrics.coachFollowers} />
+            </div>
+          )}
+
           {/* Label */}
           <p className="text-center text-[10px] tracking-[0.5em] text-white/25 uppercase font-mono mb-6">
             Coaches evaluating Jacob represent programs including

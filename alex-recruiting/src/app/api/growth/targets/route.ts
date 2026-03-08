@@ -8,10 +8,19 @@ import {
   getGrowthRecommendations,
 } from "@/lib/growth/follower-scraper";
 
+function parseTargetLimit(rawLimit: string | null): number {
+  const parsed = Number.parseInt(rawLimit ?? "", 10);
+  if (!Number.isFinite(parsed) || Number.isNaN(parsed)) {
+    return 25;
+  }
+
+  return Math.max(1, Math.min(parsed, 50));
+}
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const maxResults = Math.min(parseInt(searchParams.get("limit") ?? "25"), 50);
+    const maxResults = parseTargetLimit(searchParams.get("limit"));
     const analyze = searchParams.get("analyze"); // handle to analyze followers of
     const type = searchParams.get("type"); // filter by category
     const includeRecommendations = searchParams.get("recommendations") !== "false";

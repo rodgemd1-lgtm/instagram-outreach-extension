@@ -54,14 +54,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// Allow GET for manual testing in development
+// GET for Vercel cron (crons send GET requests)
 export async function GET(req: NextRequest) {
-  if (process.env.NODE_ENV === "production") {
-    return NextResponse.json(
-      { error: "Use POST to trigger processing" },
-      { status: 405 }
-    );
-  }
-
   return POST(req);
 }

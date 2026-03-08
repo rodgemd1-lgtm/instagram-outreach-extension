@@ -24,6 +24,14 @@
     {
       "path": "/api/content/schedule?action=process",
       "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/outreach/process",
+      "schedule": "0 14,19 * * 1-5"
+    },
+    {
+      "path": "/api/growth/auto-engage",
+      "schedule": "0 15 * * *"
     }
   ]
 }
