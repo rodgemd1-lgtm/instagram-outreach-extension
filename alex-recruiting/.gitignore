@@ -26,7 +26,10 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
 .env*.local
+.ncsa-leads.json
+.mcp.json
 
 # vercel
 .vercel
@@ -34,6 +37,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+supabase/.temp/
 
 # local video store
 .video-store.json
