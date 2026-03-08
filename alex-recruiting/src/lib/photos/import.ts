@@ -102,7 +102,7 @@ export function importPhotosFromSources(): { imported: number; skipped: number; 
     let files: string[];
     try {
       files = fs.readdirSync(source.dir);
-    } catch (e) {
+    } catch {
       errors.push(`Cannot read directory: ${source.dir}`);
       continue;
     }

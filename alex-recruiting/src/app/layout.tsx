@@ -15,7 +15,12 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+const metadataBaseUrl =
+  process.env.NEXT_PUBLIC_APP_URL ??
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+
 export const metadata: Metadata = {
+  metadataBase: new URL(metadataBaseUrl),
   title: "Alex Recruiting | Jacob Rodgers OL '29",
   description: "AI-powered recruiting intelligence system for Jacob Rodgers — Class of 2029 Offensive Lineman, Pewaukee HS, Wisconsin",
   manifest: "/manifest.json",

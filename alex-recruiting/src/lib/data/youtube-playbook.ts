@@ -462,7 +462,6 @@ export function getRecommendedYouTubeTitle(
   event?: string
 ): string {
   const category = categoryToYouTubeMapping[video.category] || "shorts";
-  const templates = youtubePlaybook.titleFormats;
 
   switch (category) {
     case "highlights":

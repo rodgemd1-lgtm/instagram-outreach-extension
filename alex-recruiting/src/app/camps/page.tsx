@@ -231,28 +231,6 @@ function formatDate(dateStr: string | null): string {
   });
 }
 
-function formatShortDate(dateStr: string | null): string {
-  if (!dateStr) return "TBD";
-  return new Date(dateStr).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
-}
-
-function getStatusColor(status: RegistrationStatus): string {
-  switch (status) {
-    case "confirmed":
-      return "bg-green-500";
-    case "registered":
-      return "bg-yellow-500";
-    case "waitlisted":
-      return "bg-orange-500";
-    case "not_registered":
-    default:
-      return "bg-slate-600";
-  }
-}
-
 function getStatusBadgeClasses(status: RegistrationStatus): string {
   switch (status) {
     case "confirmed":
@@ -985,8 +963,6 @@ function MeasurablesTab() {
   });
 
   const latestEntry = measurables.length > 0 ? measurables[measurables.length - 1] : null;
-  const previousEntry = measurables.length > 1 ? measurables[measurables.length - 2] : null;
-
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();

@@ -536,7 +536,6 @@ export function getRecommendedActions(date?: Date): RecommendedAction[] {
   const actions: RecommendedAction[] = [];
 
   const fbsPermission = canCoachContact("D1 FBS", now);
-  const d2Permission = canCoachContact("D2", now);
   const d3Permission = canCoachContact("D3", now);
 
   // Grade-specific recommendations

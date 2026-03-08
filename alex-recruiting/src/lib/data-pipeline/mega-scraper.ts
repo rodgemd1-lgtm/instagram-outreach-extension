@@ -933,7 +933,7 @@ export async function runMegaScrape(options: {
 
   for (const school of schools) {
     try {
-      console.log(`[mega-scraper] Scraping: ${school.name} (${school.division})`);
+      console.info(`[mega-scraper] Scraping: ${school.name} (${school.division})`);
 
       const coaches = await scrapeSchoolStaff(school);
       result.coachesFound += coaches.length;
@@ -942,11 +942,11 @@ export async function runMegaScrape(options: {
       if (coaches.length > 0) {
         const stored = await storeCoaches(coaches);
         result.coachesStored += stored;
-        console.log(
+        console.info(
           `[mega-scraper] ${school.name}: found ${coaches.length} coaches, stored ${stored}`
         );
       } else {
-        console.log(`[mega-scraper] ${school.name}: no coaches parsed from staff page`);
+        console.info(`[mega-scraper] ${school.name}: no coaches parsed from staff page`);
       }
 
       // Rate limit: 1 request per 2 seconds
@@ -964,7 +964,7 @@ export async function runMegaScrape(options: {
   result.completedAt = new Date().toISOString();
   lastScrapeResult = result;
 
-  console.log(
+  console.info(
     `[mega-scraper] Complete: ${result.schoolsProcessed}/${result.totalSchools} schools, ` +
       `${result.coachesFound} coaches found, ${result.coachesStored} stored, ` +
       `${result.errors.length} errors`

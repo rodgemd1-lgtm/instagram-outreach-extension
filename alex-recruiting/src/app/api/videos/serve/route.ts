@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import fs from "fs/promises";
 import { createReadStream, statSync } from "fs";
 import path from "path";
+import { parseByteRange } from "./range";
+
+export const dynamic = "force-dynamic";
 
 // Allowlisted directories for security
 const ALLOWED_DIRS = [
@@ -13,51 +16,6 @@ const ALLOWED_DIRS = [
 function isPathAllowed(filePath: string): boolean {
   const resolved = path.resolve(filePath);
   return ALLOWED_DIRS.some((dir) => resolved.startsWith(dir));
-}
-
-interface ByteRange {
-  start: number;
-  end: number;
-  chunkSize: number;
-}
-
-function parseByteRange(
-  rangeHeader: string | null,
-  fileSize: number
-): ByteRange | null | "unsatisfiable" {
-  if (!rangeHeader) {
-    return null;
-  }
-
-  const match = rangeHeader.match(/bytes=(\d+)-(\d*)/);
-  if (!match) {
-    return null;
-  }
-
-  const start = Number.parseInt(match[1], 10);
-  if (!Number.isFinite(start) || Number.isNaN(start) || start < 0) {
-    return "unsatisfiable";
-  }
-
-  let end = match[2] ? Number.parseInt(match[2], 10) : fileSize - 1;
-  if (!Number.isFinite(end) || Number.isNaN(end)) {
-    return "unsatisfiable";
-  }
-
-  if (start >= fileSize) {
-    return "unsatisfiable";
-  }
-
-  end = Math.min(end, fileSize - 1);
-  if (end < start) {
-    return "unsatisfiable";
-  }
-
-  return {
-    start,
-    end,
-    chunkSize: end - start + 1,
-  };
 }
 
 export async function GET(req: NextRequest) {

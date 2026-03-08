@@ -699,7 +699,7 @@ export function LiveDashboard() {
                       </div>
                       {signal.tweetText && (
                         <p className="text-[10px] text-slate-400 mt-1 italic truncate">
-                          "{signal.tweetText}"
+                          &ldquo;{signal.tweetText}&rdquo;
                         </p>
                       )}
                     </div>

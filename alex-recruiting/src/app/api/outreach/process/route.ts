@@ -17,12 +17,12 @@ export async function POST(req: NextRequest) {
   const startedAt = Date.now();
 
   try {
-    console.log("[Outreach Process] Starting sequence processing run...");
+    console.info("[Outreach Process] Starting sequence processing run...");
     const result = await processSequences();
 
     const durationMs = Date.now() - startedAt;
 
-    console.log(
+    console.info(
       `[Outreach Process] Complete — processed: ${result.processed}, sent: ${result.sent}, skipped: ${result.skipped}, errors: ${result.errors.length}`
     );
 

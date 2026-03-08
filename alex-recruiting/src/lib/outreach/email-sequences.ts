@@ -346,7 +346,7 @@ export async function processEmailQueue(): Promise<ProcessEmailQueueResult> {
       if (!email.coachEmail) {
         // In production, we would look up the coach email from a database.
         // For now, we still mark as sent (email drafted for manual sending).
-        console.log(
+        console.info(
           `[Email Queue] No email address for ${email.coachName} (${email.schoolName}) — marking as sent for manual delivery`
         );
       }
@@ -383,7 +383,7 @@ export async function processEmailQueue(): Promise<ProcessEmailQueueResult> {
         action: "sent",
       });
 
-      console.log(
+      console.info(
         `[Email Queue] Sent to ${email.coachName} (${email.schoolName}): "${email.subject}"`
       );
     } catch (err) {

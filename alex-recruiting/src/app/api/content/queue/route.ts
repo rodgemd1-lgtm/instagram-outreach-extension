@@ -43,20 +43,22 @@ export async function GET(req: NextRequest) {
 
     const posts = await getPostQueue(statusFilter);
 
-    // Compute counts across all statuses (only when no filter applied)
-    let counts = { pending: 0, processing: 0, posted: 0, failed: 0, cancelled: 0 };
-    if (!statusFilter) {
-      for (const post of posts) {
-        if (post.status in counts) {
-          counts[post.status as keyof typeof counts]++;
-        }
-      }
-    }
+    const counts = statusFilter
+      ? undefined
+      : posts.reduce(
+          (acc, post) => {
+            if (post.status in acc) {
+              acc[post.status as keyof typeof acc]++;
+            }
+            return acc;
+          },
+          { pending: 0, processing: 0, posted: 0, failed: 0, cancelled: 0 }
+        );
 
     return NextResponse.json({
       posts,
       total: posts.length,
-      counts: statusFilter ? undefined : counts,
+      counts,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";

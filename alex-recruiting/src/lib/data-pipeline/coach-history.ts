@@ -10,12 +10,7 @@
  */
 
 import {
-  getCoaches,
   getRecruitingPlayers,
-  getOLRoster,
-  type CFBDCoach,
-  type CFBDRecruitingPlayer,
-  type CFBDRosterPlayer,
 } from "./cfbd-client";
 import { targetSchools } from "@/lib/data/target-schools";
 

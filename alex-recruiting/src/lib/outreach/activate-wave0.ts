@@ -103,7 +103,7 @@ export async function activateWave0(options: {
     }
   }
 
-  console.log(
+  console.info(
     `[Wave0] Activation complete — created: ${result.created}, skipped: ${result.skipped}, errors: ${result.errors.length}`
   );
 

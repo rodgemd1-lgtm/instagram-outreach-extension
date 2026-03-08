@@ -26,11 +26,6 @@ interface FilmReelProps {
   backgroundUrl?: string;
   youtubeId?: string;
   youtubeIds?: string[];
-  clipThumbnails?: Array<{
-    title: string;
-    thumbnail: string;
-    src: string;
-  }>;
 }
 
 export function FilmReel({
@@ -40,7 +35,6 @@ export function FilmReel({
   backgroundUrl,
   youtubeId = "wkYGNZTN8Xc",
   youtubeIds = ["wkYGNZTN8Xc", "03w9hRlXTzU"],
-  clipThumbnails = [],
 }: FilmReelProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalSrc, setModalSrc] = useState("");

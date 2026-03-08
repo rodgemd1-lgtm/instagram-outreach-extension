@@ -3,12 +3,7 @@
 
 import { getFollowers, verifyHandle } from "@/lib/integrations/x-api";
 import type { XUser } from "@/lib/integrations/x-api";
-import {
-  getTargetsByType,
-  getTargetsByPriority,
-  type ScraperTarget,
-} from "@/lib/data/scraper-targets";
-import { jacobProfile } from "@/lib/data/jacob-profile";
+import { getTargetsByPriority } from "@/lib/data/scraper-targets";
 
 // ---------------------------------------------------------------------------
 // Types

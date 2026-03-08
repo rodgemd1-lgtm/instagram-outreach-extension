@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { parseTargetLimit } from "@/app/api/growth/targets/route";
+import { parseTargetLimit } from "@/app/api/growth/targets/route-utils";
 
 describe("parseTargetLimit", () => {
   it("defaults invalid values to 25", () => {

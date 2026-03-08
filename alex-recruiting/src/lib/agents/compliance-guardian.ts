@@ -101,12 +101,6 @@ function today(): Date {
   return new Date();
 }
 
-/** Parse an academic year like "Freshman (2025-26)" into a start year (2025). */
-function parseAcademicStartYear(label: string): number | null {
-  const m = label.match(/\((\d{4})/);
-  return m ? parseInt(m[1], 10) : null;
-}
-
 /**
  * Determine the academic phase for a given class year based on today's date.
  * Class year 2029 means graduation in 2029.

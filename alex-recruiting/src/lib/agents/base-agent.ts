@@ -101,7 +101,7 @@ export abstract class BaseAgent {
         parameters: sc.parameters,
       }));
 
-      const { results, totalActions } = await executeSkills(
+      const { results } = await executeSkills(
         this.agentId,
         skillCalls,
         runId

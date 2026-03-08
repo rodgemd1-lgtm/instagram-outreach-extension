@@ -216,7 +216,7 @@ export function useRecruitAssembly(config: AssemblyConfig) {
 
               if (w2.individual) {
                 // Individual ScrollTrigger per element
-                targets.forEach((target, i) => {
+                targets.forEach((target) => {
                   const fromVars = { ...w2.from };
                   const toVars = { ...w2.to };
 

@@ -417,7 +417,7 @@ async function sendThankYouTweets(invites: NCSACampInvite[]): Promise<number> {
       const result = await postTweet(text);
       if (result) {
         sent++;
-        console.log(`Thank-you tweet sent for ${invite.school}: ${result.id}`);
+        console.info(`Thank-you tweet sent for ${invite.school}: ${result.id}`);
       }
     } catch (err) {
       console.error(`Failed to tweet thank-you for ${invite.school}:`, err);

@@ -3,7 +3,7 @@
 
 import { db, isDbConfigured } from "@/lib/db";
 import { dmMessages, dmSequences } from "@/lib/db/schema";
-import { eq, isNotNull, gte } from "drizzle-orm";
+import { eq, isNotNull } from "drizzle-orm";
 
 // ---------------------------------------------------------------------------
 // Types

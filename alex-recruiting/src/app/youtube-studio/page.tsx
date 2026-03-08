@@ -28,7 +28,7 @@ import {
   LayoutList,
   Tag,
   FileText,
-  Image,
+  ImageIcon,
   CalendarDays,
   Link2,
   Type,
@@ -677,7 +677,7 @@ export default function YouTubeStudioPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
-                <Image className="h-4 w-4" />
+                <ImageIcon className="h-4 w-4" />
                 Thumbnail Best Practices
               </CardTitle>
               <CardDescription>

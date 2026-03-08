@@ -10,7 +10,6 @@ import {
   type DMTier,
 } from "@/lib/data/cold-dms";
 import { generateDMDraft } from "@/lib/integrations/anthropic";
-import { verifyHandle, sendDM } from "@/lib/integrations/x-api";
 import { jacobProfile } from "@/lib/data/jacob-profile";
 
 // ---------------------------------------------------------------------------
@@ -174,7 +173,7 @@ export async function createSequence(
     templateVars?: Record<string, string>;
   }
 ): Promise<DMSequenceRecord> {
-  const { coachName, school, tier = "Tier 2", templateVars = {} } = context;
+  const { coachName, school } = context;
 
   const now = new Date();
   const nextSendAt = new Date(now); // Step 1 fires immediately (day 0)
@@ -361,7 +360,7 @@ export async function processSequences(): Promise<ProcessResult> {
         action: "sent",
       });
 
-      console.log(
+      console.info(
         `[DM Sequence] Sent step ${seq.currentStep} to ${seq.coachName} (${seq.school}): "${personalizedMessage.slice(0, 60)}..."`
       );
     } catch (err) {

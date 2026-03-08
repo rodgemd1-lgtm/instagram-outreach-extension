@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { parseByteRange } from "@/app/api/videos/serve/route";
+import { parseByteRange } from "@/app/api/videos/serve/range";
 
 describe("parseByteRange", () => {
   it("returns null when no range is provided", () => {

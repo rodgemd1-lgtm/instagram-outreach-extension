@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Film, Image, X, Play, Scissors, Loader2, Check } from "lucide-react";
+import { Film, ImageIcon, X, Play, Scissors, Loader2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -188,7 +188,7 @@ export function MediaPicker({ selectedMedia, onSelect }: MediaPickerProps) {
             className="gap-1.5 text-xs"
             onClick={() => setOpen(true)}
           >
-            <Image className="h-3.5 w-3.5" />
+            <ImageIcon className="h-3.5 w-3.5" />
             Attach Image
           </Button>
         </div>
