@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { processNCSAData } from "@/lib/scraping/ncsa-scraper";
-import { syncNcsaDashboard } from "@/lib/scraping/ncsa-browser-sync.mjs";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -52,6 +51,15 @@ async function runScrape(req?: NextRequest) {
   const mode = req?.nextUrl.searchParams.get("mode") ?? "authenticated";
   const allowLegacyFallback = req?.nextUrl.searchParams.get("legacyFallback") === "1";
 
+  if (process.env.VERCEL) {
+    return {
+      mode: "status_only",
+      warning:
+        "Authenticated NCSA browser sync is disabled on Vercel because the serverless runtime cannot safely host the required browser binary. Run `npm run ncsa:sync` from the local operator machine or move this job to a dedicated worker.",
+      syncedAt: null,
+    };
+  }
+
   if (mode === "legacy") {
     const legacy = await processNCSAData();
     return {
@@ -61,6 +69,7 @@ async function runScrape(req?: NextRequest) {
   }
 
   try {
+    const { syncNcsaDashboard } = await import("@/lib/scraping/ncsa-browser-sync.mjs");
     const synced = await syncNcsaDashboard();
     return {
       mode: "authenticated",
