@@ -8,10 +8,12 @@ import {
   type AssemblyConfig,
 } from "@/hooks/useRecruitAssembly";
 import {
-  FEATURED_RECRUIT_CLIPS,
+  CURRENT_FEATURED_CLIPS,
   FEATURED_RECRUIT_REEL,
   FULL_FILM_LINKS,
+  LEGACY_FEATURED_CLIPS,
   SUPPORTING_RECRUIT_REELS,
+  type FeaturedRecruitClip,
 } from "@/lib/recruit/featured-clips";
 import { RecruitVideoPlayer } from "./video-player";
 import { VideoModal } from "./video-modal";
@@ -22,16 +24,16 @@ interface FilmReelProps {
 
 const coachReasons = [
   {
-    label: "Why a coach keeps watching",
-    body: "The frame is big, the reps are easy to identify, and the film moves quickly into real contact moments.",
+    label: "Why keep the CapCut reel first",
+    body: "It is Jacob's own 30-second cut, it stays football-only, and it gets to his best visual moments faster than the longer reels.",
   },
   {
-    label: "Moments of truth",
-    body: "Get-off, contact point, leverage, finish, and whether #79 stays involved after the first collision.",
+    label: "Why the older clips came back",
+    body: "Some of the earlier site clips are cleaner from a coach-readability standpoint, so they now sit beside the newer trench clips instead of disappearing.",
   },
   {
-    label: "Narrative to leave with",
-    body: "A 2029 lineman with defensive upside, offensive flexibility, and a broader athlete profile that supports projection.",
+    label: "How to use this page",
+    body: "Watch the CapCut reel, compare the legacy and current clip stacks, then open whichever longer reel best fits your evaluation style.",
   },
 ];
 
@@ -129,14 +131,14 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
               Film
             </span>
             <h2 className="text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
-              Film should answer the
+              Lead with the reel
               <br />
-              first question immediately.
+              he already believes in.
             </h2>
             <p className="mt-6 max-w-3xl text-base leading-7 text-white/54 md:text-lg">
-              Start with the coach-first highlight reel. Then move through six
-              ranked clips that make it easy to evaluate #79 as an OL/DL
-              development case.
+              The main player now uses Jacob&apos;s 30-second CapCut highlight.
+              The older clips are back, the newer trench clips stay live, and
+              the coach-first reel is still here as a second pass.
             </p>
           </div>
 
@@ -149,7 +151,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
                   <p className="font-mono text-[10px] uppercase tracking-[0.32em] text-amber-300/70">
-                    Main Reel
+                    Main Highlight
                   </p>
                   <h3 className="mt-2 text-2xl font-semibold tracking-tight text-white">
                     {FEATURED_RECRUIT_REEL.title}
@@ -213,7 +215,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                 className="rounded-[34px] border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-sm"
               >
                 <p className="font-mono text-[10px] uppercase tracking-[0.32em] text-amber-300/70">
-                  Extended Film
+                  External Film
                 </p>
                 <div className="mt-5 space-y-3">
                   {FULL_FILM_LINKS.map((link) => (
@@ -241,72 +243,14 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
           <div className="mt-12">
             <div data-gsap="film-header" style={{ opacity: 0 }} className="max-w-3xl">
               <p className="font-mono text-[10px] uppercase tracking-[0.32em] text-amber-300/70">
-                Ranked Clips
+                More Reels
               </p>
               <h3 className="mt-3 text-3xl font-semibold tracking-tight text-white">
-                Six individual reps worth featuring.
+                Compare the legacy stack, the coach-first reel, and the athlete-context cuts.
               </h3>
             </div>
 
-            <div className="mt-8 grid gap-5 xl:grid-cols-3">
-              {FEATURED_RECRUIT_CLIPS.map((clip) => (
-                <div
-                  key={clip.rank}
-                  data-gsap="film-grid"
-                  style={{ opacity: 0 }}
-                  className="overflow-hidden rounded-[28px] border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm"
-                >
-                  <div className="relative aspect-video">
-                    <RecruitVideoPlayer
-                      src={clip.src}
-                      poster={clip.poster}
-                      mode="inline"
-                      onFullscreen={() => openFullscreen(clip.src, clip.poster)}
-                      className="h-full w-full rounded-none"
-                    />
-                    <div className="pointer-events-none absolute left-4 top-4 rounded-full border border-white/15 bg-black/55 px-3 py-1 font-mono text-[11px] tracking-[0.3em] text-white/80">
-                      {clip.rank}
-                    </div>
-                  </div>
-                  <div className="space-y-3 p-5">
-                    <div>
-                      <p className="text-lg font-semibold text-white">{clip.title}</p>
-                      <p className="mt-1 text-sm text-white/48">{clip.subtitle}</p>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {clip.moments.map((moment) => (
-                        <span
-                          key={moment}
-                          className="rounded-full border border-white/[0.08] bg-black/24 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em] text-amber-300/75"
-                        >
-                          {moment}
-                        </span>
-                      ))}
-                    </div>
-                    <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.24em] text-red-500/65">
-                      <span>{clip.durationLabel}</span>
-                      <span>{clip.sourceName.replace(".MOV", "")}</span>
-                    </div>
-                    <p className="text-sm leading-6 text-white/56">
-                      {clip.analysisNotes}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-12">
-            <div data-gsap="film-header" style={{ opacity: 0 }} className="max-w-3xl">
-              <p className="font-mono text-[10px] uppercase tracking-[0.32em] text-amber-300/70">
-                Supporting Reels
-              </p>
-              <h3 className="mt-3 text-3xl font-semibold tracking-tight text-white">
-                Use these to understand the full athlete.
-              </h3>
-            </div>
-
-            <div className="mt-8 grid gap-5 xl:grid-cols-3">
+            <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {SUPPORTING_RECRUIT_REELS.map((reel) => (
                 <div
                   key={reel.id}
@@ -344,6 +288,18 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
               ))}
             </div>
           </div>
+
+          <ClipLibrary
+            title="Restored legacy clips"
+            subtitle="The older site favorites are back on page."
+            clips={LEGACY_FEATURED_CLIPS}
+          />
+
+          <ClipLibrary
+            title="Fresh trench clips"
+            subtitle="The newer football batch stays live too."
+            clips={CURRENT_FEATURED_CLIPS}
+          />
         </div>
       </section>
 
@@ -354,5 +310,75 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
         onClose={() => setModalOpen(false)}
       />
     </>
+  );
+}
+
+function ClipLibrary({
+  title,
+  subtitle,
+  clips,
+}: {
+  title: string;
+  subtitle: string;
+  clips: FeaturedRecruitClip[];
+}) {
+  return (
+    <div className="mt-12">
+      <div data-gsap="film-header" style={{ opacity: 0 }} className="max-w-3xl">
+        <p className="font-mono text-[10px] uppercase tracking-[0.32em] text-amber-300/70">
+          Featured Clips
+        </p>
+        <h3 className="mt-3 text-3xl font-semibold tracking-tight text-white">
+          {title}
+        </h3>
+        <p className="mt-3 text-sm leading-6 text-white/54 md:text-base">
+          {subtitle}
+        </p>
+      </div>
+
+      <div className="mt-8 grid gap-5 xl:grid-cols-3">
+        {clips.map((clip) => (
+          <div
+            key={clip.rank}
+            data-gsap="film-grid"
+            style={{ opacity: 0 }}
+            className="overflow-hidden rounded-[28px] border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm"
+          >
+            <div className="relative aspect-video">
+              <RecruitVideoPlayer
+                src={clip.src}
+                poster={clip.poster}
+                mode="inline"
+                className="h-full w-full rounded-none"
+              />
+              <div className="pointer-events-none absolute left-4 top-4 rounded-full border border-white/15 bg-black/55 px-3 py-1 font-mono text-[11px] tracking-[0.3em] text-white/80">
+                {clip.rank}
+              </div>
+            </div>
+            <div className="space-y-3 p-5">
+              <div>
+                <p className="text-lg font-semibold text-white">{clip.title}</p>
+                <p className="mt-1 text-sm text-white/48">{clip.subtitle}</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {clip.moments.map((moment) => (
+                  <span
+                    key={moment}
+                    className="rounded-full border border-white/[0.08] bg-black/24 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em] text-amber-300/75"
+                  >
+                    {moment}
+                  </span>
+                ))}
+              </div>
+              <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.24em] text-red-500/65">
+                <span>{clip.durationLabel}</span>
+                <span>{clip.sourceName.replace(".MOV", "")}</span>
+              </div>
+              <p className="text-sm leading-6 text-white/56">{clip.analysisNotes}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

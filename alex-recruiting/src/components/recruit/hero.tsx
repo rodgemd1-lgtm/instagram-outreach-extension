@@ -160,7 +160,7 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
               className="mt-10 flex flex-wrap gap-4"
             >
               <ActionButton
-                label="Watch Impact Reel"
+                label="Watch Highlight Reel"
                 onClick={() => {
                   const filmSection = document.getElementById("film-reel");
                   filmSection?.scrollIntoView({ behavior: "smooth" });
@@ -196,13 +196,13 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
               />
               <SnapshotCard
                 label="Why Stay Interested"
-                title="The power story is bigger than football alone"
-                body="Track and field, strength work, trench sessions, and year-round training all point in the same direction: the body is still moving upward."
+                title="The film library is broader again"
+                body="The CapCut highlight reel leads now, the older favorite clips are restored, and the coach-first trench reel still stays available as a second pass."
               />
               <SnapshotCard
                 label="Moments Of Truth"
                 title="Get-off, leverage, finish, and effort"
-                body="The best clips were selected because coaches can quickly find #79, see the contact point, and judge how the rep ends."
+                body="Coaches can now compare the old stack, the newer trench clips, and the main CapCut cut instead of being forced into only one film lens."
               />
             </div>
 
@@ -212,7 +212,7 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
               className="mt-8 flex items-center gap-3 text-sm text-white/45"
             >
               <Play className="h-4 w-4 text-amber-300/80" />
-              Scroll to film for the new coach-first reel, ranked clips, and the athlete-story layer.
+              Scroll for the CapCut highlight, restored legacy clips, newer trench reps, and the athlete-story layer.
               <ChevronDown className="ml-auto h-4 w-4 animate-bounce text-white/30" />
             </div>
           </div>

@@ -93,8 +93,9 @@ export function ContactCTA() {
             Let&apos;s Talk
           </h2>
           <p className="mx-auto max-w-lg text-base leading-relaxed text-white/40 md:text-lg">
-            The cleanest next move is simple: watch the impact reel, review the
-            packet, and send a message through the coach form.
+            The cleanest next move is simple: watch the CapCut highlight,
+            compare the coach and legacy reels, and send a message through the
+            coach form.
           </p>
         </div>
 
@@ -126,9 +127,19 @@ export function ContactCTA() {
             </span>
             <div className="space-y-3">
               <QuickLink
-                label="Impact Reel"
-                handle="Open Coach-First Reel"
+                label="Main Highlight"
+                handle="Open CapCut Reel"
+                href="/recruit/featured-clips/jacob-capcut-highlight.mp4"
+              />
+              <QuickLink
+                label="Coach Reel"
+                handle="Open Trench Reel"
                 href="/recruit/featured-clips/jacob-impact-reel.mp4"
+              />
+              <QuickLink
+                label="Legacy Reel"
+                handle="Open Restored Reel"
+                href="/recruit/featured-clips/jacob-legacy-trench-reel.mp4"
               />
               <QuickLink
                 label="X / Twitter"

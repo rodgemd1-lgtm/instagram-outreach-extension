@@ -66,32 +66,60 @@ export function MultiSportSection() {
             style={{ opacity: 0 }}
             className="rounded-[30px] border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-sm"
           >
-            <p className="font-mono text-[10px] uppercase tracking-[0.32em] text-amber-300/70">
-              Track And Field
-            </p>
-            <h3 className="mt-4 text-3xl font-semibold tracking-tight text-white">
-              First place in discus and shot put.
-            </h3>
-            <p className="mt-4 text-sm leading-7 text-white/58">
-              The throws matter because they reinforce the football story: hip
-              power, rotational force, balance under load, and the ability to
-              finish violently without losing body control. The near-school-record
-              trajectory gives coaches another proof point that the power is real.
-            </p>
+            <div className="overflow-hidden rounded-[24px] border border-white/[0.08] bg-black/25">
+              <div className="grid gap-0 md:grid-cols-[1.05fr_0.95fr]">
+                <div className="flex min-h-[18rem] flex-col justify-between p-6">
+                  <div>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.32em] text-amber-300/70">
+                      Track And Field
+                    </p>
+                    <h3 className="mt-4 text-3xl font-semibold tracking-tight text-white">
+                      First place in discus and shot put.
+                    </h3>
+                    <p className="mt-4 text-sm leading-7 text-white/58">
+                      The track story matters because it gives coaches another
+                      real proof point for power transfer, rotation, and body
+                      control outside football reps.
+                    </p>
+                  </div>
 
-            <div className="mt-6 grid gap-3 sm:grid-cols-3">
-              <TransferCard
-                label="Discus"
-                body="Rotational force, finish mechanics, and hip snap."
-              />
-              <TransferCard
-                label="Shot Put"
-                body="Short-area explosion and force transfer through contact."
-              />
-              <TransferCard
-                label="Football"
-                body="The same power shows up as knock-back, reset strength, and finish."
-              />
+                  <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                    <TrackMetric value="1st" label="Discus" />
+                    <TrackMetric value="1st" label="Shot Put" />
+                    <TrackMetric value="Near Record" label="Trajectory" />
+                  </div>
+                </div>
+
+                <div className="border-t border-white/[0.08] md:border-t-0 md:border-l">
+                  <div className="flex h-full min-h-[18rem] flex-col justify-between bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.18))] p-6">
+                    <div>
+                      <p className="font-mono text-[10px] uppercase tracking-[0.32em] text-red-500/70">
+                        Transfer Lens
+                      </p>
+                      <p className="mt-4 text-sm leading-7 text-white/60">
+                        Shot put shows short-area explosion. Discus shows
+                        rotational torque and balance. Both map cleanly to power
+                        generation in the trenches.
+                      </p>
+                    </div>
+
+                    <div className="grid gap-3">
+                      <TransferCard
+                        label="Discus"
+                        body="Rotational force, finish mechanics, and hip snap."
+                      />
+                      <TransferCard
+                        label="Shot Put"
+                        body="Short-area explosion and force transfer through contact."
+                      />
+                      <TransferCard
+                        label="Football"
+                        body="The same power shows up as knock-back, reset strength, and finish."
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -120,6 +148,17 @@ export function MultiSportSection() {
                   and balance under changing terrain. That matters for a big
                   athlete whose game depends on staying centered through contact.
                 </p>
+              </div>
+
+              <div className="mt-5 overflow-hidden rounded-[24px] border border-white/[0.08]">
+                <div className="relative aspect-video">
+                  <RecruitVideoPlayer
+                    src="/recruit/supporting-reels/snowboard-cut.mp4"
+                    poster="/recruit/supporting-reels/snowboard-cut.jpg"
+                    mode="inline"
+                    className="h-full w-full rounded-none"
+                  />
+                </div>
               </div>
             </div>
 
@@ -164,6 +203,17 @@ function TransferCard({ label, body }: { label: string; body: string }) {
         {label}
       </p>
       <p className="mt-3 text-sm leading-6 text-white/64">{body}</p>
+    </div>
+  );
+}
+
+function TrackMetric({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="rounded-[22px] border border-white/[0.08] bg-black/28 p-4">
+      <p className="text-2xl font-black tracking-tight text-white">{value}</p>
+      <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.3em] text-red-500/70">
+        {label}
+      </p>
     </div>
   );
 }

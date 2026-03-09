@@ -18,10 +18,10 @@ interface PhotoRecord {
  */
 const STATIC_PHOTOS: Record<string, string> = {
   hero: "/recruit/photos/hero-79.jpg",
-  "film-reel": "/recruit/photos/film-reel-bg.jpg",
-  origin: "/recruit/photos/training-room.jpg",
-  character: "/recruit/photos/coach-portrait.jpg",
-  fit: "/recruit/photos/room-fit.jpg",
+  "film-reel": "/recruit/photos/film-action.jpg",
+  origin: "/recruit/photos/origin-stance.jpg",
+  character: "/recruit/photos/character-sideline.jpg",
+  fit: "/recruit/photos/fit-blocking.jpg",
 };
 
 /**
