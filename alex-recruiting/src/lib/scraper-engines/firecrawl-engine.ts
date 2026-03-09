@@ -337,7 +337,11 @@ export async function scrapeUrl(url: string): Promise<ScrapeResult | null> {
       source: "firecrawl",
       scrapedAt: new Date().toISOString(),
     };
-  } catch {
+  } catch (err) {
+    console.error(
+      `[firecrawl] Failed to scrape ${url}:`,
+      err instanceof Error ? err.message : err
+    );
     return null;
   }
 }
@@ -348,12 +352,12 @@ export async function scrapeUrl(url: string): Promise<ScrapeResult | null> {
  */
 export async function scrapeCoachingStaffPage(
   staffUrl: string
-): Promise<{ scrape: ScrapeResult; coaches: ParsedCoach[] } | null> {
+): Promise<{ raw: ScrapeResult | null; coaches: ParsedCoach[] }> {
   try {
-    const scrape = await scrapeUrl(staffUrl);
-    if (!scrape) return null;
+    const raw = await scrapeUrl(staffUrl);
+    if (!raw) return { raw: null, coaches: [] };
 
-    const lines = scrape.markdown
+    const lines = raw.markdown
       .split("\n")
       .map((l) => l.trim())
       .filter(Boolean);
@@ -375,28 +379,47 @@ export async function scrapeCoachingStaffPage(
       merged.push(coach);
     }
 
-    return { scrape, coaches: merged };
-  } catch {
-    return null;
+    return { raw, coaches: merged };
+  } catch (err) {
+    console.error(
+      `[firecrawl] Failed to scrape coaching staff page ${staffUrl}:`,
+      err instanceof Error ? err.message : err
+    );
+    return { raw: null, coaches: [] };
   }
 }
 
 /**
  * Scrape a roster page and extract OL players.
- * Returns null on failure.
+ * Returns structured data with OL player list, total OL count, and graduating senior count.
  */
 export async function scrapeRosterPage(
   rosterUrl: string
-): Promise<{ scrape: ScrapeResult; players: ParsedRosterPlayer[] } | null> {
+): Promise<{
+  raw: ScrapeResult | null;
+  olPlayers: ParsedRosterPlayer[];
+  totalOL: number;
+  graduatingSeniors: number;
+}> {
   try {
-    const scrape = await scrapeUrl(rosterUrl);
-    if (!scrape) return null;
+    const raw = await scrapeUrl(rosterUrl);
+    if (!raw) return { raw: null, olPlayers: [], totalOL: 0, graduatingSeniors: 0 };
 
-    const players = parseRosterPlayers(scrape.markdown);
+    const olPlayers = parseRosterPlayers(raw.markdown);
+    const totalOL = olPlayers.length;
 
-    return { scrape, players };
-  } catch {
-    return null;
+    const GRADUATING_PATTERNS = /\b(Sr|Senior|RS\s*Sr|GR|5th)\b/i;
+    const graduatingSeniors = olPlayers.filter((p) =>
+      GRADUATING_PATTERNS.test(p.classYear)
+    ).length;
+
+    return { raw, olPlayers, totalOL, graduatingSeniors };
+  } catch (err) {
+    console.error(
+      `[firecrawl] Failed to scrape roster page ${rosterUrl}:`,
+      err instanceof Error ? err.message : err
+    );
+    return { raw: null, olPlayers: [], totalOL: 0, graduatingSeniors: 0 };
   }
 }
 

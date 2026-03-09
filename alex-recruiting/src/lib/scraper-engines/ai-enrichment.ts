@@ -73,24 +73,17 @@ export function buildEnrichmentPrompt(
     text = text.slice(0, MAX_ARTICLE_LENGTH) + " [TRUNCATED]";
   }
 
-  return `You are an AI assistant helping analyze research articles for a college football recruiting intelligence platform.
+  return `You are analyzing a recruiting research article for a Class of 2029 offensive line recruit (Jacob Rodgers, 6'4" 285 lbs, Pewaukee HS, Wisconsin).
 
-ATHLETE CONTEXT:
-- Name: Jacob Rodgers
-- Class of 2029 offensive line recruit
-- Position: OL (offensive lineman), 6'4" 285 lbs
-- School: Pewaukee High School, Wisconsin
-- Training: IMG Academy
+Article category: ${dataType}
 
-DATA TYPE: ${dataType}
-
-Analyze the following article and return a JSON object with these exact fields:
-- "summary" (string): A 2-3 sentence summary of the article
-- "keyInsights" (string[]): 3-5 key insights or takeaways
-- "coachPsychology" (string[]): 1-3 notes on coach psychology, decision-making, or recruiting behavior patterns (if relevant)
-- "actionItems" (string[]): 1-3 specific action items Jacob or his family could take based on this article
-- "relevanceScore" (number): A score from 0-100 indicating how relevant this article is to Jacob's recruiting journey as an offensive line prospect
-- "tags" (string[]): 3-7 topic tags for categorization
+Analyze this article and return a JSON object with these exact fields:
+- "summary": 2-3 sentence summary of the article
+- "keyInsights": array of 3-5 actionable insights relevant to Jacob's recruiting
+- "coachPsychology": array of 2-3 insights about how coaches evaluate recruits (based on this article)
+- "actionItems": array of 2-3 specific things to implement on Jacob's recruiting website based on this research
+- "relevanceScore": integer 0-100 (how relevant is this to an OL recruit's recruiting page)
+- "tags": array of category tags (e.g., "coach-evaluation", "film-tips", "profile-optimization")
 
 Return ONLY valid JSON. No markdown, no explanation.
 
@@ -189,10 +182,12 @@ export async function enrichArticleBatch(
     if (enrichment) {
       results.set(article.url, enrichment);
       console.log(
-        `[ai-enrichment] ${article.url} — relevance: ${enrichment.relevanceScore}`
+        `[ai-enrichment] (${i + 1}/${articles.length}) ${article.url} — relevance: ${enrichment.relevanceScore}`
       );
     } else {
-      console.log(`[ai-enrichment] ${article.url} — enrichment failed`);
+      console.log(
+        `[ai-enrichment] (${i + 1}/${articles.length}) ${article.url} — enrichment failed`
+      );
     }
 
     // 1-second delay between calls (skip after last item)

@@ -9,17 +9,16 @@ describe("AI enrichment", () => {
     const mod = await import("@/lib/scraper-engines/ai-enrichment");
     expect(mod.buildEnrichmentPrompt).toBeTypeOf("function");
   });
-  it("buildEnrichmentPrompt returns a string containing Jacob", async () => {
+  it("buildEnrichmentPrompt contains Jacob and offensive line", async () => {
     const { buildEnrichmentPrompt } = await import("@/lib/scraper-engines/ai-enrichment");
     const prompt = buildEnrichmentPrompt("Test article about coaching", "coach_psychology");
     expect(prompt).toContain("Jacob");
     expect(prompt).toContain("offensive line");
   });
-  it("exports ENRICHMENT_SCHEMA", async () => {
-    const mod = await import("@/lib/scraper-engines/ai-enrichment");
-    expect(mod.ENRICHMENT_SCHEMA).toBeDefined();
-    expect(mod.ENRICHMENT_SCHEMA).toHaveProperty("summary");
-    expect(mod.ENRICHMENT_SCHEMA).toHaveProperty("keyInsights");
-    expect(mod.ENRICHMENT_SCHEMA).toHaveProperty("relevanceScore");
+  it("exports ENRICHMENT_SCHEMA with required keys", async () => {
+    const { ENRICHMENT_SCHEMA } = await import("@/lib/scraper-engines/ai-enrichment");
+    expect(ENRICHMENT_SCHEMA).toHaveProperty("summary");
+    expect(ENRICHMENT_SCHEMA).toHaveProperty("keyInsights");
+    expect(ENRICHMENT_SCHEMA).toHaveProperty("relevanceScore");
   });
 });

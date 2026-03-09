@@ -162,26 +162,20 @@ export async function discoverAnalysts(): Promise<DiscoveryResult> {
 /**
  * Run all 5 discovery queries sequentially with 2-second delays between each.
  * Each query is wrapped in try/catch so failures don't stop subsequent queries.
+ * Returns only successful DiscoveryResult objects (failed queries are logged and skipped).
  */
-export async function runAllDiscovery(): Promise<
-  { name: string; result: DiscoveryResult | null; error?: string }[]
-> {
-  const outcomes: {
-    name: string;
-    result: DiscoveryResult | null;
-    error?: string;
-  }[] = [];
+export async function runAllDiscovery(): Promise<DiscoveryResult[]> {
+  const results: DiscoveryResult[] = [];
 
   for (let i = 0; i < DISCOVERY_QUERIES.length; i++) {
     const q = DISCOVERY_QUERIES[i];
 
     try {
       const result = await runQuery(q.query, q.numResults);
-      outcomes.push({ name: q.name, result });
+      results.push(result);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       console.error(`[exa] Discovery query "${q.name}" failed: ${message}`);
-      outcomes.push({ name: q.name, result: null, error: message });
     }
 
     // 2-second delay between queries (skip after the last one)
@@ -190,5 +184,5 @@ export async function runAllDiscovery(): Promise<
     }
   }
 
-  return outcomes;
+  return results;
 }
