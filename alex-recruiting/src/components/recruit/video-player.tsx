@@ -166,7 +166,7 @@ export function RecruitVideoPlayer({
             onClick={togglePlay}
             className="absolute inset-0 flex items-center justify-center"
           >
-            <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-amber-600/90 flex items-center justify-center backdrop-blur-sm hover:bg-amber-500 transition-colors">
+            <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-red-600/90 flex items-center justify-center backdrop-blur-sm hover:bg-red-500 transition-colors">
               <Play className="w-8 h-8 md:w-10 md:h-10 text-white ml-1" />
             </div>
           </button>
@@ -200,7 +200,7 @@ export function RecruitVideoPlayer({
                 e.stopPropagation();
                 togglePlay();
               }}
-              className="text-white hover:text-amber-400 transition-colors"
+              className="text-white hover:text-red-400 transition-colors"
             >
               {playing ? (
                 <Pause className="w-5 h-5" />
@@ -214,7 +214,7 @@ export function RecruitVideoPlayer({
                 e.stopPropagation();
                 toggleMute();
               }}
-              className="text-white hover:text-amber-400 transition-colors"
+              className="text-white hover:text-red-400 transition-colors"
             >
               {muted ? (
                 <VolumeX className="w-5 h-5" />
@@ -231,7 +231,7 @@ export function RecruitVideoPlayer({
                   e.stopPropagation();
                   onFullscreen();
                 }}
-                className="text-white hover:text-amber-400 transition-colors"
+                className="text-white hover:text-red-400 transition-colors"
               >
                 <Maximize2 className="w-5 h-5" />
               </button>

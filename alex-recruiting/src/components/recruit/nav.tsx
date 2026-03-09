@@ -80,7 +80,7 @@ export function RecruitNav() {
                 className={`text-xs tracking-widest uppercase transition-all duration-300 min-h-[48px] px-2 flex items-center ${
                   activeSection === s.id
                     ? "text-[#D4A853]"
-                    : "text-[#F5F0E6]/30 hover:text-[#F5F0E6]/60"
+                    : "text-[#F5F0E6]/50 hover:text-[#F5F0E6]/60"
                 }`}
               >
                 {s.label}
@@ -124,7 +124,7 @@ export function RecruitNav() {
                   className={`text-[8px] tracking-wider uppercase transition-colors ${
                     activeSection === s.id
                       ? "text-[#D4A853]"
-                      : "text-[#F5F0E6]/30"
+                      : "text-[#F5F0E6]/50"
                   }`}
                 >
                   {s.label}

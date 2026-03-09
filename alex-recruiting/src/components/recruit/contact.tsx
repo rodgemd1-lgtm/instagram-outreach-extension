@@ -99,16 +99,16 @@ export function ContactCTA() {
           style={{ opacity: 0 }}
           className="mb-16 text-center md:mb-24"
         >
-          <span className="mb-6 block font-jetbrains text-[10px] uppercase tracking-[0.5em] text-[#D4A853]/60">
+          <span className="mb-6 block font-jetbrains text-xs uppercase tracking-[0.3em] text-[#D4A853]/80">
             Contact
           </span>
           <h2 className="font-playfair mb-6 text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
-            Let&apos;s Talk
+            This evaluation window closes.
           </h2>
-          <p className="mx-auto max-w-lg text-base leading-relaxed text-[#F5F0E6]/40 md:text-lg">
-            The cleanest next move is simple: watch the CapCut highlight,
-            compare the coach and legacy reels, and send a message through the
-            coach form.
+          <p className="mx-auto max-w-lg text-base leading-relaxed text-[#F5F0E6]/50 md:text-lg">
+            The 2029 OL class is shallow and programs are already evaluating.
+            Reach out before the class fills. Family responds within 24 hours
+            with film, transcripts, and scheduling.
           </p>
         </div>
 
@@ -118,24 +118,24 @@ export function ContactCTA() {
           className="mb-12 grid grid-cols-1 gap-6 md:grid-cols-2"
         >
           <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 backdrop-blur-xl shadow-lg shadow-black/20 transition-colors duration-300 hover:border-[#D4A853]/20">
-            <span className="mb-4 block text-[10px] uppercase tracking-[0.3em] text-[#F5F0E6]/30">
-              Family Contact
+            <span className="mb-4 block text-xs uppercase tracking-[0.2em] text-[#F5F0E6]/50">
+              Direct Coach Line
             </span>
             <a
               href="mailto:rodgermd1@gmail.com"
               className="flex items-center gap-3 text-white transition-colors hover:text-[#D4A853]"
             >
-              <Mail className="h-4 w-4 text-[#D4A853]/60" />
+              <Mail className="h-4 w-4 text-[#D4A853]/80" />
               <span className="text-sm font-jetbrains">rodgermd1@gmail.com</span>
             </a>
-            <p className="mt-4 text-sm leading-6 text-[#F5F0E6]/48">
-              Coaches can email directly or use the form below. Family follow-up
-              should respond within 24 hours.
+            <p className="mt-4 text-sm leading-6 text-[#F5F0E6]/65">
+              Family responds within 24 hours with transcripts, additional film,
+              and camp/visit scheduling. Email or use the form below.
             </p>
           </div>
 
           <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 backdrop-blur-xl shadow-lg shadow-black/20 transition-colors duration-300 hover:border-[#D4A853]/20">
-            <span className="mb-4 block text-[10px] uppercase tracking-[0.3em] text-[#F5F0E6]/30">
+            <span className="mb-4 block text-xs uppercase tracking-[0.2em] text-[#F5F0E6]/50">
               Live Links
             </span>
             <div className="space-y-3">
@@ -175,12 +175,12 @@ export function ContactCTA() {
             style={{ opacity: 0 }}
             className="space-y-6 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 shadow-lg shadow-black/20 backdrop-blur-xl md:p-12"
           >
-            <span className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-[#F5F0E6]/30">
-              Or send a message
+            <span className="mb-2 block text-xs uppercase tracking-[0.2em] text-[#F5F0E6]/50">
+              Start the evaluation
             </span>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
-                <label className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-[#F5F0E6]/30">
+                <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-[#F5F0E6]/50">
                   Your Name
                 </label>
                 <input
@@ -192,7 +192,7 @@ export function ContactCTA() {
                 />
               </div>
               <div>
-                <label className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-[#F5F0E6]/30">
+                <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-[#F5F0E6]/50">
                   School
                 </label>
                 <input
@@ -207,7 +207,7 @@ export function ContactCTA() {
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
-                <label className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-[#F5F0E6]/30">
+                <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-[#F5F0E6]/50">
                   Email
                 </label>
                 <input
@@ -219,7 +219,7 @@ export function ContactCTA() {
                 />
               </div>
               <div>
-                <label className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-[#F5F0E6]/30">
+                <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-[#F5F0E6]/50">
                   Phone (Optional)
                 </label>
                 <input
@@ -232,7 +232,7 @@ export function ContactCTA() {
             </div>
 
             <div>
-              <label className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-[#F5F0E6]/30">
+              <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-[#F5F0E6]/50">
                 Message
               </label>
               <textarea
@@ -243,14 +243,14 @@ export function ContactCTA() {
               />
             </div>
 
-            {error && <p className="text-sm text-amber-400">{error}</p>}
+            {error && <p className="text-sm text-red-400">{error}</p>}
 
             <button
               type="submit"
               disabled={submitting}
-              className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#D4A843] to-[#B8860B] px-10 py-4 text-sm font-bold uppercase tracking-widest text-white shadow-lg shadow-[#D4A843]/25 transition-all duration-300 hover:scale-105 hover:shadow-[#D4A843]/40 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#C0392B] to-[#A33225] px-10 py-4 text-sm font-bold uppercase tracking-widest text-white shadow-lg shadow-[#C0392B]/25 transition-all duration-300 hover:scale-105 hover:shadow-[#C0392B]/40 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {submitting ? "Sending..." : "Send Message"}
+              {submitting ? "Sending..." : "Request Evaluation Package"}
             </button>
           </form>
         ) : (
@@ -264,10 +264,11 @@ export function ContactCTA() {
             </div>
             <div>
               <h3 className="text-xl font-semibold text-white">
-                Message sent.
+                Request received.
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-white/50">
-                Thanks. We will follow up with Jacob&apos;s family and staff soon.
+                Family will respond within 24 hours with transcripts, additional
+                film, and scheduling availability. Thank you for evaluating Jacob.
               </p>
             </div>
           </div>
@@ -294,14 +295,14 @@ function QuickLink({
       className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 transition-colors hover:border-[#D4A853]/25"
     >
       <div>
-        <span className="block text-[10px] uppercase tracking-[0.3em] text-[#F5F0E6]/30">
+        <span className="block text-xs uppercase tracking-[0.2em] text-[#F5F0E6]/50">
           {label}
         </span>
         <span className="mt-1 block text-sm font-jetbrains text-[#F5F0E6]/80">
           {handle}
         </span>
       </div>
-      <ExternalLink className="h-4 w-4 text-[#D4A853]/60" />
+      <ExternalLink className="h-4 w-4 text-[#D4A853]/80" />
     </a>
   );
 }

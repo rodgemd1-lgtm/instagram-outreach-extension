@@ -129,7 +129,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
 
         <div className="relative z-10 mx-auto max-w-7xl">
           <div data-gsap="film-header" style={{ opacity: 0 }} className="max-w-4xl">
-            <span className="mb-6 block font-jetbrains text-[10px] uppercase tracking-[0.5em] text-[#D4A853]/60">
+            <span className="mb-6 block font-jetbrains text-xs uppercase tracking-[0.3em] text-[#D4A853]/80">
               Film
             </span>
             <h2 className="text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
@@ -137,7 +137,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
               <br />
               decision factor.
             </h2>
-            <p className="mt-6 max-w-3xl text-base leading-7 text-[#F5F0E6]/54 md:text-lg">
+            <p className="mt-6 max-w-3xl text-lg leading-8 text-[#F5F0E6]/70 md:text-xl">
               Coach-first film: sorted by position-specific technique, not
               highlight plays. Every clip tagged with opponent context, play
               type, and the trench skill on display. Watch the 30-second
@@ -153,7 +153,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
             >
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
-                  <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#D4A853]/70">
+                  <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#D4A853]/90">
                     Main Highlight
                   </p>
                   <h3 className="mt-2 text-2xl font-semibold tracking-tight text-white">
@@ -195,7 +195,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                 style={{ opacity: 0 }}
                 className="rounded-[34px] border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-sm"
               >
-                <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#D4A853]/70">
+                <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#D4A853]/90">
                   Coach Lens
                 </p>
                 <div className="mt-5 space-y-4">
@@ -218,7 +218,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                 style={{ opacity: 0 }}
                 className="rounded-[34px] border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-sm"
               >
-                <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#D4A853]/70">
+                <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#D4A853]/90">
                   External Film
                 </p>
                 <div className="mt-5 space-y-3">
@@ -246,7 +246,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
 
           <div className="mt-12">
             <div data-gsap="film-header" style={{ opacity: 0 }} className="max-w-3xl">
-              <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#D4A853]/70">
+              <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#D4A853]/90">
                 More Reels
               </p>
               <h3 className="mt-3 text-3xl font-semibold tracking-tight text-white">
@@ -274,13 +274,13 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                   <div className="space-y-3 p-5">
                     <div>
                       <p className="text-lg font-semibold text-white">{reel.title}</p>
-                      <p className="mt-1 text-sm text-[#F5F0E6]/48">{reel.subtitle}</p>
+                      <p className="mt-1 text-sm text-[#F5F0E6]/65">{reel.subtitle}</p>
                     </div>
                     <div className="flex items-center justify-between gap-4">
-                      <p className="font-jetbrains text-[11px] uppercase tracking-[0.24em] text-[#D4A843]/65">
+                      <p className="font-jetbrains text-xs uppercase tracking-[0.16em] text-[#C0392B]/80">
                         {reel.durationLabel}
                       </p>
-                      <span className="rounded-full border border-white/[0.08] bg-black/24 px-3 py-1 font-jetbrains text-[10px] uppercase tracking-[0.24em] text-[#D4A853]/75">
+                      <span className="rounded-full border border-white/[0.08] bg-black/24 px-3 py-1 font-jetbrains text-xs uppercase tracking-[0.16em] text-[#D4A853]/90">
                         {reel.lens}
                       </span>
                     </div>
@@ -329,13 +329,13 @@ function ClipLibrary({
   return (
     <div className="mt-12">
       <div data-gsap="film-header" style={{ opacity: 0 }} className="max-w-3xl">
-        <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#D4A853]/70">
+        <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#D4A853]/90">
           Featured Clips
         </p>
         <h3 className="mt-3 text-3xl font-semibold tracking-tight text-white">
           {title}
         </h3>
-        <p className="mt-3 text-sm leading-6 text-[#F5F0E6]/54 md:text-base">
+        <p className="mt-3 text-sm leading-6 text-[#F5F0E6]/70 md:text-base">
           {subtitle}
         </p>
       </div>
@@ -355,26 +355,26 @@ function ClipLibrary({
                 mode="inline"
                 className="h-full w-full rounded-none"
               />
-              <div className="pointer-events-none absolute left-4 top-4 rounded-full border border-white/15 bg-black/55 px-3 py-1 font-jetbrains text-[11px] tracking-[0.3em] text-[#F5F0E6]/80">
+              <div className="pointer-events-none absolute left-4 top-4 rounded-full border border-white/15 bg-black/55 px-3 py-1 font-jetbrains text-xs tracking-[0.2em] text-[#F5F0E6]/80">
                 {clip.rank}
               </div>
             </div>
             <div className="space-y-3 p-5">
               <div>
                 <p className="text-lg font-semibold text-white">{clip.title}</p>
-                <p className="mt-1 text-sm text-[#F5F0E6]/48">{clip.subtitle}</p>
+                <p className="mt-1 text-sm text-[#F5F0E6]/65">{clip.subtitle}</p>
               </div>
               <div className="flex flex-wrap gap-2">
                 {clip.moments.map((moment) => (
                   <span
                     key={moment}
-                    className="rounded-full border border-white/[0.08] bg-black/24 px-3 py-1 font-jetbrains text-[10px] uppercase tracking-[0.24em] text-[#D4A853]/75"
+                    className="rounded-full border border-white/[0.08] bg-black/24 px-3 py-1 font-jetbrains text-xs uppercase tracking-[0.16em] text-[#D4A853]/90"
                   >
                     {moment}
                   </span>
                 ))}
               </div>
-              <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.24em] text-[#D4A843]/65">
+              <div className="flex items-center justify-between text-xs uppercase tracking-[0.16em] text-[#C0392B]/80">
                 <span>{clip.durationLabel}</span>
                 <span>{clip.sourceName.replace(".MOV", "")}</span>
               </div>

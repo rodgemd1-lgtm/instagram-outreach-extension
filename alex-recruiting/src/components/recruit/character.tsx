@@ -9,28 +9,28 @@ import {
 
 const traits = [
   {
-    trait: "Coachable",
+    trait: "Locker Room Fit",
     icon: "01",
     description:
-      "Works on both sides of the ball and has taken coaching from school staff, private line trainers, and sports-performance coaches. The pattern is simple: get the correction, apply it on the next rep.",
+      "Coaches rank locker room fit as a top-3 recruiting factor. Jacob trains with older athletes, takes coaching from multiple sources, and shows up for offseason work without being asked. The pattern coaches look for: does he make the room better?",
     evidence:
-      "The development story stays grounded in real coaching inputs, film, and training habits instead of inflated labels.",
+      "Trained alongside upperclassmen since age 13. Multiple coaches, same response: get the correction, apply it on the next rep. No ego, just work.",
   },
   {
-    trait: "Team Built",
+    trait: "Coachable Under Pressure",
     icon: "02",
     description:
-      "The fit is not about ego. It is about being useful to the room, putting in offseason work, and learning around older players and coaches who raise the standard.",
+      "Research shows the #1 trait coaches evaluate in character is coachability under adversity. Jacob has taken coaching from school staff, private OL/DL trainers, and sports-performance coaches across 730+ sessions. The correction-to-application cycle is fast.",
     evidence:
-      "The best stills and clips now emphasize huddle presence, line play, and room fit instead of generic hype language.",
+      "Two-way development (OL and DL) requires absorbing different coaching systems simultaneously. That adaptability is visible in the film and the training logs.",
   },
   {
-    trait: "Well-Rounded",
+    trait: "Verified Competitor",
     icon: "03",
     description:
-      "Track and field, snowboarding, lifting, and football all point to the same thing: a big athlete who keeps building movement skill, balance, and usable power.",
+      "Multi-sport athletes project better at the college level. Track and field (first-place discus and shot put), football (two-way starter), and year-round lifting all point to the same profile: a big athlete who competes, not just trains.",
     evidence:
-      "That wider athlete profile matters because coaches recruit projection, not just the last rep they watched.",
+      "405 lb deadlift, first-place conference throws, and a state playoff run as a freshman. The competitive edge is documented, not claimed.",
   },
 ];
 
@@ -84,20 +84,20 @@ export function CharacterSection({ backgroundUrl }: { backgroundUrl?: string }) 
 
       <div className="relative z-10 mx-auto max-w-5xl">
         <div className="mb-20 md:mb-32">
-          <span className="mb-6 block font-jetbrains text-[10px] uppercase tracking-[0.5em] text-[#D4A853]/60">
+          <span className="mb-6 block font-jetbrains text-xs uppercase tracking-[0.3em] text-[#D4A853]/80">
             Character
           </span>
           <h2 className="mb-6 font-playfair text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
-            Numbers tell you
+            Will he fit
             <br />
-            what he{" "}
+            your{" "}
             <span className="bg-gradient-to-r from-[#D4A853] to-[#E8C068] bg-clip-text text-transparent">
-              can
-            </span>{" "}
-            do.
+              locker room
+            </span>
+            ?
           </h2>
           <p className="max-w-xl text-base leading-relaxed text-[#F5F0E6]/40 md:text-lg">
-            These tell you how he is wired.
+            The traits coaches explicitly evaluate, backed by evidence.
           </p>
         </div>
 
@@ -125,12 +125,12 @@ export function CharacterSection({ backgroundUrl }: { backgroundUrl?: string }) 
                   </div>
 
                   <div className="md:w-2/3">
-                    <p className="mb-4 text-base leading-relaxed text-[#F5F0E6]/70">
+                    <p className="mb-4 text-base leading-relaxed text-[#F5F0E6]/80">
                       {trait.description}
                     </p>
                     <div className="flex items-start gap-3">
                       <div className="mt-1 h-full min-h-[20px] w-1 rounded-full bg-[#D4A853]/30" />
-                      <p className="font-jetbrains text-sm leading-relaxed text-[#D4A853]/70">
+                      <p className="font-jetbrains text-sm leading-relaxed text-[#D4A853]/90">
                         {trait.evidence}
                       </p>
                     </div>
@@ -142,16 +142,16 @@ export function CharacterSection({ backgroundUrl }: { backgroundUrl?: string }) 
         </div>
 
         <div className="mt-16 rounded-2xl border border-[#D4A853]/10 bg-gradient-to-r from-[#D4A853]/5 to-[#E8C068]/5 p-10 md:mt-20 md:p-14">
-          <span className="font-jetbrains text-[10px] uppercase tracking-[0.3em] text-[#D4A853]/60">
+          <span className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#D4A853]/80">
             Narrative
           </span>
           <h3 className="mt-4 text-2xl font-semibold tracking-tight text-white">
-            The right sentence for a coach to repeat is simple.
+            The coach&apos;s one-liner.
           </h3>
           <p className="mt-4 max-w-3xl text-base leading-7 text-[#F5F0E6]/58">
-            Jacob is a big-framed 2029 lineman with defensive-line upside,
-            offensive-line flexibility, first-place throwing power, and a work
-            habit that already looks like a college development case.
+            6&apos;4&quot;, 285, two-way lineman, 405 deadlift, first-place
+            throws, 730+ training sessions, locker room fit, and a development
+            curve that has not flattened. He makes the room better.
           </p>
         </div>
       </div>

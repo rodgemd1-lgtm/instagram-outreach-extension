@@ -103,12 +103,12 @@ export function MultiSportSection() {
       ref={scopeRef}
       className="relative overflow-hidden px-6 py-28 md:px-12 md:py-40"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(212,168,83,0.12),transparent_28%),radial-gradient(circle_at_80%_20%,rgba(212,168,67,0.12),transparent_24%),linear-gradient(180deg,rgba(10,10,10,0.98),rgba(8,8,8,0.94))]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(192,57,43,0.12),transparent_28%),radial-gradient(circle_at_80%_20%,rgba(192,57,43,0.12),transparent_24%),linear-gradient(180deg,rgba(10,10,10,0.98),rgba(8,8,8,0.94))]" />
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#D4A853]/20 to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-7xl">
         <div data-gsap="athlete-panel" style={{ opacity: 0 }} className="max-w-4xl">
-          <span className="mb-6 block font-jetbrains text-[10px] uppercase tracking-[0.5em] text-[#D4A853]/60">
+          <span className="mb-6 block font-jetbrains text-xs uppercase tracking-[0.3em] text-[#D4A853]/80">
             Athletic Projection
           </span>
           <h2 className="font-playfair text-4xl font-black leading-[0.95] tracking-tight md:text-6xl lg:text-7xl">
@@ -116,7 +116,7 @@ export function MultiSportSection() {
             <br />
             Believe the broader athlete.
           </h2>
-          <p className="mt-6 max-w-3xl text-base leading-7 text-[#F5F0E6]/58 md:text-lg">
+          <p className="mt-6 max-w-3xl text-lg leading-8 text-[#F5F0E6]/58 md:text-xl">
             Football stays first. The supporting evidence is what makes the
             projection stronger: first-place throws in track and field, winter
             balance work on a snowboard, and year-round strength development
@@ -133,7 +133,7 @@ export function MultiSportSection() {
             >
               <div className="grid gap-0 lg:grid-cols-[1.15fr_0.85fr]">
                 <div className="p-6 md:p-8">
-                  <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#D4A853]/70">
+                  <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#D4A853]/90">
                     Track And Field
                   </p>
                   <h3 className="mt-4 text-3xl font-semibold tracking-tight text-white">
@@ -154,7 +154,7 @@ export function MultiSportSection() {
                 </div>
 
                 <div className="border-t border-white/[0.08] bg-black/28 p-6 md:border-t-0 md:border-l md:p-8">
-                  <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#D4A843]/70">
+                  <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#C0392B]/85">
                     Coach Translation
                   </p>
                   <div className="mt-5 space-y-4">
@@ -181,7 +181,7 @@ export function MultiSportSection() {
                 style={{ opacity: 0 }}
                 className="rounded-[34px] border border-white/[0.08] bg-black/28 p-6 backdrop-blur-sm md:p-8"
               >
-                <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#D4A853]/70">
+                <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#D4A853]/90">
                   Winter Athlete
                 </p>
                 <h3 className="mt-4 text-2xl font-semibold tracking-tight text-white">
@@ -208,7 +208,7 @@ export function MultiSportSection() {
                         />
                       </div>
                       <div className="border-t border-white/[0.08] bg-black/40 px-4 py-3">
-                        <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#F5F0E6]/55">
+                        <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#F5F0E6]/55">
                           {photo.label}
                         </p>
                       </div>
@@ -254,7 +254,7 @@ export function MultiSportSection() {
                   style={{ opacity: 0 }}
                   className="rounded-[34px] border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-sm md:p-8"
                 >
-                  <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#D4A853]/70">
+                  <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#D4A853]/90">
                     Susan&apos;s Review Board
                   </p>
                   <div className="mt-5 grid gap-4 md:grid-cols-3">
@@ -280,7 +280,7 @@ export function MultiSportSection() {
             style={{ opacity: 0 }}
             className="rounded-[34px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(0,0,0,0.3))] p-6 backdrop-blur-sm md:p-8"
           >
-            <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#D4A843]/70">
+            <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#C0392B]/85">
               Why Coaches Care
             </p>
             <h3 className="mt-4 text-3xl font-semibold tracking-tight text-white">
@@ -311,7 +311,7 @@ function MetricCard({ value, label }: { value: string; label: string }) {
   return (
     <div className="rounded-[22px] border border-white/[0.08] bg-black/28 p-4">
       <p className="text-2xl font-black tracking-tight text-white">{value}</p>
-      <p className="mt-2 font-jetbrains text-[10px] uppercase tracking-[0.3em] text-[#D4A853]/70">
+      <p className="mt-2 font-jetbrains text-xs uppercase tracking-[0.2em] text-[#D4A853]/90">
         {label}
       </p>
     </div>
@@ -321,7 +321,7 @@ function MetricCard({ value, label }: { value: string; label: string }) {
 function TransferCard({ label, body }: { label: string; body: string }) {
   return (
     <div className="rounded-[22px] border border-white/[0.08] bg-white/[0.03] p-4">
-      <p className="font-jetbrains text-[10px] uppercase tracking-[0.3em] text-[#D4A853]/70">
+      <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#D4A853]/90">
         {label}
       </p>
       <p className="mt-3 text-sm leading-6 text-[#F5F0E6]/62">{body}</p>

@@ -131,7 +131,7 @@ export function SocialProofBanner() {
               {metrics.ncsaProfileViews > 0 && (
                 <div className="flex items-center gap-2 rounded-full border border-[#D4A853]/10 bg-[#D4A853]/[0.04] px-4 py-2">
                   <CounterAnimation target={metrics.ncsaProfileViews} trigger={inView} className="font-jetbrains text-sm font-bold text-[#D4A853]" />
-                  <span className="font-jetbrains text-[10px] uppercase tracking-[0.15em] text-[#8B8172]">
+                  <span className="font-jetbrains text-xs uppercase tracking-[0.1em] text-[#8B8172]">
                     Coach Profile Views
                   </span>
                 </div>
@@ -139,7 +139,7 @@ export function SocialProofBanner() {
               {metrics.campInvites > 0 && (
                 <div className="flex items-center gap-2 rounded-full border border-[#D4A853]/10 bg-[#D4A853]/[0.04] px-4 py-2">
                   <CounterAnimation target={metrics.campInvites} trigger={inView} className="font-jetbrains text-sm font-bold text-[#D4A853]" />
-                  <span className="font-jetbrains text-[10px] uppercase tracking-[0.15em] text-[#8B8172]">
+                  <span className="font-jetbrains text-xs uppercase tracking-[0.1em] text-[#8B8172]">
                     Camp Invites
                   </span>
                 </div>
@@ -147,7 +147,7 @@ export function SocialProofBanner() {
               {metrics.coachFollowers > 0 && (
                 <div className="flex items-center gap-2 rounded-full border border-[#D4A853]/10 bg-[#D4A853]/[0.04] px-4 py-2">
                   <CounterAnimation target={metrics.coachFollowers} trigger={inView} className="font-jetbrains text-sm font-bold text-[#D4A853]" />
-                  <span className="font-jetbrains text-[10px] uppercase tracking-[0.15em] text-[#8B8172]">
+                  <span className="font-jetbrains text-xs uppercase tracking-[0.1em] text-[#8B8172]">
                     College Coaches Following
                   </span>
                 </div>

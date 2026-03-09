@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 /* ──────────────────────────────────────────────────────────────
    Mobile Bottom Nav — Sticky section dots for mobile (< md)
-   Shows below md: breakpoint with gold/amber active state.
+   Shows below md: breakpoint with red active state.
    ────────────────────────────────────────────────────────────── */
 
 const sections = [
@@ -69,13 +69,13 @@ export function MobileNav() {
               key={s.id}
               onClick={() => scrollTo(s.id)}
               className={`flex flex-col items-center gap-1 px-1 py-1 min-w-0 transition-colors ${
-                activeSection === s.id ? "text-amber-500" : "text-white/30"
+                activeSection === s.id ? "text-red-500" : "text-white/30"
               }`}
             >
               <div
                 className={`w-1.5 h-1.5 rounded-full transition-all ${
                   activeSection === s.id
-                    ? "bg-amber-500 scale-125"
+                    ? "bg-red-500 scale-125"
                     : "bg-white/20"
                 }`}
               />

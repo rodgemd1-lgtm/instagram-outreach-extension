@@ -32,19 +32,19 @@ const blocks = [
 
 const reviewBoard = [
   {
-    role: "Marcus · DL Coach",
-    verdict: "Yay",
-    body: "The defensive-line upside is believable because the page gets quickly to get-off, leverage, disruption, and finish instead of hiding those truths.",
+    role: "DL Coach View",
+    verdict: "Evaluate",
+    body: "Get-off, leverage, and disruption are visible on film. The defensive-line upside is real and the power numbers back it up. Worth a deeper look.",
   },
   {
-    role: "Marcus · OL Coach",
-    verdict: "Yay",
-    body: "The offensive-line projection stays alive because the frame, balance, and movement traits suggest Jacob is not locked into one trench outcome.",
+    role: "OL Coach View",
+    verdict: "Evaluate",
+    body: "Frame, balance, and movement skill suggest two-way projection. At 6'4\" / 285 with room to grow, this is the kind of OL prospect that develops into a starter.",
   },
   {
-    role: "Susan Studio",
-    verdict: "Yay",
-    body: "The narrative is clean: big-framed 2029 lineman, real power indicators, multi-sport transfer, verified work habit, and a clear next step for coaches.",
+    role: "Recruiting Ops",
+    verdict: "Act Now",
+    body: "2029 OL class is shallow. Verified measurables, real film, provable work habit. The window to build this relationship is open now \u2014 it will not stay open.",
   },
 ];
 
@@ -98,17 +98,17 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
 
       <div className="relative z-10 mx-auto max-w-5xl">
         <div className="mb-20 md:mb-32">
-          <span className="mb-6 block font-jetbrains text-[10px] uppercase tracking-[0.5em] text-[#D4A853]/60">
+          <span className="mb-6 block font-jetbrains text-xs uppercase tracking-[0.3em] text-[#D4A853]/80">
             The Fit
           </span>
           <h2 className="mb-6 font-playfair text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
-            Read this
+            Programs that wait
             <br />
             <span className="bg-gradient-to-r from-[#D4A853] to-[#E8C068] bg-clip-text text-transparent">
-              like a coach.
+              will miss
             </span>
             <br />
-            Decide fast.
+            the window.
           </h2>
         </div>
 
@@ -140,28 +140,33 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
           ))}
         </div>
 
-        <div className="mt-8 rounded-2xl border border-[#D4A843]/15 bg-[#D4A843]/[0.04] p-6 md:p-8">
-          <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#D4A843]/70">
-            The Window
+        <div className="mt-8 rounded-2xl border border-[#C0392B]/20 bg-[#C0392B]/[0.06] p-6 md:p-8">
+          <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#C0392B]/90">
+            Loss Window
           </p>
-          <p className="mt-4 text-base leading-7 text-[#F5F0E6]/70 md:text-lg">
-            The coach who sees this early gets a three-year head start on
-            developing him. The coach who waits will be competing against every
-            other program that discovers him.
+          <p className="mt-4 text-base font-semibold leading-7 text-[#F5F0E6]/80 md:text-lg">
+            The 2029 OL class is thin. Programs that wait will miss the
+            development window. The scholarship gap analysis is clear: early
+            evaluators get a three-year runway. Late evaluators compete for
+            what is left.
+          </p>
+          <p className="mt-3 text-sm leading-6 text-[#F5F0E6]/50">
+            Every month without contact is a month a competing program builds
+            the relationship you have not started yet.
           </p>
         </div>
 
         <div className="mt-10 rounded-[28px] border border-[#D4A853]/12 bg-gradient-to-r from-[#D4A853]/8 to-[#E8C068]/6 p-8 md:p-10">
-          <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#D4A853]/70">
+          <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#D4A853]/90">
             Coach Verdict
           </p>
           <h3 className="mt-4 text-2xl font-semibold tracking-tight text-white md:text-3xl">
-            Yes, because the projection and the work habit are both believable.
+            Verified projection. Verified work habit. Verified numbers.
           </h3>
           <p className="mt-4 max-w-3xl text-sm leading-7 text-[#F5F0E6]/58 md:text-base">
-            This is the kind of page that should lead a coach from identity, to
-            film, to development, to fit without asking them to guess what they
-            are seeing or why it matters.
+            Measurables, film, development timeline, and academic eligibility
+            are all on this page. No guessing required. The only question is
+            whether your program acts before the class fills.
           </p>
         </div>
 
@@ -172,10 +177,10 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
               className="rounded-[26px] border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-sm"
             >
               <div className="flex items-center justify-between gap-4">
-                <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#8B8172]">
+                <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#8B8172]">
                   {review.role}
                 </p>
-                <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em] text-emerald-300">
+                <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 font-mono text-xs uppercase tracking-[0.16em] text-emerald-300">
                   {review.verdict}
                 </span>
               </div>

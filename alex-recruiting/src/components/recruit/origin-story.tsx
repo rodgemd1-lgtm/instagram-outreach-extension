@@ -13,42 +13,42 @@ const milestones = [
   {
     age: "11",
     year: "2021",
-    headline: "NX Level sports-performance work begins.",
+    headline: "NX Level sports-performance training begins \u2014 movement quality before football volume.",
     lifts: null,
     detail:
-      "Movement quality, speed work, and body control start before the high-school football grind.",
+      "Speed work, body control, and athletic foundation built 2 years before high-school football. This is where the movement skill comes from.",
   },
   {
     age: "12",
     year: "2022",
-    headline: "Strength work gets structured and consistent.",
+    headline: "Structured strength program starts. Five days a week, every week.",
     lifts: "Bench: 95  |  Squat: 135  |  Deadlift: 185",
     detail:
-      "The emphasis is consistency and long-term development, not chasing one-off maxes.",
+      "730+ sessions start here. Not chasing maxes \u2014 building the habit that produces the numbers two years later.",
   },
   {
     age: "13",
     year: "2023",
-    headline: "Volume climbs with private line work and older training groups.",
-    lifts: "Bench: 155  |  Squat: 225  |  Deadlift: 275",
+    headline: "Private line coaching + training with older athletes. Strength curve accelerates.",
+    lifts: "Bench: 155 (+63%)  |  Squat: 225 (+67%)  |  Deadlift: 275 (+49%)",
     detail:
-      "Works with coaches and older players while learning both offensive and defensive line technique.",
+      "Learning OL and DL technique from position coaches while training alongside upperclassmen. Two-way development starts here.",
   },
   {
     age: "14",
     year: "2024-25",
-    headline: "Freshman film year: JV reps, varsity exposure, two-way development.",
-    lifts: "Bench: 265  |  Squat: 350  |  Deadlift: 405",
+    headline: "Freshman film year: 11 pancakes, 3 sacks, fumble recovery, state playoff run.",
+    lifts: "Bench: 265 (+71%)  |  Squat: 350 (+56%)  |  Deadlift: 405 (+47%)",
     detail:
-      "11 pancakes, 3 sacks, one fumble recovery, and a state-playoff run without overstating the role.",
+      "Varsity exposure as a freshman. 405 lb deadlift verified. First-place discus and shot put at conference. The power indicators are real and documented.",
   },
   {
     age: "15",
     year: "NOW",
-    headline: "IMG camps, trench training, and one-on-one work keep the curve moving.",
+    headline: "IMG camps, trench training, and continued acceleration. The curve has not flattened.",
     lifts: null,
     detail:
-      "730+ training sessions logged with Joel and Justin in the mix. The offseason lift numbers still trend up.",
+      "730+ total training sessions logged. Offseason lifts still trending up. Camp exposure expanding. The development story is provable at every stage.",
   },
 ];
 
@@ -118,7 +118,7 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
 
       <div className="relative z-10 mx-auto max-w-4xl">
         <div className="mb-16 md:mb-24">
-          <span className="mb-6 block font-jetbrains text-[10px] uppercase tracking-[0.5em] text-[#D4A853]/60">
+          <span className="mb-6 block font-jetbrains text-xs uppercase tracking-[0.3em] text-[#D4A853]/80">
             The Work
           </span>
           <h2 className="mb-6 font-playfair text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
@@ -130,18 +130,18 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
             <br />
             <CounterAnimation target={730} suffix="+" trigger={inView} className="tabular-nums" /> sessions logged.
           </h2>
-          <p className="max-w-2xl text-base leading-7 text-[#F5F0E6]/48 md:text-lg">
-            Coaches need the real development story, not a polished myth. The
-            throughline here is simple: early performance work, steady strength
-            gains, two-way football development, and a track-and-field layer
-            that reinforces the power projection.
+          <p className="max-w-2xl text-lg leading-8 text-[#F5F0E6]/65 md:text-xl">
+            Every claim on this page is provable. 730+ logged sessions. Bench
+            from 95 to 265. Squat from 135 to 350. Deadlift from 185 to 405.
+            First-place discus and shot put. The work ethic story is data, not
+            narrative.
           </p>
         </div>
 
         {/* Typewriter narrative */}
         <div className="mb-16 border-l-2 border-[#D4A853]/30 pl-6 md:pl-8">
           <TypewriterText
-            text="Since age 12, five days a week. 730 sessions. Not because someone made him. Because he chose it."
+            text="730+ sessions since age 12. 405 lb deadlift. First-place discus. Every number verified. Not because someone made him. Because he chose it."
             trigger={inView}
             className="font-playfair italic text-2xl leading-relaxed text-[#F5F0E6]/80 md:text-3xl"
           />
@@ -160,7 +160,7 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
               <div className="absolute left-[11px] top-1 h-3 w-3 rounded-full border-2 border-[#0A0A0A] bg-[#D4A853] md:left-[27px]" />
 
               <div className="mb-4 flex items-center gap-4">
-                <span className="font-jetbrains text-xs tracking-[0.3em] text-[#D4A853]/70">
+                <span className="font-jetbrains text-xs tracking-[0.3em] text-[#D4A853]/90">
                   AGE {milestone.age} - {milestone.year}
                 </span>
               </div>
