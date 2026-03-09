@@ -2,7 +2,14 @@
 const nextConfig = {
   eslint: { ignoreDuringBuilds: true },
   // Exclude puppeteer-core from serverless bundles (only used locally for header generation)
-  experimental: { serverComponentsExternalPackages: ["puppeteer-core"] },
+  experimental: {
+    serverComponentsExternalPackages: ["puppeteer-core"],
+    outputFileTracingIncludes: {
+      "/api/ncsa/scrape": [
+        "./node_modules/playwright-core/.local-browsers/**/*",
+      ],
+    },
+  },
   headers: async () => [
     {
       source: "/sw.js",

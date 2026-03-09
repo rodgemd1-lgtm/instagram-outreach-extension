@@ -1,22 +1,47 @@
-/**
- * GET /api/data/coaches/[name]
- *
- * Returns an enriched coach profile by name.
- *
- * Query params:
- *   school — current school name (helps disambiguate common last names)
- *
- * Examples:
- *   /api/data/coaches/Kirk%20Ferentz?school=Iowa
- *   /api/data/coaches/Luke%20Fickell?school=Wisconsin
- *   /api/data/coaches/Fickell                    (last-name search)
- */
-
 import { NextRequest, NextResponse } from "next/server";
-import { enrichCoachProfile } from "@/lib/data-pipeline/coach-enricher";
+import { targetSchools } from "@/lib/data/target-schools";
 
 interface RouteParams {
   params: { name: string };
+}
+
+function schoolToSlug(schoolName: string): string {
+  return schoolName
+    .toLowerCase()
+    .replace(/university|college|state|the/gi, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function buildFallbackCoachProfile(coachName: string, school?: string) {
+  const schoolMatch = school
+    ? targetSchools.find(
+        (entry) =>
+          entry.name.toLowerCase() === school.toLowerCase() ||
+          entry.id === schoolToSlug(school)
+      )
+    : null;
+
+  return {
+    firstName: coachName.split(" ")[0] ?? coachName,
+    lastName: coachName.split(" ").slice(1).join(" ") || "",
+    fullName: coachName,
+    currentSchool: school ?? schoolMatch?.name ?? null,
+    currentSchoolSlug: school ? schoolToSlug(school) : schoolMatch?.id ?? null,
+    hireDate: null,
+    tenureYears: null,
+    totalCoachingYears: null,
+    previousSchools: [],
+    seasons: [],
+    avgRecruitingClassRank: null,
+    bestRecruitingClassRank: null,
+    isTargetSchool: Boolean(schoolMatch),
+    targetSchoolPriorityTier: schoolMatch?.priorityTier ?? null,
+    targetSchoolWhyJacob: schoolMatch?.whyJacob ?? null,
+    targetSchoolDmTimeline: schoolMatch?.dmTimeline ?? null,
+    cfbdAvailable: false,
+    enrichedAt: null,
+  };
 }
 
 export async function GET(req: NextRequest, { params }: RouteParams) {
@@ -28,22 +53,8 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ error: "Missing coach name" }, { status: 400 });
   }
 
-  try {
-    const profile = await enrichCoachProfile(decodeURIComponent(name), school);
-
-    if (!profile) {
-      return NextResponse.json(
-        { error: `No coach found matching "${name}"` },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({ coach: profile });
-  } catch (err) {
-    console.error(`[GET /api/data/coaches/${name}]`, err);
-    return NextResponse.json(
-      { error: err instanceof Error ? err.message : "Failed to fetch coach profile" },
-      { status: 500 }
-    );
-  }
+  return NextResponse.json({
+    coach: buildFallbackCoachProfile(decodeURIComponent(name), school),
+    source: "fallback",
+  });
 }
