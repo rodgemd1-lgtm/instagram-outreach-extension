@@ -6,6 +6,8 @@ import {
 } from "@/lib/integrations/x-oauth";
 import { isLegacyXWriteConfigured } from "@/lib/integrations/x-api";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const status = await getXOAuthConnectionStatus(X_DEFAULT_SCOPES);

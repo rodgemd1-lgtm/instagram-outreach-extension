@@ -127,6 +127,134 @@ interface LegacyXOAuth1JobRow {
   created_at: string;
 }
 
+function sortRowsByCreatedAtDesc<T extends { created_at: string }>(rows: T[]): T[] {
+  return [...rows].sort((left, right) => right.created_at.localeCompare(left.created_at));
+}
+
+function normalizeStoredXOAuthAccount(
+  rowId: string,
+  value: unknown
+): StoredXOAuthAccount | null {
+  if (!value) {
+    return null;
+  }
+
+  let record: Record<string, unknown>;
+
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+      if (!parsed || typeof parsed !== "object") {
+        return null;
+      }
+      record = parsed as Record<string, unknown>;
+    } catch {
+      return null;
+    }
+  } else if (typeof value === "object") {
+    record = value as Record<string, unknown>;
+  } else {
+    return null;
+  }
+
+  const providerUserId =
+    typeof record.provider_user_id === "string"
+      ? record.provider_user_id
+      : null;
+  const accessToken =
+    typeof record.access_token === "string" ? record.access_token : null;
+
+  if (!providerUserId || !accessToken) {
+    return null;
+  }
+
+  return {
+    id: rowId,
+    provider_user_id: providerUserId,
+    username:
+      typeof record.username === "string" ? record.username : providerUserId,
+    display_name:
+      typeof record.display_name === "string" ? record.display_name : null,
+    access_token: accessToken,
+    refresh_token:
+      typeof record.refresh_token === "string" ? record.refresh_token : null,
+    token_type:
+      typeof record.token_type === "string" ? record.token_type : "bearer",
+    scopes: Array.isArray(record.scopes)
+      ? record.scopes.filter((scope): scope is string => typeof scope === "string")
+      : [],
+    expires_at:
+      typeof record.expires_at === "string" ? record.expires_at : null,
+    refresh_token_expires_at:
+      typeof record.refresh_token_expires_at === "string"
+        ? record.refresh_token_expires_at
+        : null,
+    is_default: Boolean(record.is_default),
+    metadata:
+      record.metadata && typeof record.metadata === "object"
+        ? (record.metadata as Record<string, unknown>)
+        : {},
+  };
+}
+
+function normalizeStoredXLegacyProfileAccount(
+  rowId: string,
+  value: unknown
+): StoredXLegacyProfileAccount | null {
+  if (!value) {
+    return null;
+  }
+
+  let record: Record<string, unknown>;
+
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+      if (!parsed || typeof parsed !== "object") {
+        return null;
+      }
+      record = parsed as Record<string, unknown>;
+    } catch {
+      return null;
+    }
+  } else if (typeof value === "object") {
+    record = value as Record<string, unknown>;
+  } else {
+    return null;
+  }
+
+  const providerUserId =
+    typeof record.provider_user_id === "string"
+      ? record.provider_user_id
+      : null;
+  const accessToken =
+    typeof record.access_token === "string" ? record.access_token : null;
+  const accessTokenSecret =
+    typeof record.access_token_secret === "string"
+      ? record.access_token_secret
+      : null;
+
+  if (!providerUserId || !accessToken || !accessTokenSecret) {
+    return null;
+  }
+
+  return {
+    id: rowId,
+    provider_user_id: providerUserId,
+    username:
+      typeof record.username === "string" ? record.username : providerUserId,
+    display_name:
+      typeof record.display_name === "string" ? record.display_name : null,
+    access_token: accessToken,
+    access_token_secret: accessTokenSecret,
+    is_default: Boolean(record.is_default),
+    metadata:
+      record.metadata && typeof record.metadata === "object"
+        ? (record.metadata as Record<string, unknown>)
+        : {},
+  };
+}
+
 export function generateOAuthState(): string {
   return crypto.randomBytes(16).toString("hex");
 }
@@ -230,11 +358,26 @@ export function resolveXLegacyRedirectUri(request: Request): string {
 }
 
 export function sanitizeReturnToPath(returnTo: string | null | undefined): string {
-  if (!returnTo || !returnTo.startsWith("/")) {
+  if (!returnTo) {
     return "/";
   }
 
-  return returnTo;
+  try {
+    const base = new URL("https://alex-recruiting.local");
+    const sanitized = new URL(returnTo, base);
+
+    if (sanitized.origin !== base.origin) {
+      return "/";
+    }
+
+    if (!sanitized.pathname.startsWith("/") || sanitized.pathname.startsWith("//")) {
+      return "/";
+    }
+
+    return `${sanitized.pathname}${sanitized.search}${sanitized.hash}`;
+  } catch {
+    return "/";
+  }
 }
 
 export function buildXOAuth1AuthorizationUrl(requestToken: string): string {
@@ -290,17 +433,34 @@ export async function exchangeCodeForAccessToken(params: {
     redirect_uri: params.redirectUri,
     code_verifier: params.codeVerifier,
   });
-  if (clientSecret) {
-    body.set("client_secret", clientSecret);
-  }
 
   const response = await axios.post<XOAuthTokenResponse>(X_TOKEN_URL, body.toString(), {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
+      ...(clientSecret
+        ? {
+            Authorization: `Basic ${Buffer.from(
+              `${clientId}:${clientSecret}`
+            ).toString("base64")}`,
+          }
+        : {}),
     },
   });
 
   return response.data;
+}
+
+function isTokenExpired(expiresAt: string | null): boolean {
+  if (!expiresAt) {
+    return false;
+  }
+
+  const expiryMs = Date.parse(expiresAt);
+  if (Number.isNaN(expiryMs)) {
+    return true;
+  }
+
+  return expiryMs <= Date.now();
 }
 
 export async function refreshXAccessToken(
@@ -318,13 +478,17 @@ export async function refreshXAccessToken(
     refresh_token: refreshToken,
     client_id: clientId,
   });
-  if (clientSecret) {
-    body.set("client_secret", clientSecret);
-  }
 
   const response = await axios.post<XOAuthTokenResponse>(X_TOKEN_URL, body.toString(), {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
+      ...(clientSecret
+        ? {
+            Authorization: `Basic ${Buffer.from(
+              `${clientId}:${clientSecret}`
+            ).toString("base64")}`,
+          }
+        : {}),
     },
   });
 
@@ -467,10 +631,28 @@ function isMissingTableError(error: unknown, tableName: string): boolean {
     return false;
   }
 
-  const message = JSON.stringify(error);
+  const typedError = error as {
+    code?: string;
+    message?: string;
+    details?: string | null;
+    hint?: string | null;
+  };
+  const message = [
+    typedError.code,
+    typedError.message,
+    typedError.details,
+    typedError.hint,
+    JSON.stringify(error),
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    message.includes(tableName) &&
-    (message.includes("42P01") ||
+    (message.includes(tableName) || message.includes(`public.${tableName}`)) &&
+    (typedError.code === "42P01" ||
+      typedError.code === "PGRST205" ||
+      message.includes("PGRST205") ||
+      message.includes("42P01") ||
       message.includes("does not exist") ||
       message.includes("Could not find the table"))
   );
@@ -584,17 +766,8 @@ async function getLegacyStoredXOAuthAccount(
   }
 
   const rows = (data ?? []) as LegacyXOAuthJobRow[];
-  const accounts = rows
-    .map((row) => {
-      if (!row.result) {
-        return null;
-      }
-
-      return {
-        id: row.id,
-        ...row.result,
-      } as StoredXOAuthAccount;
-    })
+  const accounts = sortRowsByCreatedAtDesc(rows)
+    .map((row) => normalizeStoredXOAuthAccount(row.id, row.result))
     .filter((row): row is StoredXOAuthAccount => Boolean(row));
 
   if (options.accountId) {
@@ -708,8 +881,7 @@ export async function getStoredXOAuthAccount(
   let query = supabase
     .from("x_oauth_accounts")
     .select("*")
-    .eq("provider", "x")
-    .limit(1);
+    .eq("provider", "x");
 
   if (options.accountId) {
     query = query.eq("id", options.accountId);
@@ -721,7 +893,7 @@ export async function getStoredXOAuthAccount(
     query = query.eq("is_default", true);
   }
 
-  const { data, error } = await query.maybeSingle();
+  const { data, error } = await query.limit(1);
 
   if (error) {
     if (isMissingTableError(error, "x_oauth_accounts")) {
@@ -731,7 +903,15 @@ export async function getStoredXOAuthAccount(
     return null;
   }
 
-  return (data as StoredXOAuthAccount | null) ?? null;
+  const rows = (data ?? []) as StoredXOAuthAccount[];
+  if (rows[0]) {
+    return rows[0];
+  }
+
+  // Older environments store OAuth accounts in scrape_jobs instead of
+  // x_oauth_accounts. Prefer the dedicated table when present, but keep the
+  // fallback active so auth remains readable across mixed deployments.
+  return getLegacyStoredXOAuthAccount(options);
 }
 
 async function clearLegacyProfileDefaultAccounts() {
@@ -866,17 +1046,8 @@ export async function getStoredXLegacyProfileAccount(
   }
 
   const rows = (data ?? []) as LegacyXOAuth1JobRow[];
-  const accounts = rows
-    .map((row) => {
-      if (!row.result) {
-        return null;
-      }
-
-      return {
-        id: row.id,
-        ...row.result,
-      } as StoredXLegacyProfileAccount;
-    })
+  const accounts = sortRowsByCreatedAtDesc(rows)
+    .map((row) => normalizeStoredXLegacyProfileAccount(row.id, row.result))
     .filter(
       (row): row is StoredXLegacyProfileAccount => Boolean(row)
     );
@@ -967,7 +1138,7 @@ export async function getUsableXOAuthAccount(
     return await refreshStoredXOAuthAccount(storedAccount);
   } catch (error) {
     console.error("Failed to refresh stored X OAuth account:", error);
-    return null;
+    return isTokenExpired(storedAccount.expires_at) ? null : storedAccount;
   }
 }
 
@@ -1002,7 +1173,7 @@ export async function getXOAuthConnectionStatus(
   return {
     connected: Boolean(usableAccount),
     needsReconnect: !usableAccount || missingScopes.length > 0,
-    authMode: usableAccount ? "oauth2" : "none",
+    authMode: "oauth2",
     username: activeAccount.username,
     displayName: activeAccount.display_name,
     providerUserId: activeAccount.provider_user_id,

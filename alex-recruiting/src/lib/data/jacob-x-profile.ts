@@ -18,7 +18,7 @@ export const jacobXProfile = {
   handle: "@JacobRodge52987",
   bio: 'OL/DL | 6\'4" 285 | Pewaukee HS \'29 | WI | State Champs | NCSA Athlete',
   location: "Pewaukee, Wisconsin",
-  website: "",
+  website: "https://alex-recruiting.vercel.app/recruit",
   headerImageDescription:
     'Action shot from game -- Jacob in stance at the line. Dark overlay with stats: 6\'4" | 285 | OL/DL | State Champions',
   profilePhotoDescription:
@@ -64,13 +64,13 @@ export const jacobXProfile = {
     {
       id: "website",
       label: "Website",
-      description: "NCSA recruiting profile link",
-      complete: false,
+      description: "Public recruit website link",
+      complete: true,
     },
     {
       id: "pinned",
       label: "Pinned post",
-      description: "Recruiting card with NCSA link",
+      description: "Recruiting card with recruit website link",
       complete: false,
     },
   ],
@@ -78,7 +78,7 @@ export const jacobXProfile = {
   // ─── Pinned Post ──────────────────────────────────────────────────────────
   pinnedPost: {
     content:
-      'Jacob Rodgers | OL/DL | 6\'4" 285 | Pewaukee HS | Class of 2029\nWisconsin | State Champions (12-1)\n\nFreshman Stats: 11 Pancakes | 3 Sacks | 1 Fumble Recovery\nBench 265 | Squat 350\n3.25 GPA | All-Conference\n\nRecruiting Profile: [NCSA Link]\n\n#2029Recruit #OL #DL #FootballRecruiting #WisconsinFootball',
+      'Jacob Rodgers | OL/DL | 6\'4" 285 | Pewaukee HS | Class of 2029\nWisconsin | State Champions (12-1)\n\nFreshman Stats: 11 Pancakes | 3 Sacks | 1 Fumble Recovery\nBench 265 | Squat 350\n3.25 GPA | All-Conference\n\nRecruiting Profile: https://alex-recruiting.vercel.app/recruit\n\n#2029Recruit #OL #DL #FootballRecruiting #WisconsinFootball',
     notes: "Update every 90 days with latest film. Pin immediately.",
   },
 

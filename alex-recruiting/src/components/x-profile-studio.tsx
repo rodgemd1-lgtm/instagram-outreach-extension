@@ -54,7 +54,7 @@ function buildPinnedPost(websiteLink: string): string {
   if (websiteLink) {
     lines.push(`Film / profile: ${websiteLink}`);
   } else {
-    lines.push("Add Hudl or NCSA link before posting this pinned update.");
+    lines.push("Add the public recruit page before posting this pinned update.");
   }
 
   lines.push("#2029Recruit #FootballRecruiting #WisconsinFootball");
@@ -116,7 +116,7 @@ export function XProfileStudio() {
   const [bio, setBio] = useState<string>(RECOMMENDED_BIO);
   const [location, setLocation] = useState<string>(`${jacobProfile.city}, ${jacobProfile.state}`);
   const [websiteLink, setWebsiteLink] = useState<string>(
-    jacobProfile.ncsaProfileUrl || jacobProfile.hudlUrl || jacobProfile.websiteUrl || ""
+    jacobProfile.websiteUrl || jacobProfile.ncsaProfileUrl || jacobProfile.hudlUrl || ""
   );
   const [pinnedPost, setPinnedPost] = useState<string>(buildPinnedPost(""));
 
@@ -654,7 +654,7 @@ export function XProfileStudio() {
                     </div>
                     <div>
                       <label className="mb-1.5 block text-sm font-medium text-slate-700">Website</label>
-                      <Input value={websiteLink} onChange={(e) => setWebsiteLink(e.target.value)} placeholder="Paste NCSA or Hudl URL" />
+                      <Input value={websiteLink} onChange={(e) => setWebsiteLink(e.target.value)} placeholder="Paste the public recruit page URL" />
                     </div>
                   </div>
                   <Button onClick={() => void updateProfileViaApi()} disabled={profileUpdating}>

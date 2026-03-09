@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo } from "react";
 import { RecruitVideoPlayer } from "@/components/recruit/video-player";
 import {
@@ -197,11 +198,15 @@ export function MultiSportSection() {
                       key={photo.src}
                       className="overflow-hidden rounded-[22px] border border-white/[0.08]"
                     >
-                      <img
-                        src={photo.src}
-                        alt={photo.alt}
-                        className="h-40 w-full object-cover"
-                      />
+                      <div className="relative h-40 w-full">
+                        <Image
+                          src={photo.src}
+                          alt={photo.alt}
+                          fill
+                          sizes="(max-width: 1024px) 100vw, 33vw"
+                          className="object-cover"
+                        />
+                      </div>
                       <div className="border-t border-white/[0.08] bg-black/40 px-4 py-3">
                         <p className="font-mono text-[10px] uppercase tracking-[0.32em] text-white/55">
                           {photo.label}

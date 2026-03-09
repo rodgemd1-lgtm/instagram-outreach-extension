@@ -11,8 +11,14 @@ function getAllFiles(dir: string, exts: string[]): string[] {
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      // Skip test directories and node_modules
-      if (entry.name === '__tests__' || entry.name === 'node_modules') continue;
+      // Skip test directories, node_modules, and local backup trees.
+      if (
+        entry.name === '__tests__' ||
+        entry.name === 'node_modules' ||
+        entry.name.endsWith(' 2')
+      ) {
+        continue;
+      }
       files.push(...getAllFiles(fullPath, exts));
     } else if (exts.some((ext) => entry.name.endsWith(ext))) {
       files.push(fullPath);

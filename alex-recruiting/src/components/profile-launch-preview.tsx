@@ -86,6 +86,8 @@ export function ProfileLaunchPreview() {
   const displayName = jacobProfile.displayName;
   const handle = jacobXProfile.handle;
   const location = jacobXProfile.location;
+  const website = jacobProfile.websiteUrl || jacobXProfile.website;
+  const websiteDisplay = website || "(not set)";
 
   // Fetch real profile data on mount
   useEffect(() => {
@@ -147,6 +149,7 @@ export function ProfileLaunchPreview() {
           bio: currentBio,
           displayName,
           location,
+          websiteUrl: website,
         }),
       });
       const data = await res.json();
@@ -195,7 +198,7 @@ export function ProfileLaunchPreview() {
               {[
                 { icon: Camera, label: "Upload profile photo", desc: "Professional headshot in Pewaukee jersey" },
                 { icon: Image, label: "Review header image", desc: "Use Design Studio to generate or upload the live header banner to X" },
-                { icon: Pin, label: "Pin recruiting post", desc: "Create and pin the recruiting card post with NCSA link" },
+                { icon: Pin, label: "Pin recruiting post", desc: "Create and pin the recruiting card post with the public recruit page" },
               ].map((step) => (
                 <div key={step.label} className="flex items-start gap-3 rounded-lg border border-slate-200 p-3">
                   <step.icon className="h-5 w-5 text-slate-400 mt-0.5 shrink-0" />
@@ -390,8 +393,8 @@ export function ProfileLaunchPreview() {
               { label: "Display Name", value: displayName },
               { label: "Handle", value: handle },
               { label: "Location", value: location },
-              { label: "Website", value: jacobXProfile.website || "(not set)" },
-            ].map((field) => (
+              { label: "Website", value: websiteDisplay },
+            ].map((field: { label: string; value: string }) => (
               <div
                 key={field.label}
                 className="flex items-center justify-between rounded-lg border border-slate-200 p-3"

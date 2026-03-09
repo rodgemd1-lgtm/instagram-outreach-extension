@@ -1,107 +1,107 @@
-import { describe, it, expect } from 'vitest';
-import * as fs from 'fs';
-import * as path from 'path';
+import { describe, expect, it } from "vitest";
+import fs from "fs";
+import path from "path";
 
-const APP_DIR = path.resolve(__dirname, '../../app');
+import {
+  getActiveNavItem,
+  getNavSectionLabel,
+  navSections,
+  primaryTabs,
+} from "@/lib/app-navigation";
 
-describe('User Workflows — Navigation Paths', () => {
-  const expectedPages = [
-    '',           // root page.tsx
-    'analytics',
-    'audit',
-    'calendar',
-    'coaches',
-    'competitors',
-    'dms',
-    'posts',
-    'scrape',
-    'intelligence',
-  ];
+const APP_DIR = path.resolve(__dirname, "../../app");
 
-  for (const pagePath of expectedPages) {
-    const displayName = pagePath || '/ (home)';
-    it(`page "${displayName}" exists as a page.tsx file`, () => {
-      const fullPath = path.join(APP_DIR, pagePath, 'page.tsx');
-      expect(fs.existsSync(fullPath)).toBe(true);
+function routeToPagePath(route: string): string {
+  return route === "/"
+    ? path.join(APP_DIR, "page.tsx")
+    : path.join(APP_DIR, route.slice(1), "page.tsx");
+}
+
+describe("User Workflows — Navigation Paths", () => {
+  const navItems = [...primaryTabs, ...navSections.flatMap((section) => section.items)];
+  const uniqueRoutes = [...new Set(navItems.map((item) => item.href))];
+
+  it("covers the primary tab routes inside the broader navigation model", () => {
+    for (const tab of primaryTabs) {
+      expect(uniqueRoutes).toContain(tab.href);
+    }
+  });
+
+  for (const route of uniqueRoutes) {
+    it(`route "${route}" has a matching page.tsx file`, () => {
+      expect(fs.existsSync(routeToPagePath(route))).toBe(true);
     });
   }
 });
 
-describe('User Workflows — Page Exports', () => {
-  it('home page exports a default component', async () => {
-    const mod = await import('@/app/page');
+describe("User Workflows — Page Exports", () => {
+  it("home page exports a default component", async () => {
+    const mod = await import("@/app/page");
     expect(mod.default).toBeDefined();
-    expect(typeof mod.default).toBe('function');
+    expect(typeof mod.default).toBe("function");
   });
 
-  it('analytics page exports a default component', async () => {
-    const mod = await import('@/app/analytics/page');
+  it("posts page exports a default component", async () => {
+    const mod = await import("@/app/posts/page");
     expect(mod.default).toBeDefined();
-    expect(typeof mod.default).toBe('function');
+    expect(typeof mod.default).toBe("function");
   });
 
-  it('audit page exports a default component', async () => {
-    const mod = await import('@/app/audit/page');
+  it("coaches page exports a default component", async () => {
+    const mod = await import("@/app/coaches/page");
     expect(mod.default).toBeDefined();
-    expect(typeof mod.default).toBe('function');
+    expect(typeof mod.default).toBe("function");
   });
 
-  it('calendar page exports a default component', async () => {
-    const mod = await import('@/app/calendar/page');
+  it("media lab page exports a default component", async () => {
+    const mod = await import("@/app/media-lab/page");
     expect(mod.default).toBeDefined();
-    expect(typeof mod.default).toBe('function');
+    expect(typeof mod.default).toBe("function");
   });
 
-  it('coaches page exports a default component', async () => {
-    const mod = await import('@/app/coaches/page');
+  it("profile studio page exports a default component", async () => {
+    const mod = await import("@/app/profile-studio/page");
     expect(mod.default).toBeDefined();
-    expect(typeof mod.default).toBe('function');
+    expect(typeof mod.default).toBe("function");
   });
 
-  it('competitors page exports a default component', async () => {
-    const mod = await import('@/app/competitors/page');
+  it("recruit site page exports a default component", async () => {
+    const mod = await import("@/app/recruit/page");
     expect(mod.default).toBeDefined();
-    expect(typeof mod.default).toBe('function');
-  });
-
-  it('dms page exports a default component', async () => {
-    const mod = await import('@/app/dms/page');
-    expect(mod.default).toBeDefined();
-    expect(typeof mod.default).toBe('function');
-  });
-
-  it('posts page exports a default component', async () => {
-    const mod = await import('@/app/posts/page');
-    expect(mod.default).toBeDefined();
-    expect(typeof mod.default).toBe('function');
-  });
-
-  it('scrape page exports a default component', async () => {
-    const mod = await import('@/app/scrape/page');
-    expect(mod.default).toBeDefined();
-    expect(typeof mod.default).toBe('function');
-  });
-
-  it('intelligence page exports a default component', async () => {
-    const mod = await import('@/app/intelligence/page');
-    expect(mod.default).toBeDefined();
-    expect(typeof mod.default).toBe('function');
+    expect(typeof mod.default).toBe("function");
   });
 });
 
-describe('User Workflows — Layout', () => {
-  it('root layout file exists', () => {
-    const layoutPath = path.join(APP_DIR, 'layout.tsx');
+describe("User Workflows — Navigation Behavior", () => {
+  it("keeps the primary publishing tab active through nested publishing routes", () => {
+    expect(getActiveNavItem("/posts/queued")?.label).toBe("Publish");
+    expect(getNavSectionLabel("/posts/queued")).toBe("Publishing");
+  });
+
+  it("keeps the coach pipeline active through nested outreach routes", () => {
+    expect(getActiveNavItem("/coaches/priority")?.label).toBe("Outreach");
+    expect(getNavSectionLabel("/coaches/priority")).toBe("Outreach");
+  });
+
+  it("falls back to the Today route when no route matches", () => {
+    expect(getActiveNavItem("/totally-unknown")?.label).toBe("Today");
+    expect(getNavSectionLabel("/totally-unknown")).toBe("Command");
+  });
+});
+
+describe("User Workflows — Layout", () => {
+  it("root layout file exists", () => {
+    const layoutPath = path.join(APP_DIR, "layout.tsx");
     expect(fs.existsSync(layoutPath)).toBe(true);
   });
 
-  it('root layout file exports a default function', () => {
-    const layoutPath = path.join(APP_DIR, 'layout.tsx');
-    const content = fs.readFileSync(layoutPath, 'utf-8');
-    // Layout should have an export default
+  it("root layout file exports a default function", () => {
+    const layoutPath = path.join(APP_DIR, "layout.tsx");
+    const content = fs.readFileSync(layoutPath, "utf-8");
     const hasDefault =
-      content.includes('export default') ||
+      content.includes("export default") ||
       /export\s+default\s+function/.test(content);
+
     expect(hasDefault).toBe(true);
   });
 });

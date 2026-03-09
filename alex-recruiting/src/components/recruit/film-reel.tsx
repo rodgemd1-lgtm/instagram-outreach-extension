@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useMemo, useState } from "react";
 import { ArrowRight, ExternalLink } from "lucide-react";
@@ -113,11 +114,12 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
       >
         {backgroundUrl && (
           <div className="absolute inset-0">
-            <img
+            <Image
               src={backgroundUrl}
               alt=""
-              loading="lazy"
-              className="absolute inset-0 h-full w-full object-cover"
+              fill
+              sizes="100vw"
+              className="object-cover"
             />
             <div className="absolute inset-0 bg-[linear-gradient(160deg,rgba(8,8,8,0.96),rgba(8,8,8,0.78)_48%,rgba(8,8,8,0.94)_100%)]" />
           </div>

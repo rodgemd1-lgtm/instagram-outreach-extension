@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo } from "react";
 import { ChevronDown, Play } from "lucide-react";
 import {
@@ -91,11 +92,13 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
     >
       <div className="absolute inset-0">
         {backgroundUrl && (
-          <img
+          <Image
             src={backgroundUrl}
             alt="Jacob Rodgers action shot"
-            loading="eager"
-            className="absolute inset-0 h-full w-full object-cover"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
           />
         )}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(255,255,255,0.2),transparent_24%),linear-gradient(120deg,rgba(8,8,8,0.92)_12%,rgba(8,8,8,0.56)_42%,rgba(8,8,8,0.82)_100%)]" />

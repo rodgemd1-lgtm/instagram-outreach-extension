@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo } from "react";
 import {
   useRecruitAssembly,
@@ -81,11 +82,12 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
     >
       {backgroundUrl && (
         <div className="absolute inset-0">
-          <img
+          <Image
             src={backgroundUrl}
             alt=""
-            loading="lazy"
-            className="absolute inset-0 h-full w-full object-cover"
+            fill
+            sizes="100vw"
+            className="object-cover"
           />
           <div className="absolute inset-0 bg-[#0A0A0A]/95" />
         </div>

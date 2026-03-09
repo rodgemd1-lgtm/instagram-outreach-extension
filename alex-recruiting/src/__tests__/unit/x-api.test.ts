@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mockPost = vi.fn();
 const mockGet = vi.fn();
@@ -29,6 +29,7 @@ describe("X write APIs", () => {
   beforeEach(() => {
     vi.resetModules();
     vi.clearAllMocks();
+    vi.spyOn(console, "error").mockImplementation(() => {});
     vi.stubGlobal("fetch", mockFetch);
     mockGetUsableXOAuthAccount.mockResolvedValue(null);
     mockGetStoredXLegacyProfileAccount.mockResolvedValue(null);
@@ -37,6 +38,10 @@ describe("X write APIs", () => {
     process.env.X_API_ACCESS_TOKEN = "access-token";
     process.env.X_API_ACCESS_TOKEN_SECRET = "access-token-secret";
     process.env.X_USER_ID = "source-user-1";
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it("uses OAuth 1.0a to send a DM", async () => {

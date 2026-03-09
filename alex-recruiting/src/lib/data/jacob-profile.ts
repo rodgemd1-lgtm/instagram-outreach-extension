@@ -16,7 +16,7 @@ export const jacobProfile = {
   xHandle: "@JacobRodge52987",
   ncsaProfileUrl: "", // Fill with NCSA link
   hudlUrl: "", // Fill with Hudl link
-  websiteUrl: "", // Fill with personal website
+  websiteUrl: "https://alex-recruiting.vercel.app/recruit",
   imgTraining: true,
   ncsaVerified: false,
 
