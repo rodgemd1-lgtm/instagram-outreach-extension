@@ -12,6 +12,8 @@ import {
   upsertXOAuthAccount,
 } from "@/lib/integrations/x-oauth";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const { searchParams } = requestUrl;

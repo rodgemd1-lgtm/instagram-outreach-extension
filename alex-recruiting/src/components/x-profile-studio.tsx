@@ -84,9 +84,26 @@ function safeHeaderImage(snapshot: MediaLabSnapshot | null): string | null {
   );
 }
 
+interface XConnectionStatus {
+  connected: boolean;
+  needsReconnect: boolean;
+  authMode: "oauth2" | "legacy_oauth1" | "none";
+  username: string | null;
+  displayName: string | null;
+  providerUserId: string | null;
+  expiresAt: string | null;
+  hasRefreshToken: boolean;
+  missingScopes: string[];
+  legacyProfileToolsAvailable: boolean;
+  legacyProfileConnected: boolean;
+  legacyProfileUsername: string | null;
+  legacyProfileNeedsReconnect: boolean;
+}
+
 export function XProfileStudio() {
   const [snapshot, setSnapshot] = useState<MediaLabSnapshot | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [connectionStatus, setConnectionStatus] = useState<XConnectionStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [profileUpdating, setProfileUpdating] = useState(false);
@@ -124,20 +141,23 @@ export function XProfileStudio() {
       }
 
       try {
-        const [mediaRes, postsRes, headerRes] = await Promise.all([
+        const [mediaRes, postsRes, headerRes, authRes] = await Promise.all([
           fetch("/api/media-lab"),
           fetch("/api/posts"),
           fetch("/header-image.png", { method: "HEAD" }),
+          fetch("/api/auth/twitter/status"),
         ]);
 
         const mediaData = await mediaRes.json().catch(() => ({}));
         const postsData = await postsRes.json().catch(() => ({}));
+        const authData = await authRes.json().catch(() => ({}));
 
         if (!active) return;
 
         setSnapshot(mediaData.snapshot ?? null);
         setPosts(postsData.posts ?? []);
         setHeaderAvailable(headerRes.ok);
+        setConnectionStatus(authRes.ok ? (authData as XConnectionStatus) : null);
       } catch (error) {
         if (!active) return;
         setStudioMessage({
@@ -155,6 +175,52 @@ export function XProfileStudio() {
     return () => {
       active = false;
     };
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const authState = params.get("xAuth");
+    if (!authState) return;
+
+    if (authState === "success") {
+      const username = params.get("username");
+      setStudioMessage({
+        kind: "success",
+        text: username
+          ? `Connected to X as @${username}. The app will now refresh this token automatically for posting, follows, likes, and DMs.`
+          : "Connected to X. The app will now refresh this token automatically for posting, follows, likes, and DMs.",
+      });
+      return;
+    }
+
+    if (authState === "error") {
+      const detail = params.get("detail");
+      const reason = params.get("reason");
+      setStudioMessage({
+        kind: "error",
+        text: detail ?? reason ?? "X connection failed.",
+      });
+    }
+
+    const legacyAuthState = params.get("xLegacyAuth");
+    if (legacyAuthState === "success") {
+      const username = params.get("legacyUsername");
+      setStudioMessage({
+        kind: "success",
+        text: username
+          ? `Connected X profile tools as @${username}. Profile and banner updates now use the same live account.`
+          : "Connected X profile tools. Profile and banner updates now use the same live account.",
+      });
+      return;
+    }
+
+    if (legacyAuthState === "error") {
+      const reason = params.get("reason");
+      setStudioMessage({
+        kind: "error",
+        text: reason ?? "X profile-tools connection failed.",
+      });
+    }
   }, []);
 
   const previewAvatar = useMemo(() => safePreviewImage(snapshot), [snapshot]);
@@ -224,19 +290,22 @@ export function XProfileStudio() {
     setStudioMessage(null);
     setRefreshing(true);
     try {
-      const [mediaRes, postsRes] = await Promise.all([
+      const [mediaRes, postsRes, authRes] = await Promise.all([
         fetch("/api/media-lab", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ optimizePhotos: true, buildReel: true, queuePosts: true }),
         }),
         fetch("/api/posts"),
+        fetch("/api/auth/twitter/status"),
       ]);
       const mediaData = await mediaRes.json().catch(() => ({}));
       const postsData = await postsRes.json().catch(() => ({}));
+      const authData = await authRes.json().catch(() => ({}));
 
       setSnapshot(mediaData.snapshot ?? null);
       setPosts(postsData.posts ?? []);
+      setConnectionStatus(authRes.ok ? (authData as XConnectionStatus) : null);
       setStudioMessage({ kind: "success", text: "Studio refreshed from the latest media analysis." });
     } catch (error) {
       setStudioMessage({
@@ -391,6 +460,83 @@ export function XProfileStudio() {
           >
             {studioMessage.text}
           </div>
+        ) : null}
+
+        {connectionStatus ? (
+          <section className="rounded-[24px] border border-slate-200 bg-white/90 p-5 shadow-sm">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  {connectionStatus.connected && !connectionStatus.needsReconnect ? (
+                    <CheckCircle2 className="h-5 w-5 text-green-600" />
+                  ) : (
+                    <AlertTriangle className="h-5 w-5 text-amber-600" />
+                  )}
+                  <h2 className="text-lg font-semibold text-slate-900">
+                    X Connection Status
+                  </h2>
+                </div>
+                <p className="text-sm text-slate-600">
+                  {connectionStatus.connected && !connectionStatus.needsReconnect
+                    ? `Connected as @${connectionStatus.username ?? "unknown"} with auto-refresh enabled.`
+                    : connectionStatus.username
+                      ? `Stored account @${connectionStatus.username} needs attention before the app can keep using it reliably.`
+                      : "No durable X account is connected yet."}
+                </p>
+                <div className="flex flex-wrap gap-2 text-xs text-slate-500">
+                  <Badge variant={connectionStatus.connected ? "approved" : "draft"}>
+                    {connectionStatus.connected ? "OAuth 2.0 active" : "Reconnect required"}
+                  </Badge>
+                  <Badge variant="outline">
+                    {connectionStatus.hasRefreshToken ? "Refresh token present" : "No refresh token"}
+                  </Badge>
+                  <Badge variant="outline">
+                    {connectionStatus.legacyProfileToolsAvailable
+                      ? "Legacy profile tools available"
+                      : "Legacy profile tools unavailable"}
+                  </Badge>
+                  <Badge variant="outline">
+                    {connectionStatus.legacyProfileConnected
+                      ? `Profile tools linked${connectionStatus.legacyProfileUsername ? `: @${connectionStatus.legacyProfileUsername}` : ""}`
+                      : "Profile tools not linked"}
+                  </Badge>
+                </div>
+                {connectionStatus.missingScopes.length > 0 ? (
+                  <p className="text-sm text-amber-700">
+                    Missing scopes: {connectionStatus.missingScopes.join(", ")}
+                  </p>
+                ) : null}
+                <p className="text-xs text-slate-500">
+                  Posts, follows, likes, DMs, and media uploads use the connected OAuth 2.0 account. Profile name, avatar, and banner updates use a separate legacy X user-context grant because X keeps those APIs on the older auth surface.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <Button asChild>
+                  <Link href="/api/auth/twitter?returnTo=/profile-studio">
+                    {connectionStatus.connected && !connectionStatus.needsReconnect
+                      ? "Reconnect X"
+                      : "Connect X"}
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" className="border-slate-200">
+                  <Link href="/api/auth/twitter/legacy?returnTo=/profile-studio">
+                    {connectionStatus.legacyProfileConnected
+                      ? "Reconnect Profile Tools"
+                      : "Connect Profile Tools"}
+                  </Link>
+                </Button>
+                <Button
+                  variant="outline"
+                  className="border-slate-200"
+                  onClick={() => void refreshStudio()}
+                >
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  Refresh Status
+                </Button>
+              </div>
+            </div>
+          </section>
         ) : null}
 
         <Tabs defaultValue="command" className="space-y-6">

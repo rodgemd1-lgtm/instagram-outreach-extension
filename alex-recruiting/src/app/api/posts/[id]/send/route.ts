@@ -44,19 +44,6 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       );
     }
 
-    // Check OAuth credentials are configured
-    if (
-      !process.env.X_API_CONSUMER_KEY ||
-      !process.env.X_API_CONSUMER_SECRET ||
-      !process.env.X_API_ACCESS_TOKEN ||
-      !process.env.X_API_ACCESS_TOKEN_SECRET
-    ) {
-      return NextResponse.json(
-        { error: "X API OAuth 1.0a credentials not configured. Set X_API_CONSUMER_KEY, X_API_CONSUMER_SECRET, X_API_ACCESS_TOKEN, and X_API_ACCESS_TOKEN_SECRET in .env" },
-        { status: 500 }
-      );
-    }
-
     let mediaId = body?.mediaId as string | undefined;
     if (!mediaId && mediaUrl) {
       const localMediaPath = resolveLocalMediaPath(mediaUrl);
@@ -146,9 +133,14 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     });
   } catch (error) {
     console.error("Post send error:", error);
+    const message =
+      error instanceof Error ? error.message : "Internal server error";
+    const status = /Reconnect X|No connected X account|configured/i.test(message)
+      ? 503
+      : 500;
     return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
+      { error: message },
+      { status }
     );
   }
 }

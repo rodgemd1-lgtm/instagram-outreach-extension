@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  isXWriteConfigured,
   updateProfileWithFeedback,
 } from "@/lib/integrations/x-api";
 
@@ -21,16 +20,6 @@ function normalizeOptionalString(value: unknown): string | undefined {
 }
 
 export async function POST(req: NextRequest) {
-  if (!isXWriteConfigured()) {
-    return NextResponse.json(
-      {
-        error:
-          "X profile write credentials are not configured. Set the OAuth 1.0a consumer and access token env vars before updating the live profile.",
-      },
-      { status: 503 }
-    );
-  }
-
   try {
     const body = (await req.json()) as ProfileUpdatePayload;
 
@@ -82,7 +71,12 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Failed to update X profile";
-    const status = message === "Profile fields must be strings" ? 400 : 500;
+    const status =
+      message === "Profile fields must be strings"
+        ? 400
+        : /profile-tools account|credentials are configured/i.test(message)
+          ? 503
+          : 500;
     return NextResponse.json({ error: message }, { status });
   }
 }

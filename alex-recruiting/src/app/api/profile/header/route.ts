@@ -2,7 +2,6 @@ import fs from "fs/promises";
 import path from "path";
 import { NextRequest, NextResponse } from "next/server";
 import {
-  isXWriteConfigured,
   updateProfileBanner,
 } from "@/lib/integrations/x-api";
 
@@ -49,16 +48,6 @@ export async function POST(req: NextRequest) {
     const upload = req.nextUrl.searchParams.get("upload") === "true";
 
     if (upload) {
-      if (!isXWriteConfigured()) {
-        return NextResponse.json(
-          {
-            error:
-              "X banner upload credentials are not configured. Set the OAuth 1.0a consumer and access token env vars before uploading the live header.",
-          },
-          { status: 503 }
-        );
-      }
-
       const base64 =
         (await loadHeaderFromPublicDir()) ??
         (await loadHeaderFromStaticAsset(req)) ??
@@ -111,9 +100,14 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error("Header generation error:", error);
+    const message =
+      error instanceof Error ? error.message : "Failed to generate header image";
+    const status = /profile-tools account|credentials are configured/i.test(message)
+      ? 503
+      : 500;
     return NextResponse.json(
-      { error: "Failed to generate header image" },
-      { status: 500 }
+      { error: message },
+      { status }
     );
   }
 }

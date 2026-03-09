@@ -12,6 +12,8 @@ import {
   sanitizeReturnToPath,
 } from "@/lib/integrations/x-oauth";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: Request) {
   const clientId = process.env.X_API_CLIENT_ID;
 

@@ -3,7 +3,16 @@ import crypto from "crypto";
 import fs from "fs/promises";
 import { enforceRateLimit, recordRequest, RateLimitError } from "./rate-limiter";
 import { jacobProfile } from "@/lib/data/jacob-profile";
-const X_API_BASE = "https://api.twitter.com/2";
+import {
+  getStoredXLegacyProfileAccount,
+  getUsableXOAuthAccount,
+} from "@/lib/integrations/x-oauth";
+
+const X_API_BASE = "https://api.x.com/2";
+const X_TWEETS_API_URL = `${X_API_BASE}/tweets`;
+const X_V2_MEDIA_UPLOAD_URL = `${X_API_BASE}/media/upload`;
+const X_V2_MEDIA_INITIALIZE_URL = `${X_API_BASE}/media/upload/initialize`;
+const X_V2_MEDIA_METADATA_URL = `${X_API_BASE}/media/metadata/create`;
 const X_UPLOAD_API_URL = "https://upload.twitter.com/1.1/media/upload.json";
 const X_MEDIA_METADATA_URL = "https://upload.twitter.com/1.1/media/metadata/create.json";
 const CHUNK_SIZE_BYTES = 1024 * 1024;
@@ -36,6 +45,10 @@ function requireEnv(name: string): string {
 }
 
 export function isXWriteConfigured(): boolean {
+  return isLegacyXWriteConfigured();
+}
+
+export function isLegacyXWriteConfigured(): boolean {
   return Boolean(
     process.env.X_API_CONSUMER_KEY &&
       process.env.X_API_CONSUMER_SECRET &&
@@ -84,7 +97,7 @@ export interface XUploadedMedia {
 
 let cachedSourceUserId: string | null = null;
 
-async function getSourceUserId(): Promise<string> {
+async function getLegacySourceUserId(): Promise<string> {
   if (process.env.X_USER_ID) {
     return process.env.X_USER_ID;
   }
@@ -104,6 +117,119 @@ async function getSourceUserId(): Promise<string> {
 
   cachedSourceUserId = sourceUser.id;
   return sourceUser.id;
+}
+
+function getOAuth2Headers(accessToken: string) {
+  return {
+    Authorization: `Bearer ${accessToken}`,
+    "Content-Type": "application/json",
+  };
+}
+
+function isActionConfigurationError(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    /(Reconnect X|No connected X account|missing scopes|refresh token|configured)/i.test(
+      error.message
+    )
+  );
+}
+
+interface XWriteAuthContext {
+  mode: "oauth2" | "oauth1";
+  sourceUserId: string;
+  accessToken?: string;
+  accessTokenSecret?: string;
+}
+
+async function getWriteAuthContext(
+  requiredScopes: string[]
+): Promise<XWriteAuthContext> {
+  const storedAccount = await getUsableXOAuthAccount();
+
+  if (storedAccount) {
+    const missingScopes = requiredScopes.filter(
+      (scope) => !storedAccount.scopes.includes(scope)
+    );
+
+    if (missingScopes.length === 0) {
+      return {
+        mode: "oauth2",
+        sourceUserId: storedAccount.provider_user_id,
+        accessToken: storedAccount.access_token,
+      };
+    }
+
+    const storedLegacyAccount = await getStoredXLegacyProfileAccount();
+    if (storedLegacyAccount) {
+      return {
+        mode: "oauth1",
+        sourceUserId: storedLegacyAccount.provider_user_id,
+        accessToken: storedLegacyAccount.access_token,
+        accessTokenSecret: storedLegacyAccount.access_token_secret,
+      };
+    }
+
+    if (isLegacyXWriteConfigured()) {
+      return {
+        mode: "oauth1",
+        sourceUserId: await getLegacySourceUserId(),
+        accessToken: process.env.X_API_ACCESS_TOKEN,
+        accessTokenSecret: process.env.X_API_ACCESS_TOKEN_SECRET,
+      };
+    }
+
+    throw new Error(
+      `Reconnect X to grant the missing scopes: ${missingScopes.join(", ")}`
+    );
+  }
+
+  const storedLegacyAccount = await getStoredXLegacyProfileAccount();
+  if (storedLegacyAccount) {
+    return {
+      mode: "oauth1",
+      sourceUserId: storedLegacyAccount.provider_user_id,
+      accessToken: storedLegacyAccount.access_token,
+      accessTokenSecret: storedLegacyAccount.access_token_secret,
+    };
+  }
+
+  if (isLegacyXWriteConfigured()) {
+    return {
+      mode: "oauth1",
+      sourceUserId: await getLegacySourceUserId(),
+      accessToken: process.env.X_API_ACCESS_TOKEN,
+      accessTokenSecret: process.env.X_API_ACCESS_TOKEN_SECRET,
+    };
+  }
+
+  throw new Error(
+    "No connected X account or legacy X profile credentials are configured"
+  );
+}
+
+async function getLegacyProfileAuthContext(): Promise<{
+  accessToken: string;
+  accessTokenSecret: string;
+}> {
+  const storedLegacyAccount = await getStoredXLegacyProfileAccount();
+  if (storedLegacyAccount) {
+    return {
+      accessToken: storedLegacyAccount.access_token,
+      accessTokenSecret: storedLegacyAccount.access_token_secret,
+    };
+  }
+
+  if (isLegacyXWriteConfigured()) {
+    return {
+      accessToken: requireEnv("X_API_ACCESS_TOKEN"),
+      accessTokenSecret: requireEnv("X_API_ACCESS_TOKEN_SECRET"),
+    };
+  }
+
+  throw new Error(
+    "No connected X profile-tools account or legacy X profile credentials are configured"
+  );
 }
 
 // Verify a coach's X handle exists and is active
@@ -188,30 +314,36 @@ export async function searchTweets(query: string, maxResults: number = 25): Prom
   }
 }
 
-// Post a tweet using OAuth 1.0a (required for write operations)
 export async function postTweet(text: string, mediaId?: string): Promise<{ id: string; text: string } | null> {
   const endpoint = "tweets";
   enforceRateLimit(endpoint);
   try {
-    const apiUrl = "https://api.twitter.com/2/tweets";
+    const auth = await getWriteAuthContext(["users.read", "tweet.write"]);
     const body: Record<string, unknown> = { text };
     if (mediaId) {
       body.media = { media_ids: [mediaId] };
     }
 
-    // For v2 JSON endpoints, body params are NOT included in the OAuth
-    // signature base string — only the URL and OAuth params are signed.
-    const authHeader = getOAuth1Headers("POST", apiUrl, {});
+    const headers =
+      auth.mode === "oauth2"
+        ? getOAuth2Headers(auth.accessToken!)
+        : {
+            Authorization: getOAuth1Headers("POST", X_TWEETS_API_URL, {}, {
+              accessToken: auth.accessToken,
+              accessTokenSecret: auth.accessTokenSecret,
+            }),
+            "Content-Type": "application/json",
+          };
 
-    const response = await axios.post(apiUrl, body, {
-      headers: {
-        Authorization: authHeader,
-        "Content-Type": "application/json",
-      },
+    const response = await axios.post(X_TWEETS_API_URL, body, {
+      headers,
     });
     recordRequest(endpoint);
     return response.data.data || null;
   } catch (error) {
+    if (isActionConfigurationError(error)) {
+      throw error;
+    }
     console.error("Failed to post tweet:", error);
     return null;
   }
@@ -264,16 +396,63 @@ function extractProcessingState(responseData: unknown): {
   };
 }
 
+function extractV2ProcessingState(responseData: unknown): {
+  state: string;
+  checkAfterSecs?: number;
+} | null {
+  if (!responseData || typeof responseData !== "object") return null;
+  const data = (responseData as { data?: unknown }).data;
+  if (!data || typeof data !== "object") return null;
+  const processing = (data as { processing_info?: unknown }).processing_info;
+  if (!processing || typeof processing !== "object") return null;
+
+  const state = (processing as { state?: unknown }).state;
+  const checkAfterSecs = (processing as { check_after_secs?: unknown }).check_after_secs;
+
+  if (typeof state !== "string") return null;
+
+  return {
+    state,
+    checkAfterSecs: typeof checkAfterSecs === "number" ? checkAfterSecs : undefined,
+  };
+}
+
+function extractV2MediaData(responseData: unknown): {
+  mediaId: string | null;
+  mediaKey: string | null;
+} {
+  if (!responseData || typeof responseData !== "object") {
+    return { mediaId: null, mediaKey: null };
+  }
+
+  const data = (responseData as { data?: unknown }).data;
+  if (!data || typeof data !== "object") {
+    return { mediaId: null, mediaKey: null };
+  }
+
+  return {
+    mediaId:
+      typeof (data as { id?: unknown }).id === "string"
+        ? (data as { id: string }).id
+        : null,
+    mediaKey:
+      typeof (data as { media_key?: unknown }).media_key === "string"
+        ? (data as { media_key: string }).media_key
+        : null,
+  };
+}
+
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function createMediaMetadata(mediaId: string, altText: string): Promise<void> {
+async function createLegacyMediaMetadata(mediaId: string, altText: string): Promise<void> {
+  const legacyAuth = await getLegacyProfileAuthContext();
   const payload = {
     media_id: mediaId,
     alt_text: { text: altText.slice(0, 1000) },
   };
-  const authHeader = getOAuth1Headers("POST", X_MEDIA_METADATA_URL, {});
+  const authHeader = getOAuth1Headers("POST", X_MEDIA_METADATA_URL, {}, legacyAuth);
 
   try {
     await axios.post(X_MEDIA_METADATA_URL, payload, {
@@ -287,12 +466,34 @@ async function createMediaMetadata(mediaId: string, altText: string): Promise<vo
   }
 }
 
-async function finalizeAndAwaitMedia(mediaId: string): Promise<void> {
+async function createV2MediaMetadata(
+  accessToken: string,
+  mediaId: string,
+  altText: string
+): Promise<void> {
+  try {
+    await axios.post(
+      X_V2_MEDIA_METADATA_URL,
+      {
+        media_id: mediaId,
+        alt_text: { text: altText.slice(0, 1000) },
+      },
+      {
+        headers: getOAuth2Headers(accessToken),
+      }
+    );
+  } catch (error) {
+    console.error("Failed to attach X v2 media metadata:", error);
+  }
+}
+
+async function finalizeAndAwaitLegacyMedia(mediaId: string): Promise<void> {
+  const legacyAuth = await getLegacyProfileAuthContext();
   const finalizeParams = {
     command: "FINALIZE",
     media_id: mediaId,
   };
-  const finalizeAuth = getOAuth1Headers("POST", X_UPLOAD_API_URL, finalizeParams);
+  const finalizeAuth = getOAuth1Headers("POST", X_UPLOAD_API_URL, finalizeParams, legacyAuth);
   const finalizeResponse = await axios.post(
     X_UPLOAD_API_URL,
     buildFormBody(finalizeParams),
@@ -322,7 +523,7 @@ async function finalizeAndAwaitMedia(mediaId: string): Promise<void> {
       command: "STATUS",
       media_id: mediaId,
     };
-    const statusAuth = getOAuth1Headers("GET", X_UPLOAD_API_URL, statusParams);
+    const statusAuth = getOAuth1Headers("GET", X_UPLOAD_API_URL, statusParams, legacyAuth);
     const statusResponse = await axios.get(X_UPLOAD_API_URL, {
       params: statusParams,
       headers: {
@@ -338,18 +539,57 @@ async function finalizeAndAwaitMedia(mediaId: string): Promise<void> {
   }
 }
 
-async function uploadImageMedia(
+async function finalizeAndAwaitV2Media(
+  accessToken: string,
+  mediaId: string
+): Promise<void> {
+  const finalizeResponse = await axios.post(
+    `${X_V2_MEDIA_UPLOAD_URL}/${mediaId}/finalize`,
+    {},
+    {
+      headers: getOAuth2Headers(accessToken),
+    }
+  );
+
+  recordRequest("media/upload:finalize");
+  let processing = extractV2ProcessingState(finalizeResponse.data);
+  let attempts = 0;
+
+  while (processing && (processing.state === "pending" || processing.state === "in_progress")) {
+    attempts += 1;
+    if (attempts > 12) {
+      throw new Error(`Timed out waiting for X media processing on ${mediaId}`);
+    }
+
+    await sleep((processing.checkAfterSecs ?? 2) * 1000);
+
+    const statusResponse = await axios.get(`${X_V2_MEDIA_UPLOAD_URL}/${mediaId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    recordRequest("media/upload:status");
+    processing = extractV2ProcessingState(statusResponse.data);
+    if (processing?.state === "failed") {
+      throw new Error(`X media processing failed for ${mediaId}`);
+    }
+  }
+}
+
+async function uploadLegacyImageMedia(
   filePath: string,
   mimeType: string,
   altText?: string
 ): Promise<XUploadedMedia> {
+  const legacyAuth = await getLegacyProfileAuthContext();
   const mediaData = (await fs.readFile(filePath)).toString("base64");
   const mediaCategory = getMediaCategory(mimeType);
   const params = {
     media_category: mediaCategory,
     media_data: mediaData,
   };
-  const authHeader = getOAuth1Headers("POST", X_UPLOAD_API_URL, params);
+  const authHeader = getOAuth1Headers("POST", X_UPLOAD_API_URL, params, legacyAuth);
   const response = await axios.post(X_UPLOAD_API_URL, buildFormBody(params), {
     headers: {
       Authorization: authHeader,
@@ -366,7 +606,7 @@ async function uploadImageMedia(
   }
 
   if (altText) {
-    await createMediaMetadata(mediaId, altText);
+    await createLegacyMediaMetadata(mediaId, altText);
   }
 
   return {
@@ -378,10 +618,11 @@ async function uploadImageMedia(
   };
 }
 
-async function uploadChunkedMedia(
+async function uploadLegacyChunkedMedia(
   filePath: string,
   mimeType: string
 ): Promise<XUploadedMedia> {
+  const legacyAuth = await getLegacyProfileAuthContext();
   const mediaBuffer = await fs.readFile(filePath);
   const mediaCategory = getMediaCategory(mimeType);
   const initParams = {
@@ -390,7 +631,7 @@ async function uploadChunkedMedia(
     media_type: mimeType,
     media_category: mediaCategory,
   };
-  const initAuth = getOAuth1Headers("POST", X_UPLOAD_API_URL, initParams);
+  const initAuth = getOAuth1Headers("POST", X_UPLOAD_API_URL, initParams, legacyAuth);
   const initResponse = await axios.post(X_UPLOAD_API_URL, buildFormBody(initParams), {
     headers: {
       Authorization: initAuth,
@@ -408,7 +649,7 @@ async function uploadChunkedMedia(
 
   for (let offset = 0, segment = 0; offset < mediaBuffer.length; offset += CHUNK_SIZE_BYTES, segment += 1) {
     const chunk = mediaBuffer.subarray(offset, offset + CHUNK_SIZE_BYTES);
-    const appendAuth = getOAuth1Headers("POST", X_UPLOAD_API_URL, {});
+    const appendAuth = getOAuth1Headers("POST", X_UPLOAD_API_URL, {}, legacyAuth);
     const form = new FormData();
     form.append("command", "APPEND");
     form.append("media_id", mediaId);
@@ -430,11 +671,74 @@ async function uploadChunkedMedia(
     recordRequest("media/upload:append");
   }
 
-  await finalizeAndAwaitMedia(mediaId);
+  await finalizeAndAwaitLegacyMedia(mediaId);
 
   return {
     mediaId,
     mediaKey: initResponse.data?.media_key ?? null,
+    mediaType: mimeType,
+    mediaCategory,
+    sourcePath: filePath,
+  };
+}
+
+async function uploadV2ChunkedMedia(
+  filePath: string,
+  mimeType: string,
+  accessToken: string,
+  altText?: string
+): Promise<XUploadedMedia> {
+  const mediaBuffer = await fs.readFile(filePath);
+  const mediaCategory = getMediaCategory(mimeType);
+  const initResponse = await axios.post(
+    X_V2_MEDIA_INITIALIZE_URL,
+    {
+      total_bytes: mediaBuffer.byteLength,
+      media_type: mimeType,
+      media_category: mediaCategory,
+      shared: false,
+    },
+    {
+      headers: getOAuth2Headers(accessToken),
+    }
+  );
+
+  recordRequest("media/upload:init");
+  const { mediaId, mediaKey } = extractV2MediaData(initResponse.data);
+  if (!mediaId) {
+    throw new Error("X v2 media initialize did not return a media id");
+  }
+
+  for (let offset = 0, segment = 0; offset < mediaBuffer.length; offset += CHUNK_SIZE_BYTES, segment += 1) {
+    const chunk = mediaBuffer.subarray(offset, offset + CHUNK_SIZE_BYTES);
+    const form = new FormData();
+    form.append("segment_index", String(segment));
+    form.append("media", new Blob([chunk], { type: mimeType }), `segment-${segment}`);
+
+    const appendResponse = await fetch(`${X_V2_MEDIA_UPLOAD_URL}/${mediaId}/append`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: form,
+    });
+
+    if (!appendResponse.ok) {
+      throw new Error(`X v2 media append failed for segment ${segment}`);
+    }
+
+    recordRequest("media/upload:append");
+  }
+
+  await finalizeAndAwaitV2Media(accessToken, mediaId);
+
+  if (altText) {
+    await createV2MediaMetadata(accessToken, mediaId, altText);
+  }
+
+  return {
+    mediaId,
+    mediaKey,
     mediaType: mimeType,
     mediaCategory,
     sourcePath: filePath,
@@ -449,12 +753,26 @@ export async function uploadMediaFromFile(
 
   try {
     const mimeType = options?.mimeType ?? guessMimeType(filePath);
-    if (shouldUseChunkedUpload(mimeType)) {
-      return await uploadChunkedMedia(filePath, mimeType);
+    const auth = await getWriteAuthContext(["users.read", "tweet.write", "media.write"]);
+
+    if (auth.mode === "oauth2") {
+      return await uploadV2ChunkedMedia(
+        filePath,
+        mimeType,
+        auth.accessToken!,
+        options?.altText
+      );
     }
 
-    return await uploadImageMedia(filePath, mimeType, options?.altText);
+    if (shouldUseChunkedUpload(mimeType)) {
+      return await uploadLegacyChunkedMedia(filePath, mimeType);
+    }
+
+    return await uploadLegacyImageMedia(filePath, mimeType, options?.altText);
   } catch (error) {
+    if (isActionConfigurationError(error)) {
+      throw error;
+    }
     console.error("Failed to upload media to X:", error);
     return null;
   }
@@ -465,17 +783,24 @@ export async function followUser(targetUserId: string): Promise<boolean> {
   enforceRateLimit(endpoint);
 
   try {
-    const sourceUserId = await getSourceUserId();
+    const auth = await getWriteAuthContext(["users.read", "follows.write"]);
+    const sourceUserId = auth.sourceUserId;
     const apiUrl = `${X_API_BASE}/users/${sourceUserId}/following`;
-    const authHeader = getOAuth1Headers("POST", apiUrl, {});
+    const headers =
+      auth.mode === "oauth2"
+        ? getOAuth2Headers(auth.accessToken!)
+        : {
+            Authorization: getOAuth1Headers("POST", apiUrl, {}, {
+              accessToken: auth.accessToken,
+              accessTokenSecret: auth.accessTokenSecret,
+            }),
+            "Content-Type": "application/json",
+          };
     const response = await axios.post(
       apiUrl,
       { target_user_id: targetUserId },
       {
-        headers: {
-          Authorization: authHeader,
-          "Content-Type": "application/json",
-        },
+        headers,
       }
     );
 
@@ -483,6 +808,9 @@ export async function followUser(targetUserId: string): Promise<boolean> {
     return response.data?.data?.following ?? response.status < 300;
   } catch (error) {
     if (isRateLimitFailure(error)) {
+      throw error;
+    }
+    if (isActionConfigurationError(error)) {
       throw error;
     }
 
@@ -498,7 +826,8 @@ export async function followUser(targetUserId: string): Promise<boolean> {
         user_id: targetUserId,
         follow: "true",
       };
-      const authHeader = getOAuth1Headers("POST", fallbackUrl, params);
+      const legacyAuth = await getLegacyProfileAuthContext();
+      const authHeader = getOAuth1Headers("POST", fallbackUrl, params, legacyAuth);
       const response = await axios.post(fallbackUrl, buildFormBody(params), {
         headers: {
           Authorization: authHeader,
@@ -523,17 +852,24 @@ export async function likeTweet(tweetId: string): Promise<boolean> {
   enforceRateLimit(endpoint);
 
   try {
-    const sourceUserId = await getSourceUserId();
+    const auth = await getWriteAuthContext(["users.read", "like.write"]);
+    const sourceUserId = auth.sourceUserId;
     const apiUrl = `${X_API_BASE}/users/${sourceUserId}/likes`;
-    const authHeader = getOAuth1Headers("POST", apiUrl, {});
+    const headers =
+      auth.mode === "oauth2"
+        ? getOAuth2Headers(auth.accessToken!)
+        : {
+            Authorization: getOAuth1Headers("POST", apiUrl, {}, {
+              accessToken: auth.accessToken,
+              accessTokenSecret: auth.accessTokenSecret,
+            }),
+            "Content-Type": "application/json",
+          };
     const response = await axios.post(
       apiUrl,
       { tweet_id: tweetId },
       {
-        headers: {
-          Authorization: authHeader,
-          "Content-Type": "application/json",
-        },
+        headers,
       }
     );
 
@@ -541,6 +877,9 @@ export async function likeTweet(tweetId: string): Promise<boolean> {
     return response.data?.data?.liked ?? response.status < 300;
   } catch (error) {
     if (isRateLimitFailure(error)) {
+      throw error;
+    }
+    if (isActionConfigurationError(error)) {
       throw error;
     }
 
@@ -553,7 +892,8 @@ export async function likeTweet(tweetId: string): Promise<boolean> {
     try {
       const fallbackUrl = "https://api.x.com/1.1/favorites/create.json";
       const params = { id: tweetId };
-      const authHeader = getOAuth1Headers("POST", fallbackUrl, params);
+      const legacyAuth = await getLegacyProfileAuthContext();
+      const authHeader = getOAuth1Headers("POST", fallbackUrl, params, legacyAuth);
       const response = await axios.post(fallbackUrl, buildFormBody(params), {
         headers: {
           Authorization: authHeader,
@@ -573,7 +913,6 @@ export async function likeTweet(tweetId: string): Promise<boolean> {
   }
 }
 
-// Send a DM using OAuth 1.0a (user-context auth required for DMs).
 export async function sendDM(
   recipientId: string,
   text: string
@@ -582,22 +921,28 @@ export async function sendDM(
   enforceRateLimit(endpoint);
 
   try {
-    const apiUrl = `https://api.twitter.com/2/dm_conversations/with/${recipientId}/messages`;
+    const auth = await getWriteAuthContext(["dm.write"]);
+    const apiUrl = `${X_API_BASE}/dm_conversations/with/${recipientId}/messages`;
     const body = { text };
 
-    // OAuth 1.0a — same pattern as postTweet.
-    // For v2 JSON endpoints, body params are NOT in the signature base string.
-    const authHeader = getOAuth1Headers("POST", apiUrl, {});
-
     const response = await axios.post(apiUrl, body, {
-      headers: {
-        Authorization: authHeader,
-        "Content-Type": "application/json",
-      },
+      headers:
+        auth.mode === "oauth2"
+          ? getOAuth2Headers(auth.accessToken!)
+          : {
+              Authorization: getOAuth1Headers("POST", apiUrl, {}, {
+                accessToken: auth.accessToken,
+                accessTokenSecret: auth.accessTokenSecret,
+              }),
+              "Content-Type": "application/json",
+            },
     });
     recordRequest(endpoint);
     return response.data.data || null;
   } catch (error) {
+    if (isActionConfigurationError(error)) {
+      throw error;
+    }
     console.error("Failed to send DM:", error);
     return null;
   }
@@ -662,12 +1007,17 @@ function rfc3986Encode(str: string): string {
 function getOAuth1Headers(
   method: string,
   url: string,
-  params: Record<string, string>
+  params: Record<string, string>,
+  credentials?: {
+    accessToken?: string;
+    accessTokenSecret?: string;
+  }
 ): string {
   const consumerKey = requireEnv("X_API_CONSUMER_KEY");
   const consumerSecret = requireEnv("X_API_CONSUMER_SECRET");
-  const accessToken = requireEnv("X_API_ACCESS_TOKEN");
-  const accessTokenSecret = requireEnv("X_API_ACCESS_TOKEN_SECRET");
+  const accessToken = credentials?.accessToken ?? process.env.X_API_ACCESS_TOKEN;
+  const accessTokenSecret =
+    credentials?.accessTokenSecret ?? process.env.X_API_ACCESS_TOKEN_SECRET;
 
   const oauthNonce = crypto.randomBytes(16).toString("hex");
   const oauthTimestamp = Math.floor(Date.now() / 1000).toString();
@@ -677,9 +1027,12 @@ function getOAuth1Headers(
     oauth_nonce: oauthNonce,
     oauth_signature_method: "HMAC-SHA1",
     oauth_timestamp: oauthTimestamp,
-    oauth_token: accessToken,
     oauth_version: "1.0",
   };
+
+  if (accessToken) {
+    oauthParams.oauth_token = accessToken;
+  }
 
   // Merge all params (oauth + request) for signature base string
   const allParams: Record<string, string> = { ...oauthParams, ...params };
@@ -694,7 +1047,9 @@ function getOAuth1Headers(
     rfc3986Encode(paramString),
   ].join("&");
 
-  const signingKey = `${rfc3986Encode(consumerSecret)}&${rfc3986Encode(accessTokenSecret)}`;
+  const signingKey = `${rfc3986Encode(consumerSecret)}&${rfc3986Encode(
+    accessTokenSecret ?? ""
+  )}`;
   const oauthSignature = crypto
     .createHmac("sha1", signingKey)
     .update(signatureBaseString)
@@ -738,9 +1093,10 @@ function buildProfileParams(fields: XProfileFields): Record<string, string> {
 async function requestProfileUpdate(
   fields: XProfileFields
 ): Promise<Record<string, unknown>> {
+  const legacyAuth = await getLegacyProfileAuthContext();
   const apiUrl = "https://api.twitter.com/1.1/account/update_profile.json";
   const params = buildProfileParams(fields);
-  const authHeader = getOAuth1Headers("POST", apiUrl, params);
+  const authHeader = getOAuth1Headers("POST", apiUrl, params, legacyAuth);
   const body = Object.keys(params)
     .map((k) => `${rfc3986Encode(k)}=${rfc3986Encode(params[k])}`)
     .join("&");
@@ -802,11 +1158,12 @@ export async function updateProfileImage(
   const endpoint = "update_profile_image";
   enforceRateLimit(endpoint);
   try {
+    const legacyAuth = await getLegacyProfileAuthContext();
     const apiUrl =
       "https://api.twitter.com/1.1/account/update_profile_image.json";
     const params: Record<string, string> = { image: imageBase64 };
 
-    const authHeader = getOAuth1Headers("POST", apiUrl, params);
+    const authHeader = getOAuth1Headers("POST", apiUrl, params, legacyAuth);
 
     const response = await axios.post(apiUrl, null, {
       headers: {
@@ -830,11 +1187,12 @@ export async function updateProfileBanner(
   const endpoint = "update_profile_banner";
   enforceRateLimit(endpoint);
   try {
+    const legacyAuth = await getLegacyProfileAuthContext();
     const apiUrl =
       "https://api.twitter.com/1.1/account/update_profile_banner.json";
     const params: Record<string, string> = { banner: imageBase64 };
 
-    const authHeader = getOAuth1Headers("POST", apiUrl, params);
+    const authHeader = getOAuth1Headers("POST", apiUrl, params, legacyAuth);
 
     const body = `banner=${encodeURIComponent(imageBase64)}`;
     const response = await axios.post(apiUrl, body, {
