@@ -17,21 +17,25 @@ export interface SectionPhotoConfig {
 export const SECTION_PHOTOS: Record<string, SectionPhotoConfig> = {
   hero: {
     category: "action",
+    photoId: "photo-1772938520084-15",
     position: "cover",
     overlayOpacity: 0.7,
   },
   "film-reel": {
     category: "action",
+    photoId: "photo-1772939449944-10",
     position: "cover",
     overlayOpacity: 0.8,
   },
   origin: {
     category: "training",
+    photoId: "photo-1772938520083-7",
     position: "center",
     overlayOpacity: 0.85,
   },
   character: {
-    category: "portrait",
+    category: "profile",
+    photoId: "photo-1772938520087-20",
     position: "top",
     overlayOpacity: 0.9,
   },
@@ -46,7 +50,8 @@ export const SECTION_PHOTOS: Record<string, SectionPhotoConfig> = {
     overlayOpacity: 0.92,
   },
   fit: {
-    category: "team",
+    category: "action",
+    photoId: "photo-1772938520085-18",
     position: "center",
     overlayOpacity: 0.88,
   },

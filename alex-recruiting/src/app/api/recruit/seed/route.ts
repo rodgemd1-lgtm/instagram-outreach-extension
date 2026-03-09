@@ -5,9 +5,10 @@ import { isSupabaseConfigured } from "@/lib/supabase/admin";
 // ---------------------------------------------------------------------------
 // POST /api/recruit/seed
 //
-// Populates the `schools` and `coaches` Supabase tables with the target
-// school data from src/lib/data/target-schools.ts. Safe to call repeatedly
-// -- existing rows are updated (upsert) rather than duplicated.
+// Populates the `schools` Supabase table with the target school data from
+// src/lib/data/target-schools.ts and removes legacy placeholder coach rows.
+// Safe to call repeatedly -- existing school rows are updated (upsert) rather
+// than duplicated.
 // ---------------------------------------------------------------------------
 export async function POST() {
   if (!isSupabaseConfigured()) {

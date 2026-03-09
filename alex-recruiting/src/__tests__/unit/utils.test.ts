@@ -128,8 +128,8 @@ describe('getEngagementRate()', () => {
 });
 
 describe('getTierColor()', () => {
-  it('returns purple classes for Tier 1', () => {
-    expect(getTierColor('Tier 1')).toContain('purple');
+  it('returns navy classes for Tier 1', () => {
+    expect(getTierColor('Tier 1')).toContain('app-navy');
   });
 
   it('returns blue classes for Tier 2', () => {

@@ -59,66 +59,30 @@ export function AgencyDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Recruiting Agency</h1>
-        <p className="text-sm text-slate-500 mt-1">Your 7-person virtual team, powered by AI</p>
+      <div className="shell-panel px-5 py-5">
+        <h2 className="text-2xl font-semibold tracking-tight text-[var(--app-navy-strong)]">Recruiting Agency</h2>
+        <p className="mt-1 text-sm leading-6 text-[var(--app-muted)]">Your 7-person virtual team, powered by AI</p>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <Card>
-          <CardContent className="p-4">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        {[
+          { label: "Team Members", value: "7", icon: Users },
+          { label: "Active Tasks", value: `${pendingTasks.length}`, icon: ClipboardList },
+          { label: "NCSA Leads", value: `${leads.length}`, icon: Target },
+          { label: "Completed", value: `${completedTasks.length}`, icon: CheckCircle2 },
+        ].map((stat) => (
+          <div key={stat.label} className="shell-metric">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100">
-                <Users className="h-4 w-4 text-blue-600" />
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[rgba(15,40,75,0.08)] bg-white/80 text-[var(--app-navy)]">
+                <stat.icon className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">7</p>
-                <p className="text-xs text-slate-500">Team Members</p>
+                <p className="text-2xl font-semibold tracking-tight text-[var(--app-navy-strong)]">{stat.value}</p>
+                <p className="text-xs text-[var(--app-muted)]">{stat.label}</p>
               </div>
             </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-100">
-                <ClipboardList className="h-4 w-4 text-amber-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-slate-900">{pendingTasks.length}</p>
-                <p className="text-xs text-slate-500">Active Tasks</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-100">
-                <Target className="h-4 w-4 text-purple-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-slate-900">{leads.length}</p>
-                <p className="text-xs text-slate-500">NCSA Leads</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-green-100">
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-slate-900">{completedTasks.length}</p>
-                <p className="text-xs text-slate-500">Completed</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+        ))}
       </div>
 
       {/* Team Grid */}

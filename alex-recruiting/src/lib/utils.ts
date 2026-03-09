@@ -56,7 +56,7 @@ export function getPillarLabel(pillar: string): string {
 
 export function getTierColor(tier: string): string {
   switch (tier) {
-    case "Tier 1": return "text-purple-600 bg-purple-50 border-purple-200";
+    case "Tier 1": return "text-[var(--app-navy-strong)] bg-[rgba(15,40,75,0.08)] border-[rgba(15,40,75,0.12)]";
     case "Tier 2": return "text-blue-600 bg-blue-50 border-blue-200";
     case "Tier 3": return "text-green-600 bg-green-50 border-green-200";
     default: return "text-gray-600 bg-gray-50 border-gray-200";
@@ -67,7 +67,7 @@ export function getStatusColor(status: string): string {
   switch (status) {
     case "draft": return "text-yellow-600 bg-yellow-50";
     case "approved": return "text-blue-600 bg-blue-50";
-    case "scheduled": return "text-purple-600 bg-purple-50";
+    case "scheduled": return "text-[var(--app-navy-strong)] bg-[rgba(15,40,75,0.08)]";
     case "posted": return "text-green-600 bg-green-50";
     case "rejected": return "text-red-600 bg-red-50";
     case "sent": return "text-green-600 bg-green-50";

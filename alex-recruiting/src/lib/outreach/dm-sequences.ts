@@ -11,6 +11,8 @@ import {
 } from "@/lib/data/cold-dms";
 import { generateDMDraft } from "@/lib/integrations/anthropic";
 import { jacobProfile } from "@/lib/data/jacob-profile";
+import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
+import { sendDM, verifyHandle } from "@/lib/integrations/x-api";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -312,6 +314,75 @@ export async function processSequences(): Promise<ProcessResult> {
         templateData.name,
         `This is step ${seq.currentStep} of 4 in Jacob's DM sequence. Base template:\n${baseMessage}\n\nPersonalize this for a ${seq.currentStep === 1 ? "cold initial outreach" : `follow-up (step ${seq.currentStep})`}. Keep under 280 characters if possible. Be genuine and direct. Do not be sycophantic.`
       );
+
+      let coachHandle: string | null = null;
+      let coachName = seq.coachName;
+      let schoolName = seq.school;
+
+      if (isSupabaseConfigured()) {
+        const supabase = createAdminClient();
+        const { data: coachRow } = await supabase
+          .from("coaches")
+          .select("name, school_name, x_handle")
+          .eq("id", seq.coachId)
+          .maybeSingle();
+
+        coachHandle = coachRow?.x_handle ?? null;
+        coachName = coachRow?.name ?? coachName;
+        schoolName = coachRow?.school_name ?? schoolName;
+      }
+
+      if (!coachHandle) {
+        result.skipped++;
+        result.details.push({
+          sequenceId: seq.id,
+          coachName,
+          step: seq.currentStep,
+          action: "skipped",
+          reason: "coach has no X handle on file",
+        });
+        continue;
+      }
+
+      const targetUser = await verifyHandle(coachHandle.replace("@", ""));
+      if (!targetUser) {
+        result.skipped++;
+        result.details.push({
+          sequenceId: seq.id,
+          coachName,
+          step: seq.currentStep,
+          action: "skipped",
+          reason: "coach X handle could not be resolved",
+        });
+        continue;
+      }
+
+      const sent = await sendDM(targetUser.id, personalizedMessage);
+      if (!sent) {
+        throw new Error("X DM delivery failed");
+      }
+
+      if (isSupabaseConfigured()) {
+        const supabase = createAdminClient();
+        await supabase.from("dm_messages").insert({
+          coach_id: seq.coachId,
+          coach_name: coachName,
+          school_name: schoolName,
+          template_type: templateData.id,
+          content: personalizedMessage,
+          status: "sent",
+          sent_at: now.toISOString(),
+          created_at: now.toISOString(),
+        });
+        await supabase
+          .from("coaches")
+          .update({
+            dm_status: "sent",
+            last_engaged: now.toISOString(),
+            updated_at: now.toISOString(),
+          })
+          .eq("id", seq.coachId);
+      }
 
       // Advance to next step and schedule it
       const nextStep = seq.currentStep + 1;

@@ -1,18 +1,25 @@
-"use client";
-
 import { CoachCRM } from "@/components/coach-crm";
 import { CoachPipeline } from "@/components/coach-pipeline";
 import { SchoolCard } from "@/components/school-card";
+import { StudioPageHeader } from "@/components/studio-page-header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getSchoolsByTier } from "@/lib/data/target-schools";
 
 export default function CoachesPage() {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Coach CRM</h1>
-        <p className="text-sm text-slate-500">Track 17 target schools, coach engagement, follow-backs, and DM campaigns</p>
-      </div>
+      <StudioPageHeader
+        icon="Users"
+        kicker="Dashboard Studio + Susan"
+        title="Run the coach pipeline with clear stages, not scattered names and loose notes."
+        description="This is the relationship map for target programs. Prioritize the right schools, enrich the right coaches, and keep the next action obvious."
+        council={["Susan", "Dashboard", "Marcus"]}
+      >
+        <p className="font-semibold">Recruiting ops rule:</p>
+        <p className="mt-2 leading-6 text-[var(--app-muted)]">
+          Pipeline quality beats raw volume. A smaller list with real signals, X handles, and next actions is worth more than a bloated list of dead rows.
+        </p>
+      </StudioPageHeader>
 
       <Tabs defaultValue="crm">
         <TabsList>

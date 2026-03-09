@@ -29,7 +29,20 @@ function rowToTask(row: typeof recTasks.$inferSelect): RecTask {
 
 // ---- In-memory fallback for development without a database ----
 
-const memoryTasks: RecTask[] = [];
+const memoryTasks: RecTask[] = [
+  {
+    id: "task-design-studio-audit-recruit-website",
+    assignedTo: "devin",
+    title: "Bring in Susan's full design studio to audit and update Jake's recruit website",
+    description:
+      "Coordinate Susan's full design studio team to audit Jake's recruit website and implement updates across design, messaging, accessibility, trust signals, and conversion flow.",
+    status: "pending",
+    priority: 1,
+    createdAt: "2026-03-08T00:00:00.000Z",
+    completedAt: null,
+    output: null,
+  },
+];
 
 function memCreateTask(data: {
   assignedTo: TeamMemberId;

@@ -1,0 +1,16 @@
+node_modules
+node_modules_corrupt_*
+.next
+.env
+.env.local
+.mcp.json
+.ncsa-leads.json
+.claude
+.susan
+docs
+/supabase/
+src/app 2
+src/components 2
+src/lib 2
+src/hooks 2
+src/__tests__ 2

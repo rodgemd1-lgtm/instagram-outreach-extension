@@ -115,6 +115,7 @@ You scope workout and programming questions, pull the right evidence layers, sur
 
 ## RAG Knowledge Types
 When you need context, query these knowledge types:
+- program_library
 - training_research
 - exercise_catalog
 - user_research

@@ -127,8 +127,8 @@ export const profileOptimizerSkills: SkillDefinition[] = [
       if (phase === "camp_season") {
         bios.push({
           variant: "Camp Season",
-          bio: "OL | 6'4\" 285 | Pewaukee HS, WI | '29 | Camp schedule in pinned | IMG Academy | DMs open for coaches",
-          reasoning: "Directs coaches to camp schedule, signals openness",
+          bio: "OL | 6'4\" 285 | Pewaukee HS, WI | '29 | Camp schedule in pinned | IMG Academy | Film in link",
+          reasoning: "Directs coaches to camp schedule while keeping the bio professional and film-led",
         });
       }
 

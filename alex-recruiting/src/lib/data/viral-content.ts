@@ -839,9 +839,9 @@ Best summer of my football career. Can't wait to go back.
 - Leadership and team-first mentality
 - Coachable attitude — I want to be coached hard
 
-Coaches: my film is in my bio. Let's connect.
+Film and recruiting links are in my profile.
 
-#2029Recruit #OL #FootballRecruiting #RecruitMe #OffensiveLine`,
+#2029Recruit #OL #FootballRecruiting #OffensiveLine #WisconsinFootball`,
     viralPotential: 9,
     bestDay: "Monday",
     mediaRequired: false,

@@ -404,7 +404,7 @@ Let's Talk
 Interested in Jacob? Reach out directly.
 
 FAMILY CONTACT
-Email: [family email address]
+Email: rodgermd1@gmail.com
 Phone: [family phone number]
 Response time: Within 24 hours.
 

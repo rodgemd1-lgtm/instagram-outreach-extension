@@ -4,6 +4,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   findFollowTargets,
+  findLiveFollowTargets,
   analyzeTargetFollowers,
   getGrowthRecommendations,
 } from "@/lib/growth/follower-scraper";
@@ -17,6 +18,8 @@ export async function GET(req: NextRequest) {
     const maxResults = parseTargetLimit(searchParams.get("limit"));
     const analyze = searchParams.get("analyze"); // handle to analyze followers of
     const type = searchParams.get("type"); // filter by category
+    const liveParam = searchParams.get("live");
+    const preferLive = liveParam === null ? true : liveParam === "true";
     const includeRecommendations = searchParams.get("recommendations") !== "false";
 
     // If an analyze handle is provided, return the follower analysis for that account
@@ -28,8 +31,17 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // Build follow targets (from curated list)
-    const targets = await findFollowTargets(maxResults);
+    // Build follow targets. `live=true` switches from the curated seed list to
+    // real X follower-graph discovery from schools + coaches already in the system.
+    let targets = preferLive
+      ? await findLiveFollowTargets(maxResults)
+      : await findFollowTargets(maxResults);
+    let mode: "live" | "curated" | "live_fallback" = preferLive ? "live" : "curated";
+
+    if (preferLive && targets.length === 0) {
+      targets = await findFollowTargets(maxResults);
+      mode = "live_fallback";
+    }
 
     // Apply type filter if requested
     const filteredTargets = type
@@ -45,6 +57,7 @@ export async function GET(req: NextRequest) {
         low: filteredTargets.filter((t) => t.priority === "low").length,
       },
       generatedAt: new Date().toISOString(),
+      mode,
     };
 
     if (includeRecommendations) {

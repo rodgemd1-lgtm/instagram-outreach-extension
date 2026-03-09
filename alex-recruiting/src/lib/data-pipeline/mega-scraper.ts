@@ -9,6 +9,7 @@
  *   POST /api/data-pipeline/scrape  { division?: "D1_FBS", limit?: 10 }
  */
 
+import { load } from "cheerio";
 import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -30,7 +31,9 @@ export interface ScrapedCoach {
   email: string | null;
   xHandle: string | null;
   school: string;
+  schoolId: string;
   division: string;
+  conference: string;
   recruitingArea: string | null;
 }
 
@@ -48,9 +51,140 @@ export interface ScrapeResult {
 // ─── Rate Limiter ─────────────────────────────────────────────────────────────
 
 const RATE_LIMIT_MS = 2000; // 1 request per 2 seconds
+const EMAIL_PATTERN = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+const X_HANDLE_PATTERN = /@[A-Za-z0-9_]{1,15}/;
+const PRIORITY_TITLES = [
+  /offensive\s+line\b/i,
+  /\bol\b\s+coach/i,
+  /o[\s-]?line/i,
+  /recruiting\s+coordinator/i,
+  /head\s+coach/i,
+  /offensive\s+coordinator/i,
+  /assistant\s+head\s+coach/i,
+  /run\s+game\s+coordinator/i,
+  /associate\s+head\s+coach/i,
+];
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function schoolIdFromName(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[()']/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function cleanText(value: string): string {
+  return value
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/[*_`>#]/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function isPriorityTitle(value: string): boolean {
+  return PRIORITY_TITLES.some((pattern) => pattern.test(value));
+}
+
+function looksLikeCoachTitle(value: string): boolean {
+  const cleaned = cleanText(value);
+  if (!cleaned) return false;
+  if (!isPriorityTitle(cleaned)) return false;
+  if (/\boffensive\s+lineman\b/i.test(cleaned)) return false;
+  return true;
+}
+
+function looksLikeCoachName(value: string): boolean {
+  const cleaned = cleanText(value);
+  if (!cleaned || cleaned.length < 5) return false;
+  if (/\b(freshman|sophomore|junior|senior|redshirt|graduate|returning)\b/i.test(cleaned)) {
+    return false;
+  }
+  if (isPriorityTitle(cleaned)) {
+    return false;
+  }
+  if (/^(name|title|staff|coaching staff|image|phone|instagram|twitter|email|extension)$/i.test(cleaned)) {
+    return false;
+  }
+
+  return /^[A-Z][A-Za-z.'’-]+(?:\s+[A-Z][A-Za-z.'’-]+){1,3}$/.test(cleaned);
+}
+
+function uniqueCoachKey(name: string, title: string): string {
+  return `${name.toLowerCase()}::${title.toLowerCase()}`;
+}
+
+function buildCoach(
+  school: SchoolEntry,
+  data: {
+    name: string;
+    title: string;
+    email?: string | null;
+    xHandle?: string | null;
+    recruitingArea?: string | null;
+  }
+): ScrapedCoach {
+  return {
+    name: data.name,
+    title: data.title,
+    email: data.email ?? null,
+    xHandle: data.xHandle ?? null,
+    school: school.name,
+    schoolId: schoolIdFromName(school.name),
+    division: school.division,
+    conference: school.conference,
+    recruitingArea: data.recruitingArea ?? null,
+  };
+}
+
+function twitterHandleFromUrl(value: string | undefined): string | null {
+  if (!value) return null;
+  const match = value.match(/(?:twitter\.com|x\.com)\/@?([A-Za-z0-9_]{1,15})/i);
+  return match ? `@${match[1]}` : null;
+}
+
+function extractCoachFromCells(
+  school: SchoolEntry,
+  cells: string[],
+  rowText?: string,
+  links?: { email?: string | null; xHandle?: string | null }
+): ScrapedCoach | null {
+  const cleanedCells = cells.map(cleanText).filter(Boolean);
+  if (cleanedCells.length < 2) return null;
+  if (cleanedCells.every((cell) => /^:?-{2,}:?$/.test(cell))) return null;
+  if (/^name$/i.test(cleanedCells[0]) && cleanedCells.some((cell) => /^title$/i.test(cell))) {
+    return null;
+  }
+
+  const titleCellIndex = cleanedCells.findIndex(looksLikeCoachTitle);
+  if (titleCellIndex === -1) return null;
+
+  const nameCellIndex = cleanedCells.findIndex(
+    (cell, index) => index !== titleCellIndex && looksLikeCoachName(cell)
+  );
+  if (nameCellIndex === -1) return null;
+
+  const name = cleanedCells[nameCellIndex];
+  const title = cleanedCells[titleCellIndex];
+  const combined = [rowText, ...cleanedCells].filter(Boolean).join(" | ");
+  const emailMatch = combined.match(EMAIL_PATTERN);
+  const handleMatch = combined.match(X_HANDLE_PATTERN);
+  const detectedHandle = links?.xHandle ?? handleMatch?.[0] ?? null;
+  const safeHandle =
+    detectedHandle && emailMatch?.[0]?.includes(detectedHandle) ? null : detectedHandle;
+
+  return buildCoach(school, {
+    name,
+    title,
+    email: links?.email ?? emailMatch?.[0] ?? null,
+    xHandle: safeHandle,
+    recruitingArea: /recruiting/i.test(title) ? school.state : null,
+  });
 }
 
 // ─── Staff URL builder helpers ────────────────────────────────────────────────
@@ -182,7 +316,7 @@ const D1_FBS_SCHOOLS: SchoolEntry[] = [
   { name: "Bowling Green", division: "D1_FBS", conference: "MAC", state: "OH", city: "Bowling Green", staffUrl: sidearmUrl("bgsufalcons.com"), rosterUrl: rosterUrl("bgsufalcons.com"), xHandle: "@BG_Football" },
   { name: "Buffalo", division: "D1_FBS", conference: "MAC", state: "NY", city: "Buffalo", staffUrl: sidearmUrl("ubbulls.com"), rosterUrl: rosterUrl("ubbulls.com"), xHandle: "@UBFootball" },
   { name: "Central Michigan", division: "D1_FBS", conference: "MAC", state: "MI", city: "Mount Pleasant", staffUrl: sidearmUrl("cmuchippewas.com"), rosterUrl: rosterUrl("cmuchippewas.com"), xHandle: "@CMU_Football" },
-  { name: "Eastern Michigan", division: "D1_FBS", conference: "MAC", state: "MI", city: "Ypsilanti", staffUrl: sidearmUrl("emueagles.com"), rosterUrl: rosterUrl("emueagles.com"), xHandle: "@ABOREMUFB" },
+  { name: "Eastern Michigan", division: "D1_FBS", conference: "MAC", state: "MI", city: "Ypsilanti", staffUrl: sidearmUrl("emueagles.com"), rosterUrl: rosterUrl("emueagles.com"), xHandle: "@EMUFB" },
   { name: "Kent State", division: "D1_FBS", conference: "MAC", state: "OH", city: "Kent", staffUrl: sidearmUrl("kentstatesports.com"), rosterUrl: rosterUrl("kentstatesports.com"), xHandle: "@KentStateFB" },
   { name: "Miami (OH)", division: "D1_FBS", conference: "MAC", state: "OH", city: "Oxford", staffUrl: sidearmUrl("miamiredhawks.com"), rosterUrl: rosterUrl("miamiredhawks.com"), xHandle: "@MiamiOHFootball" },
   { name: "Northern Illinois", division: "D1_FBS", conference: "MAC", state: "IL", city: "DeKalb", staffUrl: sidearmUrl("niuhuskies.com"), rosterUrl: rosterUrl("niuhuskies.com"), xHandle: "@NIU_Football" },
@@ -217,7 +351,7 @@ const D1_FBS_SCHOOLS: SchoolEntry[] = [
   { name: "Old Dominion", division: "D1_FBS", conference: "Sun Belt", state: "VA", city: "Norfolk", staffUrl: sidearmUrl("odusports.com"), rosterUrl: rosterUrl("odusports.com"), xHandle: "@ODUFootball" },
   { name: "South Alabama", division: "D1_FBS", conference: "Sun Belt", state: "AL", city: "Mobile", staffUrl: sidearmUrl("usajaguars.com"), rosterUrl: rosterUrl("usajaguars.com"), xHandle: "@SouthAlabamaFB" },
   { name: "Southern Miss", division: "D1_FBS", conference: "Sun Belt", state: "MS", city: "Hattiesburg", staffUrl: sidearmUrl("southernmiss.com"), rosterUrl: rosterUrl("southernmiss.com"), xHandle: "@SouthernMissFB" },
-  { name: "Texas State", division: "D1_FBS", conference: "Sun Belt", state: "TX", city: "San Marcos", staffUrl: sidearmUrl("txstatebobcats.com"), rosterUrl: rosterUrl("txstatebobcats.com"), xHandle: "@ABORETXSTATEFB" },
+  { name: "Texas State", division: "D1_FBS", conference: "Sun Belt", state: "TX", city: "San Marcos", staffUrl: sidearmUrl("txstatebobcats.com"), rosterUrl: rosterUrl("txstatebobcats.com"), xHandle: "@TXSTATEFOOTBALL" },
   { name: "Troy", division: "D1_FBS", conference: "Sun Belt", state: "AL", city: "Troy", staffUrl: sidearmUrl("troytrojans.com"), rosterUrl: rosterUrl("troytrojans.com"), xHandle: "@TroyTrojansFB" },
 
   // ── Independents ──
@@ -703,28 +837,34 @@ async function scrapeUrl(url: string): Promise<string | null> {
  * Parse scraped markdown for coaching staff information.
  * Looks for name + title patterns common on Sidearm/athletics staff pages.
  */
-function parseStaffMarkdown(markdown: string, school: SchoolEntry): ScrapedCoach[] {
+export function parseStaffMarkdown(markdown: string, school: SchoolEntry): ScrapedCoach[] {
+  const tableCoaches: ScrapedCoach[] = [];
+  const seenTableRows = new Set<string>();
+
+  const tableLines = markdown
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith("|") && line.split("|").length >= 4);
+
+  for (const line of tableLines) {
+    const cells = line
+      .split("|")
+      .slice(1, -1)
+      .map(cleanText)
+      .filter(Boolean);
+
+    const coach = extractCoachFromCells(school, cells, cells.join(" | "));
+    if (!coach) continue;
+
+    const dedupeKey = uniqueCoachKey(coach.name, coach.title);
+    if (seenTableRows.has(dedupeKey)) continue;
+
+    seenTableRows.add(dedupeKey);
+    tableCoaches.push(coach);
+  }
+
   const coaches: ScrapedCoach[] = [];
   const lines = markdown.split("\n").map((l) => l.trim()).filter(Boolean);
-
-  // Title patterns we care about (OL-first recruiting strategy)
-  const priorityTitles = [
-    /offensive\s+line/i,
-    /\bol\b\s+coach/i,
-    /o[\s-]?line/i,
-    /recruiting\s+coordinator/i,
-    /head\s+coach/i,
-    /offensive\s+coordinator/i,
-    /assistant\s+head\s+coach/i,
-    /run\s+game\s+coordinator/i,
-    /associate\s+head\s+coach/i,
-  ];
-
-  // Email pattern
-  const emailPattern = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
-
-  // Twitter/X handle pattern
-  const xHandlePattern = /@[A-Za-z0-9_]{1,15}/;
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
@@ -733,18 +873,18 @@ function parseStaffMarkdown(markdown: string, school: SchoolEntry): ScrapedCoach
 
     // Check if current line or adjacent lines contain a priority title
     let matchedTitle: string | null = null;
-    for (const pattern of priorityTitles) {
+    for (const pattern of PRIORITY_TITLES) {
       if (pattern.test(line)) {
-        matchedTitle = line.replace(/^[#*\s]+/, "").replace(/[*#]+$/, "").trim();
+        matchedTitle = cleanText(line.replace(/^[#*\s]+/, "").replace(/[*#]+$/, ""));
         break;
       }
       if (pattern.test(nextLine)) {
-        matchedTitle = nextLine.replace(/^[#*\s]+/, "").replace(/[*#]+$/, "").trim();
+        matchedTitle = cleanText(nextLine.replace(/^[#*\s]+/, "").replace(/[*#]+$/, ""));
         break;
       }
     }
 
-    if (!matchedTitle) continue;
+    if (!matchedTitle || !looksLikeCoachTitle(matchedTitle)) continue;
 
     // Try to extract coach name from current line, previous line, or the title line itself
     let coachName: string | null = null;
@@ -759,7 +899,7 @@ function parseStaffMarkdown(markdown: string, school: SchoolEntry): ScrapedCoach
       const nameCandidate = dashSplit[0].replace(/^[#*\s]+/, "").trim();
       const nameMatch = nameCandidate.match(namePattern);
       if (nameMatch) {
-        coachName = nameMatch[1];
+        coachName = cleanText(nameMatch[1]);
       }
     }
 
@@ -767,15 +907,15 @@ function parseStaffMarkdown(markdown: string, school: SchoolEntry): ScrapedCoach
     if (!coachName && prevLine) {
       const prevMatch = prevLine.match(namePattern);
       if (prevMatch) {
-        coachName = prevMatch[1];
+        coachName = cleanText(prevMatch[1]);
       }
     }
 
     // Check the current line if it has the name (for lines where name IS the line)
     if (!coachName) {
       const currentMatch = line.match(namePattern);
-      if (currentMatch && !priorityTitles.some((p) => p.test(currentMatch[1]))) {
-        coachName = currentMatch[1];
+      if (currentMatch && !PRIORITY_TITLES.some((p) => p.test(currentMatch[1]))) {
+        coachName = cleanText(currentMatch[1]);
       }
     }
 
@@ -788,11 +928,11 @@ function parseStaffMarkdown(markdown: string, school: SchoolEntry): ScrapedCoach
     let email: string | null = null;
     let xHandle: string | null = null;
     for (let j = Math.max(0, i - 2); j < Math.min(lines.length, i + 4); j++) {
-      const emailMatch = lines[j].match(emailPattern);
+      const emailMatch = lines[j].match(EMAIL_PATTERN);
       if (emailMatch && !email) {
         email = emailMatch[0];
       }
-      const handleMatch = lines[j].match(xHandlePattern);
+      const handleMatch = lines[j].match(X_HANDLE_PATTERN);
       if (handleMatch && !xHandle && !lines[j].includes("@gmail") && !lines[j].includes("@yahoo")) {
         xHandle = handleMatch[0];
       }
@@ -804,16 +944,94 @@ function parseStaffMarkdown(markdown: string, school: SchoolEntry): ScrapedCoach
       recruitingArea = school.state;
     }
 
-    coaches.push({
-      name: coachName,
-      title: matchedTitle,
-      email,
-      xHandle,
-      school: school.name,
-      division: school.division,
-      recruitingArea,
-    });
+    coaches.push(
+      buildCoach(school, {
+        name: coachName,
+        title: matchedTitle,
+        email,
+        xHandle,
+        recruitingArea,
+      })
+    );
   }
+
+  const merged = [...tableCoaches];
+  const seen = new Set(tableCoaches.map((coach) => uniqueCoachKey(coach.name, coach.title)));
+  for (const coach of coaches) {
+    const key = uniqueCoachKey(coach.name, coach.title);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    merged.push(coach);
+  }
+
+  return merged;
+}
+
+async function fetchHtml(url: string): Promise<string | null> {
+  try {
+    const response = await fetch(url, { redirect: "follow" });
+    if (!response.ok) return null;
+
+    const html = await response.text();
+    return html.length > 100 ? html : null;
+  } catch {
+    return null;
+  }
+}
+
+export function parseStaffHtml(html: string, school: SchoolEntry): ScrapedCoach[] {
+  const $ = load(html);
+  const coaches: ScrapedCoach[] = [];
+  const seen = new Set<string>();
+
+  const pushCoach = (coach: ScrapedCoach | null) => {
+    if (!coach) return;
+    const key = uniqueCoachKey(coach.name, coach.title);
+    if (seen.has(key)) return;
+    seen.add(key);
+    coaches.push(coach);
+  };
+
+  $("tr").each((_, row) => {
+    const rowEl = $(row);
+    const cells = rowEl
+      .find("th, td")
+      .map((__, cell) => $(cell).text().replace(/\s+/g, " ").trim())
+      .get()
+      .filter(Boolean);
+
+    const emailHref = rowEl.find('a[href^="mailto:"]').attr("href")?.replace(/^mailto:/i, "") ?? null;
+    const xHref =
+      twitterHandleFromUrl(rowEl.find('a[href*="twitter.com/"], a[href*="x.com/"]').attr("href")) ?? null;
+
+    pushCoach(extractCoachFromCells(school, cells, rowEl.text(), { email: emailHref, xHandle: xHref }));
+  });
+
+  $(".roster-staff-members .roster-list-item, #coaches .roster-list-item").each((_, card) => {
+    const cardEl = $(card);
+    const name = cleanText(cardEl.find(".roster-list-item__title").first().text());
+    const title = cardEl
+      .find(".roster-list-item__profile-field--position, .roster-list-item__profile-field, strong")
+      .map((__, field) => cleanText($(field).text()))
+      .get()
+      .find(looksLikeCoachTitle);
+
+    if (!looksLikeCoachName(name) || !title) return;
+
+    const emailHref = cardEl.find('a[href^="mailto:"]').attr("href")?.replace(/^mailto:/i, "") ?? null;
+    const xHref =
+      twitterHandleFromUrl(cardEl.find('a[href*="twitter.com/"], a[href*="x.com/"]').attr("href")) ?? null;
+
+    pushCoach(
+      buildCoach(school, {
+        name,
+        title,
+        email: emailHref,
+        xHandle: xHref,
+        recruitingArea: /recruiting/i.test(title) ? school.state : null,
+      })
+    );
+  });
 
   return coaches;
 }
@@ -822,26 +1040,72 @@ function parseStaffMarkdown(markdown: string, school: SchoolEntry): ScrapedCoach
  * Scrape a single school's staff page for coaching data.
  */
 export async function scrapeSchoolStaff(school: SchoolEntry): Promise<ScrapedCoach[]> {
-  const markdown = await scrapeUrl(school.staffUrl);
-  if (!markdown) {
-    return [];
+  const primaryMarkdown = await scrapeUrl(school.staffUrl);
+  if (primaryMarkdown) {
+    const parsedFromMarkdown = parseStaffMarkdown(primaryMarkdown, school);
+    if (parsedFromMarkdown.length > 0) {
+      return parsedFromMarkdown;
+    }
   }
 
-  return parseStaffMarkdown(markdown, school);
+  const primaryHtml = await fetchHtml(school.staffUrl);
+  if (primaryHtml) {
+    const parsedFromHtml = parseStaffHtml(primaryHtml, school);
+    if (parsedFromHtml.length > 0) {
+      return parsedFromHtml;
+    }
+  }
+
+  if (school.rosterUrl !== school.staffUrl) {
+    const rosterHtml = await fetchHtml(school.rosterUrl);
+    if (rosterHtml) {
+      const parsedFromHtml = parseStaffHtml(rosterHtml, school);
+      if (parsedFromHtml.length > 0) {
+        return parsedFromHtml;
+      }
+    }
+  }
+
+  return [];
 }
 
 /**
  * Store scraped coaches into the Supabase `coaches` table.
  */
 async function storeCoaches(coaches: ScrapedCoach[]): Promise<number> {
-  if (!isSupabaseConfigured() || coaches.length === 0) {
+  const validCoaches = coaches.filter(
+    (coach) => looksLikeCoachName(coach.name) && looksLikeCoachTitle(coach.title)
+  );
+
+  if (!isSupabaseConfigured() || validCoaches.length === 0) {
     return 0;
   }
 
   const supabase = createAdminClient();
   let stored = 0;
+  const { data: schoolRows } = await supabase.from("schools").select("id");
+  const knownSchoolIds = new Set((schoolRows ?? []).map((row: { id: string }) => row.id));
+  const schoolNames = Array.from(new Set(validCoaches.map((coach) => coach.school)));
 
-  for (const coach of coaches) {
+  const { data: existingRows } = await supabase
+    .from("coaches")
+    .select("id, name, title, school_name")
+    .in("school_name", schoolNames);
+
+  const malformedIds = (existingRows ?? [])
+    .filter(
+      (row: { id: string; name: string; title: string | null; school_name: string }) =>
+        !looksLikeCoachName(row.name) || !looksLikeCoachTitle(row.title ?? "")
+    )
+    .map((row: { id: string }) => row.id);
+
+  if (malformedIds.length > 0) {
+    await supabase.from("coaches").delete().in("id", malformedIds);
+  }
+
+  for (const coach of validCoaches) {
+    const schoolId = knownSchoolIds.has(coach.schoolId) ? coach.schoolId : null;
+
     try {
       // Check if coach already exists (by name + school)
       const { data: existing } = await supabase
@@ -858,22 +1122,34 @@ async function storeCoaches(coaches: ScrapedCoach[]): Promise<number> {
           .update({
             title: coach.title,
             x_handle: coach.xHandle,
+            school_id: schoolId,
+            conference: coach.conference,
             division: coach.division,
+            notes: coach.email ?? "Discovered via athletics staff directory scrape",
             updated_at: new Date().toISOString(),
           })
           .eq("id", existing[0].id);
         stored++;
       } else {
         // Insert new coach
+        const priorityTier =
+          coach.division === "D1_FBS"
+            ? "Tier 1"
+            : coach.division === "D1_FCS"
+              ? "Tier 2"
+              : "Tier 3";
         const { error } = await supabase.from("coaches").insert({
           name: coach.name,
           title: coach.title,
+          school_id: schoolId,
           school_name: coach.school,
+          conference: coach.conference,
           division: coach.division,
           x_handle: coach.xHandle,
-          priority_tier: "scrape_discovered",
+          priority_tier: priorityTier,
           dm_status: "not_sent",
           follow_status: "not_followed",
+          notes: coach.email ?? "Discovered via athletics staff directory scrape",
         });
         if (!error) stored++;
       }

@@ -6,11 +6,40 @@
 // ---------------------------------------------------------------------------
 
 import puppeteer from "puppeteer-core";
-import { writeFile, mkdir } from "fs/promises";
+import { access, writeFile, mkdir } from "fs/promises";
 import path from "path";
 
 const HEADER_WIDTH = 1500;
 const HEADER_HEIGHT = 500;
+
+async function resolveChromeExecutable(): Promise<string> {
+  const envPath =
+    process.env.PUPPETEER_EXECUTABLE_PATH ||
+    process.env.GOOGLE_CHROME_BIN ||
+    process.env.CHROME_PATH;
+
+  const candidates = [
+    envPath,
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary",
+    "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
+    "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+    "/usr/bin/google-chrome",
+    "/usr/bin/chromium",
+    "/usr/bin/chromium-browser",
+  ].filter(Boolean) as string[];
+
+  for (const candidate of candidates) {
+    try {
+      await access(candidate);
+      return candidate;
+    } catch {
+      // Try next binary candidate.
+    }
+  }
+
+  throw new Error("Chrome executable not found. Set PUPPETEER_EXECUTABLE_PATH to a local browser binary.");
+}
 
 function getHeaderHTML(): string {
   // Pewaukee Pirates official colors: Red (#CC0022) and Black (#222222)
@@ -214,7 +243,7 @@ function getHeaderHTML(): string {
 
   <div class="content">
     <div class="name">Jacob Rodgers</div>
-    <div class="position-tag"><span>DT</span> &nbsp;/&nbsp; <span>OG</span> &nbsp;&mdash;&nbsp; Defensive Tackle &amp; Offensive Guard</div>
+    <div class="position-tag"><span>OL</span> &nbsp;/&nbsp; <span>DL</span> &nbsp;&mdash;&nbsp; Offensive Line &amp; Defensive Line</div>
     <div class="details">6&apos;4&quot; &nbsp;|&nbsp; 285 lbs &nbsp;|&nbsp; Class of 2029</div>
     <div class="school">Pewaukee Pirates &nbsp;|&nbsp; Wisconsin</div>
   </div>
@@ -231,9 +260,11 @@ export async function generateHeaderImage(): Promise<string> {
   const outputPath = path.join(outputDir, "header-image.png");
 
   await mkdir(outputDir, { recursive: true });
+  const executablePath = await resolveChromeExecutable();
 
   const browser = await puppeteer.launch({
     headless: true,
+    executablePath,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
 
@@ -256,8 +287,10 @@ export async function generateHeaderImage(): Promise<string> {
 
 export async function getHeaderImageBase64(): Promise<string> {
   const puppeteerModule = await import("puppeteer-core");
+  const executablePath = await resolveChromeExecutable();
   const browser = await puppeteerModule.default.launch({
     headless: true,
+    executablePath,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
 

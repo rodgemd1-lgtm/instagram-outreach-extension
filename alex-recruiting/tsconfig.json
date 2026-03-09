@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
+    "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
@@ -23,5 +23,15 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "node_modules_corrupt_*",
+    "src/app 2",
+    "src/components 2",
+    "src/hooks 2",
+    "src/lib 2",
+    "src/__tests__ 2",
+    "docs/plans 2",
+    "supabase/migrations 2"
+  ]
 }

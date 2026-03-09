@@ -30,6 +30,13 @@ function generateId(): string {
   return `photo-${Date.now()}-${nextId++}`;
 }
 
+function normalizeAssetName(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/\s+\(\d+\)(?=\.[^.]+$)/, "")
+    .replace(/\s+\d+(?=\.[^.]+$)/, "");
+}
+
 function readStore(): PhotoAssetRecord[] {
   try {
     const data = fs.readFileSync(STORE_PATH, "utf-8");
@@ -65,8 +72,22 @@ export function insertPhoto(
   data: Omit<PhotoAssetRecord, "id" | "createdAt" | "usedInPosts">
 ): PhotoAssetRecord {
   const store = readStore();
-  // Deduplicate by filePath
-  const existing = store.find((p) => p.filePath === data.filePath);
+  const existing = store.find((photo) => {
+    if (photo.filePath === data.filePath) {
+      return true;
+    }
+
+    if (
+      normalizeAssetName(photo.name) === normalizeAssetName(data.name) &&
+      photo.fileSize !== null &&
+      data.fileSize !== null &&
+      photo.fileSize === data.fileSize
+    ) {
+      return true;
+    }
+
+    return false;
+  });
   if (existing) return existing;
 
   const photo: PhotoAssetRecord = {

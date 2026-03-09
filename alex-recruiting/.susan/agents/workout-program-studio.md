@@ -119,6 +119,7 @@ You turn training goals, evidence, equipment constraints, and user context into 
 
 ## RAG Knowledge Types
 When you need context, query these knowledge types:
+- program_library
 - training_research
 - exercise_catalog
 - exercise_science

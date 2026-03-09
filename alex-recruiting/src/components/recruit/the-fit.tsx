@@ -6,31 +6,21 @@ import {
   type AssemblyConfig,
 } from "@/hooks/useRecruitAssembly";
 
-/* ──────────────────────────────────────────────────────────────
-   The Fit — Why your program should know Jacob
-   LAAL Mechanism: Ownership + Loss Aversion
-   Three blocks: Development Runway (projection), What He's
-   Looking For (ownership inversion), The Window (loss aversion).
-
-   Wave 1: none (below fold)
-   Wave 2: individual block reveals
-   ────────────────────────────────────────────────────────────── */
-
 const blocks = [
   {
     number: "01",
-    title: "Development Runway",
-    body: "Class of 2029. Your strength staff gets him at 15 with elite raw material — 405 deadlift, 285 lbs, multi-sport explosiveness — and three full years to develop him. The ceiling hasn't been touched.",
+    title: "Defensive-Line Ceiling",
+    body: "The quickest path to impact is on the defensive line: size, leverage upside, and a strength curve that still has room to move. Offensive-line versatility stays in the background as added value.",
   },
   {
     number: "02",
-    title: "What He's Looking For",
-    body: "A program with a strong offensive line tradition, coaching staff that invests in player development, and a culture built on competition. Jacob wants to earn it.",
+    title: "Winning Room Fit",
+    body: "The right environment is a winning culture built on teamwork, hard work, and real development. Jacob wants teaching, accountability, and a room where work matters more than hype.",
   },
   {
     number: "03",
-    title: "The Window",
-    body: "Jacob is building his school list. Sophomore film drops this fall. Interested programs should reach out now.",
+    title: "Development Inputs Already In Place",
+    body: "IMG camps twice a year, trench training, one-on-one work with Joel and Justin, and steady offseason lift gains mean the development habits are already established before a college staff takes over.",
   },
 ];
 
@@ -64,31 +54,32 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
     <section
       id="fit"
       ref={scopeRef}
-      className="relative py-32 md:py-48 px-6 md:px-12"
+      className="relative px-6 py-32 md:px-12 md:py-48"
     >
-      {/* Background photo */}
       {backgroundUrl && (
         <div className="absolute inset-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={backgroundUrl} alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+          <img
+            src={backgroundUrl}
+            alt=""
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
           <div className="absolute inset-0 bg-[#0A0A0A]/95" />
         </div>
       )}
 
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      <div className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-600/[0.03] blur-[150px]" />
 
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-600/[0.03] rounded-full blur-[150px]" />
-
-      <div className="max-w-5xl mx-auto relative z-10">
-        {/* Header */}
+      <div className="relative z-10 mx-auto max-w-5xl">
         <div className="mb-20 md:mb-32">
-          <span className="text-[10px] tracking-[0.5em] text-red-500/60 uppercase font-mono block mb-6">
+          <span className="mb-6 block font-mono text-[10px] uppercase tracking-[0.5em] text-red-500/60">
             The Fit
           </span>
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[0.95] mb-6">
+          <h2 className="mb-6 text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
             Why your
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-rose-400">
+            <span className="bg-gradient-to-r from-red-500 to-rose-400 bg-clip-text text-transparent">
               program
             </span>
             <br />
@@ -96,31 +87,27 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
           </h2>
         </div>
 
-        {/* Blocks */}
-        <div
-          data-gsap="fit-reasons"
-          className="space-y-6 md:space-y-8"
-        >
-          {blocks.map((r) => (
+        <div data-gsap="fit-reasons" className="space-y-6 md:space-y-8">
+          {blocks.map((block) => (
             <div
-              key={r.number}
+              key={block.number}
               data-gsap-wave="2"
               style={{ opacity: 0 }}
               className="group"
             >
-              <div className="relative bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded-2xl p-8 md:p-10 hover:border-red-500/20 transition-all duration-500 md:flex md:items-start md:gap-10">
-                <div className="md:w-20 mb-4 md:mb-0">
-                  <span className="text-3xl md:text-4xl font-mono font-black text-red-500/20 group-hover:text-red-500/40 transition-colors">
-                    {r.number}
+              <div className="relative rounded-2xl border border-white/[0.08] bg-black/60 p-8 backdrop-blur-sm transition-all duration-500 hover:border-red-500/20 md:flex md:items-start md:gap-10 md:p-10">
+                <div className="mb-4 md:mb-0 md:w-20">
+                  <span className="font-mono text-3xl font-black text-red-500/20 transition-colors group-hover:text-red-500/40 md:text-4xl">
+                    {block.number}
                   </span>
                 </div>
 
                 <div className="flex-1">
-                  <h3 className="text-xl md:text-2xl font-bold tracking-tight mb-3">
-                    {r.title}
+                  <h3 className="mb-3 text-xl font-bold tracking-tight md:text-2xl">
+                    {block.title}
                   </h3>
-                  <p className="text-white/60 text-sm md:text-base leading-relaxed">
-                    {r.body}
+                  <p className="text-sm leading-relaxed text-white/60 md:text-base">
+                    {block.body}
                   </p>
                 </div>
               </div>

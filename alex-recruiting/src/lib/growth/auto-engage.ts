@@ -50,6 +50,24 @@ export interface GrowthReport {
   recentFollows: Array<{ coach: string; school: string; followedAt: string }>;
 }
 
+interface CoachFollowRow {
+  id: string;
+  name: string;
+  school_name?: string;
+  school?: string;
+  division: string;
+  x_handle: string | null;
+  follow_status: string | null;
+  priority_tier: string | null;
+  x_activity_score: number | null;
+}
+
+const PRIORITY_ORDER: Record<string, number> = {
+  "Tier 1": 0,
+  "Tier 2": 1,
+  "Tier 3": 2,
+};
+
 /**
  * Auto-follow coaches from the database.
  * Picks coaches not yet followed, sorted by priority tier.
@@ -64,63 +82,86 @@ export async function autoFollowCoaches(limit = 10): Promise<FollowResult> {
 
   const supabase = createAdminClient();
 
-  // Get coaches that haven't been followed yet and have X handles
+  // Get coaches that haven't been followed yet and have X handles.
+  // Supabase cannot custom sort enum-like text tiers easily, so we sort in-memory.
   const { data: coaches, error } = await supabase
     .from("coaches")
-    .select("id, name, school, division, x_handle, follow_status")
-    .is("follow_status", null)
+    .select("id, name, school_name, division, x_handle, follow_status, priority_tier, x_activity_score")
     .not("x_handle", "is", null)
-    .order("division", { ascending: true }) // D1 first
-    .limit(limit);
+    .order("priority_tier", { ascending: true })
+    .limit(Math.max(limit * 4, 25));
 
   if (error) {
     result.errors.push(`Database error: ${error.message}`);
     return result;
   }
 
-  for (const coach of coaches ?? []) {
+  const sortedCoaches = ((coaches ?? []) as CoachFollowRow[])
+    .filter((coach) => {
+      const followStatus = coach.follow_status ?? "not_followed";
+      return Boolean(coach.x_handle) && followStatus === "not_followed";
+    })
+    .sort((a, b) => {
+      const tierDelta =
+        (PRIORITY_ORDER[a.priority_tier ?? "Tier 3"] ?? 99) -
+        (PRIORITY_ORDER[b.priority_tier ?? "Tier 3"] ?? 99);
+      if (tierDelta !== 0) return tierDelta;
+      return (b.x_activity_score ?? 0) - (a.x_activity_score ?? 0);
+    })
+    .slice(0, limit);
+
+  for (const coach of sortedCoaches) {
+    const schoolName = coach.school_name ?? coach.school ?? "Unknown";
+    const coachHandle = coach.x_handle;
     try {
-      const verifiedUser = await verifyHandle(coach.x_handle);
+      if (!coachHandle) {
+        result.details.push({ coach: coach.name, school: schoolName, status: "skipped" });
+        continue;
+      }
+
+      const verifiedUser = await verifyHandle(coachHandle);
       if (!verifiedUser) {
-        result.errors.push(`Could not resolve X handle for ${coach.name} (${coach.x_handle})`);
-        result.details.push({ coach: coach.name, school: coach.school, status: "skipped" });
+        result.errors.push(`Could not resolve X handle for ${coach.name} (${coachHandle})`);
+        result.details.push({ coach: coach.name, school: schoolName, status: "skipped" });
         continue;
       }
 
       const followed = await followUser(verifiedUser.id);
       if (!followed) {
         result.errors.push(`Failed to follow ${coach.name} on X`);
-        result.details.push({ coach: coach.name, school: coach.school, status: "error" });
+        result.details.push({ coach: coach.name, school: schoolName, status: "error" });
         continue;
       }
 
+      const followedAt = new Date().toISOString();
       const { error: updateError } = await supabase
         .from("coaches")
         .update({
-          follow_status: "following",
-          followed_at: new Date().toISOString(),
+          follow_status: "followed",
+          last_engaged: followedAt,
+          updated_at: followedAt,
         })
         .eq("id", coach.id);
 
       if (updateError) {
         result.errors.push(`Failed to update ${coach.name}: ${updateError.message}`);
-        result.details.push({ coach: coach.name, school: coach.school, status: "error" });
+        result.details.push({ coach: coach.name, school: schoolName, status: "error" });
       } else {
         result.followed++;
-        result.details.push({ coach: coach.name, school: coach.school, status: "followed" });
+        result.details.push({ coach: coach.name, school: schoolName, status: "followed" });
       }
     } catch (err) {
       if (isRateLimitFailure(err)) {
         result.errors.push(
           `X rate limit reached while processing ${coach.name}; stopped after ${result.followed} follows`
         );
-        result.details.push({ coach: coach.name, school: coach.school, status: "error" });
+        result.details.push({ coach: coach.name, school: schoolName, status: "error" });
         break;
       }
 
       const msg = err instanceof Error ? err.message : String(err);
       result.errors.push(`${coach.name}: ${msg}`);
-      result.details.push({ coach: coach.name, school: coach.school, status: "error" });
+      result.details.push({ coach: coach.name, school: schoolName, status: "error" });
     }
   }
 
@@ -197,7 +238,7 @@ export async function getGrowthReport(): Promise<GrowthReport> {
   const { count: followedCount } = await supabase
     .from("coaches")
     .select("*", { count: "exact", head: true })
-    .eq("follow_status", "following");
+    .in("follow_status", ["followed", "followed_back"]);
 
   report.totalCoachesFollowed = followedCount ?? 0;
 
@@ -205,7 +246,7 @@ export async function getGrowthReport(): Promise<GrowthReport> {
   const { count: followBackCount } = await supabase
     .from("coaches")
     .select("*", { count: "exact", head: true })
-    .eq("follow_status", "following_back");
+    .eq("follow_status", "followed_back");
 
   if (report.totalCoachesFollowed > 0) {
     report.followBackRate = (followBackCount ?? 0) / report.totalCoachesFollowed;
@@ -215,7 +256,7 @@ export async function getGrowthReport(): Promise<GrowthReport> {
   const { data: divisionData } = await supabase
     .from("coaches")
     .select("division")
-    .eq("follow_status", "following");
+    .in("follow_status", ["followed", "followed_back"]);
 
   for (const row of divisionData ?? []) {
     const div = (row as { division: string }).division;
@@ -226,16 +267,16 @@ export async function getGrowthReport(): Promise<GrowthReport> {
   const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const { data: recentData } = await supabase
     .from("coaches")
-    .select("name, school, followed_at")
-    .eq("follow_status", "following")
-    .gte("followed_at", weekAgo)
-    .order("followed_at", { ascending: false })
+    .select("name, school_name, last_engaged")
+    .in("follow_status", ["followed", "followed_back"])
+    .gte("last_engaged", weekAgo)
+    .order("last_engaged", { ascending: false })
     .limit(20);
 
-  report.recentFollows = (recentData ?? []).map((r: { name: string; school: string; followed_at: string }) => ({
+  report.recentFollows = (recentData ?? []).map((r: { name: string; school_name: string; last_engaged: string }) => ({
     coach: r.name,
-    school: r.school,
-    followedAt: r.followed_at,
+    school: r.school_name,
+    followedAt: r.last_engaged,
   }));
 
   return report;

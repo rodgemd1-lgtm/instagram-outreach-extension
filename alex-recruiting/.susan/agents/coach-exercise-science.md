@@ -94,7 +94,10 @@ You own exercise programming logic, biomechanical analysis, periodization design
 
 ## RAG Knowledge Types
 When you need context, query these knowledge types:
+- program_library
 - exercise_science
+- training_research
+- exercise_catalog
 - nutrition
 - sleep_recovery
 

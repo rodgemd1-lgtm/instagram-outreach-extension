@@ -1,10 +1,47 @@
 import { NextRequest, NextResponse } from "next/server";
+import fs from "fs/promises";
+import path from "path";
 import { isSupabaseConfigured, createAdminClient } from "@/lib/supabase/admin";
+
+const FALLBACK_PATH = path.join(process.cwd(), ".coach-inquiries.json");
+
+interface CoachInquiryRecord {
+  coach_name: string;
+  school_name: string;
+  email: string;
+  phone: string | null;
+  message: string | null;
+  status: string;
+  created_at: string;
+}
+
+async function readFallbackInquiries(): Promise<CoachInquiryRecord[]> {
+  try {
+    return JSON.parse(await fs.readFile(FALLBACK_PATH, "utf8")) as CoachInquiryRecord[];
+  } catch {
+    return [];
+  }
+}
+
+async function appendFallbackInquiry(inquiry: CoachInquiryRecord) {
+  const existing = await readFallbackInquiries();
+  existing.unshift(inquiry);
+  await fs.writeFile(FALLBACK_PATH, JSON.stringify(existing, null, 2));
+}
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { name, school, email, phone, message } = body;
+    const inquiry: CoachInquiryRecord = {
+      coach_name: name,
+      school_name: school,
+      email,
+      phone: phone || null,
+      message: message || null,
+      status: "new",
+      created_at: new Date().toISOString(),
+    };
 
     if (!name || !school || !email) {
       return NextResponse.json(
@@ -15,23 +52,14 @@ export async function POST(req: NextRequest) {
 
     if (isSupabaseConfigured()) {
       const supabase = createAdminClient();
-      const { error } = await supabase.from("coach_inquiries").insert({
-        coach_name: name,
-        school_name: school,
-        email,
-        phone: phone || null,
-        message: message || null,
-        status: "new",
-        created_at: new Date().toISOString(),
-      });
+      const { error } = await supabase.from("coach_inquiries").insert(inquiry);
 
       if (error) {
         console.error("Supabase insert error:", error);
-        return NextResponse.json(
-          { error: "Failed to save submission." },
-          { status: 500 }
-        );
+        await appendFallbackInquiry(inquiry);
       }
+    } else {
+      await appendFallbackInquiry(inquiry);
     }
 
     return NextResponse.json({ success: true });
@@ -45,7 +73,7 @@ export async function POST(req: NextRequest) {
 
 export async function GET() {
   if (!isSupabaseConfigured()) {
-    return NextResponse.json([]);
+    return NextResponse.json(await readFallbackInquiries());
   }
 
   const supabase = createAdminClient();
@@ -55,7 +83,7 @@ export async function GET() {
     .order("created_at", { ascending: false });
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(await readFallbackInquiries());
   }
 
   return NextResponse.json(data);

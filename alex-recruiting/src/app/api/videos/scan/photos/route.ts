@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs/promises";
 import path from "path";
-import { exec } from "child_process";
+import { execFile } from "child_process";
 import type { PhotosAlbumInfo, ScannedVideoFile } from "@/lib/types";
 
-const EXPORT_DIR = "/tmp/alex-recruiting-export";
+const EXPORT_ROOT = "/tmp/alex-recruiting-export";
 const VIDEO_EXTENSIONS = [".mp4", ".mov", ".m4v", ".avi"];
 
-function execAsync(command: string, timeoutMs = 30000): Promise<string> {
+function execAppleScript(lines: string[], timeoutMs = 30000): Promise<string> {
   return new Promise((resolve, reject) => {
-    exec(command, { timeout: timeoutMs }, (error, stdout, stderr) => {
+    const args = lines.flatMap((line) => ["-e", line]);
+
+    execFile("osascript", args, { timeout: timeoutMs }, (error, stdout, stderr) => {
       if (error) {
         reject(new Error(stderr || error.message));
         return;
@@ -17,6 +19,14 @@ function execAsync(command: string, timeoutMs = 30000): Promise<string> {
       resolve(stdout.trim());
     });
   });
+}
+
+function escapeAppleScriptString(value: string): string {
+  return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+}
+
+function sanitizeAlbumName(value: string): string {
+  return value.replace(/[^a-z0-9]+/gi, "-").replace(/^-+|-+$/g, "").toLowerCase();
 }
 
 async function scanDirectoryForVideos(dir: string): Promise<ScannedVideoFile[]> {
@@ -70,8 +80,11 @@ export async function POST(req: NextRequest) {
     // If no album name, list all albums
     if (!albumName) {
       try {
-        const script = `osascript -e 'tell application "Photos" to get {name, count of media items} of albums'`;
-        const output = await execAsync(script);
+        const output = await execAppleScript([
+          'tell application "Photos"',
+          "get {name, count of media items} of albums",
+          "end tell",
+        ]);
 
         // Parse AppleScript output: {name1, name2, ...}, {count1, count2, ...}
         // Output format varies, but typically: name1, name2, count1, count2
@@ -122,30 +135,32 @@ export async function POST(req: NextRequest) {
 
     // Album name provided — export videos from that album
     try {
-      // Ensure the export directory exists
-      await fs.mkdir(EXPORT_DIR, { recursive: true });
+      const exportDir = path.join(EXPORT_ROOT, sanitizeAlbumName(albumName));
+      await fs.rm(exportDir, { recursive: true, force: true });
+      await fs.mkdir(exportDir, { recursive: true });
 
-      // AppleScript to export videos from the specified album
-      const exportScript = `osascript -e '
-        tell application "Photos"
-          set targetAlbum to album "${albumName.replace(/"/g, '\\"')}"
-          set videoItems to (every media item of targetAlbum whose type description is "Video" or type description is "Movie")
-          if (count of videoItems) > 0 then
-            export videoItems to POSIX file "${EXPORT_DIR}" with using originals
-          end if
-          return count of videoItems
-        end tell
-      '`;
-
-      const countOutput = await execAsync(exportScript, 30000);
+      const safeAlbumName = escapeAppleScriptString(albumName);
+      const safeExportDir = escapeAppleScriptString(exportDir);
+      const countOutput = await execAppleScript(
+        [
+          'tell application "Photos"',
+          `set targetAlbum to first album whose name is "${safeAlbumName}"`,
+          "set albumItems to every media item of targetAlbum",
+          "if (count of albumItems) > 0 then",
+          `export albumItems to POSIX file "${safeExportDir}" with using originals`,
+          "end if",
+          "return count of albumItems",
+          "end tell",
+        ],
+        300000
+      );
       const exportedCount = parseInt(countOutput, 10) || 0;
-
-      // Scan the export directory for video files
-      const files = await scanDirectoryForVideos(EXPORT_DIR);
+      const files = await scanDirectoryForVideos(exportDir);
 
       return NextResponse.json({
         albumName,
         exportedCount,
+        exportDir,
         files,
       });
     } catch (error) {

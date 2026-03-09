@@ -36,7 +36,7 @@ const highlights = [
   {
     title: "Versatility",
     description:
-      "Starts at both DT and OG. Rare positional flexibility that gives coordinators options every week.",
+      "Starts at both OL and DL. Rare positional flexibility that gives coordinators options every week.",
   },
 ];
 

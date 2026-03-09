@@ -42,6 +42,10 @@ supabase/.temp/
 
 # local video store
 .video-store.json
+.photo-store.json
+.posts-store.json
+.media-lab-snapshot.json
+.highlight-catalog.json
 public/thumbnails/
 
 # local task store

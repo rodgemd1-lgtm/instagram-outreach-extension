@@ -2,102 +2,33 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-import {
-  Home,
-  Users,
-  PenSquare,
-  Brain,
-  Menu,
-  X,
-  Calendar,
-  FileText,
-  Mail,
-  BarChart3,
-  ShieldCheck,
-  Swords,
-  Search,
-  Palette,
-  Zap,
-  BookOpen,
-  MessageSquarePlus,
-  Flame,
-  Send,
-  UserSearch,
-  Twitter,
-  Bot,
-  Rocket,
-  Film,
-  UsersRound,
-  PlayCircle,
-  Upload,
-  Trophy,
-  CalendarDays,
-} from "lucide-react";
 import { useState } from "react";
-
-const primaryTabs = [
-  { href: "/", label: "Home", icon: Home },
-  { href: "/launch", label: "Launch", icon: Rocket },
-  { href: "/x-profile", label: "Profile", icon: Twitter },
-  { href: "/create", label: "Create", icon: PenSquare },
-  { href: "/coaches", label: "Coaches", icon: Users },
-  { href: "/intelligence", label: "Intel", icon: Brain },
-];
-
-const secondaryNav = [
-  { href: "/agency", label: "Agency", icon: UsersRound },
-  { href: "/hooks", label: "Hooks Library", icon: Zap },
-  { href: "/captions", label: "Captions Library", icon: BookOpen },
-  { href: "/viral", label: "Viral Content", icon: Flame },
-  { href: "/comments", label: "Comment Templates", icon: MessageSquarePlus },
-  { href: "/cold-dms", label: "Cold DM Engine", icon: Send },
-  { href: "/connections", label: "Who to Connect With", icon: UserSearch },
-  { href: "/dms", label: "DM Campaigns", icon: Mail },
-  { href: "/calendar", label: "Content Calendar", icon: Calendar },
-  { href: "/posts", label: "Post Queue", icon: FileText },
-  { href: "/profile-studio", label: "Profile Studio", icon: Palette },
-  { href: "/analytics", label: "Analytics", icon: BarChart3 },
-  { href: "/audit", label: "Profile Audit", icon: ShieldCheck },
-  { href: "/competitors", label: "Competitors", icon: Swords },
-  { href: "/scrape", label: "Scraping Tools", icon: Search },
-  { href: "/agents", label: "Agent Command Center", icon: Bot },
-  { href: "/videos", label: "Video Library", icon: Film },
-  { href: "/youtube-studio", label: "YouTube Studio", icon: PlayCircle },
-  { href: "/media-import", label: "Import Media", icon: Upload },
-  { href: "/accomplishments", label: "Accomplishments", icon: Trophy },
-  { href: "/camps", label: "Camp Tracker", icon: CalendarDays },
-];
+import { Menu, X } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { navSections, primaryTabs } from "@/lib/app-navigation";
 
 export function MobileBottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200 bg-white/95 backdrop-blur-lg md:hidden safe-bottom">
-      <div className="flex items-center justify-around px-1 py-1">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-[rgba(15,40,75,0.08)] bg-[rgba(255,248,238,0.92)] px-2 py-2 backdrop-blur-xl md:hidden safe-bottom">
+      <div className="grid grid-cols-6 gap-1">
         {primaryTabs.map((tab) => {
-          const isActive = pathname === tab.href;
+          const isActive = pathname === tab.href || (tab.href !== "/" && pathname.startsWith(tab.href));
+
           return (
             <Link
               key={tab.href}
               href={tab.href}
               className={cn(
-                "flex flex-col items-center gap-0.5 rounded-lg px-3 py-2 text-[10px] font-medium transition-colors min-w-0 flex-1",
+                "relative flex flex-col items-center gap-1 rounded-2xl px-2 py-2 text-[10px] font-semibold transition-all",
                 isActive
-                  ? "text-slate-900"
-                  : "text-slate-400 active:text-slate-600"
+                  ? "bg-[var(--app-navy-strong)] text-white shadow-[0_14px_30px_rgba(15,40,75,0.22)]"
+                  : "text-[var(--app-muted)]"
               )}
             >
-              <tab.icon
-                className={cn(
-                  "h-5 w-5 transition-colors",
-                  isActive ? "text-blue-600" : "text-slate-400"
-                )}
-              />
+              <tab.icon className={cn("h-4 w-4", isActive ? "text-[var(--app-gold-soft)]" : "text-[var(--app-navy)]")} />
               <span className="truncate">{tab.label}</span>
-              {isActive && (
-                <div className="absolute bottom-0 h-0.5 w-8 rounded-full bg-blue-600" />
-              )}
             </Link>
           );
         })}
@@ -114,102 +45,86 @@ export function MobileDrawer() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="md:hidden p-2 -ml-2 text-slate-600 active:text-slate-900"
+        className="rounded-full border border-[rgba(15,40,75,0.08)] bg-white/70 p-2 text-[var(--app-navy-strong)] md:hidden"
         aria-label="Open menu"
       >
         <Menu className="h-5 w-5" />
       </button>
 
-      {open && (
+      {open ? (
         <>
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm md:hidden"
-            onClick={() => setOpen(false)}
-          />
+          <div className="fixed inset-0 z-50 bg-[rgba(11,29,54,0.48)] backdrop-blur-sm md:hidden" onClick={() => setOpen(false)} />
 
-          {/* Drawer */}
-          <div className="fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-xl md:hidden animate-slide-in">
-            <div className="flex h-14 items-center justify-between border-b border-slate-100 px-4">
-              <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-900 text-white font-bold text-xs">
-                  A
-                </div>
+          <div className="fixed inset-y-0 left-0 z-50 w-[88vw] max-w-sm overflow-y-auto border-r border-[rgba(15,40,75,0.12)] bg-[linear-gradient(180deg,rgba(250,245,236,0.98),rgba(237,242,246,0.96))] px-4 py-4 shadow-2xl md:hidden">
+            <div className="shell-panel-strong px-4 py-4">
+              <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-sm font-bold text-slate-900">Alex Recruiting</p>
-                  <p className="text-[10px] text-slate-500">Jacob Rodgers | DT/OG | &apos;29</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--app-muted)]">
+                    Alex Recruiting
+                  </p>
+                  <h2 className="mt-1 text-lg font-semibold tracking-tight text-[var(--app-navy-strong)]">
+                    Jacob Rodgers
+                  </h2>
+                  <p className="mt-1 text-sm text-[var(--app-muted)]">Pewaukee HS | OL / DL | Class of 2029</p>
                 </div>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="rounded-full border border-[rgba(15,40,75,0.08)] bg-white/75 p-2 text-[var(--app-navy-strong)]"
+                  aria-label="Close menu"
+                >
+                  <X className="h-4 w-4" />
+                </button>
               </div>
-              <button
-                onClick={() => setOpen(false)}
-                className="p-1.5 text-slate-400 hover:text-slate-600"
-                aria-label="Close menu"
-              >
-                <X className="h-5 w-5" />
-              </button>
             </div>
 
-            <div className="p-3 space-y-1">
-              <p className="px-3 py-2 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-                Main
-              </p>
-              {primaryTabs.map((item) => {
-                const isActive = pathname === item.href;
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setOpen(false)}
-                    className={cn(
-                      "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-                      isActive
-                        ? "bg-blue-50 text-blue-700"
-                        : "text-slate-600 active:bg-slate-50"
-                    )}
-                  >
-                    <item.icon className={cn("h-4 w-4", isActive ? "text-blue-600" : "text-slate-400")} />
-                    {item.label}
-                  </Link>
-                );
-              })}
+            <div className="mt-4 space-y-4 pb-24">
+              {navSections.map((section) => (
+                <section key={section.id} className="shell-panel px-3 py-3">
+                  <p className="px-2 pb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--app-muted)]">
+                    {section.label}
+                  </p>
+                  <div className="space-y-2">
+                    {section.items.map((item) => {
+                      const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
 
-              <p className="px-3 pt-4 pb-2 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-                Tools
-              </p>
-              {secondaryNav.map((item) => {
-                const isActive = pathname === item.href;
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setOpen(false)}
-                    className={cn(
-                      "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-                      isActive
-                        ? "bg-blue-50 text-blue-700"
-                        : "text-slate-600 active:bg-slate-50"
-                    )}
-                  >
-                    <item.icon className={cn("h-4 w-4", isActive ? "text-blue-600" : "text-slate-400")} />
-                    {item.label}
-                  </Link>
-                );
-              })}
-            </div>
-
-            {/* Phase tracker */}
-            <div className="absolute bottom-0 left-0 right-0 border-t border-slate-100 p-4">
-              <div className="rounded-lg bg-slate-50 p-3">
-                <p className="text-xs font-medium text-slate-700">Double Black Box</p>
-                <p className="text-[10px] text-slate-500 mt-1">Phase 03 — Build</p>
-                <div className="mt-2 h-1.5 w-full rounded-full bg-slate-200">
-                  <div className="h-1.5 rounded-full bg-blue-600" style={{ width: "50%" }} />
-                </div>
-              </div>
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => setOpen(false)}
+                          className={cn(
+                            "shell-nav-link",
+                            isActive ? "shell-nav-link-active text-white" : "shell-nav-link-idle text-[var(--app-navy-strong)]"
+                          )}
+                        >
+                          <div
+                            className={cn(
+                              "mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border",
+                              isActive
+                                ? "border-white/12 bg-white/10 text-[var(--app-gold-soft)]"
+                                : "border-[rgba(15,40,75,0.08)] bg-white/90 text-[var(--app-navy)]"
+                            )}
+                          >
+                            <item.icon className="h-4 w-4" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className={cn("text-sm font-semibold", isActive ? "text-white" : "text-[var(--app-navy-strong)]")}>
+                              {item.label}
+                            </p>
+                            <p className={cn("mt-0.5 text-[11px] leading-5", isActive ? "text-white/68" : "text-[var(--app-muted)]")}>
+                              {item.blurb}
+                            </p>
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </section>
+              ))}
             </div>
           </div>
         </>
-      )}
+      ) : null}
     </>
   );
 }

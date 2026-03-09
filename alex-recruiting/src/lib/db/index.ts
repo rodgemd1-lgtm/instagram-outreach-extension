@@ -5,6 +5,7 @@ import * as schema from "./schema";
 const pool = new Pool({
   connectionString: process.env.JIB_DATABASE_URL,
   max: 10,
+  allowExitOnIdle: true,
 });
 
 export const db = drizzle(pool, { schema });

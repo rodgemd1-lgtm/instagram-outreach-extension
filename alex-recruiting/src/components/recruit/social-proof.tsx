@@ -1,48 +1,28 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   useRecruitAssembly,
   type AssemblyConfig,
 } from "@/hooks/useRecruitAssembly";
 
-/* ------------------------------------------------------------------
-   Social Proof Banner
-   A thin horizontal strip displaying school names that fade in/out
-   in a continuous loop. Signals credibility and breadth of interest
-   without making unverifiable claims.
-
-   Positioned between Film and Origin Story sections.
-   ------------------------------------------------------------------ */
-
-const SCHOOLS = [
-  "Wisconsin",
-  "Iowa",
-  "Minnesota",
-  "Iowa State",
-  "North Dakota State",
-  "South Dakota State",
-  "Illinois State",
-  "Northern Illinois",
-  "Western Michigan",
-  "Eastern Michigan",
-  "Ball State",
-  "Wisconsin-Whitewater",
-];
-
 interface SocialProofMetrics {
   ncsaProfileViews: number;
   campInvites: number;
   coachFollowers: number;
+  contactFormSubmissions?: number;
   competitorOffers: number;
+  schoolsEngaged?: number;
 }
 
 function MetricPill({ label, value }: { label: string; value: number }) {
   if (value === 0) return null;
   return (
-    <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.06]">
-      <span className="text-red-500 font-mono font-bold text-sm">{value}</span>
-      <span className="text-white/30 text-[10px] tracking-[0.15em] uppercase">{label}</span>
+    <div className="flex items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.03] px-4 py-2">
+      <span className="font-mono text-sm font-bold text-red-500">{value}</span>
+      <span className="text-[10px] uppercase tracking-[0.15em] text-white/30">
+        {label}
+      </span>
     </div>
   );
 }
@@ -54,13 +34,14 @@ export function SocialProofBanner() {
     fetch("/api/recruit/social-proof")
       .then((r) => r.json())
       .then((data) => setMetrics(data))
-      .catch(() => {}); // silently fail — metrics are optional
+      .catch(() => {});
   }, []);
 
   const hasMetrics = metrics && (
     metrics.ncsaProfileViews > 0 ||
     metrics.campInvites > 0 ||
-    metrics.coachFollowers > 0
+    metrics.coachFollowers > 0 ||
+    (metrics.contactFormSubmissions ?? 0) > 0
   );
 
   const config = useMemo<AssemblyConfig>(
@@ -90,55 +71,60 @@ export function SocialProofBanner() {
   const scopeRef = useRecruitAssembly(config);
 
   return (
-    <section
-      ref={scopeRef}
-      className="relative py-10 md:py-14 overflow-hidden"
-    >
-      {/* Top and bottom dividers */}
+    <section ref={scopeRef} className="relative overflow-hidden py-10 md:py-14">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div
         data-gsap="social-proof-content"
-        className="max-w-6xl mx-auto px-6"
+        className="mx-auto max-w-6xl px-6"
       >
         <div data-gsap-wave="2" style={{ opacity: 0 }}>
-          {/* Real metrics bar */}
           {hasMetrics && (
-            <div className="flex justify-center gap-3 md:gap-6 flex-wrap mb-6">
+            <div className="mb-6 flex flex-wrap justify-center gap-3 md:gap-6">
               <MetricPill label="Profile Views" value={metrics.ncsaProfileViews} />
               <MetricPill label="Camp Invites" value={metrics.campInvites} />
               <MetricPill label="Coaches Following" value={metrics.coachFollowers} />
+              <MetricPill
+                label="Coach Messages"
+                value={metrics.contactFormSubmissions ?? 0}
+              />
             </div>
           )}
 
-          {/* Label */}
-          <p className="text-center text-[10px] tracking-[0.5em] text-white/25 uppercase font-mono mb-6">
-            Coaches evaluating Jacob represent programs including
+          <p className="mb-6 text-center font-mono text-[10px] uppercase tracking-[0.5em] text-white/25">
+            Verified recruiting context
           </p>
 
-          {/* Scrolling school names — CSS-only infinite scroll */}
-          <div className="relative">
-            {/* Fade edges */}
-            <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-[#0A0A0A] to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-[#0A0A0A] to-transparent z-10 pointer-events-none" />
-
-            <div className="flex overflow-hidden">
-              <div className="flex animate-scroll-left gap-8 md:gap-12 items-center whitespace-nowrap">
-                {[...SCHOOLS, ...SCHOOLS].map((school, i) => (
-                  <span
-                    key={`${school}-${i}`}
-                    className="text-sm md:text-base font-mono text-white/20 hover:text-white/40 transition-colors duration-300 select-none"
-                  >
-                    {school}
-                  </span>
-                ))}
-              </div>
-            </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            <ProofCard
+              title="School names stay off the page until verified"
+              body="The old carousel was removed. This page now shows verified activity only and avoids implying program interest that has not been confirmed."
+            />
+            <ProofCard
+              title="NCSA sync is treated cautiously"
+              body={
+                (metrics?.schoolsEngaged ?? 0) > 0
+                  ? `${metrics?.schoolsEngaged} verified school touchpoints are currently synced behind the scenes.`
+                  : "NCSA school-interest data is not published here until real synchronized activity is available."
+              }
+            />
+            <ProofCard
+              title="Coach packet is live"
+              body="Impact film, training context, and a real contact path are available now, without placeholder proof."
+            />
           </div>
         </div>
       </div>
-
     </section>
+  );
+}
+
+function ProofCard({ title, body }: { title: string; body: string }) {
+  return (
+    <div className="rounded-[24px] border border-white/[0.08] bg-white/[0.03] p-5">
+      <h3 className="text-sm font-semibold text-white">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-white/46">{body}</p>
+    </div>
   );
 }

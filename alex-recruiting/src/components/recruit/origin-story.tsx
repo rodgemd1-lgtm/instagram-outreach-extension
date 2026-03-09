@@ -6,46 +6,46 @@ import {
   type AssemblyConfig,
 } from "@/hooks/useRecruitAssembly";
 
-/* ──────────────────────────────────────────────────────────────
-   The Work — Vertical timeline with lift progression
-   LAAL Mechanism: Temporal Window
-   Shows the training trajectory from age 12 to now. The year-over-year
-   lift progression IS the story — coaches project forward from the data.
-
-   Wave 1: none (section is below fold)
-   Wave 2: timeline entries scroll-reveal individually
-   ────────────────────────────────────────────────────────────── */
-
 const milestones = [
+  {
+    age: "11",
+    year: "2021",
+    headline: "NX Level sports-performance work begins.",
+    lifts: null,
+    detail:
+      "Movement quality, speed work, and body control start before the high-school football grind.",
+  },
   {
     age: "12",
     year: "2022",
-    headline: "First training session. 185 lbs.",
+    headline: "Strength work gets structured and consistent.",
     lifts: "Bench: 95  |  Squat: 135  |  Deadlift: 185",
-    detail: null,
+    detail:
+      "The emphasis is consistency and long-term development, not chasing one-off maxes.",
   },
   {
     age: "13",
     year: "2023",
-    headline: "365 sessions logged. NX Level agility training begins.",
+    headline: "Volume climbs with private line work and older training groups.",
     lifts: "Bench: 155  |  Squat: 225  |  Deadlift: 275",
-    detail: "Added personal trainer — compound movements for OL/DL.",
+    detail:
+      "Works with coaches and older players while learning both offensive and defensive line technique.",
   },
   {
     age: "14",
     year: "2024-25",
-    headline:
-      "Freshman starter — varsity AND JV. Two games in one day.",
+    headline: "Freshman film year: JV reps, varsity exposure, two-way development.",
     lifts: "Bench: 265  |  Squat: 350  |  Deadlift: 405",
-    detail: "11 pancakes. 3 sacks. State playoff run.",
+    detail:
+      "11 pancakes, 3 sacks, one fumble recovery, and a state-playoff run without overstating the role.",
   },
   {
     age: "15",
     year: "NOW",
-    headline:
-      "730+ total sessions. Track & field: 1st place discus, 1st place shot put.",
+    headline: "IMG camps, trench training, and one-on-one work keep the curve moving.",
     lifts: null,
-    detail: "The trajectory has not flattened.",
+    detail:
+      "730+ training sessions logged with Joel and Justin in the mix. The offseason lift numbers still trend up.",
   },
 ];
 
@@ -79,77 +79,75 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
     <section
       id="origin"
       ref={scopeRef}
-      className="relative py-32 md:py-48 px-6 md:px-12"
+      className="relative px-6 py-32 md:px-12 md:py-48"
     >
-      {/* Background photo */}
       {backgroundUrl && (
         <div className="absolute inset-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={backgroundUrl} alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+          <img
+            src={backgroundUrl}
+            alt=""
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
           <div className="absolute inset-0 bg-[#0A0A0A]/95" />
         </div>
       )}
 
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-      <div className="max-w-4xl mx-auto relative z-10">
-        {/* Header */}
+      <div className="relative z-10 mx-auto max-w-4xl">
         <div className="mb-16 md:mb-24">
-          <span className="text-[10px] tracking-[0.5em] text-red-500/60 uppercase font-mono block mb-6">
+          <span className="mb-6 block font-mono text-[10px] uppercase tracking-[0.5em] text-red-500/60">
             The Work
           </span>
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[0.95] mb-6">
-            Training since age 12.
+          <h2 className="mb-6 text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
+            Built early.
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-rose-400">
-              Five days a week.
+            <span className="bg-gradient-to-r from-red-500 to-rose-400 bg-clip-text text-transparent">
+              Still climbing.
             </span>
             <br />
-            730+ sessions.
+            730+ sessions logged.
           </h2>
+          <p className="max-w-2xl text-base leading-7 text-white/48 md:text-lg">
+            The timeline now reflects the real development story Jennifer
+            flagged: NX Level starts at 11, the varsity claim is cleaned up, and
+            the emphasis stays on training volume, coaching, and upward strength
+            trend.
+          </p>
         </div>
 
-        {/* Vertical timeline */}
-        <div
-          data-gsap="work-timeline"
-          className="relative"
-        >
-          {/* Timeline line */}
-          <div className="absolute left-4 md:left-8 top-0 bottom-0 w-px bg-white/10" />
+        <div data-gsap="work-timeline" className="relative">
+          <div className="absolute left-4 top-0 bottom-0 w-px bg-white/10 md:left-8" />
 
-          {milestones.map((m) => (
+          {milestones.map((milestone) => (
             <div
-              key={m.age}
+              key={milestone.age}
               data-gsap-wave="2"
               style={{ opacity: 0 }}
-              className="relative pl-12 md:pl-20 pb-16 last:pb-0"
+              className="relative pb-16 pl-12 last:pb-0 md:pl-20"
             >
-              {/* Timeline dot */}
-              <div className="absolute left-[11px] md:left-[27px] top-1 w-3 h-3 rounded-full bg-red-500 border-2 border-[#0A0A0A]" />
+              <div className="absolute left-[11px] top-1 h-3 w-3 rounded-full border-2 border-[#0A0A0A] bg-red-500 md:left-[27px]" />
 
-              {/* Age label */}
-              <div className="flex items-center gap-4 mb-4">
-                <span className="text-xs tracking-[0.3em] text-red-500/70 font-mono">
-                  AGE {m.age} &mdash; {m.year}
+              <div className="mb-4 flex items-center gap-4">
+                <span className="font-mono text-xs tracking-[0.3em] text-red-500/70">
+                  AGE {milestone.age} - {milestone.year}
                 </span>
               </div>
 
-              {/* Headline */}
-              <p className="text-white/80 text-base md:text-lg font-semibold leading-relaxed mb-3">
-                {m.headline}
+              <p className="mb-3 text-base font-semibold leading-relaxed text-white/80 md:text-lg">
+                {milestone.headline}
               </p>
 
-              {/* Lift numbers */}
-              {m.lifts && (
-                <p className="text-white/40 text-sm font-mono tracking-wide mb-2">
-                  {m.lifts}
+              {milestone.lifts && (
+                <p className="mb-2 font-mono text-sm tracking-wide text-white/40">
+                  {milestone.lifts}
                 </p>
               )}
 
-              {/* Additional detail */}
-              {m.detail && (
-                <p className="text-white/50 text-sm leading-relaxed">
-                  {m.detail}
+              {milestone.detail && (
+                <p className="text-sm leading-relaxed text-white/50">
+                  {milestone.detail}
                 </p>
               )}
             </div>

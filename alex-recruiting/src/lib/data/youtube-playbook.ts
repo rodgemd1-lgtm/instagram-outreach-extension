@@ -14,9 +14,9 @@ Two-way lineman playing both Defensive Tackle and Offensive Guard. 11 pancake bl
 
 Bench: 265 | Squat: 350 | NCSA Verified Athlete
 
-This channel features game film, training highlights, camp footage, and recruiting content. Coaches — feel free to reach out via DM or email.
+This channel features game film, training highlights, camp footage, and recruiting content. Coaches can use the recruiting links below for full film and contact details.
 
-Contact: DMs open on X @JacobRodge52987
+X / Twitter: @JacobRodge52987
 NCSA Profile: [link]
 Hudl Profile: [link]
 Recruiting Website: [link]`,
@@ -91,7 +91,7 @@ X / Twitter: https://twitter.com/JacobRodge52987
 NCSA Profile: [URL]
 Hudl Film: [URL]
 
-Coaches — DMs are open. Contact me for full game film or additional information.
+Coaches can use the recruiting links above for full game film or additional information.
 
 ---
 

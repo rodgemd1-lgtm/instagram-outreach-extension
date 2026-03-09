@@ -14,13 +14,13 @@ export interface XPost {
 
 export const jacobXProfile = {
   // ─── Profile Setup ──────────────────────────────────────────────────────────
-  displayName: "Jacob Rodgers | DT/OG | '29",
+  displayName: "Jacob Rodgers | OL/DL | '29",
   handle: "@JacobRodge52987",
-  bio: 'DT/OG | 6\'4" 285 | Pewaukee HS \'29 | WI | State Champs | NCSA Athlete',
+  bio: 'OL/DL | 6\'4" 285 | Pewaukee HS \'29 | WI | State Champs | NCSA Athlete',
   location: "Pewaukee, Wisconsin",
   website: "",
   headerImageDescription:
-    'Action shot from game -- Jacob in stance at the line. Dark overlay with stats: 6\'4" | 285 | DT/OG | State Champions',
+    'Action shot from game -- Jacob in stance at the line. Dark overlay with stats: 6\'4" | 285 | OL/DL | State Champions',
   profilePhotoDescription:
     "Professional headshot in Pewaukee jersey, clean background, shoulders visible, confident expression",
 
@@ -40,13 +40,13 @@ export const jacobXProfile = {
     {
       id: "header",
       label: "Header image",
-      description: 'Action shot with stats overlay: 6\'4" | 285 | DT/OG | State Champions',
+      description: 'Action shot with stats overlay: 6\'4" | 285 | OL/DL | State Champions',
       complete: false,
     },
     {
       id: "display_name",
       label: "Display name",
-      description: "Jacob Rodgers | DT/OG | '29",
+      description: "Jacob Rodgers | OL/DL | '29",
       complete: true,
     },
     {
@@ -78,7 +78,7 @@ export const jacobXProfile = {
   // ─── Pinned Post ──────────────────────────────────────────────────────────
   pinnedPost: {
     content:
-      'Jacob Rodgers | DT/OG | 6\'4" 285 | Pewaukee HS | Class of 2029\nWisconsin | State Champions (12-1)\n\nFreshman Stats: 11 Pancakes | 3 Sacks | 1 Fumble Recovery\nBench 265 | Squat 350\n3.25 GPA | All-Conference\n\nRecruiting Profile: [NCSA Link]\n\n#2029Recruit #DT #OG #FootballRecruiting #WisconsinFootball',
+      'Jacob Rodgers | OL/DL | 6\'4" 285 | Pewaukee HS | Class of 2029\nWisconsin | State Champions (12-1)\n\nFreshman Stats: 11 Pancakes | 3 Sacks | 1 Fumble Recovery\nBench 265 | Squat 350\n3.25 GPA | All-Conference\n\nRecruiting Profile: [NCSA Link]\n\n#2029Recruit #OL #DL #FootballRecruiting #WisconsinFootball',
     notes: "Update every 90 days with latest film. Pin immediately.",
   },
 
@@ -102,7 +102,7 @@ export const jacobXProfile = {
       "#FridayNightLights",
       "#NCSAathlete",
       "#HighSchoolFootball",
-      "#RecruitMe",
+      "#WisconsinFootball",
     ],
     maxPerPost: 5,
   },
@@ -161,8 +161,8 @@ export const jacobXProfile = {
       day: "Thursday",
       pillar: "performance",
       content:
-        'Pass pro rep from Week 3. Keeping the pocket clean. 6\'4" 285 and moving my feet.\n\nCoaches -- DMs are open.\n\n#DT #OG #2029Recruit #OffensiveLine #RecruitMe',
-      hashtags: ["#DT", "#OG", "#2029Recruit", "#OffensiveLine", "#RecruitMe"],
+        'Pass pro rep from Week 3. Keeping the pocket clean. 6\'4" 285 and moving my feet.\n\nFull film is linked in my profile.\n\n#DT #OG #2029Recruit #OffensiveLine #WisconsinFootball',
+      hashtags: ["#DT", "#OG", "#2029Recruit", "#OffensiveLine", "#WisconsinFootball"],
       mediaType: "video",
       notes: "Pass protection clip. Make the DM invite explicit.",
       suggestedTime: "7:00 PM CT",
@@ -261,8 +261,8 @@ export const jacobXProfile = {
       day: "Tuesday",
       pillar: "performance",
       content:
-        "Pancake block compilation from Weeks 1-4.\n\nFinishing. Every. Single. Rep.\n\n#DT #OG #OffensiveLine #2029Recruit #RecruitMe",
-      hashtags: ["#DT", "#OG", "#OffensiveLine", "#2029Recruit", "#RecruitMe"],
+        "Pancake block compilation from Weeks 1-4.\n\nFinishing. Every. Single. Rep.\n\n#DT #OG #OffensiveLine #2029Recruit #WisconsinFootball",
+      hashtags: ["#DT", "#OG", "#OffensiveLine", "#2029Recruit", "#WisconsinFootball"],
       mediaType: "video",
       notes: "Compilation video (30-45 sec) of best pancake blocks. This is a highlight reel post.",
       suggestedTime: "7:00 PM CT",
@@ -385,8 +385,8 @@ export const jacobXProfile = {
       day: "Tuesday",
       pillar: "performance",
       content:
-        "Season highlight reel -- updated through Week 6.\n\n45 seconds of work in the trenches. Drive blocks, pulls, pass pro.\n\nCoaches, my DMs are always open.\n\nProfile: [NCSA Link]\n\n#DT #OG #2029Recruit #FootballRecruiting #RecruitMe",
-      hashtags: ["#DT", "#OG", "#2029Recruit", "#FootballRecruiting", "#RecruitMe"],
+        "Season highlight reel -- updated through Week 6.\n\n45 seconds of work in the trenches. Drive blocks, pulls, pass pro.\n\nProfile: [NCSA Link]\n\n#DT #OG #2029Recruit #FootballRecruiting #WisconsinFootball",
+      hashtags: ["#DT", "#OG", "#2029Recruit", "#FootballRecruiting", "#WisconsinFootball"],
       mediaType: "video",
       notes: "Mid-season highlight reel update. Include NCSA link.",
       suggestedTime: "7:00 PM CT",
@@ -471,8 +471,8 @@ export const jacobXProfile = {
       day: "Thursday",
       pillar: "performance",
       content:
-        'Updated recruiting profile:\n\n6\'4" | 285 lbs\nPewaukee HS | Class of 2029\nDT/OG | State Champions (12-1)\nFreshman: 11 Pancakes | 3 Sacks | 1 FR\nBench 265 | Squat 350\n3.25 GPA | All-Conference\n\nNCSA: [NCSA Link]\n\nCoaches -- I\'d love to hear from you.\n\n#DT #OG #2029Recruit #FootballRecruiting #RecruitMe',
-      hashtags: ["#DT", "#OG", "#2029Recruit", "#FootballRecruiting", "#RecruitMe"],
+        'Updated recruiting profile:\n\n6\'4" | 285 lbs\nPewaukee HS | Class of 2029\nOL/DL | State Champions (12-1)\nFreshman: 11 Pancakes | 3 Sacks | 1 FR\nBench 265 | Squat 350\n3.25 GPA | All-Conference\n\nNCSA: [NCSA Link]\n\n#OL #DL #2029Recruit #FootballRecruiting #WisconsinFootball',
+      hashtags: ["#DT", "#OG", "#2029Recruit", "#FootballRecruiting", "#WisconsinFootball"],
       mediaType: "photo",
       notes: "Updated recruiting card. All links in one place. Clear call to action for coaches.",
       suggestedTime: "7:00 PM CT",

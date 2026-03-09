@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { StudioPageHeader } from "@/components/studio-page-header";
 import { TeamChat } from "@/components/team-chat";
 import { TEAM_MEMBERS } from "@/lib/rec/types";
 
@@ -16,8 +17,15 @@ export default async function TeamMemberPage({
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 p-4 md:ml-64 md:p-8 pb-24 md:pb-8">
+    <div className="space-y-6">
+      <StudioPageHeader
+        icon="Bot"
+        kicker="Agency Specialist"
+        title={`${validMember.name} workspace`}
+        description={validMember.specialty}
+        council={["Susan", validMember.name]}
+      />
       <TeamChat memberId={member} />
-    </main>
+    </div>
   );
 }

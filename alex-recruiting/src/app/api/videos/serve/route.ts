@@ -9,6 +9,7 @@ export const dynamic = "force-dynamic";
 // Allowlisted directories for security
 const ALLOWED_DIRS = [
   `${process.env.HOME}/Desktop/2025 Football Videos`,
+  `${process.env.HOME}/Desktop/Jacob Media Master`,
   `${process.env.HOME}/Library/CloudStorage`,
   "/tmp/alex-recruiting-export",
 ];

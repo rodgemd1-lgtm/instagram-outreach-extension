@@ -1,9 +1,11 @@
 // Follower Scraper — Analyze target accounts, find high-value follow targets,
 // and generate AI-powered content recommendations to attract the right followers.
 
-import { getFollowers, verifyHandle } from "@/lib/integrations/x-api";
+import { getFollowers, getFollowing, verifyHandle } from "@/lib/integrations/x-api";
 import type { XUser } from "@/lib/integrations/x-api";
 import { getTargetsByPriority } from "@/lib/data/scraper-targets";
+import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
+import { jacobProfile } from "@/lib/data/jacob-profile";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -38,10 +40,12 @@ export interface FollowTarget {
   category: FollowerCategory;
   followerCount: number;
   relevanceScore: number;
+  rating: number;
   reason: string;
   priority: "high" | "medium" | "low";
   engagementTip: string;
   alreadyFollowing: boolean;
+  sourceHandles: string[];
 }
 
 export interface ContentRecommendation {
@@ -302,10 +306,12 @@ export async function findFollowTargets(
       category: categoryMap[t.type] ?? "general",
       followerCount: t.followers,
       relevanceScore: t.priority === "high" ? 85 : t.priority === "medium" ? 65 : 40,
+      rating: t.priority === "high" ? 85 : t.priority === "medium" ? 65 : 40,
       reason: t.engagementTip,
       priority: t.priority,
       engagementTip: t.engagementTip,
       alreadyFollowing: false, // updated below if X API available
+      sourceHandles: [t.handle],
     };
   });
 
@@ -319,6 +325,146 @@ export async function findFollowTargets(
   });
 
   return targets.slice(0, maxResults);
+}
+
+interface CoachFollowSourceRow {
+  name: string;
+  school_name: string;
+  x_handle: string | null;
+  priority_tier: string | null;
+}
+
+function tierToPriority(tier: string | null): FollowTarget["priority"] {
+  if (tier === "Tier 1") return "high";
+  if (tier === "Tier 2") return "medium";
+  return "low";
+}
+
+async function getJacobFollowingHandles(): Promise<Set<string>> {
+  const following = new Set<string>();
+  const jacobUser = await verifyHandle(jacobProfile.xHandle.replace("@", ""));
+  if (!jacobUser) return following;
+
+  const rows = await getFollowing(jacobUser.id, 1000);
+  for (const user of rows) {
+    following.add(`@${user.username}`.toLowerCase());
+  }
+
+  return following;
+}
+
+export async function findLiveFollowTargets(
+  maxResults: number = 25
+): Promise<FollowTarget[]> {
+  const aggregated = new Map<
+    string,
+    Omit<FollowTarget, "alreadyFollowing"> & { alreadyFollowing: boolean; seen: number }
+  >();
+  const seedHandles = new Set<string>();
+
+  for (const target of getTargetsByPriority("high").slice(0, 6)) {
+    seedHandles.add(target.handle.replace("@", ""));
+  }
+
+  if (isSupabaseConfigured()) {
+    const supabase = createAdminClient();
+    const { data } = await supabase
+      .from("coaches")
+      .select("name, school_name, x_handle, priority_tier")
+      .not("x_handle", "is", null)
+      .neq("x_handle", "")
+      .limit(20);
+
+    for (const coach of (data ?? []) as CoachFollowSourceRow[]) {
+      if (!coach.x_handle) continue;
+      seedHandles.add(coach.x_handle.replace("@", ""));
+
+      const key = coach.x_handle.toLowerCase();
+      if (!aggregated.has(key)) {
+        const priority = tierToPriority(coach.priority_tier);
+        const baseScore = priority === "high" ? 96 : priority === "medium" ? 88 : 78;
+        aggregated.set(key, {
+          handle: coach.x_handle,
+          name: coach.name,
+          category: "coach",
+          followerCount: 0,
+          relevanceScore: baseScore,
+          rating: baseScore,
+          reason: `${coach.school_name} staff member already in Jacob's coach database`,
+          priority,
+          engagementTip: "Follow, warm with likes/replies, then move into a personalized intro DM.",
+          alreadyFollowing: false,
+          sourceHandles: [coach.x_handle],
+          seen: 1,
+        });
+      }
+    }
+  }
+
+  const alreadyFollowing = await getJacobFollowingHandles();
+
+  for (const handle of Array.from(seedHandles).slice(0, 8)) {
+    try {
+      const analysis = await analyzeTargetFollowers(handle);
+
+      for (const follower of analysis.sampleFollowers.filter((candidate) => candidate.relevanceScore >= 70)) {
+        const key = follower.handle.toLowerCase();
+        const existing = aggregated.get(key);
+        const priority: FollowTarget["priority"] =
+          follower.category === "coach" ? "high" : follower.relevanceScore >= 85 ? "high" : "medium";
+        const scoreBoost = analysis.targetHandle.toLowerCase().includes("coach") ? 8 : 4;
+
+        if (existing) {
+          existing.relevanceScore = Math.max(existing.relevanceScore, follower.relevanceScore);
+          existing.rating = Math.min(100, Math.max(existing.rating, follower.relevanceScore + scoreBoost) + 2);
+          existing.followerCount = Math.max(existing.followerCount, follower.followerCount);
+          existing.sourceHandles = Array.from(new Set([...existing.sourceHandles, analysis.targetHandle]));
+          existing.seen += 1;
+          existing.alreadyFollowing = existing.alreadyFollowing || alreadyFollowing.has(key);
+          if (priority === "high") {
+            existing.priority = "high";
+          }
+          continue;
+        }
+
+        aggregated.set(key, {
+          handle: follower.handle,
+          name: follower.name,
+          category: follower.category,
+          followerCount: follower.followerCount,
+          relevanceScore: follower.relevanceScore,
+          rating: Math.min(100, follower.relevanceScore + scoreBoost),
+          reason: follower.reason,
+          priority,
+          engagementTip: `Shows up in ${analysis.targetHandle}'s follower graph. Start by engaging with shared recruiting or OL content.`,
+          alreadyFollowing: alreadyFollowing.has(key),
+          sourceHandles: [analysis.targetHandle],
+          seen: 1,
+        });
+      }
+    } catch (error) {
+      console.error(`Failed to analyze ${handle}:`, error);
+    }
+  }
+
+  return Array.from(aggregated.values())
+    .filter((target) => target.handle.toLowerCase() !== "@jacobrodge52987")
+    .sort((a, b) => {
+      if (a.priority !== b.priority) {
+        const order = { high: 0, medium: 1, low: 2 };
+        return order[a.priority] - order[b.priority];
+      }
+      if (a.alreadyFollowing !== b.alreadyFollowing) {
+        return Number(a.alreadyFollowing) - Number(b.alreadyFollowing);
+      }
+      return b.rating - a.rating;
+    })
+    .slice(0, maxResults)
+    .map((target) => {
+      const { seen, ...rest } = target;
+      void seen;
+      return rest;
+    });
 }
 
 // ---------------------------------------------------------------------------

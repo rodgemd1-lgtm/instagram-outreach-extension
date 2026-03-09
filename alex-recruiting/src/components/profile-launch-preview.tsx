@@ -65,7 +65,7 @@ const bioOptions = [
     id: "coach",
     label: "D -- Coach-Targeted",
     bio: jacobProfile.bioVariations[3],
-    rationale: 'Leads with team success (12-1), ends with "DMs open" -- direct call to action.',
+    rationale: "Leads with team success (12-1) while keeping the finish professional and film-focused.",
   },
 ];
 
@@ -194,7 +194,7 @@ export function ProfileLaunchPreview() {
             <div className="space-y-3">
               {[
                 { icon: Camera, label: "Upload profile photo", desc: "Professional headshot in Pewaukee jersey" },
-                { icon: Image, label: "Upload header image", desc: 'Action shot with stats overlay: 6\'4" | 285 | DT/OG | State Champions' },
+                { icon: Image, label: "Review header image", desc: "Use Design Studio to generate or upload the live header banner to X" },
                 { icon: Pin, label: "Pin recruiting post", desc: "Create and pin the recruiting card post with NCSA link" },
               ].map((step) => (
                 <div key={step.label} className="flex items-start gap-3 rounded-lg border border-slate-200 p-3">

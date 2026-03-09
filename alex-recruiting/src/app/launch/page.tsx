@@ -1,5 +1,5 @@
-import { ProfileLaunchPreview } from "@/components/profile-launch-preview";
+import { redirect } from "next/navigation";
 
 export default function LaunchPage() {
-  return <ProfileLaunchPreview />;
+  redirect("/profile-studio");
 }

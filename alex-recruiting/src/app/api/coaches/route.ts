@@ -55,6 +55,10 @@ interface CoachRow {
   updated_at: string;
 }
 
+function isPlaceholderCoach(name: string): boolean {
+  return /^OL Coach\s*[-—]/.test(name);
+}
+
 // ---------------------------------------------------------------------------
 // Helper: map a Supabase row (snake_case) to the Coach shape (camelCase)
 // ---------------------------------------------------------------------------
@@ -113,7 +117,9 @@ export async function GET(req: NextRequest) {
         console.error("[coaches/GET] Supabase error, falling back to memory:", error.message);
         // fall through to in-memory path below
       } else {
-        const coaches = ((data ?? []) as CoachRow[]).map(mapRow);
+        const coaches = ((data ?? []) as CoachRow[])
+          .map(mapRow)
+          .filter((coach) => !isPlaceholderCoach(coach.name));
 
         // Sort by composite score (same logic as in-memory path)
         coaches.sort((a, b) => scoreCoach(b) - scoreCoach(a));

@@ -2,8 +2,8 @@
 
 export const jacobProfile = {
   name: "Jacob Rodgers",
-  position: "DT/OG",
-  positionFull: "Defensive Tackle / Offensive Guard",
+  position: "OL/DL",
+  positionFull: "Offensive Line / Defensive Line",
   height: "6'4\"",
   weight: "285 lbs",
   jerseyNumber: 79,
@@ -17,14 +17,14 @@ export const jacobProfile = {
   ncsaProfileUrl: "", // Fill with NCSA link
   hudlUrl: "", // Fill with Hudl link
   websiteUrl: "", // Fill with personal website
-  imgTraining: false,
-  ncsaVerified: true,
+  imgTraining: true,
+  ncsaVerified: false,
 
   // Strength numbers (NCSA verified)
   bench: "265",
   squat: "350",
 
-  accolades: ["All-Conference", "State Champion"],
+  accolades: [],
 
   seasonStats: {
     pancakeBlocks: 11,
@@ -35,16 +35,16 @@ export const jacobProfile = {
 
   hudlVideos: ["2025 Highlights", "2026 Spotlight"],
 
-  bio: 'DT/OG | 6\'4" 285 | Pewaukee HS \'29 | WI | NCSA Athlete',
+  bio: 'OL/DL | 6\'4" 285 | Pewaukee HS \'29 | WI | Film + training updates',
 
   bioVariations: [
-    'DT/OG | 6\'4" 285 | 11 pancakes, 3 sacks, 1 FR | Pewaukee HS \'29 | State Champs',
-    'Two-way lineman: DT + OG | 6\'4" 285 | Pewaukee HS \'29 | WI | All-Conference | DMs open',
-    'DT/OG | 6\'4" 285 | Bench 265 / Squat 350 | Class of 2029 | Pewaukee, WI | NCSA Athlete',
-    '12-1 State Champs | DT/OG | 6\'4" 285 | 3.25 GPA | Pewaukee HS \'29 | Coaches -- DMs open',
+    'OL/DL | 6\'4" 285 | Pewaukee HS \'29 | WI | Film-ready',
+    'Two-way lineman | OL/DL | 6\'4" 285 | Pewaukee HS \'29 | WI | Weight-room driven',
+    'OL/DL | 6\'4" 285 | Bench 265 / Squat 350 | Class of 2029 | Pewaukee, WI',
+    'Class of 2029 | OL/DL | 6\'4" 285 | 3.25 GPA after first semester | Film-ready',
   ],
 
-  displayName: "Jacob Rodgers | DT/OG | '29",
+  displayName: "Jacob Rodgers | OL/DL | '29",
 
   contentPillars: [
     { id: "performance", name: "On-Field Performance", percentage: 40, description: "Film clips, game highlights, game day posts, stat updates, team wins" },
@@ -55,11 +55,11 @@ export const jacobProfile = {
   competitiveAdvantages: [
     "Physical profile: 6'4\" 285 lbs as a FRESHMAN — already at D1 minimum threshold with 3 years of growth remaining",
     "Two-way versatility: plays both DT and OG, showing coaches rare positional flexibility",
-    "Two-way production as a freshman: 11 pancake blocks on offense, 3 sacks and 1 fumble recovery on defense in a 12-1 State Championship season",
-    "NCSA representation: active verified profile signals professionalism; coaches see NCSA athletes as easier to recruit",
+    "Two-way production as a freshman: 11 pancake blocks on offense, 3 sacks and 1 fumble recovery on defense in a 12-1 season",
+    "Development story: NX Level work, trench training, IMG camps, and one-on-one sessions support the long runway",
     "Strength numbers: 265 bench / 350 squat as a freshman — well ahead of position averages",
-    "Starting at Pewaukee: WIAA top classification — starting as a freshman signals immediate readiness",
+    "Early high-school film plus offseason growth gives coaches both a present snapshot and a projection story",
   ],
 
-  coreMessage: "Jacob Rodgers is a Class of 2029 DT/OG who played both sides of the ball as a freshman — 11 pancakes, 3 sacks, 1 fumble recovery — on a 12-1 State Championship team, represented by NCSA, with three years to become one of the top two-way lineman prospects in Wisconsin.",
+  coreMessage: "Jacob Rodgers is a Class of 2029 OL/DL prospect with defensive-line upside, offensive-line versatility, verified film, and a long-term development story built around year-round training.",
 } as const;

@@ -1,14 +1,21 @@
-"use client";
-
 import { ProfileAudit } from "@/components/profile-audit";
+import { StudioPageHeader } from "@/components/studio-page-header";
 
 export default function AuditPage() {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Profile Audit</h1>
-        <p className="text-sm text-slate-500">10-point monthly evaluation — photo, bio, pinned post, cadence, engagement, coach follows, DMs, compliance</p>
-      </div>
+      <StudioPageHeader
+        icon="ShieldCheck"
+        kicker="Lens + Susan"
+        title="Audit the recruiting machine like a staff review, not a checklist."
+        description="This surface tracks whether Jacob’s profile, media, cadence, coach engagement, and DM execution are actually ready for coach scrutiny."
+        council={["Susan", "Lens", "Marcus"]}
+      >
+        <p className="font-semibold">What matters here:</p>
+        <p className="mt-2 leading-6 text-[var(--app-muted)]">
+          Eliminate the blockers that cost trust fast: unclear profile copy, weak pinned post, stale cadence, thin coach activity, or poor media readiness.
+        </p>
+      </StudioPageHeader>
       <ProfileAudit />
     </div>
   );

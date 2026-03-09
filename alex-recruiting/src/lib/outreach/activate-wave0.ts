@@ -41,10 +41,9 @@ export async function activateWave0(options: {
   let coaches: Array<{
     id: string;
     name: string;
-    school: string;
+    school_name: string;
     division: string;
     x_handle: string | null;
-    x_user_id: string | null;
   }> = [];
 
   if (isSupabaseConfigured()) {
@@ -53,7 +52,7 @@ export async function activateWave0(options: {
     // Check if coaches table exists and has data
     const { data, error } = await supabase
       .from("coaches")
-      .select("id, name, school, division, x_handle, x_user_id")
+      .select("id, name, school_name, division, x_handle")
       .in("division", divisions)
       .limit(limit);
 
@@ -74,32 +73,31 @@ export async function activateWave0(options: {
   for (const coach of coaches) {
     try {
       // Skip coaches without X presence (can't DM them)
-      if (!coach.x_handle && !coach.x_user_id) {
+      if (!coach.x_handle) {
         result.skipped++;
-        result.coaches.push({ name: coach.name, school: coach.school, status: "skipped" });
+        result.coaches.push({ name: coach.name, school: coach.school_name, status: "skipped" });
         continue;
       }
 
       if (dryRun) {
         result.created++;
-        result.coaches.push({ name: coach.name, school: coach.school, status: "created" });
+        result.coaches.push({ name: coach.name, school: coach.school_name, status: "created" });
         continue;
       }
 
       await createSequence(coach.id, "initial_outreach", {
         coachName: coach.name,
-        school: coach.school,
+        school: coach.school_name,
         tier: "Tier 3",
         xHandle: coach.x_handle ?? undefined,
-        xUserId: coach.x_user_id ?? undefined,
       });
 
       result.created++;
-      result.coaches.push({ name: coach.name, school: coach.school, status: "created" });
+      result.coaches.push({ name: coach.name, school: coach.school_name, status: "created" });
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      result.errors.push(`${coach.name} (${coach.school}): ${msg}`);
-      result.coaches.push({ name: coach.name, school: coach.school, status: "error" });
+      result.errors.push(`${coach.name} (${coach.school_name}): ${msg}`);
+      result.coaches.push({ name: coach.name, school: coach.school_name, status: "error" });
     }
   }
 

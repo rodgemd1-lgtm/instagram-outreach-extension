@@ -1,5 +1,5 @@
-import { JacobXProfile } from "@/components/jacob-x-profile";
+import { redirect } from "next/navigation";
 
 export default function XProfilePage() {
-  return <JacobXProfile />;
+  redirect("/profile-studio");
 }

@@ -751,7 +751,7 @@ Let's Talk
 Interested in Jacob? Reach out directly.
 
 FAMILY CONTACT
-Email: [family email]
+Email: rodgermd1@gmail.com
 Phone: [family phone]
 
 JACOB

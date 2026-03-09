@@ -14,7 +14,7 @@ const badgeVariants = cva(
         performance: "border-transparent bg-blue-100 text-blue-800",
         work_ethic: "border-transparent bg-orange-100 text-orange-800",
         character: "border-transparent bg-green-100 text-green-800",
-        tier1: "border-purple-200 bg-purple-50 text-purple-700",
+        tier1: "border-[rgba(15,40,75,0.12)] bg-[rgba(15,40,75,0.08)] text-[var(--app-navy-strong)]",
         tier2: "border-blue-200 bg-blue-50 text-blue-700",
         tier3: "border-green-200 bg-green-50 text-green-700",
         draft: "border-yellow-200 bg-yellow-50 text-yellow-700",

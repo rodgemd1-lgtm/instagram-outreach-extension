@@ -1,12 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { Post, ContentPillar } from "@/lib/types";
 import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
-
-// ---------------------------------------------------------------------------
-// In-memory fallback store (used when Supabase is not configured)
-// ---------------------------------------------------------------------------
-
-const postStore: Post[] = [];
+import { getAllPosts, insertPost } from "@/lib/posts/store";
 
 // ---------------------------------------------------------------------------
 // Helpers — map Supabase row to Post type
@@ -56,6 +51,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const status = searchParams.get("status");
   const pillar = searchParams.get("pillar");
+  let supabasePosts: Post[] = [];
 
   // ----- Supabase path -----
   if (isSupabaseConfigured()) {
@@ -71,24 +67,29 @@ export async function GET(req: NextRequest) {
       const { data, error } = await query;
       if (error) throw error;
 
-      const posts = (data as PostRow[]).map(rowToPost);
-      return NextResponse.json({ posts, total: posts.length });
+      supabasePosts = (data as PostRow[]).map(rowToPost);
     } catch (err) {
       console.error("[GET /api/posts] Supabase error, falling through to in-memory:", err);
-      // Fall through to in-memory on error
     }
   }
 
-  // ----- In-memory fallback -----
-  let filtered = [...postStore];
-  if (status) filtered = filtered.filter((p) => p.status === status);
-  if (pillar) filtered = filtered.filter((p) => p.pillar === pillar);
+  let localPosts = getAllPosts();
+  if (status) localPosts = localPosts.filter((p) => p.status === status);
+  if (pillar) localPosts = localPosts.filter((p) => p.pillar === pillar);
 
-  filtered.sort(
+  const merged = [...supabasePosts];
+  const seen = new Set(merged.map((post) => post.id));
+  for (const post of localPosts) {
+    if (seen.has(post.id)) continue;
+    merged.push(post);
+    seen.add(post.id);
+  }
+
+  merged.sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
 
-  return NextResponse.json({ posts: filtered, total: filtered.length });
+  return NextResponse.json({ posts: merged, total: merged.length });
 }
 
 // ---------------------------------------------------------------------------
@@ -137,8 +138,7 @@ export async function POST(req: NextRequest) {
   }
 
   // ----- In-memory fallback -----
-  const post: Post = {
-    id: `post-${Date.now()}`,
+  const post: Post = insertPost({
     content: body.content,
     pillar: body.pillar as ContentPillar,
     hashtags: body.hashtags || [],
@@ -150,10 +150,7 @@ export async function POST(req: NextRequest) {
     impressions: 0,
     engagements: 0,
     engagementRate: 0,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
+  });
 
-  postStore.push(post);
   return NextResponse.json({ post }, { status: 201 });
 }

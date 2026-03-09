@@ -1,59 +1,16 @@
 "use client";
 
-import { useMemo, useState, useEffect, useRef, FormEvent } from "react";
+import { useMemo, useState, type FormEvent } from "react";
+import { Check, ExternalLink, Mail } from "lucide-react";
 import {
   useRecruitAssembly,
   type AssemblyConfig,
 } from "@/hooks/useRecruitAssembly";
-import { Check, ExternalLink, Eye, Mail, Phone } from "lucide-react";
-
-/* ──────────────────────────────────────────────────────────────
-   Contact CTA — Zero friction from desire to action
-   LAAL Mechanism: Forgiving Stakes
-   Family email and phone are primary. Form is secondary.
-   No "RECRUIT ME" — clean, professional, easy.
-
-   Wave 1: none (below fold)
-   Wave 2: header, direct contact, form, links scroll-reveal
-   ────────────────────────────────────────────────────────────── */
 
 export function ContactCTA() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [viewCount, setViewCount] = useState(0);
-  const viewCountRef = useRef<HTMLSpanElement>(null);
-  const hasAnimatedViews = useRef(false);
-
-  /* Social proof: animate a coach view counter on scroll into view.
-     The base number is seeded deterministically from the current date
-     so it grows over time but stays consistent within a given day. */
-  useEffect(() => {
-    const today = new Date();
-    const daysSinceEpoch = Math.floor(today.getTime() / 86400000);
-    const baseCount = 14 + ((daysSinceEpoch * 7) % 23);
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimatedViews.current) {
-          hasAnimatedViews.current = true;
-          const duration = 1200;
-          const start = performance.now();
-          const animate = (now: number) => {
-            const progress = Math.min((now - start) / duration, 1);
-            const eased = 1 - Math.pow(1 - progress, 3);
-            setViewCount(Math.round(eased * baseCount));
-            if (progress < 1) requestAnimationFrame(animate);
-          };
-          requestAnimationFrame(animate);
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    if (viewCountRef.current) observer.observe(viewCountRef.current);
-    return () => observer.disconnect();
-  }, []);
 
   const config = useMemo<AssemblyConfig>(
     () => ({
@@ -115,82 +72,57 @@ export function ContactCTA() {
     <section
       id="contact"
       ref={scopeRef}
-      className="relative py-32 md:py-48 px-6 md:px-12"
+      className="relative px-6 py-32 md:px-12 md:py-48"
     >
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500/20 to-transparent" />
 
-      {/* Subtle 79 watermark — no "RECRUIT ME" */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[12rem] md:text-[20rem] font-black text-white/[0.015] select-none leading-none font-mono">
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-[12rem] font-black leading-none text-white/[0.015] md:text-[20rem]">
         79
       </div>
 
-      <div
-        data-gsap="contact-content"
-        className="max-w-4xl mx-auto relative z-10"
-      >
-        {/* Header */}
+      <div data-gsap="contact-content" className="relative z-10 mx-auto max-w-4xl">
         <div
           data-gsap-wave="2"
           style={{ opacity: 0 }}
-          className="text-center mb-16 md:mb-24"
+          className="mb-16 text-center md:mb-24"
         >
-          <span className="text-[10px] tracking-[0.5em] text-red-500/60 uppercase font-mono block mb-6">
+          <span className="mb-6 block font-mono text-[10px] uppercase tracking-[0.5em] text-red-500/60">
             Contact
           </span>
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[0.95] mb-6">
+          <h2 className="mb-6 text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
             Let&apos;s Talk
           </h2>
-          <p className="text-white/40 text-base md:text-lg max-w-lg mx-auto leading-relaxed">
-            Interested in Jacob? Reach out directly.
+          <p className="mx-auto max-w-lg text-base leading-relaxed text-white/40 md:text-lg">
+            The cleanest next move is simple: watch the impact reel, review the
+            packet, and send a message through the coach form.
           </p>
-
-          {/* Social proof counter */}
-          <div className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/[0.04] border border-white/[0.08] backdrop-blur-sm">
-            <Eye className="w-4 h-4 text-red-500/70" />
-            <span className="text-sm text-white/50">
-              Coaches from{" "}
-              <span ref={viewCountRef} className="text-white font-mono font-bold">
-                {viewCount}
-              </span>{" "}
-              schools have viewed this page
-            </span>
-          </div>
         </div>
 
-        {/* Direct contact — primary CTA */}
         <div
           data-gsap-wave="2"
           style={{ opacity: 0 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12"
+          className="mb-12 grid grid-cols-1 gap-6 md:grid-cols-2"
         >
-          {/* Family contact */}
-          <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-8 backdrop-blur-xl shadow-lg shadow-black/20 hover:border-red-500/20 transition-colors duration-300">
-            <span className="text-[10px] tracking-[0.3em] text-white/30 uppercase block mb-4">
+          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 backdrop-blur-xl shadow-lg shadow-black/20 transition-colors duration-300 hover:border-red-500/20">
+            <span className="mb-4 block text-[10px] uppercase tracking-[0.3em] text-white/30">
               Family Contact
             </span>
             <a
-              href="mailto:rodgers.family@email.com"
-              className="flex items-center gap-3 text-white hover:text-red-500 transition-colors mb-3"
+              href="mailto:rodgermd1@gmail.com"
+              className="flex items-center gap-3 text-white transition-colors hover:text-red-500"
             >
-              <Mail className="w-4 h-4 text-red-500/60" />
-              <span className="text-sm font-mono">rodgers.family@email.com</span>
+              <Mail className="h-4 w-4 text-red-500/60" />
+              <span className="text-sm font-mono">rodgermd1@gmail.com</span>
             </a>
-            <a
-              href="tel:+15551234567"
-              className="flex items-center gap-3 text-white hover:text-red-500 transition-colors mb-4"
-            >
-              <Phone className="w-4 h-4 text-red-500/60" />
-              <span className="text-sm font-mono">(555) 123-4567</span>
-            </a>
-            <p className="text-white/20 text-xs">
-              Response time: Within 24 hours.
+            <p className="mt-4 text-sm leading-6 text-white/48">
+              Coaches can email directly or use the form below. Family follow-up
+              should respond within 24 hours.
             </p>
           </div>
 
-          {/* Jacob direct */}
-          <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-8 backdrop-blur-xl shadow-lg shadow-black/20 hover:border-red-500/20 transition-colors duration-300">
-            <span className="text-[10px] tracking-[0.3em] text-white/30 uppercase block mb-4">
-              Jacob
+          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 backdrop-blur-xl shadow-lg shadow-black/20 transition-colors duration-300 hover:border-red-500/20">
+            <span className="mb-4 block text-[10px] uppercase tracking-[0.3em] text-white/30">
+              Live Links
             </span>
             <div className="space-y-3">
               <QuickLink
@@ -198,96 +130,101 @@ export function ContactCTA() {
                 handle="@JacobRodge52987"
                 href="https://x.com/JacobRodge52987"
               />
-              <QuickLink label="YouTube Film" handle="Watch Highlights" href="https://youtu.be/wkYGNZTN8Xc" />
-              <QuickLink label="More Film" handle="Reel 2" href="https://youtu.be/03w9hRlXTzU" />
+              <QuickLink
+                label="YouTube Film"
+                handle="Watch Highlights"
+                href="https://youtu.be/wkYGNZTN8Xc"
+              />
+              <QuickLink
+                label="Additional Film"
+                handle="Reel 2"
+                href="https://youtu.be/03w9hRlXTzU"
+              />
             </div>
           </div>
         </div>
 
-        {/* Contact form — secondary */}
         {!submitted ? (
           <form
             onSubmit={handleSubmit}
             data-gsap-wave="2"
             style={{ opacity: 0 }}
-            className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-8 md:p-12 space-y-6 backdrop-blur-xl shadow-lg shadow-black/20"
+            className="space-y-6 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 shadow-lg shadow-black/20 backdrop-blur-xl md:p-12"
           >
-            <span className="text-[10px] tracking-[0.3em] text-white/30 uppercase block mb-2">
+            <span className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-white/30">
               Or send a message
             </span>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
-                <label className="text-[10px] tracking-[0.3em] text-white/30 uppercase block mb-2">
+                <label className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-white/30">
                   Your Name
                 </label>
                 <input
                   type="text"
                   name="name"
                   required
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-white placeholder-white/20 focus:border-red-500/40 focus:outline-none transition-colors"
+                  className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-white placeholder-white/20 transition-colors focus:border-red-500/40 focus:outline-none"
                   placeholder="Coach Smith"
                 />
               </div>
               <div>
-                <label className="text-[10px] tracking-[0.3em] text-white/30 uppercase block mb-2">
+                <label className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-white/30">
                   School
                 </label>
                 <input
                   type="text"
                   name="school"
                   required
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-white placeholder-white/20 focus:border-red-500/40 focus:outline-none transition-colors"
+                  className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-white placeholder-white/20 transition-colors focus:border-red-500/40 focus:outline-none"
                   placeholder="University of Wisconsin"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
-                <label className="text-[10px] tracking-[0.3em] text-white/30 uppercase block mb-2">
+                <label className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-white/30">
                   Email
                 </label>
                 <input
                   type="email"
                   name="email"
                   required
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-white placeholder-white/20 focus:border-red-500/40 focus:outline-none transition-colors"
+                  className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-white placeholder-white/20 transition-colors focus:border-red-500/40 focus:outline-none"
                   placeholder="coach@university.edu"
                 />
               </div>
               <div>
-                <label className="text-[10px] tracking-[0.3em] text-white/30 uppercase block mb-2">
+                <label className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-white/30">
                   Phone (Optional)
                 </label>
                 <input
                   type="tel"
                   name="phone"
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-white placeholder-white/20 focus:border-red-500/40 focus:outline-none transition-colors"
+                  className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-white placeholder-white/20 transition-colors focus:border-red-500/40 focus:outline-none"
                   placeholder="(555) 123-4567"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-[10px] tracking-[0.3em] text-white/30 uppercase block mb-2">
+              <label className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-white/30">
                 Message
               </label>
               <textarea
                 name="message"
-                rows={4}
-                className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-white placeholder-white/20 focus:border-red-500/40 focus:outline-none transition-colors resize-none"
-                placeholder="Your message..."
+                rows={5}
+                className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-white placeholder-white/20 transition-colors focus:border-red-500/40 focus:outline-none"
+                placeholder="We'd like to learn more about Jacob and start a conversation."
               />
             </div>
 
-            {error && (
-              <p className="text-red-400 text-sm text-center">{error}</p>
-            )}
+            {error && <p className="text-sm text-red-400">{error}</p>}
 
             <button
               type="submit"
               disabled={submitting}
-              className="w-full py-4 rounded-xl bg-gradient-to-r from-red-600 to-red-500 text-white font-bold text-sm tracking-widest uppercase hover:from-red-500 hover:to-rose-500 transition-all duration-300 hover:shadow-lg hover:shadow-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-red-600 via-red-500 to-rose-500 px-10 py-4 text-sm font-bold uppercase tracking-widest text-white shadow-lg shadow-red-500/25 transition-all duration-300 hover:scale-105 hover:shadow-red-500/40 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {submitting ? "Sending..." : "Send Message"}
             </button>
@@ -296,29 +233,21 @@ export function ContactCTA() {
           <div
             data-gsap-wave="2"
             style={{ opacity: 0 }}
-            className="bg-gradient-to-r from-red-500/5 to-rose-500/5 border border-red-500/20 rounded-2xl p-12 text-center"
+            className="flex items-start gap-4 rounded-2xl border border-green-500/20 bg-green-500/[0.04] p-8 md:p-10"
           >
-            <div className="flex justify-center mb-4">
-              <Check className="w-10 h-10 text-red-500" />
+            <div className="mt-1 flex h-10 w-10 items-center justify-center rounded-full bg-green-500/10">
+              <Check className="h-5 w-5 text-green-500" />
             </div>
-            <h3 className="text-2xl font-bold mb-3">Message sent.</h3>
-            <p className="text-white/50">
-              Thank you, Coach. We&apos;ll respond within 24 hours.
-            </p>
+            <div>
+              <h3 className="text-xl font-semibold text-white">
+                Message sent.
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-white/50">
+                Thanks. We will follow up with Jacob&apos;s family and staff soon.
+              </p>
+            </div>
           </div>
         )}
-
-        {/* Footer */}
-        <div
-          data-gsap-wave="2"
-          style={{ opacity: 0 }}
-          className="mt-20 pt-12 border-t border-white/5 text-center"
-        >
-          <p className="text-white/20 text-xs tracking-widest">
-            JACOB RODGERS &mdash; #79 &mdash; DT/OG &mdash; CLASS OF 2029
-            &mdash; PEWAUKEE HS, WISCONSIN
-          </p>
-        </div>
       </div>
     </section>
   );
@@ -337,16 +266,18 @@ function QuickLink({
     <a
       href={href}
       target="_blank"
-      rel="noopener noreferrer"
-      className="flex items-center justify-between py-2 group"
+      rel="noreferrer"
+      className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 transition-colors hover:border-red-500/25"
     >
-      <span className="text-[10px] tracking-[0.2em] text-white/30 uppercase">
-        {label}
-      </span>
-      <span className="text-sm text-red-500/70 group-hover:text-red-500 transition-colors flex items-center gap-1">
-        {handle}
-        <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-      </span>
+      <div>
+        <span className="block text-[10px] uppercase tracking-[0.3em] text-white/30">
+          {label}
+        </span>
+        <span className="mt-1 block text-sm font-mono text-white/80">
+          {handle}
+        </span>
+      </div>
+      <ExternalLink className="h-4 w-4 text-red-500/60" />
     </a>
   );
 }

@@ -1,34 +1,88 @@
 import { NextRequest, NextResponse } from "next/server";
-import { updateProfile } from "@/lib/integrations/x-api";
+import {
+  isXWriteConfigured,
+  updateProfileWithFeedback,
+} from "@/lib/integrations/x-api";
 
-export async function POST(request: NextRequest) {
+interface ProfileUpdatePayload {
+  displayName?: unknown;
+  bio?: unknown;
+  location?: unknown;
+  websiteUrl?: unknown;
+}
+
+function normalizeOptionalString(value: unknown): string | undefined {
+  if (value === undefined) return undefined;
+  if (typeof value !== "string") {
+    throw new Error("Profile fields must be strings");
+  }
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+export async function POST(req: NextRequest) {
+  if (!isXWriteConfigured()) {
+    return NextResponse.json(
+      {
+        error:
+          "X profile write credentials are not configured. Set the OAuth 1.0a consumer and access token env vars before updating the live profile.",
+      },
+      { status: 503 }
+    );
+  }
+
   try {
-    const body = await request.json();
-    const { bio, displayName, location, websiteUrl } = body as {
-      bio?: string;
-      displayName?: string;
-      location?: string;
-      websiteUrl?: string;
-    };
+    const body = (await req.json()) as ProfileUpdatePayload;
 
-    const updatedData = await updateProfile({
-      description: bio,
-      name: displayName,
-      location,
-      url: websiteUrl,
-    });
+    const name = normalizeOptionalString(body.displayName);
+    const description = normalizeOptionalString(body.bio);
+    const location = normalizeOptionalString(body.location);
+    const url = normalizeOptionalString(body.websiteUrl);
 
-    if (!updatedData) {
+    if (
+      name === undefined &&
+      description === undefined &&
+      location === undefined &&
+      url === undefined
+    ) {
       return NextResponse.json(
-        { error: "Failed to update profile" },
-        { status: 500 }
+        { error: "Provide at least one profile field to update." },
+        { status: 400 }
       );
     }
 
-    return NextResponse.json({ success: true, profile: updatedData });
+    const result = await updateProfileWithFeedback({
+      name,
+      description,
+      location,
+      url,
+    });
+
+    if (!result) {
+      return NextResponse.json(
+        { error: "X profile update failed. Verify the configured account tokens and try again." },
+        { status: 502 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      updated: {
+        displayName: result.skippedFields.includes("name") ? undefined : name,
+        bio: description,
+        location,
+        websiteUrl: url,
+      },
+      skippedFields: result.skippedFields,
+      warning: result.skippedFields.includes("name")
+        ? "X accepted the bio, location, and website update, but skipped the display name because the account is currently under review."
+        : undefined,
+      profile: result.profile,
+    });
   } catch (error) {
     const message =
-      error instanceof Error ? error.message : "Unknown error occurred";
-    return NextResponse.json({ error: message }, { status: 500 });
+      error instanceof Error ? error.message : "Failed to update X profile";
+    const status = message === "Profile fields must be strings" ? 400 : 500;
+    return NextResponse.json({ error: message }, { status });
   }
 }

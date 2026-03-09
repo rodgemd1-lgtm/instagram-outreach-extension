@@ -6,40 +6,30 @@ import {
   type AssemblyConfig,
 } from "@/hooks/useRecruitAssembly";
 
-/* ──────────────────────────────────────────────────────────────
-   Character Section — 3 traits backed by facts + coach quote
-   LAAL Mechanism: Ownership
-   Coaches reading these traits envision Jacob on THEIR team.
-   Each trait is a micro-story with verifiable evidence.
-
-   Wave 1: none (below fold)
-   Wave 2: individual card reveals + coach quote
-   ────────────────────────────────────────────────────────────── */
-
 const traits = [
   {
     trait: "Coachable",
     icon: "01",
     description:
-      "Plays both sides of the ball — DT and OG — wherever the coaching staff needs him. Started JV and varsity in the same season. No questions asked. Just lined up and played.",
+      "Works on both sides of the ball and has taken coaching from school staff, private line trainers, and sports-performance coaches. The pattern is simple: get the correction, apply it on the next rep.",
     evidence:
-      "Earned a varsity spot as a freshman at Pewaukee by showing up and taking coaching.",
+      "The site now centers verified development inputs instead of overstated role claims.",
   },
   {
-    trait: "Team First",
+    trait: "Team Built",
     icon: "02",
     description:
-      "Freshmen don't typically start at Pewaukee. Jacob earned it by showing up every day, doing the work seniors do, and never acting like it was owed to him.",
+      "The fit is not about ego. It is about being useful to the room, putting in offseason work, and learning around older players and coaches who raise the standard.",
     evidence:
-      "Two-way starter who sometimes played two games in one day — JV and varsity.",
+      "Jennifer's feedback pushed this section toward teamwork, hard work, and fit instead of inflated labels.",
   },
   {
     trait: "Relentless",
     icon: "03",
     description:
-      "Has not missed a scheduled training session since October 2022. 730+ sessions. Five days a week. Personal trainer. NX Level. Discus. Shot put. Football. He doesn't stop.",
+      "730+ sessions across lifting, field work, IMG camps, trench training, and one-on-one development. The offseason story shows up in the numbers and on film.",
     evidence:
-      "730+ documented training sessions before his sophomore season.",
+      "Most-improved strength gains and year-round work are part of the recruiting case, not a side note.",
   },
 ];
 
@@ -74,71 +64,72 @@ export function CharacterSection({ backgroundUrl }: { backgroundUrl?: string }) 
     <section
       id="character"
       ref={scopeRef}
-      className="relative py-32 md:py-48 px-6 md:px-12"
+      className="relative px-6 py-32 md:px-12 md:py-48"
     >
-      {/* Background photo */}
       {backgroundUrl && (
         <div className="absolute inset-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={backgroundUrl} alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+          <img
+            src={backgroundUrl}
+            alt=""
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
           <div className="absolute inset-0 bg-[#0A0A0A]/95" />
         </div>
       )}
 
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-      <div className="max-w-5xl mx-auto relative z-10">
-        {/* Header */}
+      <div className="relative z-10 mx-auto max-w-5xl">
         <div className="mb-20 md:mb-32">
-          <span className="text-[10px] tracking-[0.5em] text-red-500/60 uppercase font-mono block mb-6">
+          <span className="mb-6 block font-mono text-[10px] uppercase tracking-[0.5em] text-red-500/60">
             Character
           </span>
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[0.95] mb-6">
+          <h2 className="mb-6 text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
             Numbers tell you
             <br />
             what he{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-rose-400">
+            <span className="bg-gradient-to-r from-red-500 to-rose-400 bg-clip-text text-transparent">
               can
             </span>{" "}
             do.
           </h2>
-          <p className="text-white/40 text-base md:text-lg max-w-xl leading-relaxed">
+          <p className="max-w-xl text-base leading-relaxed text-white/40 md:text-lg">
             These tell you what he will do.
           </p>
         </div>
 
-        {/* Trait cards */}
         <div
           data-gsap="character-cards"
-          className="max-w-5xl mx-auto space-y-8 md:space-y-12"
+          className="mx-auto max-w-5xl space-y-8 md:space-y-12"
         >
-          {traits.map((t) => (
+          {traits.map((trait) => (
             <div
-              key={t.icon}
+              key={trait.icon}
               data-gsap-wave="2"
               className="group relative"
               style={{ opacity: 0 }}
             >
-              <div className="relative bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded-2xl p-8 md:p-12 hover:border-red-500/20 transition-colors duration-500">
-                <span className="absolute -top-4 -left-2 md:left-6 text-6xl md:text-8xl font-mono font-black text-white/[0.03] select-none">
-                  {t.icon}
+              <div className="relative rounded-2xl border border-white/[0.08] bg-black/60 p-8 backdrop-blur-sm transition-colors duration-500 hover:border-red-500/20 md:p-12">
+                <span className="absolute -top-4 -left-2 select-none font-mono text-6xl font-black text-white/[0.03] md:left-6 md:text-8xl">
+                  {trait.icon}
                 </span>
 
                 <div className="relative z-10 md:flex md:items-start md:gap-12">
-                  <div className="md:w-1/3 mb-6 md:mb-0">
-                    <h3 className="text-2xl md:text-3xl font-black tracking-tight">
-                      {t.trait}
+                  <div className="mb-6 md:mb-0 md:w-1/3">
+                    <h3 className="text-2xl font-black tracking-tight md:text-3xl">
+                      {trait.trait}
                     </h3>
                   </div>
 
                   <div className="md:w-2/3">
-                    <p className="text-white/70 text-base leading-relaxed mb-4">
-                      {t.description}
+                    <p className="mb-4 text-base leading-relaxed text-white/70">
+                      {trait.description}
                     </p>
                     <div className="flex items-start gap-3">
-                      <div className="w-1 h-full min-h-[20px] bg-red-500/30 rounded-full mt-1" />
-                      <p className="text-red-500/70 text-sm font-mono leading-relaxed">
-                        {t.evidence}
+                      <div className="mt-1 h-full min-h-[20px] w-1 rounded-full bg-red-500/30" />
+                      <p className="font-mono text-sm leading-relaxed text-red-500/70">
+                        {trait.evidence}
                       </p>
                     </div>
                   </div>
@@ -148,19 +139,18 @@ export function CharacterSection({ backgroundUrl }: { backgroundUrl?: string }) 
           ))}
         </div>
 
-        {/* Coach quote placeholder */}
-        <div className="mt-16 md:mt-20 bg-gradient-to-r from-red-500/5 to-rose-500/5 border border-red-500/10 rounded-2xl p-10 md:p-14">
-          <blockquote className="text-xl md:text-2xl font-light text-white/60 leading-relaxed italic">
-            &ldquo;Jacob is the first kid in the weight room and the last one
-            out. He takes coaching and applies it immediately. You show him
-            something once and it shows up in the next rep.&rdquo;
-          </blockquote>
-          <div className="mt-6 flex items-center gap-3">
-            <div className="w-8 h-px bg-red-500/40" />
-            <span className="text-xs tracking-[0.2em] text-red-500/60 uppercase font-mono">
-              Pewaukee Pirates Coaching Staff
-            </span>
-          </div>
+        <div className="mt-16 rounded-2xl border border-red-500/10 bg-gradient-to-r from-red-500/5 to-rose-500/5 p-10 md:mt-20 md:p-14">
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-red-500/60">
+            References
+          </span>
+          <h3 className="mt-4 text-2xl font-semibold tracking-tight text-white">
+            Real testimonials belong here only when they are real.
+          </h3>
+          <p className="mt-4 max-w-3xl text-base leading-7 text-white/58">
+            The generic quote was removed. Coaches who want perspective beyond
+            the film can use the contact path on this page to request real
+            references from family, Pewaukee staff, and private trainers.
+          </p>
         </div>
       </div>
     </section>

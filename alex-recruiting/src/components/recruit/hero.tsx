@@ -1,26 +1,21 @@
 "use client";
 
 import { useMemo } from "react";
-import { useRecruitAssembly, type AssemblyConfig } from "@/hooks/useRecruitAssembly";
 import { ChevronDown, Play } from "lucide-react";
-
-/* ──────────────────────────────────────────────────────────────
-   Hero Section — Wave 1 only (above-fold, no scroll content)
-   LAAL Mechanism: Known-ness
-   Establishes who Jacob is — name, number, measurables, identity.
-   Timing budget: 2.5–3s total hero entrance
-   ────────────────────────────────────────────────────────────── */
+import {
+  useRecruitAssembly,
+  type AssemblyConfig,
+} from "@/hooks/useRecruitAssembly";
 
 export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
   const config = useMemo<AssemblyConfig>(
     () => ({
       wave1: [
         {
-          /* LAAL: Known-ness — jersey number, visual anchor */
           name: "hero-jersey",
           from: { opacity: 0, scale: 0.8 },
           to: {
-            opacity: 0.15,
+            opacity: 0.12,
             scale: 1,
             duration: 0.4,
             ease: "sine.out",
@@ -28,8 +23,7 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
           },
         },
         {
-          /* LAAL: Known-ness — class year, temporal context */
-          name: "hero-class",
+          name: "hero-kicker",
           from: { opacity: 0, y: 24 },
           to: {
             opacity: 1,
@@ -40,8 +34,7 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
           },
         },
         {
-          /* LAAL: Known-ness — first name, primary identity */
-          name: "hero-first",
+          name: "hero-copy",
           from: { opacity: 0, y: 32 },
           to: {
             opacity: 1,
@@ -52,20 +45,18 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
           },
         },
         {
-          /* LAAL: Known-ness — last name, primary identity */
-          name: "hero-last",
+          name: "hero-actions",
           from: { opacity: 0, y: 32 },
           to: {
             opacity: 1,
             y: 0,
             duration: 0.35,
-            ease: "back.out(1.7)",
+            ease: "power2.out",
             position: "0.45",
           },
         },
         {
-          /* LAAL: Known-ness — measurables bar */
-          name: "hero-measurables",
+          name: "hero-rail",
           from: { opacity: 0, y: 24 },
           to: {
             opacity: 1,
@@ -76,26 +67,13 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
           },
         },
         {
-          /* LAAL: Known-ness — identity tagline */
-          name: "hero-tagline",
-          from: { opacity: 0, y: 20 },
-          to: {
-            opacity: 1,
-            y: 0,
-            duration: 0.35,
-            ease: "power2.out",
-            position: "0.9",
-          },
-        },
-        {
-          /* LAAL: Continuity Thread — scroll cue, connects to next section */
           name: "hero-scroll-cue",
           from: { opacity: 0 },
           to: {
             opacity: 1,
             duration: 0.35,
             ease: "sine.out",
-            position: "1.2",
+            position: "1.05",
           },
         },
       ],
@@ -109,145 +87,193 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
     <section
       id="hero"
       ref={scopeRef}
-      className="relative h-screen flex items-center justify-center overflow-hidden"
+      className="relative flex min-h-[100svh] items-center overflow-hidden px-6 py-24 md:px-12"
     >
-      {/* Background photo + gradient overlay */}
       <div className="absolute inset-0">
         {backgroundUrl && (
-          /* eslint-disable-next-line @next/next/no-img-element */
           <img
             src={backgroundUrl}
             alt="Jacob Rodgers action shot"
             loading="eager"
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover"
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/70 via-[#0D1117]/60 to-[#0A0A0A]/90" />
-        {/* Ambient glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-red-600/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500/20 to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(255,255,255,0.2),transparent_24%),linear-gradient(120deg,rgba(8,8,8,0.92)_12%,rgba(8,8,8,0.56)_42%,rgba(8,8,8,0.82)_100%)]" />
+        <div className="absolute inset-y-0 right-0 w-[42vw] bg-gradient-to-l from-[#F59E0B]/18 via-transparent to-transparent" />
+        <div className="absolute left-[8%] top-[14%] h-52 w-52 rounded-full bg-red-500/12 blur-[100px]" />
+        <div className="absolute right-[8%] top-[24%] h-64 w-64 rounded-full bg-amber-400/10 blur-[120px]" />
       </div>
 
-      {/* Grid overlay for texture */}
       <div
         className="absolute inset-0 opacity-[0.03]"
         style={{
           backgroundImage:
             "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
+          backgroundSize: "48px 48px",
         }}
       />
 
-      {/* Main content */}
-      <div className="relative z-10 text-center px-6">
-        {/* Jersey number - massive, ghosted, with pulsing glow */}
+      <div className="relative z-10 mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
         <div data-gsap="hero-jersey" style={{ opacity: 0 }}>
-          {/* Pulsing glow layer behind the number */}
           <span
-            className="font-mono text-[20rem] md:text-[32rem] font-black leading-none tracking-tighter select-none text-red-500/20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 blur-[60px] animate-jersey-pulse"
+            className="pointer-events-none absolute left-[-6%] top-1/2 -translate-y-1/2 font-mono text-[14rem] font-black leading-none tracking-tighter text-red-500/18 blur-[32px] md:text-[24rem] lg:text-[28rem]"
             aria-hidden="true"
           >
             79
           </span>
-          <span className="font-mono text-[20rem] md:text-[32rem] font-black leading-none tracking-tighter select-none text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <span className="pointer-events-none absolute left-[-4%] top-1/2 -translate-y-1/2 font-mono text-[14rem] font-black leading-none tracking-tighter text-white/10 md:text-[24rem] lg:text-[28rem]">
             79
           </span>
         </div>
 
-        {/* Name */}
-        <h1 className="relative">
+        <div className="relative">
           <span
-            data-gsap="hero-class"
+            data-gsap="hero-kicker"
             style={{ opacity: 0 }}
-            className="block font-mono text-sm md:text-base tracking-[0.5em] text-red-500/80 mb-4"
+            className="mb-6 inline-flex rounded-full border border-white/15 bg-black/35 px-4 py-2 font-mono text-[11px] tracking-[0.35em] text-amber-300/85 backdrop-blur-md"
           >
-            CLASS OF 2029
+            PEWAUKEE HS · CLASS OF 2029 · #79
           </span>
-          <span
-            data-gsap="hero-first"
-            style={{ opacity: 0 }}
-            className="block text-5xl md:text-8xl lg:text-9xl font-black tracking-tighter leading-[0.9]"
-          >
-            JACOB
-          </span>
-          <span
-            data-gsap="hero-last"
-            style={{ opacity: 0 }}
-            className="block text-5xl md:text-8xl lg:text-9xl font-black tracking-tighter leading-[0.9] text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-rose-400 to-red-400"
-          >
-            RODGERS
-          </span>
-        </h1>
 
-        {/* Position & measurables */}
-        <div
-          data-gsap="hero-measurables"
-          style={{ opacity: 0 }}
-          className="mt-8 md:mt-12 flex flex-wrap items-center justify-center gap-3 md:gap-6"
-        >
-          <Measurable label="POS" value="DT / OG" />
-          <Divider />
-          <Measurable label="HT" value={`6'4"`} />
-          <Divider />
-          <Measurable label="WT" value="285" />
-          <Divider />
-          <Measurable label="SCHOOL" value="Pewaukee HS" />
-          <Divider />
-          <Measurable label="STATE" value="WI" />
+          <div data-gsap="hero-copy" style={{ opacity: 0 }} className="max-w-4xl">
+            <h1 className="text-5xl font-black leading-[0.92] tracking-[-0.04em] md:text-8xl lg:text-[7.25rem]">
+              Jacob Rodgers
+            </h1>
+            <p className="mt-4 max-w-3xl text-lg font-medium leading-relaxed text-white/72 md:text-2xl">
+              Defensive-line upside. Offensive-line versatility. Built through
+              sports-performance work, trench training, and a year-round
+              weight-room routine.
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Measurable label="Position" value="OL / DL" />
+              <Measurable label="Height" value={`6'4"`} />
+              <Measurable label="Weight" value="285" />
+              <Measurable label="School" value="Pewaukee HS" />
+              <Measurable label="State" value="WI" />
+            </div>
+
+            <div
+              data-gsap="hero-actions"
+              style={{ opacity: 0 }}
+              className="mt-10 flex flex-wrap gap-4"
+            >
+              <ActionButton
+                label="Watch Impact Reel"
+                onClick={() => {
+                  const filmSection = document.getElementById("film-reel");
+                  filmSection?.scrollIntoView({ behavior: "smooth" });
+                }}
+                primary
+              />
+              <ActionButton
+                label="Contact Family"
+                onClick={() => {
+                  const contactSection = document.getElementById("contact");
+                  contactSection?.scrollIntoView({ behavior: "smooth" });
+                }}
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Qualifying credentials */}
-        <p
-          data-gsap="hero-tagline"
-          style={{ opacity: 0 }}
-          className="mt-8 md:mt-12 text-white/60 text-sm md:text-base max-w-xl mx-auto leading-relaxed font-mono tracking-wide"
-        >
-          State Playoff Run &nbsp;|&nbsp; Freshman Starter &nbsp;|&nbsp; Two-Way
-        </p>
-
-        {/* Watch Film CTA — prominent red gradient, scrolls to film section */}
         <div
-          data-gsap="hero-scroll-cue"
+          data-gsap="hero-rail"
           style={{ opacity: 0 }}
-          className="mt-10 md:mt-14 flex flex-col items-center gap-6"
+          className="relative overflow-hidden rounded-[32px] border border-white/12 bg-black/40 p-6 backdrop-blur-xl shadow-[0_28px_90px_rgba(0,0,0,0.28)] lg:p-8"
         >
-          <button
-            onClick={() => {
-              const filmSection = document.getElementById("film-reel");
-              if (filmSection) {
-                filmSection.scrollIntoView({ behavior: "smooth" });
-              }
-            }}
-            className="inline-flex items-center gap-3 px-10 py-4 rounded-full bg-gradient-to-r from-red-600 via-red-500 to-rose-500 text-white font-bold text-sm tracking-widest uppercase shadow-lg shadow-red-500/25 hover:shadow-red-500/40 hover:scale-105 transition-all duration-300 group"
-          >
-            <Play className="w-5 h-5 group-hover:scale-110 transition-transform fill-current" />
-            Watch Film
-          </button>
+          <div className="absolute inset-0 bg-[linear-gradient(160deg,rgba(245,158,11,0.14),transparent_40%,rgba(255,255,255,0.03))]" />
+          <div className="relative">
+            <span className="font-mono text-[10px] tracking-[0.4em] text-amber-300/75">
+              COACH SNAPSHOT
+            </span>
+            <div className="mt-6 grid gap-4">
+              <SnapshotCard
+                label="Film"
+                title="Freshman + offseason clips live"
+                body="Jennifer's strongest message clips are now cut into a coach-first impact reel on this page."
+              />
+              <SnapshotCard
+                label="Development"
+                title="Sports-performance work started at 11"
+                body="NX Level, trench work, IMG camps, and one-on-one sessions with Joel and Justin shape the development story."
+              />
+              <SnapshotCard
+                label="References"
+                title="Only verified information"
+                body="Placeholder quotes were removed. Coaches can request real references from family, staff, and trainers."
+              />
+            </div>
 
-          {/* Scroll indicator — secondary, subtle */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-            <ChevronDown className="w-4 h-4 text-white/20 animate-pulse" />
+            <div
+              data-gsap="hero-scroll-cue"
+              style={{ opacity: 0 }}
+              className="mt-8 flex items-center gap-3 text-sm text-white/45"
+            >
+              <Play className="h-4 w-4 text-amber-300/80" />
+              Scroll to film for the impact reel and ranked message clips.
+              <ChevronDown className="ml-auto h-4 w-4 animate-bounce text-white/30" />
+            </div>
           </div>
         </div>
       </div>
-
     </section>
   );
 }
 
 function Measurable({ label, value }: { label: string; value: string }) {
   return (
-    <div className="text-center">
-      <div className="text-[10px] tracking-[0.3em] text-white/30 mb-1">
+    <div className="rounded-full border border-white/12 bg-black/35 px-4 py-3 text-left backdrop-blur-md">
+      <div className="mb-1 text-[9px] uppercase tracking-[0.3em] text-white/35">
         {label}
       </div>
-      <div className="text-sm md:text-lg font-mono font-semibold text-white/90">
+      <div className="font-mono text-sm font-semibold text-white/92 md:text-base">
         {value}
       </div>
     </div>
   );
 }
 
-function Divider() {
-  return <div className="w-px h-8 bg-white/10 hidden md:block" />;
+function SnapshotCard({
+  label,
+  title,
+  body,
+}: {
+  label: string;
+  title: string;
+  body: string;
+}) {
+  return (
+    <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5">
+      <div className="text-[9px] uppercase tracking-[0.3em] text-amber-300/60">
+        {label}
+      </div>
+      <h3 className="mt-2 text-lg font-semibold text-white">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-white/60">{body}</p>
+    </div>
+  );
+}
+
+function ActionButton({
+  label,
+  onClick,
+  primary = false,
+}: {
+  label: string;
+  onClick: () => void;
+  primary?: boolean;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={
+        primary
+          ? "inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-red-600 via-red-500 to-amber-400 px-7 py-4 text-sm font-bold uppercase tracking-[0.28em] text-white shadow-lg shadow-red-500/25 transition-all duration-300 hover:scale-[1.02] hover:shadow-red-500/40"
+          : "inline-flex items-center gap-3 rounded-full border border-white/14 bg-black/28 px-7 py-4 text-sm font-semibold uppercase tracking-[0.28em] text-white/88 backdrop-blur-md transition-all duration-300 hover:border-amber-300/35 hover:text-white"
+      }
+    >
+      {primary && <Play className="h-4 w-4 fill-current" />}
+      {label}
+    </button>
+  );
 }

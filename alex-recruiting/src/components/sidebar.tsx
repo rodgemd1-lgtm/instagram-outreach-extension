@@ -2,119 +2,180 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  Users,
-  Calendar,
-  FileText,
-  Mail,
-  BarChart3,
-  ShieldCheck,
-  Swords,
-  Search,
-  Home,
-  Brain,
-  PenSquare,
-  Palette,
-  Zap,
-  BookOpen,
-  MessageSquarePlus,
-  Flame,
-  Send,
-  UserSearch,
-  Twitter,
-  ClipboardList,
-  Bot,
-  Rocket,
-  Film,
-  UsersRound,
-  Camera,
-  PlayCircle,
-  Upload,
-  Trophy,
-  CalendarDays,
-} from "lucide-react";
-
-const navItems = [
-  { href: "/", label: "Dashboard", icon: Home },
-  { href: "/agency", label: "Agency", icon: UsersRound },
-  { href: "/launch", label: "Profile Launch", icon: Rocket },
-  { href: "/manage", label: "Content Manager", icon: ClipboardList },
-  { href: "/x-profile", label: "Jacob's X Profile", icon: Twitter },
-  { href: "/create", label: "Create Post", icon: PenSquare },
-  { href: "/hooks", label: "Hooks Library", icon: Zap },
-  { href: "/captions", label: "Captions Library", icon: BookOpen },
-  { href: "/viral", label: "Viral Content", icon: Flame },
-  { href: "/comments", label: "Comment Templates", icon: MessageSquarePlus },
-  { href: "/cold-dms", label: "Cold DM Engine", icon: Send },
-  { href: "/connections", label: "Who to Connect With", icon: UserSearch },
-  { href: "/videos", label: "Video Library", icon: Film },
-  { href: "/youtube-studio", label: "YouTube Studio", icon: PlayCircle },
-  { href: "/media", label: "Photo Library", icon: Camera },
-  { href: "/media-import", label: "Import Media", icon: Upload },
-  { href: "/accomplishments", label: "Accomplishments", icon: Trophy },
-  { href: "/camps", label: "Camp Tracker", icon: CalendarDays },
-  { href: "/coaches", label: "Coach Pipeline", icon: Users },
-  { href: "/dms", label: "DM Campaigns", icon: Mail },
-  { href: "/calendar", label: "Content Calendar", icon: Calendar },
-  { href: "/posts", label: "Post Queue", icon: FileText },
-  { href: "/profile-studio", label: "Profile Studio", icon: Palette },
-  { href: "/analytics", label: "Analytics", icon: BarChart3 },
-  { href: "/audit", label: "Profile Audit", icon: ShieldCheck },
-  { href: "/competitors", label: "Competitors", icon: Swords },
-  { href: "/scrape", label: "Scraping Tools", icon: Search },
-  { href: "/intelligence", label: "Intelligence", icon: Brain },
-  { href: "/agents", label: "Agent Command Center", icon: Bot },
-  { href: "/recruit", label: "Recruit Website", icon: Rocket },
-];
+import { dispatchOperatorCommand } from "@/lib/os/operator-client";
+import type { OSBriefingResponse } from "@/lib/os/types";
+import { navSections, primaryTabs } from "@/lib/app-navigation";
 
 export function Sidebar() {
   const pathname = usePathname();
+  const [briefing, setBriefing] = useState<OSBriefingResponse | null>(null);
+
+  useEffect(() => {
+    let active = true;
+
+    async function load() {
+      try {
+        const response = await fetch("/api/os/briefing", { cache: "no-store" });
+        const data = (await response.json()) as OSBriefingResponse;
+        if (active) {
+          setBriefing(data);
+        }
+      } catch (error) {
+        console.error("Failed to load sidebar briefing:", error);
+      }
+    }
+
+    void load();
+    const interval = window.setInterval(() => {
+      void load();
+    }, 90_000);
+
+    return () => {
+      active = false;
+      window.clearInterval(interval);
+    };
+  }, []);
+
+  const firstPriority = briefing?.priorities[0] ?? null;
+  const secondarySections = navSections.filter((section) => section.id !== "command").slice(0, 4);
 
   return (
-    <aside className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col border-r border-slate-200 bg-white">
-      {/* Logo / Brand */}
-      <div className="flex h-16 items-center gap-3 border-b border-slate-200 px-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-900 text-white font-bold text-sm">
-          A
+    <aside className="fixed left-0 top-0 z-40 hidden h-screen w-[18rem] flex-col border-r border-[rgba(15,40,75,0.08)] bg-[linear-gradient(180deg,rgba(250,245,236,0.96),rgba(239,244,248,0.94))] px-4 py-4 backdrop-blur-xl md:flex">
+      <div className="shell-panel-strong overflow-hidden px-5 py-5">
+        <div className="shell-kicker">
+          <Sparkles className="h-3.5 w-3.5" />
+          Susan&apos;s OS
         </div>
-        <div>
-          <h1 className="text-sm font-bold text-slate-900">Alex Recruiting</h1>
-          <p className="text-[11px] text-slate-500">Jacob Rodgers | DT/OG | &apos;29</p>
+        <div className="mt-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--app-muted)]">
+            Jacob Rodgers
+          </p>
+          <h1 className="mt-1 text-xl font-semibold tracking-tight text-[var(--app-navy-strong)]">
+            Recruiting command center
+          </h1>
+          <p className="mt-2 text-sm leading-6 text-[var(--app-muted)]">
+            Pewaukee HS. OL / DL. Class of 2029. Built to tell you what matters and let you act from one place.
+          </p>
+        </div>
+
+        <div className="mt-5 rounded-[24px] border border-[rgba(15,40,75,0.08)] bg-[linear-gradient(145deg,rgba(15,40,75,0.96),rgba(10,28,53,0.94))] px-4 py-4 text-white">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--app-gold-soft)]">
+            Do next
+          </p>
+          <p className="mt-2 text-sm font-semibold leading-6">
+            {firstPriority?.title ?? "Loading the live priority stack..."}
+          </p>
+          <p className="mt-2 text-xs leading-5 text-white/70">
+            {firstPriority?.summary ?? "The operator will surface the most important move here."}
+          </p>
+          {firstPriority?.command ? (
+            <button
+              type="button"
+              onClick={() => dispatchOperatorCommand({ command: firstPriority.command })}
+              className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/10 px-3 py-2 text-xs font-semibold text-white transition hover:bg-white/14"
+            >
+              {firstPriority.actionLabel}
+              <ArrowRight className="h-3.5 w-3.5" />
+            </button>
+          ) : null}
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 space-y-1 px-3 py-4">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                isActive
-                  ? "bg-slate-100 text-slate-900"
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-              )}
-            >
-              <item.icon className={cn("h-4 w-4", isActive ? "text-slate-900" : "text-slate-400")} />
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* Footer */}
-      <div className="border-t border-slate-200 p-4">
-        <div className="rounded-lg bg-slate-50 p-3">
-          <p className="text-xs font-medium text-slate-700">Double Black Box</p>
-          <p className="text-[11px] text-slate-500 mt-1">Phase 03 — Build</p>
-          <div className="mt-2 h-1.5 w-full rounded-full bg-slate-200">
-            <div className="h-1.5 rounded-full bg-slate-900" style={{ width: "50%" }} />
-          </div>
+      <div className="mt-4 shell-panel px-3 py-3">
+        <div className="px-2 pb-2">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--app-muted)]">
+            Primary rooms
+          </p>
         </div>
+        <div className="space-y-2">
+          {primaryTabs.map((item) => {
+            const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "shell-nav-link",
+                  isActive
+                    ? "shell-nav-link-active text-white"
+                    : "shell-nav-link-idle text-[var(--app-navy-strong)] hover:border-[rgba(15,40,75,0.12)] hover:bg-white/84"
+                )}
+              >
+                <div
+                  className={cn(
+                    "mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border",
+                    isActive
+                      ? "border-white/12 bg-white/10 text-[var(--app-gold-soft)]"
+                      : "border-[rgba(15,40,75,0.08)] bg-white/90 text-[var(--app-navy)]"
+                  )}
+                >
+                  <item.icon className="h-4 w-4" />
+                </div>
+                <div className="min-w-0">
+                  <p className={cn("text-sm font-semibold", isActive ? "text-white" : "text-[var(--app-navy-strong)]")}>
+                    {item.label}
+                  </p>
+                  <p className={cn("mt-0.5 text-[11px] leading-5", isActive ? "text-white/68" : "text-[var(--app-muted)]")}>
+                    {item.blurb}
+                  </p>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="mt-4 flex-1 space-y-4 overflow-y-auto pr-1">
+        {secondarySections.map((section) => (
+          <section key={section.id} className="shell-panel px-3 py-3">
+            <div className="px-2 pb-2">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--app-muted)]">
+                {section.label}
+              </p>
+            </div>
+            <div className="space-y-2">
+              {section.items.slice(0, 4).map((item) => {
+                const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "shell-nav-link",
+                      isActive
+                        ? "shell-nav-link-active text-white"
+                        : "shell-nav-link-idle text-[var(--app-navy-strong)] hover:border-[rgba(15,40,75,0.12)] hover:bg-white/84"
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border",
+                        isActive
+                          ? "border-white/12 bg-white/10 text-[var(--app-gold-soft)]"
+                          : "border-[rgba(15,40,75,0.08)] bg-white/90 text-[var(--app-navy)]"
+                      )}
+                    >
+                      <item.icon className="h-4 w-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className={cn("text-sm font-semibold", isActive ? "text-white" : "text-[var(--app-navy-strong)]")}>
+                        {item.label}
+                      </p>
+                      <p className={cn("mt-0.5 text-[11px] leading-5", isActive ? "text-white/68" : "text-[var(--app-muted)]")}>
+                        {item.blurb}
+                      </p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+        ))}
       </div>
     </aside>
   );

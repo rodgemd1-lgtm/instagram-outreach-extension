@@ -8,6 +8,7 @@
 import { verifyHandle, getFollowers, getUserTweets } from "@/lib/integrations/x-api";
 import { targetSchools } from "@/lib/data/target-schools";
 import { jacobProfile } from "@/lib/data/jacob-profile";
+import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 import type { XUser, XTweet } from "@/lib/integrations/x-api";
 
 // ─── Return Types ─────────────────────────────────────────────────────────────
@@ -76,6 +77,18 @@ const WEEKLY_POST_TARGET = 5;
 const TARGET_COACH_HANDLES = targetSchools
   .map((s) => s.officialXHandle.replace("@", "").toLowerCase())
   .filter(Boolean);
+
+interface CoachHandleRow {
+  name: string;
+  school_name: string;
+  division: string;
+  x_handle: string | null;
+}
+
+interface DMMessageRow {
+  sent_at: string | null;
+  responded_at: string | null;
+}
 
 // ─── Jacob's X Identity ───────────────────────────────────────────────────────
 
@@ -148,27 +161,48 @@ export async function getLiveCoachFollows(): Promise<CoachFollowMetric> {
 
     // Fetch Jacob's followers (up to 1000 to catch all coaches)
     const followers: XUser[] = await getFollowers(jacobUser.id, 1000);
+    let coachRows: CoachHandleRow[] = [];
 
-    // Cross-reference followers against known target coach/program handles
-    const coachFollowers = followers.filter((f) => {
-      const handle = f.username.toLowerCase();
-      return TARGET_COACH_HANDLES.includes(handle);
-    });
+    if (isSupabaseConfigured()) {
+      const supabase = createAdminClient();
+      const { data } = await supabase
+        .from("coaches")
+        .select("name, school_name, division, x_handle")
+        .not("x_handle", "is", null)
+        .neq("x_handle", "");
+
+      coachRows = (data ?? []) as CoachHandleRow[];
+    }
+
+    const coachHandleMap = new Map(
+      coachRows
+        .filter((row) => row.x_handle)
+        .map((row) => [row.x_handle!.replace("@", "").toLowerCase(), row])
+    );
+
+    const knownHandles = new Set([
+      ...TARGET_COACH_HANDLES,
+      ...Array.from(coachHandleMap.keys()),
+    ]);
+
+    // Cross-reference followers against known coach/program handles
+    const coachFollowers = followers.filter((f) => knownHandles.has(f.username.toLowerCase()));
 
     // Build recent follows list — in production these would be sorted by
     // follow timestamp via the X API; here we return them as detected.
     const recentFollows: RecentCoachFollow[] = coachFollowers
       .slice(0, 5)
       .map((f) => {
+        const coach = coachHandleMap.get(f.username.toLowerCase());
         const school = targetSchools.find(
           (s) => s.officialXHandle.replace("@", "").toLowerCase() === f.username.toLowerCase()
         );
         return {
-          name: f.name,
+          name: coach?.name ?? f.name,
           xHandle: `@${f.username}`,
-          schoolName: school?.name ?? f.name,
+          schoolName: coach?.school_name ?? school?.name ?? f.name,
           followedAt: now, // X API v2 free tier doesn't expose follow timestamps
-          division: school?.division ?? "Unknown",
+          division: coach?.division ?? school?.division ?? "Unknown",
         };
       });
 
@@ -262,7 +296,7 @@ export async function getLiveWeeklyStats(): Promise<WeeklyStats> {
   try {
     const jacobUser = await getJacobUser();
     if (!jacobUser) {
-      return { postsThisWeek: 4, weeklyTarget: WEEKLY_POST_TARGET, dmsSent: 12, dmsResponded: 3, responseRate: 25, profileVisits: 0, fetchedAt: now };
+      return { postsThisWeek: 0, weeklyTarget: WEEKLY_POST_TARGET, dmsSent: 0, dmsResponded: 0, responseRate: 0, profileVisits: 0, fetchedAt: now };
     }
 
     const tweets: XTweet[] = await getUserTweets(jacobUser.id, 50);
@@ -274,31 +308,42 @@ export async function getLiveWeeklyStats(): Promise<WeeklyStats> {
       return new Date(t.created_at) >= weekStart;
     }).length;
 
-    // DMs and profile visits: X API free tier doesn't expose these.
-    // We derive a plausible estimate from follower count growth rate.
-    // In a real deployment these would come from X Analytics dashboard
-    // data or a tracking database.
+    // DMs come from the outreach log in Supabase. Profile visits still have
+    // to be estimated because the public X APIs do not expose them.
+    let dmsSent = 0;
+    let dmsResponded = 0;
+
+    if (isSupabaseConfigured()) {
+      const supabase = createAdminClient();
+      const { data } = await supabase
+        .from("dm_messages")
+        .select("sent_at, responded_at")
+        .or(`sent_at.gte.${weekStart.toISOString()},responded_at.gte.${weekStart.toISOString()}`);
+
+      const rows = (data ?? []) as DMMessageRow[];
+      dmsSent = rows.filter((row) => row.sent_at && new Date(row.sent_at) >= weekStart).length;
+      dmsResponded = rows.filter((row) => row.responded_at && new Date(row.responded_at) >= weekStart).length;
+    }
+
     const followerCount = jacobUser.public_metrics?.followers_count ?? 47;
     const estimatedProfileVisits = Math.round(followerCount * 3.5);
-    const estimatedDmsSent = 12;     // tracked manually or via DB
-    const estimatedDmsResponded = 3; // tracked manually or via DB
 
     return {
       postsThisWeek,
       weeklyTarget: WEEKLY_POST_TARGET,
-      dmsSent: estimatedDmsSent,
-      dmsResponded: estimatedDmsResponded,
-      responseRate: Math.round((estimatedDmsResponded / estimatedDmsSent) * 100),
+      dmsSent,
+      dmsResponded,
+      responseRate: dmsSent > 0 ? Math.round((dmsResponded / dmsSent) * 100) : 0,
       profileVisits: estimatedProfileVisits,
       fetchedAt: now,
     };
   } catch {
     return {
-      postsThisWeek: 4,
+      postsThisWeek: 0,
       weeklyTarget: WEEKLY_POST_TARGET,
-      dmsSent: 12,
-      dmsResponded: 3,
-      responseRate: 25,
+      dmsSent: 0,
+      dmsResponded: 0,
+      responseRate: 0,
       profileVisits: 0,
       fetchedAt: now,
     };
@@ -345,7 +390,7 @@ export async function getDashboardSnapshot(): Promise<DashboardSnapshot> {
       followers: { count: 47, weekChange: 12, target: FOLLOWER_TARGET, fetchedAt: now },
       coachFollows: { count: 3, target: COACH_FOLLOW_TARGET, recentFollows: [], fetchedAt: now },
       engagement: { rate: 6.2, weekChange: 0.8, totalImpressions: 0, totalEngagements: 0, fetchedAt: now },
-      weeklyStats: { postsThisWeek: 4, weeklyTarget: WEEKLY_POST_TARGET, dmsSent: 12, dmsResponded: 3, responseRate: 25, profileVisits: 0, fetchedAt: now },
+      weeklyStats: { postsThisWeek: 0, weeklyTarget: WEEKLY_POST_TARGET, dmsSent: 0, dmsResponded: 0, responseRate: 0, profileVisits: 0, fetchedAt: now },
       jacobUserId: null,
       fetchedAt: now,
       dataSource,

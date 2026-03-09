@@ -31,17 +31,29 @@ const STATIC_PHOTOS: Record<string, string> = {
  */
 export function useRecruitPhotos() {
   const [photoMap, setPhotoMap] = useState<Record<string, string>>(STATIC_PHOTOS);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
 
+    const host = window.location.hostname;
+    if (!["localhost", "127.0.0.1"].includes(host)) {
+      return () => {
+        cancelled = true;
+      };
+    }
+
     async function fetchPhotos() {
       try {
+        setLoading(true);
         const res = await fetch("/api/photos");
         if (!res.ok) return;
 
-        const photos: PhotoRecord[] = await res.json();
+        const payload = await res.json();
+        const photos: PhotoRecord[] = Array.isArray(payload)
+          ? payload
+          : payload.photos ?? [];
+
         if (cancelled || photos.length === 0) return;
 
         // Build overrides from real photos

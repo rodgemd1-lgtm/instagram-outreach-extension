@@ -38,6 +38,16 @@ const PHOTO_SOURCES: PhotoSource[] = [
     label: "Jake's Videos Folder",
     categoryHint: "portrait",
   },
+  {
+    dir: "/Users/mikerodgers/Desktop/Jacob Media Master",
+    label: "Jacob Media Master",
+    categoryHint: "action",
+  },
+  {
+    dir: "/tmp/alex-recruiting-export",
+    label: "Photos App Export",
+    categoryHint: "action",
+  },
 ];
 
 function getMimeType(ext: string): string {
@@ -53,6 +63,10 @@ function getMimeType(ext: string): string {
 
 function guessCategory(filePath: string, hint: PhotoAssetRecord["category"]): PhotoAssetRecord["category"] {
   const name = path.basename(filePath).toLowerCase();
+  const normalizedPath = filePath.toLowerCase();
+
+  if (normalizedPath.includes("james-workout")) return "training";
+  if (normalizedPath.includes("football")) return "action";
 
   if (name.includes("profile")) return "profile";
   if (name.includes("event")) return "event";
@@ -60,9 +74,11 @@ function guessCategory(filePath: string, hint: PhotoAssetRecord["category"]): Ph
   // iCloud IMG_0245-0253 are known action/game shots
   const match = name.match(/img_(\d+)/);
   if (match) {
-    const num = parseInt(match[1]);
-    if (num >= 245 && num <= 253) return "action";
+    const num = parseInt(match[1], 10);
+    if (num >= 237 && num <= 253) return "action";
+    if (num >= 3554 && num <= 3654) return "training";
     if (num >= 3884 && num <= 3898) return "training";
+    if (num >= 4319 && num <= 4320) return "action";
     if (num >= 4684 && num <= 4691) return "action";
   }
 
@@ -73,6 +89,74 @@ function guessCategory(filePath: string, hint: PhotoAssetRecord["category"]): Ph
   if (name.startsWith("att.")) return "other";
 
   return hint;
+}
+
+function shouldImportPhoto(filePath: string, source: PhotoSource): boolean {
+  const name = path.basename(filePath).toLowerCase();
+
+  if (name.startsWith("hf_") || name.startsWith("att.")) return false;
+  if (name.includes("chatgpt image")) return false;
+  if (name.includes("hero-")) return false;
+  if (name.includes("screenshot")) return false;
+  if (name.startsWith("event-photo")) return false;
+
+  if (source.label === "Photos App Export") {
+    return true;
+  }
+
+  if (source.label === "Jacob Media Master") {
+    return true;
+  }
+
+  if (name === "jacob profile picture.jpg") return true;
+  if (name === "jake's photo.jpeg") return true;
+
+  const match = name.match(/img_(\d+)/);
+  if (match) {
+    const num = parseInt(match[1], 10);
+    if (num >= 237 && num <= 253) return true;
+    if (num >= 3554 && num <= 3654) return true;
+    if (num >= 3884 && num <= 3898) return true;
+    if (num >= 4319 && num <= 4320) return true;
+    if (num >= 4684 && num <= 4691) return true;
+  }
+
+  return false;
+}
+
+function collectPhotoFiles(dir: string, depth = 0): string[] {
+  if (depth > 4) return [];
+
+  let entries: string[];
+  try {
+    entries = fs.readdirSync(dir);
+  } catch {
+    return [];
+  }
+
+  const files: string[] = [];
+
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry);
+
+    let stat;
+    try {
+      stat = fs.statSync(fullPath);
+    } catch {
+      continue;
+    }
+
+    if (stat.isDirectory()) {
+      files.push(...collectPhotoFiles(fullPath, depth + 1));
+      continue;
+    }
+
+    if (stat.isFile()) {
+      files.push(fullPath);
+    }
+  }
+
+  return files;
 }
 
 function guessTags(filePath: string, category: PhotoAssetRecord["category"]): string[] {
@@ -99,19 +183,15 @@ export function importPhotosFromSources(): { imported: number; skipped: number; 
       continue;
     }
 
-    let files: string[];
-    try {
-      files = fs.readdirSync(source.dir);
-    } catch {
-      errors.push(`Cannot read directory: ${source.dir}`);
+    const files = collectPhotoFiles(source.dir);
+    if (files.length === 0) {
       continue;
     }
 
-    for (const file of files) {
-      const ext = path.extname(file).toLowerCase();
+    for (const filePath of files) {
+      const ext = path.extname(filePath).toLowerCase();
       if (!PHOTO_EXTENSIONS.has(ext)) continue;
-
-      const filePath = path.join(source.dir, file);
+      if (!shouldImportPhoto(filePath, source)) continue;
 
       try {
         const stat = fs.statSync(filePath);
@@ -119,7 +199,7 @@ export function importPhotosFromSources(): { imported: number; skipped: number; 
         const tags = guessTags(filePath, category);
 
         const result = insertPhoto({
-          name: file,
+          name: path.basename(filePath),
           source: source.label,
           sourceFolder: source.dir,
           filePath,
@@ -133,14 +213,9 @@ export function importPhotosFromSources(): { imported: number; skipped: number; 
           favorite: category === "action" || category === "profile",
         });
 
-        // insertPhoto returns existing record if already imported (dedupe)
-        if (result.createdAt === new Date().toISOString().split("T")[0]) {
-          imported++;
-        } else {
-          imported++; // Count as imported since insertPhoto handles dedupe
-        }
+        imported += result ? 1 : 0;
       } catch (e) {
-        errors.push(`Error importing ${file}: ${e}`);
+        errors.push(`Error importing ${path.basename(filePath)}: ${e}`);
         skipped++;
       }
     }

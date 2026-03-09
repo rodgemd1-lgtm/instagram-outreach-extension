@@ -188,7 +188,7 @@ export default function MediaImportPage() {
   const errorCount = files.filter((f) => f.status === "error").length;
 
   return (
-    <div className="md:ml-64 min-h-screen bg-black p-6">
+    <div className="min-h-screen bg-black p-6">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-white">Media Import</h1>

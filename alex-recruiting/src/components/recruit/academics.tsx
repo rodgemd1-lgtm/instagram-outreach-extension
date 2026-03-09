@@ -6,16 +6,6 @@ import {
   type AssemblyConfig,
 } from "@/hooks/useRecruitAssembly";
 
-/* ──────────────────────────────────────────────────────────────
-   Academics Section — Compact pass/fail check
-   LAAL Mechanism: Continuity Thread
-   Two lines. Three data points. The coach's compliance question
-   is answered and they move on. Respecting coach time = trust.
-
-   Wave 1: none (below fold)
-   Wave 2: simple fade-in
-   ────────────────────────────────────────────────────────────── */
-
 export function AcademicsSection() {
   const config = useMemo<AssemblyConfig>(
     () => ({
@@ -47,86 +37,64 @@ export function AcademicsSection() {
     <section
       id="academics"
       ref={scopeRef}
-      className="relative py-20 md:py-28 px-6 md:px-12"
+      className="relative px-6 py-20 md:px-12 md:py-28"
     >
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-      <div
-        data-gsap="acad-content"
-        className="max-w-5xl mx-auto"
-      >
+      <div data-gsap="acad-content" className="mx-auto max-w-5xl">
         <div data-gsap-wave="2" style={{ opacity: 0 }}>
-          <span className="text-[10px] tracking-[0.5em] text-red-500/60 uppercase font-mono block mb-6">
+          <span className="mb-6 block font-mono text-[10px] uppercase tracking-[0.5em] text-red-500/60">
             Academics
           </span>
 
-          {/* Primary stat bar */}
-          <div className="flex flex-wrap items-center gap-6 md:gap-10 mb-8">
+          <div className="mb-8 flex flex-wrap items-center gap-6 md:gap-10">
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl md:text-4xl font-mono font-black text-white">
+              <span className="font-mono text-3xl font-black text-white md:text-4xl">
                 3.25
               </span>
-              <span className="text-[10px] tracking-[0.3em] text-white/30 uppercase">
-                GPA
+              <span className="text-[10px] uppercase tracking-[0.3em] text-white/30">
+                current GPA
               </span>
             </div>
-            <div className="w-px h-8 bg-white/10 hidden md:block" />
+            <div className="hidden h-8 w-px bg-white/10 md:block" />
             <div className="flex items-baseline gap-2">
-              <span className="text-lg md:text-xl font-mono font-bold text-white/80">
-                NCAA
+              <span className="font-mono text-lg font-bold text-white/80 md:text-xl">
+                1
               </span>
-              <span className="text-[10px] tracking-[0.3em] text-white/30 uppercase">
-                Eligible
+              <span className="text-[10px] uppercase tracking-[0.3em] text-white/30">
+                semester complete
               </span>
             </div>
-            <div className="w-px h-8 bg-white/10 hidden md:block" />
+            <div className="hidden h-8 w-px bg-white/10 md:block" />
             <div className="flex items-baseline gap-2">
-              <span className="text-lg md:text-xl font-mono font-bold text-white/80">
-                NCSA
+              <span className="font-mono text-lg font-bold text-white/80 md:text-xl">
+                live
               </span>
-              <span className="text-[10px] tracking-[0.3em] text-white/30 uppercase">
-                Verified
+              <span className="text-[10px] uppercase tracking-[0.3em] text-white/30">
+                transcript updates
               </span>
             </div>
           </div>
 
-          {/* Extended academic details */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <AcademicDetail label="Intended Major" value="Business / Sport Mgmt" />
-            <AcademicDetail label="PSAT (Projected)" value="1100+" />
-            <AcademicDetail label="Honor Roll" value="3 Semesters" />
-            <AcademicDetail label="Core GPA" value="3.25" />
+          <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+            <AcademicDetail label="Current Snapshot" value="Freshman year underway" />
+            <AcademicDetail
+              label="What This Means"
+              value="Early academic record, not a finished one"
+            />
+            <AcademicDetail
+              label="Coach Access"
+              value="Updated transcript shared directly on request"
+            />
           </div>
 
-          {/* NCAA Eligibility Center badge */}
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3 px-5 py-3 rounded-xl border border-green-500/20 bg-green-500/[0.04]">
-              <div className="relative w-10 h-10 rounded-full border-2 border-green-500/50 flex items-center justify-center">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  className="w-5 h-5 text-green-500"
-                  stroke="currentColor"
-                  strokeWidth={2.5}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-                <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full" />
-              </div>
-              <div>
-                <span className="text-xs font-mono font-bold text-green-500 block leading-tight">
-                  NCAA ELIGIBILITY CENTER
-                </span>
-                <span className="text-[10px] tracking-[0.15em] text-white/40 uppercase">
-                  Registered &amp; On Track
-                </span>
-              </div>
-            </div>
-
-            <p className="text-white/40 text-sm max-w-xs">
-              On track for Division I academic requirements. All core courses in progress.
+          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6">
+            <p className="text-sm leading-7 text-white/52">
+              Jennifer&apos;s point here was correct: this page should not lock in
+              projected test scores, NCAA eligibility language, or a polished
+              academic narrative after one semester. The academic section now
+              stays current, modest, and easy to update as the transcript
+              matures.
             </p>
           </div>
         </div>
@@ -137,11 +105,11 @@ export function AcademicsSection() {
 
 function AcademicDetail({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-white/[0.02] border border-white/[0.06] rounded-lg px-4 py-3">
-      <span className="text-[9px] tracking-[0.2em] text-white/30 uppercase block mb-1">
+    <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-4 py-3">
+      <span className="mb-1 block text-[9px] uppercase tracking-[0.2em] text-white/30">
         {label}
       </span>
-      <span className="text-sm font-mono font-semibold text-white/80">
+      <span className="font-mono text-sm font-semibold text-white/80">
         {value}
       </span>
     </div>

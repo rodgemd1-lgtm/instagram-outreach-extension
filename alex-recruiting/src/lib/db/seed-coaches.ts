@@ -79,70 +79,34 @@ export async function seedCoachesAndSchools(): Promise<SeedResult> {
     schoolsUpserted = schoolData?.length ?? 0;
   }
 
-  // ── 2. Upsert coaches (one placeholder OL coach per school) ────────────
-  // We use school_id + title as a natural dedup key. Since the coaches table
-  // uses a UUID PK, we first query for existing coaches by school_id so we
-  // can decide whether to insert or update.
-
+  // ── 2. Remove legacy placeholder coaches ───────────────────────────────
+  // Real coach data now comes from the live staff-directory scraper.
   const { data: existingCoaches } = await supabase
     .from("coaches")
-    .select("id, school_id")
+    .select("id, name")
+    .or("name.like.OL Coach - %,name.like.OL Coach — %");
+
+  const placeholderIds = (existingCoaches ?? []).map((coach) => coach.id as string);
+  if (placeholderIds.length > 0) {
+    const { error } = await supabase.from("coaches").delete().in("id", placeholderIds);
+    if (error) {
+      errors.push(`Placeholder coach cleanup failed: ${error.message}`);
+    }
+  }
+
+  // ── 3. Count real coach rows for reporting ─────────────────────────────
+  const { count: coachCount, error: coachCountError } = await supabase
+    .from("coaches")
+    .select("id", { count: "exact", head: true })
     .in(
       "school_id",
       targetSchools.map((s) => s.id),
     );
 
-  const existingBySchool = new Map<string, string>();
-  if (existingCoaches) {
-    for (const c of existingCoaches) {
-      existingBySchool.set(c.school_id as string, c.id as string);
-    }
-  }
-
-  for (const school of targetSchools) {
-    const coachPayload = {
-      name: `OL Coach - ${school.name}`,
-      title: "Offensive Line Coach",
-      school_id: school.id,
-      school_name: school.name,
-      division: school.division,
-      conference: school.conference,
-      x_handle: "",
-      dm_open: school.priorityTier === "Tier 3",
-      follow_status: "not_followed",
-      dm_status: "not_sent",
-      priority_tier: school.priorityTier,
-      ol_need_score: 3,
-      x_activity_score: 3,
-      last_engaged: null,
-      notes: school.whyJacob,
-      updated_at: new Date().toISOString(),
-    };
-
-    const existingId = existingBySchool.get(school.id);
-
-    if (existingId) {
-      // Update existing coach row
-      const { error } = await supabase
-        .from("coaches")
-        .update(coachPayload)
-        .eq("id", existingId);
-
-      if (error) {
-        errors.push(`Coach update for ${school.name} failed: ${error.message}`);
-      } else {
-        coachesUpserted++;
-      }
-    } else {
-      // Insert new coach row
-      const { error } = await supabase.from("coaches").insert(coachPayload);
-
-      if (error) {
-        errors.push(`Coach insert for ${school.name} failed: ${error.message}`);
-      } else {
-        coachesUpserted++;
-      }
-    }
+  if (coachCountError) {
+    errors.push(`Coach count failed: ${coachCountError.message}`);
+  } else {
+    coachesUpserted = coachCount ?? 0;
   }
 
   return {

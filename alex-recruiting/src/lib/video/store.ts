@@ -34,6 +34,13 @@ function generateId(): string {
   return `local-${Date.now()}-${nextId++}`;
 }
 
+function normalizeAssetName(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/\s+\(\d+\)(?=\.[^.]+$)/, "")
+    .replace(/\s+\d+(?=\.[^.]+$)/, "");
+}
+
 function readStore(): VideoAssetRecord[] {
   try {
     const data = fs.readFileSync(STORE_PATH, "utf-8");
@@ -61,6 +68,27 @@ export function insertAsset(
   data: Omit<VideoAssetRecord, "id" | "createdAt" | "supabaseUrl" | "storagePath" | "sourceAlbum" | "uploadedAt">
 ): VideoAssetRecord {
   const store = readStore();
+  const existing = store.find((asset) => {
+    if (asset.filePath && data.filePath && asset.filePath === data.filePath) {
+      return true;
+    }
+
+    if (
+      normalizeAssetName(asset.name) === normalizeAssetName(data.name) &&
+      asset.fileSize !== null &&
+      data.fileSize !== null &&
+      asset.fileSize === data.fileSize
+    ) {
+      return true;
+    }
+
+    return false;
+  });
+
+  if (existing) {
+    return existing;
+  }
+
   const asset: VideoAssetRecord = {
     ...data,
     id: generateId(),

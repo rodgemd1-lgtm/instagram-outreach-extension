@@ -5,7 +5,7 @@ export const xPlaybook = {
   profileOptimization: {
     handle:
       "Use real name + position + class year. Format: @FirstLastPosition##. Example: @JacobRodgersOL29. Avoid numbers that aren't class year. Keep it professional — no memes, jokes, or slang in handle. This is what coaches see first.",
-    bio: "Line 1: Position | Class of 20XX | School, State. Line 2: Height/Weight/GPA (if 3.0+). Line 3: Hudl link (use linktr.ee or direct). Line 4: 'DMs open' or contact info. Use relevant emojis sparingly (football, state flag). Include school-specific hashtag if committed. Max 160 characters — every word must earn its spot.",
+    bio: "Line 1: Position | Class of 20XX | School, State. Line 2: Height/Weight/GPA (if 3.0+). Line 3: Hudl or recruiting link. If contact is needed, use a parent/recruiting email or website instead of 'DMs open.' Use relevant emojis sparingly. Include school-specific hashtag only if committed. Max 160 characters — every word must earn its spot.",
     headerImage:
       "Action shot in game uniform preferred. Must be high-resolution (1500x500px minimum). Include name, position, class year, school, and measurables as text overlay. Update seasonally with new film stills. Avoid generic stock photos or motivational quotes.",
     pinnedPost:

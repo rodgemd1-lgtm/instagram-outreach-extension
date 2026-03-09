@@ -13,6 +13,7 @@
 
 import { createScheduledPost, getPostQueue } from "./post-pipeline";
 import { suggestNextPost } from "./calendar-automation";
+import { RECOMMENDED_POST_WINDOWS } from "./posting-rhythm";
 import { listMedia } from "@/lib/supabase/storage";
 
 // ---------------------------------------------------------------------------
@@ -32,11 +33,17 @@ export interface AutoScheduleResult {
 // Day-of-week → category + pillar mapping
 // ---------------------------------------------------------------------------
 
-const DAY_CONFIG: Record<number, { categories: string[]; pillar: string; label: string }> = {
-  1: { categories: ["training", "strength"], pillar: "work_ethic", label: "Monday Training" },
-  3: { categories: ["game", "highlight", "film"], pillar: "performance", label: "Wednesday Film" },
-  5: { categories: ["team", "personal", "camp", "community"], pillar: "character", label: "Friday Character" },
-};
+const DAY_CONFIG = Object.fromEntries(
+  RECOMMENDED_POST_WINDOWS.map((window) => [
+    window.weekday,
+    {
+      categories: [...window.categories],
+      pillar: window.pillar,
+      label: window.label,
+      bestTime: window.bestTime,
+    },
+  ])
+) as Record<number, { categories: string[]; pillar: string; label: string; bestTime: string }>;
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -122,7 +129,7 @@ export async function autoScheduleToday(): Promise<AutoScheduleResult> {
 
   return {
     scheduled: true,
-    reason: `${config.label} post scheduled for ${scheduledAt.toISOString()}`,
+    reason: `${config.label} post scheduled for ${scheduledAt.toISOString()} (${config.bestTime})`,
     postId: post.id,
     content: caption,
     pillar: config.pillar,

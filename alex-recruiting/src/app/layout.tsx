@@ -21,8 +21,8 @@ const metadataBaseUrl =
 
 export const metadata: Metadata = {
   metadataBase: new URL(metadataBaseUrl),
-  title: "Alex Recruiting | Jacob Rodgers OL '29",
-  description: "AI-powered recruiting intelligence system for Jacob Rodgers — Class of 2029 Offensive Lineman, Pewaukee HS, Wisconsin",
+  title: "Alex Recruiting | Jacob Rodgers OL/DL '29",
+  description: "AI-powered recruiting intelligence system for Jacob Rodgers — Class of 2029 OL/DL, Pewaukee HS, Wisconsin",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -48,9 +48,9 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-50`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <PWARegister />
         <AppShell>{children}</AppShell>
       </body>

@@ -1,120 +1,197 @@
 "use client";
 
-import { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { useEffect, useMemo, useState } from "react";
+import { addMonths, endOfMonth, endOfWeek, format, isSameDay, isSameMonth, startOfMonth, startOfWeek } from "date-fns";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, CalendarDays, CheckCircle2 } from "lucide-react";
+import { RECOMMENDED_POST_WINDOWS } from "@/lib/content-engine/posting-rhythm";
 import { cn, getPillarColor, getPillarLabel } from "@/lib/utils";
-import { weeklyCalendar } from "@/lib/data/weekly-calendar";
+import type { Post } from "@/lib/types";
+
+interface RecTask {
+  id: string;
+  title: string;
+  status: "pending" | "in_progress" | "completed" | "blocked";
+  createdAt: string;
+}
+
+interface Camp {
+  id: string;
+  name: string;
+  school: string | null;
+  date: string | null;
+  registrationStatus: string;
+}
+
+function buildMonthGrid(date: Date): Date[] {
+  const start = startOfWeek(startOfMonth(date), { weekStartsOn: 0 });
+  const end = endOfWeek(endOfMonth(date), { weekStartsOn: 0 });
+  const days: Date[] = [];
+  for (let cursor = start; cursor <= end; cursor = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() + 1)) {
+    days.push(new Date(cursor));
+  }
+  return days;
+}
 
 export function ContentCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [tasks, setTasks] = useState<RecTask[]>([]);
+  const [camps, setCamps] = useState<Camp[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const monthName = currentDate.toLocaleString("default", { month: "long", year: "numeric" });
+  useEffect(() => {
+    let active = true;
 
-  // Generate calendar grid
-  const calendarDays: (number | null)[] = [];
-  for (let i = 0; i < firstDay; i++) calendarDays.push(null);
-  for (let i = 1; i <= daysInMonth; i++) calendarDays.push(i);
+    async function load() {
+      try {
+        const [postsResponse, tasksResponse, campsResponse] = await Promise.all([
+          fetch("/api/posts", { cache: "no-store" }),
+          fetch("/api/rec/tasks", { cache: "no-store" }),
+          fetch("/api/camps", { cache: "no-store" }),
+        ]);
 
-  function prevMonth() {
-    setCurrentDate(new Date(year, month - 1, 1));
-  }
+        const postsData = await postsResponse.json();
+        const tasksData = await tasksResponse.json();
+        const campsData = await campsResponse.json();
 
-  function nextMonth() {
-    setCurrentDate(new Date(year, month + 1, 1));
-  }
+        if (active) {
+          setPosts(postsData.posts ?? []);
+          setTasks(tasksData.tasks ?? []);
+          setCamps(campsData.camps ?? []);
+        }
+      } catch (error) {
+        console.error("Failed to load content calendar:", error);
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    }
 
-  function getDaySchedule(day: number) {
-    const date = new Date(year, month, day);
-    const dayName = date.toLocaleString("default", { weekday: "long" });
-    return weeklyCalendar.find((w) => w.day === dayName);
-  }
+    load();
+    return () => {
+      active = false;
+    };
+  }, []);
 
-  const isToday = (day: number) => {
-    const now = new Date();
-    return day === now.getDate() && month === now.getMonth() && year === now.getFullYear();
-  };
+  const monthGrid = useMemo(() => buildMonthGrid(currentDate), [currentDate]);
+  const scheduledPosts = useMemo(
+    () => posts.filter((post) => post.scheduledFor).sort((a, b) => new Date(a.scheduledFor).getTime() - new Date(b.scheduledFor).getTime()),
+    [posts]
+  );
+
+  const upcomingRecommendations = useMemo(() => {
+    const start = new Date();
+    const recs: Array<{ date: Date; pillar: Post["pillar"]; label: string; bestTime: string }> = [];
+
+    for (let i = 0; i < 21; i++) {
+      const candidate = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+      const match = RECOMMENDED_POST_WINDOWS.find((window) => window.weekday === candidate.getDay());
+      if (!match) continue;
+
+      recs.push({
+        date: candidate,
+        pillar: match.pillar,
+        label: match.label,
+        bestTime: match.bestTime,
+      });
+    }
+
+    return recs.slice(0, 9);
+  }, []);
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={prevMonth}>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => setCurrentDate((date) => addMonths(date, -1))}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <h2 className="text-lg font-semibold">{monthName}</h2>
-          <Button variant="ghost" size="icon" onClick={nextMonth}>
+          <h2 className="text-lg font-semibold">{format(currentDate, "MMMM yyyy")}</h2>
+          <Button variant="ghost" size="icon" onClick={() => setCurrentDate((date) => addMonths(date, 1))}>
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="hidden md:flex items-center gap-4 mr-4">
-            {["performance", "work_ethic", "character"].map((pillar) => (
-              <div key={pillar} className="flex items-center gap-1.5">
-                <div className={cn("h-2.5 w-2.5 rounded-full", getPillarColor(pillar))} />
-                <span className="text-xs text-slate-600">{getPillarLabel(pillar)}</span>
-              </div>
-            ))}
-          </div>
-          <Button size="sm">
-            <Plus className="h-4 w-4 mr-2" />
-            New Post
-          </Button>
+
+        <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
+          <span>{scheduledPosts.length} scheduled posts</span>
+          <span>{camps.filter((camp) => camp.date && new Date(camp.date) >= new Date()).length} upcoming camps</span>
+          <span>{tasks.filter((task) => task.status !== "completed").length} open tasks</span>
+          <span>Cadence: ~3 posts/week</span>
         </div>
       </div>
 
-      {/* Calendar Grid */}
       <Card>
         <CardContent className="p-0">
-          {/* Day headers */}
           <div className="grid grid-cols-7 border-b">
             {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-              <div key={day} className="px-3 py-2 text-center text-xs font-medium text-slate-500 border-r last:border-r-0">
+              <div key={day} className="px-3 py-2 text-center text-xs font-medium text-slate-500">
                 {day}
               </div>
             ))}
           </div>
 
-          {/* Calendar cells */}
           <div className="grid grid-cols-7">
-            {calendarDays.map((day, idx) => {
-              const schedule = day ? getDaySchedule(day) : null;
+            {monthGrid.map((day) => {
+              const dayPosts = scheduledPosts.filter((post) => post.scheduledFor && isSameDay(new Date(post.scheduledFor), day));
+              const dayCamps = camps.filter((camp) => camp.date && isSameDay(new Date(camp.date), day));
+              const recommendation = RECOMMENDED_POST_WINDOWS.find((window) => window.weekday === day.getDay());
+              const isCurrentMonth = isSameMonth(day, currentDate);
+              const today = isSameDay(day, new Date());
+
               return (
                 <div
-                  key={idx}
+                  key={day.toISOString()}
                   className={cn(
-                    "min-h-[60px] md:min-h-[120px] border-r border-b last:border-r-0 p-1 md:p-2",
-                    !day && "bg-slate-50",
-                    isToday(day || 0) && "bg-blue-50"
+                    "min-h-[90px] border-r border-b p-2 align-top",
+                    !isCurrentMonth && "bg-slate-50 text-slate-300",
+                    today && "bg-blue-50"
                   )}
                 >
-                  {day && (
-                    <>
-                      <div className="flex items-center justify-between mb-1">
-                        <span className={cn("text-sm", isToday(day) ? "font-bold text-blue-600" : "text-slate-700")}>
-                          {day}
-                        </span>
-                      </div>
-                      {schedule && (
-                        <div className={cn("rounded p-1.5 mt-1", `${getPillarColor(schedule.pillar)}/10`)}>
-                          <div className="flex items-center gap-1 mb-0.5">
-                            <div className={cn("h-1.5 w-1.5 rounded-full", getPillarColor(schedule.pillar))} />
-                            <span className="text-[10px] font-medium text-slate-600">
-                              {getPillarLabel(schedule.pillar).split(" ")[0]}
-                            </span>
-                          </div>
-                          <p className="text-[10px] text-slate-500 line-clamp-2">{schedule.contentType}</p>
-                          <p className="text-[10px] text-slate-400 mt-0.5">{schedule.bestTime}</p>
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className={cn("text-sm", today ? "font-bold text-blue-600" : "text-slate-700")}>
+                      {format(day, "d")}
+                    </span>
+                    {dayPosts.length > 0 ? (
+                      <CheckCircle2 className="h-3.5 w-3.5 text-green-600" />
+                    ) : null}
+                  </div>
+
+                  <div className="space-y-2">
+                    {dayPosts.map((post) => (
+                      <div key={post.id} className={cn("rounded-md p-2 text-[10px]", `${getPillarColor(post.pillar)}/10`)}>
+                        <div className="mb-1 flex items-center gap-1">
+                          <span className={cn("h-1.5 w-1.5 rounded-full", getPillarColor(post.pillar))} />
+                          <span className="font-medium text-slate-700">{getPillarLabel(post.pillar)}</span>
                         </div>
-                      )}
-                    </>
-                  )}
+                        <p className="line-clamp-2 text-slate-600">{post.content}</p>
+                        <p className="mt-1 text-slate-400">{post.bestTime || format(new Date(post.scheduledFor), "p")}</p>
+                      </div>
+                    ))}
+
+                    {dayCamps.map((camp) => (
+                      <div key={camp.id} className="rounded-md border border-amber-200 bg-amber-50 p-2 text-[10px] text-amber-900">
+                        <div className="font-medium">{camp.name}</div>
+                        <p className="mt-1 text-amber-700">
+                          {camp.school ? `${camp.school} · ` : ""}
+                          {camp.registrationStatus.replace(/_/g, " ")}
+                        </p>
+                      </div>
+                    ))}
+
+                    {dayPosts.length === 0 && dayCamps.length === 0 && recommendation && isCurrentMonth ? (
+                      <div className="rounded-md border border-dashed border-slate-200 p-2 text-[10px] text-slate-500">
+                        <div className="flex items-center gap-1">
+                          <CalendarDays className="h-3 w-3" />
+                          <span className="font-medium">{recommendation.label}</span>
+                        </div>
+                        <p className="mt-1">{recommendation.bestTime}</p>
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
               );
             })}
@@ -122,24 +199,53 @@ export function ContentCalendar() {
         </CardContent>
       </Card>
 
-      {/* Weekly Schedule Reference */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Weekly Posting Schedule</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-2">
-            {weeklyCalendar.map((entry) => (
-              <div key={entry.day} className="flex items-center gap-3 py-2 border-b last:border-b-0">
-                <span className="w-20 text-sm font-medium">{entry.day}</span>
-                <div className={cn("h-2 w-2 rounded-full shrink-0", getPillarColor(entry.pillar))} />
-                <span className="text-sm text-slate-600 flex-1">{entry.contentType}</span>
-                <span className="text-xs text-slate-400">{entry.bestTime}</span>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Next Recommended Publishing Windows</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {upcomingRecommendations.map((entry) => (
+              <div key={`${entry.date.toISOString()}-${entry.label}`} className="flex items-center gap-3 rounded-lg border border-slate-200 p-3">
+                <div className={cn("h-2.5 w-2.5 rounded-full", getPillarColor(entry.pillar))} />
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-slate-900">{entry.label}</p>
+                  <p className="text-xs text-slate-500">
+                    {format(entry.date, "EEE, MMM d")} · {entry.bestTime}
+                  </p>
+                </div>
+                <Badge variant="secondary">{getPillarLabel(entry.pillar)}</Badge>
               </div>
             ))}
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Open Execution Tasks</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {loading ? (
+              <div className="text-sm text-slate-500">Loading tasks...</div>
+            ) : tasks.filter((task) => task.status !== "completed").length === 0 ? (
+              <div className="text-sm text-slate-500">No open recruiting tasks in the system.</div>
+            ) : (
+              tasks
+                .filter((task) => task.status !== "completed")
+                .slice(0, 8)
+                .map((task) => (
+                  <div key={task.id} className="rounded-lg border border-slate-200 p-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-sm font-medium text-slate-900">{task.title}</p>
+                      <Badge variant="secondary">{task.status.replace("_", " ")}</Badge>
+                    </div>
+                    <p className="mt-1 text-xs text-slate-500">{format(new Date(task.createdAt), "MMM d, yyyy")}</p>
+                  </div>
+                ))
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

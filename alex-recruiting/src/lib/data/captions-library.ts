@@ -256,7 +256,7 @@ This is where the separation happens. While everyone else sleeps, I'm getting 1%
     title: "Bench Press PR",
     fullCaption: `New bench PR today — 225 for reps. Six months ago this was my max single.
 
-The strength program at @IMGAcademy is built different. Grateful for coaches who push me beyond what I think is possible.
+The strength program at @IMGAcademy raises the standard every day. Grateful for coaches who push me beyond what I think is possible.
 
 The numbers don't lie. The work is paying off.
 
