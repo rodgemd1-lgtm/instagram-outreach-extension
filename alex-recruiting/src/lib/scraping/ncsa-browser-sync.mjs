@@ -1,9 +1,16 @@
 import fs from "fs/promises";
 import path from "path";
-import { chromium } from "playwright";
 import { createClient } from "@supabase/supabase-js";
 
 const BASE_URL = "https://recruit-match.ncsasports.org";
+
+async function getChromium() {
+  if (process.env.VERCEL) {
+    process.env.PLAYWRIGHT_BROWSERS_PATH ||= "0";
+  }
+  const { chromium } = await import("playwright");
+  return chromium;
+}
 
 function requireEnv(name) {
   const value = process.env[name];
@@ -396,6 +403,7 @@ export async function syncNcsaDashboard(options = {}) {
     maxCampInviteThreads = 12,
   } = options;
 
+  const chromium = await getChromium();
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext();
   const page = await context.newPage();
