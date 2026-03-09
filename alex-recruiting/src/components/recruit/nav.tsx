@@ -67,7 +67,7 @@ export function RecruitNav() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <button
             onClick={() => scrollTo("hero")}
-            className="font-mono text-sm tracking-[0.3em] text-white/60 hover:text-white transition-colors min-h-[48px] flex items-center"
+            className="font-playfair text-sm tracking-normal text-[#F5F0E6]/60 hover:text-[#F5F0E6] transition-colors min-h-[48px] flex items-center"
           >
             JACOB RODGERS
           </button>
@@ -79,8 +79,8 @@ export function RecruitNav() {
                 onClick={() => scrollTo(s.id)}
                 className={`text-xs tracking-widest uppercase transition-all duration-300 min-h-[48px] px-2 flex items-center ${
                   activeSection === s.id
-                    ? "text-red-500"
-                    : "text-white/30 hover:text-white/60"
+                    ? "text-[#D4A853]"
+                    : "text-[#F5F0E6]/30 hover:text-[#F5F0E6]/60"
                 }`}
               >
                 {s.label}
@@ -92,8 +92,8 @@ export function RecruitNav() {
             onClick={() => scrollTo("contact")}
             className={`text-xs tracking-widest uppercase px-4 py-2 rounded-full border transition-all duration-300 min-h-[48px] flex items-center ${
               scrolled
-                ? "border-red-500/50 text-red-500 hover:bg-red-500/10"
-                : "border-white/20 text-white/60 hover:text-white"
+                ? "border-[#D4A853]/50 text-[#D4A853] hover:bg-[#D4A853]/10"
+                : "border-[#F5F0E6]/20 text-[#F5F0E6]/60 hover:text-[#F5F0E6]"
             }`}
           >
             Contact
@@ -116,15 +116,15 @@ export function RecruitNav() {
                 <div
                   className={`w-2 h-2 rounded-full transition-all duration-300 ${
                     activeSection === s.id
-                      ? "bg-red-500 scale-125"
-                      : "bg-white/20"
+                      ? "bg-[#D4A853] scale-125"
+                      : "bg-[#F5F0E6]/20"
                   }`}
                 />
                 <span
                   className={`text-[8px] tracking-wider uppercase transition-colors ${
                     activeSection === s.id
-                      ? "text-red-500"
-                      : "text-white/30"
+                      ? "text-[#D4A853]"
+                      : "text-[#F5F0E6]/30"
                   }`}
                 >
                   {s.label}
