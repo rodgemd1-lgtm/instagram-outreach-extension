@@ -17,7 +17,8 @@
     "test:unit": "vitest run src/__tests__/unit",
     "test:integration": "vitest run src/__tests__/integration",
     "test:qa": "vitest run src/__tests__/qa",
-    "test:e2e": "vitest run src/__tests__/e2e"
+    "test:e2e": "vitest run src/__tests__/e2e",
+    "recruit": "tsx scripts/recruit-cli.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
