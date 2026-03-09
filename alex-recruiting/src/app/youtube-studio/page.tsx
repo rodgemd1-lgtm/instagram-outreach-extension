@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -35,12 +35,6 @@ import {
   Copy,
   Check,
 } from "lucide-react";
-
-// ---------------------------------------------------------------------------
-// Video store loader — reads from .video-store.json at build/runtime
-// ---------------------------------------------------------------------------
-import videoStoreRaw from "../../../.video-store.json";
-const videoStore: VideoStoreEntry[] = videoStoreRaw as VideoStoreEntry[];
 
 // ---------------------------------------------------------------------------
 // Channel Setup Checklist
@@ -155,6 +149,39 @@ function resolutionLabel(v: VideoStoreEntry): string {
 export default function YouTubeStudioPage() {
   const [checklist, setChecklist] = useState(initialChecklist);
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [videoStore, setVideoStore] = useState<VideoStoreEntry[]>([]);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadVideoStore() {
+      try {
+        const response = await fetch("/api/videos", { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error(`Failed to load videos: ${response.status}`);
+        }
+
+        const payload = (await response.json()) as {
+          assets?: VideoStoreEntry[];
+        };
+
+        if (active) {
+          setVideoStore(payload.assets ?? []);
+        }
+      } catch (error) {
+        console.error("Failed to load video store:", error);
+        if (active) {
+          setVideoStore([]);
+        }
+      }
+    }
+
+    loadVideoStore();
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const completedCount = checklist.filter((c) => c.completed).length;
   const progressPercent = Math.round((completedCount / checklist.length) * 100);
