@@ -11,6 +11,7 @@ import { TheFit } from "@/components/recruit/the-fit";
 import { ContactCTA } from "@/components/recruit/contact";
 import { SocialProofBanner } from "@/components/recruit/social-proof";
 import { ScrollProgress } from "@/components/recruit/scroll-progress";
+import { FilmGrainOverlay } from "@/components/recruit/film-grain";
 import { RecruitNav } from "@/components/recruit/nav";
 import { MobileNav } from "@/components/recruit/mobile-nav";
 import { useRecruitPhotos } from "@/hooks/useRecruitPhotos";
@@ -24,6 +25,7 @@ export default function RecruitPage() {
       <RecruitNav />
       <MobileNav />
       <ScrollProgress />
+      <FilmGrainOverlay />
 
       {/* 1. Hero — "Is this kid in my window?" (LAAL: Known-ness) */}
       <RecruitHero backgroundUrl={photoMap.hero} />

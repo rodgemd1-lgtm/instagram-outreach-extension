@@ -1,4 +1,17 @@
 import type { Metadata, Viewport } from "next";
+import { Playfair_Display, JetBrains_Mono } from "next/font/google";
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+  display: "swap",
+});
+
+const jetbrains = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Jacob Rodgers | #79 | OL/DL | Class of 2029 | Pewaukee Pirates",
@@ -48,7 +61,7 @@ export default function RecruitLayout({
 }) {
   return (
     <div
-      className="recruit-page bg-[#0A0A0A] text-white min-h-screen overflow-x-hidden"
+      className={`recruit-page bg-[#0A0A0A] text-[#F5F0E6] min-h-screen overflow-x-hidden ${playfair.variable} ${jetbrains.variable}`}
       style={{
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
         touchAction: "pan-y",

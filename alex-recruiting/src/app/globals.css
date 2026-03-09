@@ -220,3 +220,35 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
+
+/* Film grain animation for recruit page */
+@keyframes grain {
+  0%, 100% { background-position: 0 0; }
+  25% { background-position: -5% -10%; }
+  50% { background-position: 12% 9%; }
+  75% { background-position: 9% -6%; }
+}
+
+/* Ken Burns effect for background images */
+@keyframes kenBurns {
+  0% { transform: scale(1) translate(0, 0); }
+  100% { transform: scale(1.08) translate(-1.5%, -1%); }
+}
+
+/* Scrolling ticker for social proof */
+@keyframes scroll-ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-scroll-ticker {
+  animation: scroll-ticker 30s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recruit-page [aria-hidden="true"] {
+    animation: none !important;
+  }
+  .animate-scroll-ticker {
+    animation: none;
+  }
+}
