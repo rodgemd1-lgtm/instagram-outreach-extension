@@ -172,11 +172,12 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                 </button>
               </div>
 
-              <div className="relative aspect-video overflow-hidden rounded-[28px] border border-white/[0.08]">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-[28px] border border-white/[0.08] bg-black md:aspect-[3/4] xl:aspect-video">
                 <RecruitVideoPlayer
                   src={FEATURED_RECRUIT_REEL.src}
                   poster={FEATURED_RECRUIT_REEL.poster}
                   mode="reel"
+                  objectFit="contain"
                   onFullscreen={() =>
                     openFullscreen(FEATURED_RECRUIT_REEL.src, FEATURED_RECRUIT_REEL.poster)
                   }

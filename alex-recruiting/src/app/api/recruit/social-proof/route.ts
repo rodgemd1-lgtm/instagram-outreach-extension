@@ -47,20 +47,30 @@ async function fetchSocialProofData(): Promise<SocialProofData> {
     data.coachFollowers = count ?? 0;
   } catch { /* table may not exist */ }
 
-  // Count NCSA profile views from ncsa_leads
+  // Count NCSA follows as a fallback when X follower syncing lags behind
   try {
     const { count } = await supabase
       .from("ncsa_leads")
-      .select("*", { count: "exact", head: true });
-    data.ncsaProfileViews = count ?? 0;
+      .select("*", { count: "exact", head: true })
+      .ilike("source_detail", "NCSA follow:%");
+    data.coachFollowers = Math.max(data.coachFollowers, count ?? 0);
+  } catch { /* table may not exist */ }
+
+  // Count NCSA profile views from ncsa_leads
+  try {
+    const { count: profileViews } = await supabase
+      .from("ncsa_leads")
+      .select("*", { count: "exact", head: true })
+      .eq("source", "profile_view");
+    data.ncsaProfileViews = profileViews ?? 0;
   } catch { /* table may not exist */ }
 
   // Count camp invites
   try {
     const { count } = await supabase
-      .from("camps")
+      .from("ncsa_leads")
       .select("*", { count: "exact", head: true })
-      .eq("source", "ncsa_invite");
+      .eq("source", "camp_invite");
     data.campInvites = count ?? 0;
   } catch { /* table may not exist */ }
 
@@ -75,10 +85,13 @@ async function fetchSocialProofData(): Promise<SocialProofData> {
   // Count unique schools that have engaged
   try {
     const { data: schools } = await supabase
-      .from("coaches")
-      .select("school")
-      .not("follow_status", "is", null);
-    const uniqueSchools = new Set((schools ?? []).map((s: { school: string }) => s.school));
+      .from("ncsa_leads")
+      .select("school_name");
+    const uniqueSchools = new Set(
+      (schools ?? [])
+        .map((s: { school_name: string | null }) => s.school_name?.trim())
+        .filter(Boolean)
+    );
     data.schoolsEngaged = uniqueSchools.size;
   } catch { /* table may not exist */ }
 

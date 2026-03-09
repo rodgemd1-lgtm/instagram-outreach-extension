@@ -31,17 +31,17 @@ const blocks = [
 
 const reviewBoard = [
   {
-    role: "DL Coach",
+    role: "Marcus · DL Coach",
     verdict: "Yay",
     body: "The defensive-line upside is believable because the page gets quickly to get-off, leverage, disruption, and finish instead of hiding those truths.",
   },
   {
-    role: "OL Coach",
+    role: "Marcus · OL Coach",
     verdict: "Yay",
     body: "The offensive-line projection stays alive because the frame, balance, and movement traits suggest Jacob is not locked into one trench outcome.",
   },
   {
-    role: "Story Editor",
+    role: "Susan Studio",
     verdict: "Yay",
     body: "The narrative is clean: big-framed 2029 lineman, real power indicators, multi-sport transfer, verified work habit, and a clear next step for coaches.",
   },

@@ -20,6 +20,8 @@ import {
   Tent,
   User,
   Loader2,
+  Check,
+  Copy,
 } from "lucide-react";
 import type { NCSALead } from "@/lib/rec/types";
 
@@ -57,14 +59,42 @@ const SOURCE_LABELS: Record<string, string> = {
   manual: "Manual",
 };
 
+interface LeadMatch {
+  leadId: string;
+  matchedCoachName: string | null;
+  matchedCoachTitle: string | null;
+  matchedCoachXHandle: string | null;
+  matchedCoachFollowStatus: string | null;
+  thankYouDraft: string;
+  matchConfidence: "high" | "medium" | "low";
+}
+
+interface LeadSummary {
+  totalLeads: number;
+  schoolsThatSearched: number;
+  schoolsThatViewedProfile: number;
+  schoolsThatFollowed: number;
+  schoolsThatReachedOut: number;
+  searchesDetected: number;
+  followsDetected: number;
+  messagesReceived: number;
+  campInvitesReceived: number;
+  xReadyLeads: number;
+  followReadyLeads: number;
+}
+
 export function NCSALeadPipeline() {
   const [leads, setLeads] = useState<NCSALead[]>([]);
+  const [summary, setSummary] = useState<LeadSummary | null>(null);
+  const [matches, setMatches] = useState<Record<string, LeadMatch>>({});
   const [loading, setLoading] = useState(true);
   const [addOpen, setAddOpen] = useState(false);
   const [scanOpen, setScanOpen] = useState(false);
   const [scanHtml, setScanHtml] = useState("");
   const [scanning, setScanning] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [advancing, setAdvancing] = useState<string | null>(null);
+  const [actingLeadId, setActingLeadId] = useState<string | null>(null);
 
   // Form state for adding leads
   const [newLead, setNewLead] = useState({
@@ -83,6 +113,12 @@ export function NCSALeadPipeline() {
       const res = await fetch("/api/rec/ncsa/leads");
       const data = await res.json();
       setLeads(data.leads || []);
+      setSummary(data.summary || null);
+      setMatches(
+        Object.fromEntries(
+          ((data.matches || []) as LeadMatch[]).map((match) => [match.leadId, match])
+        )
+      );
     } catch {
       console.error("Failed to load leads");
     } finally {
@@ -150,10 +186,90 @@ export function NCSALeadPipeline() {
     }
   };
 
+  const handleLiveSync = async () => {
+    setSyncing(true);
+    try {
+      const res = await fetch("/api/ncsa/scrape", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Authenticated NCSA sync failed");
+        return;
+      }
+      await loadLeads();
+      const stats = data.coachActivity?.stats;
+      alert(
+        [
+          `Imported ${data.importResult?.inserted ?? 0} new leads`,
+          data.importResult?.updated
+            ? `Updated ${data.importResult.updated} existing leads`
+            : null,
+          stats
+            ? `Dashboard: ${stats.searches} searches, ${stats.views} views, ${stats.follows} follows`
+            : null,
+          data.mode === "legacy_fallback" ? "Route used legacy fallback." : null,
+        ]
+          .filter(Boolean)
+          .join("\n")
+      );
+    } catch {
+      alert("Authenticated NCSA sync failed");
+    } finally {
+      setSyncing(false);
+    }
+  };
+
+  const followLead = async (leadId: string) => {
+    setActingLeadId(leadId);
+    try {
+      const res = await fetch("/api/rec/ncsa/actions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ leadId, action: "follow" }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || data.message || "Follow failed");
+        return;
+      }
+      await loadLeads();
+    } catch {
+      alert("Follow failed");
+    } finally {
+      setActingLeadId(null);
+    }
+  };
+
+  const copyDraft = async (leadId: string) => {
+    setActingLeadId(leadId);
+    try {
+      const res = await fetch("/api/rec/ncsa/actions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ leadId, action: "draft" }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.thankYouDraft) {
+        alert(data.error || "No draft available");
+        return;
+      }
+      await navigator.clipboard.writeText(data.thankYouDraft);
+      alert("Thank-you draft copied");
+    } catch {
+      alert("Could not copy draft");
+    } finally {
+      setActingLeadId(null);
+    }
+  };
+
   const leadsByStatus = STATUS_ORDER.reduce((acc, s) => {
     acc[s] = leads.filter((l) => l.outreachStatus === s);
     return acc;
   }, {} as Record<string, NCSALead[]>);
+
+  const actionableLeads = leads
+    .map((lead) => ({ lead, match: matches[lead.id] }))
+    .filter(({ match }) => Boolean(match?.matchedCoachXHandle))
+    .slice(0, 8);
 
   return (
     <div className="space-y-6">
@@ -164,14 +280,97 @@ export function NCSALeadPipeline() {
           <p className="text-sm text-slate-500 mt-1">{leads.length} total leads in pipeline</p>
         </div>
         <div className="flex gap-2">
+          <Button size="sm" className="gap-1.5 text-xs" onClick={handleLiveSync} disabled={syncing}>
+            {syncing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Search className="h-3 w-3" />}
+            {syncing ? "Syncing..." : "Sync NCSA"}
+          </Button>
           <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => setScanOpen(true)}>
-            <Search className="h-3 w-3" /> Scan NCSA
+            <Search className="h-3 w-3" /> Import HTML
           </Button>
           <Button size="sm" className="gap-1.5 text-xs" onClick={() => setAddOpen(true)}>
             <Plus className="h-3 w-3" /> Add Lead
           </Button>
         </div>
       </div>
+
+      {summary && (
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-8">
+          {[
+            { label: "Searches", value: summary.searchesDetected },
+            { label: "Views", value: summary.schoolsThatViewedProfile },
+            { label: "Follows", value: summary.followsDetected },
+            { label: "Messages", value: summary.messagesReceived },
+            { label: "Camp Invites", value: summary.campInvitesReceived },
+            { label: "Reached Out", value: summary.schoolsThatReachedOut },
+            { label: "X Ready", value: summary.xReadyLeads },
+            { label: "Follow Ready", value: summary.followReadyLeads },
+          ].map((metric) => (
+            <Card key={metric.label} className="shadow-sm">
+              <CardContent className="p-3">
+                <p className="text-[11px] uppercase tracking-wide text-slate-500">{metric.label}</p>
+                <p className="mt-1 text-2xl font-semibold text-slate-900">{metric.value}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {actionableLeads.length > 0 && (
+        <div className="space-y-3">
+          <div>
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500">X-ready leads</h2>
+            <p className="text-sm text-slate-500 mt-1">
+              These leads already map to an X handle, so you can follow the coach and copy a thank-you draft immediately.
+            </p>
+          </div>
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {actionableLeads.map(({ lead, match }) => (
+              <Card key={lead.id} className="shadow-sm">
+                <CardContent className="p-4 space-y-3">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">{lead.schoolName}</p>
+                    <p className="text-xs text-slate-500">
+                      {match?.matchedCoachName || lead.coachName}
+                      {match?.matchedCoachTitle ? ` • ${match.matchedCoachTitle}` : ""}
+                    </p>
+                    <p className="mt-1 text-xs text-blue-600">{match?.matchedCoachXHandle}</p>
+                  </div>
+                  <div className="flex items-center gap-2 text-[11px] text-slate-500">
+                    <Badge variant="outline">{SOURCE_LABELS[lead.source]}</Badge>
+                    <Badge variant="secondary">{match?.matchConfidence || "low"} confidence</Badge>
+                  </div>
+                  <p className="text-xs text-slate-600">{lead.sourceDetail}</p>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      className="flex-1 gap-1.5"
+                      disabled={actingLeadId === lead.id || match?.matchedCoachFollowStatus === "followed"}
+                      onClick={() => followLead(lead.id)}
+                    >
+                      {actingLeadId === lead.id ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : match?.matchedCoachFollowStatus === "followed" ? (
+                        <Check className="h-3.5 w-3.5" />
+                      ) : null}
+                      {match?.matchedCoachFollowStatus === "followed" ? "Following" : "Follow on X"}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="gap-1.5"
+                      disabled={actingLeadId === lead.id}
+                      onClick={() => copyDraft(lead.id)}
+                    >
+                      <Copy className="h-3.5 w-3.5" />
+                      Draft
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Pipeline Columns */}
       {loading ? (
@@ -209,6 +408,11 @@ export function NCSALeadPipeline() {
                         </div>
                         {lead.xHandle && (
                           <p className="text-[10px] text-blue-600 mt-1.5">{lead.xHandle}</p>
+                        )}
+                        {matches[lead.id]?.matchedCoachXHandle && !lead.xHandle && (
+                          <p className="text-[10px] text-blue-600 mt-1.5">
+                            {matches[lead.id]?.matchedCoachXHandle}
+                          </p>
                         )}
                         {status !== "responded" && (
                           <Button
@@ -263,11 +467,11 @@ export function NCSALeadPipeline() {
       <Dialog open={scanOpen} onOpenChange={setScanOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Scan NCSA Dashboard</DialogTitle>
+            <DialogTitle>Import NCSA HTML</DialogTitle>
           </DialogHeader>
           <div className="space-y-3 mt-2">
             <p className="text-sm text-slate-500">
-              Log into NCSA in your browser, navigate to your dashboard, then copy the page source (Ctrl+U / Cmd+U) and paste it below.
+              Fallback only. The main button now runs the authenticated NCSA sync automatically. Use this only if you need to paste exported HTML by hand.
             </p>
             <textarea
               className="w-full h-48 rounded-lg border border-slate-200 p-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"

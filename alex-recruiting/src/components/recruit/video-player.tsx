@@ -25,6 +25,8 @@ interface RecruitVideoPlayerProps {
   onFullscreen?: () => void;
   /** Additional className */
   className?: string;
+  /** How the poster/video should fit inside frame */
+  objectFit?: "cover" | "contain";
 }
 
 export function RecruitVideoPlayer({
@@ -33,6 +35,7 @@ export function RecruitVideoPlayer({
   mode,
   onFullscreen,
   className = "",
+  objectFit = "cover",
 }: RecruitVideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -113,6 +116,9 @@ export function RecruitVideoPlayer({
     }
   }, [mode, togglePlay]);
 
+  const mediaFitClass =
+    objectFit === "contain" ? "object-contain bg-black" : "object-cover";
+
   // Background mode on mobile: just show poster image
   if (mode === "background") {
     return (
@@ -125,14 +131,14 @@ export function RecruitVideoPlayer({
           muted
           loop
           playsInline
-          className="hidden md:block absolute inset-0 w-full h-full object-cover"
+          className={`hidden md:block absolute inset-0 w-full h-full ${mediaFitClass}`}
         />
         {poster && (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img
             src={poster}
             alt=""
-            className="md:hidden absolute inset-0 w-full h-full object-cover"
+            className={`md:hidden absolute inset-0 w-full h-full ${mediaFitClass}`}
           />
         )}
       </div>
@@ -152,7 +158,7 @@ export function RecruitVideoPlayer({
           <img
             src={poster}
             alt=""
-            className="absolute inset-0 w-full h-full object-cover"
+            className={`absolute inset-0 w-full h-full ${mediaFitClass}`}
           />
           <div className="absolute inset-0 bg-black/30" />
           {/* Large play button */}
@@ -175,7 +181,7 @@ export function RecruitVideoPlayer({
         muted={muted}
         loop={mode === "reel"}
         playsInline
-        className="w-full h-full object-cover"
+        className={`w-full h-full ${mediaFitClass}`}
         onEnded={() => setPlaying(false)}
       />
 

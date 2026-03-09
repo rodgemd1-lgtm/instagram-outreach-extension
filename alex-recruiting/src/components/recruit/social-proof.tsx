@@ -102,10 +102,10 @@ export function SocialProofBanner() {
               body="The old carousel was removed. This page now shows verified activity only and avoids implying program interest that has not been confirmed."
             />
             <ProofCard
-              title="NCSA sync is treated cautiously"
+              title="Authenticated NCSA sync is now the source"
               body={
                 (metrics?.schoolsEngaged ?? 0) > 0
-                  ? `${metrics?.schoolsEngaged} verified school touchpoints are currently synced behind the scenes.`
+                  ? `${metrics?.schoolsEngaged} verified school touchpoints are currently synced into the recruiting system.`
                   : "NCSA school-interest data is not published here until real synchronized activity is available."
               }
             />

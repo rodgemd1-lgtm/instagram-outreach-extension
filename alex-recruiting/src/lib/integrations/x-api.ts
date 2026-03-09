@@ -2,6 +2,7 @@ import axios from "axios";
 import crypto from "crypto";
 import fs from "fs/promises";
 import { enforceRateLimit, recordRequest, RateLimitError } from "./rate-limiter";
+import { jacobProfile } from "@/lib/data/jacob-profile";
 const X_API_BASE = "https://api.twitter.com/2";
 const X_UPLOAD_API_URL = "https://upload.twitter.com/1.1/media/upload.json";
 const X_MEDIA_METADATA_URL = "https://upload.twitter.com/1.1/media/metadata/create.json";
@@ -79,6 +80,30 @@ export interface XUploadedMedia {
   mediaType: string;
   mediaCategory: string;
   sourcePath: string;
+}
+
+let cachedSourceUserId: string | null = null;
+
+async function getSourceUserId(): Promise<string> {
+  if (process.env.X_USER_ID) {
+    return process.env.X_USER_ID;
+  }
+
+  if (cachedSourceUserId) {
+    return cachedSourceUserId;
+  }
+
+  if (!jacobProfile.xHandle) {
+    throw new Error("X_USER_ID is not configured");
+  }
+
+  const sourceUser = await verifyHandle(jacobProfile.xHandle);
+  if (!sourceUser?.id) {
+    throw new Error("Unable to resolve source X user ID");
+  }
+
+  cachedSourceUserId = sourceUser.id;
+  return sourceUser.id;
 }
 
 // Verify a coach's X handle exists and is active
@@ -440,7 +465,7 @@ export async function followUser(targetUserId: string): Promise<boolean> {
   enforceRateLimit(endpoint);
 
   try {
-    const sourceUserId = requireEnv("X_USER_ID");
+    const sourceUserId = await getSourceUserId();
     const apiUrl = `${X_API_BASE}/users/${sourceUserId}/following`;
     const authHeader = getOAuth1Headers("POST", apiUrl, {});
     const response = await axios.post(
@@ -461,8 +486,35 @@ export async function followUser(targetUserId: string): Promise<boolean> {
       throw error;
     }
 
-    console.error("Failed to follow user:", error);
-    return false;
+    const status = getErrorStatus(error);
+    if (status !== 401 && status !== 403) {
+      console.error("Failed to follow user:", error);
+      return false;
+    }
+
+    try {
+      const fallbackUrl = "https://api.x.com/1.1/friendships/create.json";
+      const params = {
+        user_id: targetUserId,
+        follow: "true",
+      };
+      const authHeader = getOAuth1Headers("POST", fallbackUrl, params);
+      const response = await axios.post(fallbackUrl, buildFormBody(params), {
+        headers: {
+          Authorization: authHeader,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
+
+      recordRequest("friendships/create");
+      return Boolean(response.data?.id_str || response.data?.following);
+    } catch (fallbackError) {
+      console.error("Failed to follow user:", {
+        error,
+        fallbackError,
+      });
+      return false;
+    }
   }
 }
 
@@ -471,7 +523,7 @@ export async function likeTweet(tweetId: string): Promise<boolean> {
   enforceRateLimit(endpoint);
 
   try {
-    const sourceUserId = requireEnv("X_USER_ID");
+    const sourceUserId = await getSourceUserId();
     const apiUrl = `${X_API_BASE}/users/${sourceUserId}/likes`;
     const authHeader = getOAuth1Headers("POST", apiUrl, {});
     const response = await axios.post(
@@ -492,8 +544,32 @@ export async function likeTweet(tweetId: string): Promise<boolean> {
       throw error;
     }
 
-    console.error("Failed to like tweet:", error);
-    return false;
+    const status = getErrorStatus(error);
+    if (status !== 401 && status !== 403) {
+      console.error("Failed to like tweet:", error);
+      return false;
+    }
+
+    try {
+      const fallbackUrl = "https://api.x.com/1.1/favorites/create.json";
+      const params = { id: tweetId };
+      const authHeader = getOAuth1Headers("POST", fallbackUrl, params);
+      const response = await axios.post(fallbackUrl, buildFormBody(params), {
+        headers: {
+          Authorization: authHeader,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
+
+      recordRequest("favorites/create");
+      return Boolean(response.data?.id_str || response.data?.favorited);
+    } catch (fallbackError) {
+      console.error("Failed to like tweet:", {
+        error,
+        fallbackError,
+      });
+      return false;
+    }
   }
 }
 

@@ -29,6 +29,7 @@ yarn-error.log*
 .env
 .env*.local
 .ncsa-leads.json
+.ncsa-scrape-latest.json
 .mcp.json
 
 # vercel

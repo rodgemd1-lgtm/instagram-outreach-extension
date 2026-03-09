@@ -5,14 +5,27 @@ import {
   updateLeadStatus,
   addLead,
 } from "@/lib/rec/knowledge/ncsa-leads";
+import {
+  buildLeadSummary,
+  dedupeNcsaLeads,
+  getLeadCoachMatches,
+} from "@/lib/rec/knowledge/ncsa-actions";
 import type { NCSALead } from "@/lib/rec/types";
 
 export async function GET(req: NextRequest) {
   const status = req.nextUrl.searchParams.get("status");
-  const leads = status
+  const rawLeads = status
     ? await getLeadsByStatus(status as NCSALead["outreachStatus"])
     : await getAllLeads();
-  return NextResponse.json({ leads, total: leads.length });
+  const leads = dedupeNcsaLeads(rawLeads);
+  const matches = await getLeadCoachMatches(leads);
+  const summary = buildLeadSummary(leads, matches);
+  return NextResponse.json({
+    leads,
+    total: leads.length,
+    summary,
+    matches,
+  });
 }
 
 export async function POST(req: NextRequest) {

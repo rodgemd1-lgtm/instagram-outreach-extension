@@ -206,15 +206,15 @@ export const SUPPORTING_RECRUIT_REELS: SupportingRecruitReel[] = [
   },
   {
     id: "snowboard-cut",
-    title: "Snowboarding balance reel",
+    title: "Winter athlete reel",
     subtitle:
-      "The snowboard footage stays live because it shows coordination, edge control, and balance outside football.",
-    src: "/recruit/supporting-reels/snowboard-cut.mp4",
-    poster: "/recruit/supporting-reels/snowboard-cut.jpg",
-    durationLabel: "10s",
+      "Freshly uploaded snowboard footage showing edge control, confidence at speed, and balance outside football.",
+    src: "/recruit/winter/reels/snowboard-run-1.mp4",
+    poster: "/recruit/winter/posters/snowboard-run-1.jpg",
+    durationLabel: "15s",
     lens: "Athlete",
     analysisNotes:
-      "Useful for the well-rounded-athlete story because it shows confidence and body control in a completely different movement context.",
+      "Useful for the well-rounded-athlete story because it shows confidence and body control in a completely different movement context using the new uploaded winter footage.",
   },
 ];
 
