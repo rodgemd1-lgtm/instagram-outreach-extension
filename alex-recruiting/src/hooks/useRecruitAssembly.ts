@@ -209,10 +209,11 @@ export function useRecruitAssembly(config: AssemblyConfig) {
                 : el;
               if (!container) return;
 
-              const targets = container.querySelectorAll(
+              const containerTargets = container.querySelectorAll(
                 '[data-gsap-wave="2"]'
               );
-              if (targets.length === 0) return;
+              const targets =
+                containerTargets.length > 0 ? containerTargets : [container];
 
               if (w2.individual) {
                 // Individual ScrollTrigger per element
