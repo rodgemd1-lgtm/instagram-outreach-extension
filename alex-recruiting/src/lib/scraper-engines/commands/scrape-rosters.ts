@@ -29,22 +29,9 @@ export async function run(options: Options = {}): Promise<void> {
     try {
       const result = await scrapeRosterPage(school.rosterUrl);
       if (result) {
-        const olPlayers = result.players.filter(
-          (p) =>
-            p.position.toUpperCase().includes("OL") ||
-            p.position.toUpperCase().includes("OT") ||
-            p.position.toUpperCase().includes("OG") ||
-            p.position.toUpperCase().includes("C")
-        );
-        const seniors = olPlayers.filter(
-          (p) =>
-            p.classYear.toLowerCase().includes("sr") ||
-            p.classYear.toLowerCase().includes("senior") ||
-            p.classYear.toLowerCase().includes("gr")
-        );
-        totalOL += olPlayers.length;
+        totalOL += result.totalOL;
         console.info(
-          `  ${school.name}: ${olPlayers.length} OL (${seniors.length} graduating)`
+          `  ${school.name}: ${result.totalOL} OL (${result.graduatingSeniors} graduating)`
         );
       } else {
         console.info(`  ${school.name}: no roster data`);

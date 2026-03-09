@@ -26,6 +26,7 @@
   "exclude": [
     "node_modules",
     "node_modules_corrupt_*",
+    "scripts",
     "src/app 2",
     "src/components 2",
     "src/hooks 2",

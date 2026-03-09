@@ -195,14 +195,23 @@ export async function scrapeCoachesForSchool(
         console.log(
           `[orchestrator] Firecrawl found ${fcResult.coaches.length} coaches for ${school.name}`
         );
-        const raw: UnifiedScrapeResult = {
-          url: fcResult.scrape.url,
-          markdown: fcResult.scrape.markdown,
-          title: fcResult.scrape.title,
-          wordCount: fcResult.scrape.wordCount,
-          source: "firecrawl",
-          scrapedAt: fcResult.scrape.scrapedAt,
-        };
+        const raw: UnifiedScrapeResult = fcResult.raw
+          ? {
+              url: fcResult.raw.url,
+              markdown: fcResult.raw.markdown,
+              title: fcResult.raw.title,
+              wordCount: fcResult.raw.wordCount,
+              source: "firecrawl",
+              scrapedAt: fcResult.raw.scrapedAt,
+            }
+          : {
+              url: staffUrl,
+              markdown: "",
+              title: "",
+              wordCount: 0,
+              source: "firecrawl",
+              scrapedAt: new Date().toISOString(),
+            };
         return { raw, coaches: fcResult.coaches };
       }
     } catch {
