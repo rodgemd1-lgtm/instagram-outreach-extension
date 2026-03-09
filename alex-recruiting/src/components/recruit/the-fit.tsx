@@ -9,18 +9,41 @@ import {
 const blocks = [
   {
     number: "01",
-    title: "Defensive-Line Ceiling",
-    body: "The quickest path to impact is on the defensive line: size, leverage upside, and a strength curve that still has room to move. Offensive-line versatility stays in the background as added value.",
+    title: "Why select Jacob?",
+    body: "Because the projection is easy to see: size, two-way trench experience, verified work habits, and a frame that can keep adding strength without losing movement.",
   },
   {
     number: "02",
-    title: "Winning Room Fit",
-    body: "The right environment is a winning culture built on teamwork, hard work, and real development. Jacob wants teaching, accountability, and a room where work matters more than hype.",
+    title: "Why stay interested?",
+    body: "Because the story compounds instead of flattening. Track and field, year-round lifting, trench work, and game reps all support the same upward trend.",
   },
   {
     number: "03",
-    title: "Development Inputs Already In Place",
-    body: "IMG camps twice a year, trench training, one-on-one work with Joel and Justin, and steady offseason lift gains mean the development habits are already established before a college staff takes over.",
+    title: "What are the moments of truth?",
+    body: "Get-off, leverage, strike timing, finish, and effort after first contact. The page now pushes those moments forward instead of burying them behind generic content.",
+  },
+  {
+    number: "04",
+    title: "What is the narrative?",
+    body: "Big-framed 2029 OL/DL with real power indicators, verified film, and a serious development routine. The right program gets a two-way projection with room to keep climbing.",
+  },
+];
+
+const reviewBoard = [
+  {
+    role: "DL Coach",
+    verdict: "Yay",
+    body: "The defensive-line upside is believable because the page gets quickly to get-off, leverage, disruption, and finish instead of hiding those truths.",
+  },
+  {
+    role: "OL Coach",
+    verdict: "Yay",
+    body: "The offensive-line projection stays alive because the frame, balance, and movement traits suggest Jacob is not locked into one trench outcome.",
+  },
+  {
+    role: "Story Editor",
+    verdict: "Yay",
+    body: "The narrative is clean: big-framed 2029 lineman, real power indicators, multi-sport transfer, verified work habit, and a clear next step for coaches.",
   },
 ];
 
@@ -77,13 +100,13 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
             The Fit
           </span>
           <h2 className="mb-6 text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
-            Why your
+            Read this
             <br />
             <span className="bg-gradient-to-r from-red-500 to-rose-400 bg-clip-text text-transparent">
-              program
+              like a coach.
             </span>
             <br />
-            should know Jacob.
+            Decide fast.
           </h2>
         </div>
 
@@ -111,6 +134,39 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
                   </p>
                 </div>
               </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-10 rounded-[28px] border border-red-500/12 bg-gradient-to-r from-red-500/8 to-amber-400/6 p-8 md:p-10">
+          <p className="font-mono text-[10px] uppercase tracking-[0.32em] text-red-500/70">
+            Coach Verdict
+          </p>
+          <h3 className="mt-4 text-2xl font-semibold tracking-tight text-white md:text-3xl">
+            Yes, because the projection and the work habit are both believable.
+          </h3>
+          <p className="mt-4 max-w-3xl text-sm leading-7 text-white/58 md:text-base">
+            This is the kind of page that should lead a coach from identity, to
+            film, to development, to fit without asking them to guess what they
+            are seeing or why it matters.
+          </p>
+        </div>
+
+        <div className="mt-8 grid gap-5 md:grid-cols-3">
+          {reviewBoard.map((review) => (
+            <div
+              key={review.role}
+              className="rounded-[26px] border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-sm"
+            >
+              <div className="flex items-center justify-between gap-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.32em] text-white/35">
+                  {review.role}
+                </p>
+                <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em] text-emerald-300">
+                  {review.verdict}
+                </span>
+              </div>
+              <p className="mt-4 text-sm leading-6 text-white/58">{review.body}</p>
             </div>
           ))}
         </div>

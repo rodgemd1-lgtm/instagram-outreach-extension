@@ -11,6 +11,7 @@ const sections = [
   { id: "hero", label: "79" },
   { id: "film-reel", label: "Film" },
   { id: "origin", label: "Work" },
+  { id: "athlete", label: "Ath" },
   { id: "character", label: "Char" },
   { id: "academics", label: "Acad" },
   { id: "fit", label: "Fit" },

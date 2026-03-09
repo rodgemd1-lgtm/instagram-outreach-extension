@@ -126,6 +126,11 @@ export function ContactCTA() {
             </span>
             <div className="space-y-3">
               <QuickLink
+                label="Impact Reel"
+                handle="Open Coach-First Reel"
+                href="/recruit/featured-clips/jacob-impact-reel.mp4"
+              />
+              <QuickLink
                 label="X / Twitter"
                 handle="@JacobRodge52987"
                 href="https://x.com/JacobRodge52987"
@@ -134,11 +139,6 @@ export function ContactCTA() {
                 label="YouTube Film"
                 handle="Watch Highlights"
                 href="https://youtu.be/wkYGNZTN8Xc"
-              />
-              <QuickLink
-                label="Additional Film"
-                handle="Reel 2"
-                href="https://youtu.be/03w9hRlXTzU"
               />
             </div>
           </div>

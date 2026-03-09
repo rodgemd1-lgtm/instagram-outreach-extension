@@ -59,42 +59,41 @@ export function AcademicsSection() {
             <div className="hidden h-8 w-px bg-white/10 md:block" />
             <div className="flex items-baseline gap-2">
               <span className="font-mono text-lg font-bold text-white/80 md:text-xl">
-                1
-              </span>
-              <span className="text-[10px] uppercase tracking-[0.3em] text-white/30">
-                semester complete
-              </span>
-            </div>
-            <div className="hidden h-8 w-px bg-white/10 md:block" />
-            <div className="flex items-baseline gap-2">
-              <span className="font-mono text-lg font-bold text-white/80 md:text-xl">
                 live
               </span>
               <span className="text-[10px] uppercase tracking-[0.3em] text-white/30">
                 transcript updates
               </span>
             </div>
+            <div className="hidden h-8 w-px bg-white/10 md:block" />
+            <div className="flex items-baseline gap-2">
+              <span className="font-mono text-lg font-bold text-white/80 md:text-xl">
+                early
+              </span>
+              <span className="text-[10px] uppercase tracking-[0.3em] text-white/30">
+                eligibility path
+              </span>
+            </div>
           </div>
 
           <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
-            <AcademicDetail label="Current Snapshot" value="Freshman year underway" />
+            <AcademicDetail label="Current Snapshot" value="3.25 GPA" />
             <AcademicDetail
-              label="What This Means"
-              value="Early academic record, not a finished one"
+              label="What Coaches Need"
+              value="Freshman transcript and updates available on request"
             />
             <AcademicDetail
-              label="Coach Access"
-              value="Updated transcript shared directly on request"
+              label="Academic Track"
+              value="Early, active, and easy to keep current"
             />
           </div>
 
           <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6">
             <p className="text-sm leading-7 text-white/52">
-              Jennifer&apos;s point here was correct: this page should not lock in
-              projected test scores, NCAA eligibility language, or a polished
-              academic narrative after one semester. The academic section now
-              stays current, modest, and easy to update as the transcript
-              matures.
+              The academic section stays direct on purpose. Coaches do not need
+              inflated testing claims or a fake finished story here. They need a
+              clean snapshot, a real contact path, and confidence that the
+              family can provide updated school information quickly.
             </p>
           </div>
         </div>

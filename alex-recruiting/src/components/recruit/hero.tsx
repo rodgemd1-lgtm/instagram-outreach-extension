@@ -140,9 +140,9 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
               Jacob Rodgers
             </h1>
             <p className="mt-4 max-w-3xl text-lg font-medium leading-relaxed text-white/72 md:text-2xl">
-              Defensive-line upside. Offensive-line versatility. Built through
-              sports-performance work, trench training, and a year-round
-              weight-room routine.
+              Defensive-line upside. Offensive-line versatility. First-place
+              shot put and discus power. Built through trench training,
+              sports-performance work, and a year-round weight-room routine.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
@@ -150,6 +150,7 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
               <Measurable label="Height" value={`6'4"`} />
               <Measurable label="Weight" value="285" />
               <Measurable label="School" value="Pewaukee HS" />
+              <Measurable label="Track" value="Discus / Shot Put" />
               <Measurable label="State" value="WI" />
             </div>
 
@@ -189,19 +190,19 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
             </span>
             <div className="mt-6 grid gap-4">
               <SnapshotCard
-                label="Film"
-                title="Freshman + offseason clips live"
-                body="Jennifer's strongest message clips are now cut into a coach-first impact reel on this page."
+                label="Why Select Jacob"
+                title="Big frame and real two-way projection"
+                body="The film starts with defensive-line finishes, but the offensive-line flexibility, movement skill, and size keep the upside broad."
               />
               <SnapshotCard
-                label="Development"
-                title="Sports-performance work started at 11"
-                body="NX Level, trench work, IMG camps, and one-on-one sessions with Joel and Justin shape the development story."
+                label="Why Stay Interested"
+                title="The power story is bigger than football alone"
+                body="Track and field, strength work, trench sessions, and year-round training all point in the same direction: the body is still moving upward."
               />
               <SnapshotCard
-                label="References"
-                title="Only verified information"
-                body="Placeholder quotes were removed. Coaches can request real references from family, staff, and trainers."
+                label="Moments Of Truth"
+                title="Get-off, leverage, finish, and effort"
+                body="The best clips were selected because coaches can quickly find #79, see the contact point, and judge how the rep ends."
               />
             </div>
 
@@ -211,7 +212,7 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
               className="mt-8 flex items-center gap-3 text-sm text-white/45"
             >
               <Play className="h-4 w-4 text-amber-300/80" />
-              Scroll to film for the impact reel and ranked message clips.
+              Scroll to film for the new coach-first reel, ranked clips, and the athlete-story layer.
               <ChevronDown className="ml-auto h-4 w-4 animate-bounce text-white/30" />
             </div>
           </div>

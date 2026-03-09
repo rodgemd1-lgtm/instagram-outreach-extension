@@ -110,10 +110,10 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
             730+ sessions logged.
           </h2>
           <p className="max-w-2xl text-base leading-7 text-white/48 md:text-lg">
-            The timeline now reflects the real development story Jennifer
-            flagged: NX Level starts at 11, the varsity claim is cleaned up, and
-            the emphasis stays on training volume, coaching, and upward strength
-            trend.
+            Coaches need the real development story, not a polished myth. The
+            throughline here is simple: early performance work, steady strength
+            gains, two-way football development, and a track-and-field layer
+            that reinforces the power projection.
           </p>
         </div>
 

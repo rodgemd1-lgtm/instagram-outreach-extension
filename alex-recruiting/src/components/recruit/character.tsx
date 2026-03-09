@@ -13,7 +13,7 @@ const traits = [
     description:
       "Works on both sides of the ball and has taken coaching from school staff, private line trainers, and sports-performance coaches. The pattern is simple: get the correction, apply it on the next rep.",
     evidence:
-      "The site now centers verified development inputs instead of overstated role claims.",
+      "The development story stays grounded in real coaching inputs, film, and training habits instead of inflated labels.",
   },
   {
     trait: "Team Built",
@@ -21,15 +21,15 @@ const traits = [
     description:
       "The fit is not about ego. It is about being useful to the room, putting in offseason work, and learning around older players and coaches who raise the standard.",
     evidence:
-      "Jennifer's feedback pushed this section toward teamwork, hard work, and fit instead of inflated labels.",
+      "The best stills and clips now emphasize huddle presence, line play, and room fit instead of generic hype language.",
   },
   {
-    trait: "Relentless",
+    trait: "Well-Rounded",
     icon: "03",
     description:
-      "730+ sessions across lifting, field work, IMG camps, trench training, and one-on-one development. The offseason story shows up in the numbers and on film.",
+      "Track and field, snowboarding, lifting, and football all point to the same thing: a big athlete who keeps building movement skill, balance, and usable power.",
     evidence:
-      "Most-improved strength gains and year-round work are part of the recruiting case, not a side note.",
+      "That wider athlete profile matters because coaches recruit projection, not just the last rep they watched.",
   },
 ];
 
@@ -95,7 +95,7 @@ export function CharacterSection({ backgroundUrl }: { backgroundUrl?: string }) 
             do.
           </h2>
           <p className="max-w-xl text-base leading-relaxed text-white/40 md:text-lg">
-            These tell you what he will do.
+            These tell you how he is wired.
           </p>
         </div>
 
@@ -141,15 +141,15 @@ export function CharacterSection({ backgroundUrl }: { backgroundUrl?: string }) 
 
         <div className="mt-16 rounded-2xl border border-red-500/10 bg-gradient-to-r from-red-500/5 to-rose-500/5 p-10 md:mt-20 md:p-14">
           <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-red-500/60">
-            References
+            Narrative
           </span>
           <h3 className="mt-4 text-2xl font-semibold tracking-tight text-white">
-            Real testimonials belong here only when they are real.
+            The right sentence for a coach to repeat is simple.
           </h3>
           <p className="mt-4 max-w-3xl text-base leading-7 text-white/58">
-            The generic quote was removed. Coaches who want perspective beyond
-            the film can use the contact path on this page to request real
-            references from family, Pewaukee staff, and private trainers.
+            Jacob is a big-framed 2029 lineman with defensive-line upside,
+            offensive-line flexibility, first-place throwing power, and a work
+            habit that already looks like a college development case.
           </p>
         </div>
       </div>

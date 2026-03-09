@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { RecruitHero } from "@/components/recruit/hero";
 import { FilmReel } from "@/components/recruit/film-reel";
 import { OriginStory } from "@/components/recruit/origin-story";
+import { MultiSportSection } from "@/components/recruit/multi-sport";
 import { CharacterSection } from "@/components/recruit/character";
 import { AcademicsSection } from "@/components/recruit/academics";
 import { TheFit } from "@/components/recruit/the-fit";
@@ -36,16 +37,19 @@ export default function RecruitPage() {
       {/* 3. The Work — "What's his work ethic?" (LAAL: Temporal Window) */}
       <OriginStory backgroundUrl={photoMap.origin} />
 
-      {/* 4. Character — "Will he fit our locker room?" (LAAL: Ownership) */}
+      {/* 4. Multi-sport transfer — "What else supports the projection?" */}
+      <MultiSportSection />
+
+      {/* 5. Character — "Will he fit our locker room?" (LAAL: Ownership) */}
       <CharacterSection backgroundUrl={photoMap.character} />
 
-      {/* 5. Academics — "Will he qualify?" (LAAL: Continuity Thread) */}
+      {/* 6. Academics — "Will he qualify?" (LAAL: Continuity Thread) */}
       <AcademicsSection />
 
-      {/* 6. The Fit — "Why should we recruit him?" (LAAL: Ownership + Loss Aversion) */}
+      {/* 7. The Fit — "Why should we recruit him?" (LAAL: Ownership + Loss Aversion) */}
       <TheFit backgroundUrl={photoMap.fit} />
 
-      {/* 7. Contact — "How do I reach out?" (LAAL: Forgiving Stakes) */}
+      {/* 8. Contact — "How do I reach out?" (LAAL: Forgiving Stakes) */}
       <ContactCTA />
     </div>
   );

@@ -3,11 +3,11 @@ import type { Metadata, Viewport } from "next";
 export const metadata: Metadata = {
   title: "Jacob Rodgers | #79 | OL/DL | Class of 2029 | Pewaukee Pirates",
   description:
-    "6'4\" 285 | Class of 2029 lineman with defensive-line upside, offensive-line versatility, and a 405 deadlift. Pewaukee HS, Wisconsin. Watch the impact reel and full film.",
+    "6'4\" 285 | Class of 2029 lineman with defensive-line upside, offensive-line versatility, first-place track-and-field power, and coach-first film. Pewaukee HS, Wisconsin.",
   openGraph: {
     title: "Jacob Rodgers | #79 OL/DL | Class of 2029 | Pewaukee Pirates",
     description:
-      "6'4\" 285 lineman with defensive-line upside, offensive-line versatility, and verified film. Pewaukee HS, Wisconsin. Class of 2029.",
+      "6'4\" 285 lineman with defensive-line upside, offensive-line versatility, verified film, and multi-sport power transfer. Pewaukee HS, Wisconsin. Class of 2029.",
     type: "website",
     images: [
       {
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     ],
     videos: [
       {
-        url: "/recruit/micro-reel.mp4",
+        url: "/recruit/featured-clips/jacob-impact-reel.mp4",
         width: 1280,
         height: 720,
         type: "video/mp4",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Jacob Rodgers | #79 OL/DL | Pewaukee Pirates",
     description:
-      "6'4\" 285 lineman. Defensive-line upside, offensive-line versatility, and coach-first film.",
+      "6'4\" 285 lineman. Defensive-line upside, offensive-line versatility, track-and-field power, and coach-first film.",
     images: ["/recruit/photos/promo-graphic.jpg"],
   },
 };
