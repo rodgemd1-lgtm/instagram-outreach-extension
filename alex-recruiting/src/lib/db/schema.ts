@@ -568,3 +568,86 @@ export const emailOutreach = pgTable("email_outreach", {
   stepNumber: integer("step_number"),
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+// ============ ANALYTICS & TRACKING ============
+
+export const pageVisits = pgTable("page_visits", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  visitorId: text("visitor_id").notNull(),
+  coachId: uuid("coach_id").references(() => coaches.id),
+  page: text("page").notNull(),
+  referrer: text("referrer"),
+  utmSource: text("utm_source"),
+  utmMedium: text("utm_medium"),
+  utmCampaign: text("utm_campaign"),
+  userAgent: text("user_agent"),
+  duration: integer("duration"),
+  maxScrollDepth: real("max_scroll_depth"),
+  visitedAt: timestamp("visited_at").defaultNow(),
+});
+
+export const sectionEngagement = pgTable("section_engagement", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  visitId: uuid("visit_id").references(() => pageVisits.id),
+  sectionId: text("section_id").notNull(),
+  enteredAt: timestamp("entered_at"),
+  exitedAt: timestamp("exited_at"),
+  dwellTime: integer("dwell_time"),
+  interacted: boolean("interacted").default(false),
+});
+
+export const filmViews = pgTable("film_views", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  visitId: uuid("visit_id").references(() => pageVisits.id),
+  filmId: text("film_id").notNull(),
+  playedAt: timestamp("played_at").defaultNow(),
+  watchDuration: integer("watch_duration"),
+  completed: boolean("completed").default(false),
+});
+
+// ============ A/B TESTING ============
+
+export const abVariants = pgTable("ab_variants", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  experimentName: text("experiment_name").notNull(),
+  variantKey: text("variant_key").notNull(),
+  variantLabel: text("variant_label").notNull(),
+  config: jsonb("config").$type<Record<string, unknown>>(),
+  active: boolean("active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const abAssignments = pgTable("ab_assignments", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  visitId: uuid("visit_id").references(() => pageVisits.id),
+  experimentName: text("experiment_name").notNull(),
+  variantKey: text("variant_key").notNull(),
+  assignedAt: timestamp("assigned_at").defaultNow(),
+});
+
+// ============ COACH PANEL ============
+
+export const panelCoaches = pgTable("panel_coaches", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  coachId: uuid("coach_id").references(() => coaches.id),
+  name: text("name").notNull(),
+  school: text("school").notNull(),
+  division: text("division").notNull(),
+  role: text("role"),
+  panelRound: integer("panel_round"),
+  status: text("status").default("invited"),
+  invitedAt: timestamp("invited_at").defaultNow(),
+  completedAt: timestamp("completed_at"),
+});
+
+export const panelSurveys = pgTable("panel_surveys", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  panelCoachId: uuid("panel_coach_id").references(() => panelCoaches.id),
+  visitId: uuid("visit_id").references(() => pageVisits.id),
+  wouldRecruit: text("would_recruit").notNull(),
+  whatConvinced: text("what_convinced"),
+  whatAlmostMadeLeave: text("what_almost_made_leave"),
+  comparisonScore: integer("comparison_score"),
+  wouldShare: boolean("would_share"),
+  submittedAt: timestamp("submitted_at").defaultNow(),
+});
