@@ -99,13 +99,13 @@ export function FilmStats() {
       <div className="max-w-6xl mx-auto">
         {/* Section header */}
         <div className="mb-20 md:mb-32">
-          <span className="text-[10px] tracking-[0.5em] text-red-500/60 uppercase font-mono block mb-6">
+          <span className="text-[10px] tracking-[0.5em] text-amber-500/60 uppercase font-mono block mb-6">
             Film & Stats
           </span>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[0.95] mb-6">
             The tape
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-rose-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-yellow-400">
               doesn&apos;t lie.
             </span>
           </h2>
@@ -160,10 +160,10 @@ export function FilmStats() {
               key={h.title}
               data-gsap-wave="2"
               style={{ opacity: 0 }}
-              className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 hover:border-red-500/20 transition-colors duration-500"
+              className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 hover:border-amber-500/20 transition-colors duration-500"
             >
               <h3 className="text-xl font-bold mb-3 flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-red-500" />
+                <div className="w-2 h-2 rounded-full bg-amber-500" />
                 {h.title}
               </h3>
               <p className="text-white/40 text-sm leading-relaxed">
@@ -177,7 +177,7 @@ export function FilmStats() {
         <div className="mt-16 text-center">
           <a
             href="#"
-            className="inline-flex items-center gap-3 px-8 py-4 rounded-full border border-red-500/30 text-red-500 hover:bg-red-500/10 transition-all duration-300 group"
+            className="inline-flex items-center gap-3 px-8 py-4 rounded-full border border-amber-500/30 text-amber-500 hover:bg-amber-500/10 transition-all duration-300 group"
           >
             <Play className="w-5 h-5 group-hover:scale-110 transition-transform" />
             <span className="text-sm tracking-widest uppercase">

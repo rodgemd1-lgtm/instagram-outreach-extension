@@ -10,23 +10,23 @@ import {
 const blocks = [
   {
     number: "01",
-    title: "Why select Jacob?",
-    body: "Because the projection is easy to see: size, two-way trench experience, verified work habits, and a frame that can keep adding strength without losing movement.",
+    title: "The 2029 OL class is thin.",
+    body: "Nationally, the 2029 offensive line class lacks depth at the upper levels. Programs that identify early get a three-year development runway. Programs that wait compete for a shrinking pool.",
   },
   {
     number: "02",
-    title: "Why stay interested?",
-    body: "Because the story compounds instead of flattening. Track and field, year-round lifting, trench work, and game reps all support the same upward trend.",
+    title: "The measurables pass the initial scan.",
+    body: "6'4\", 285, 405 lb deadlift, first-place discus. These are not projections \u2014 they are verified numbers. Coaches spend 15 seconds on initial evaluation. Jacob clears that window.",
   },
   {
     number: "03",
-    title: "What are the moments of truth?",
-    body: "Get-off, leverage, strike timing, finish, and effort after first contact. The page now pushes those moments forward instead of burying them behind generic content.",
+    title: "The development curve is still accelerating.",
+    body: "730+ logged training sessions since age 12. Bench from 95 to 265, squat from 135 to 350, deadlift from 185 to 405. The trajectory matters more than the current number.",
   },
   {
     number: "04",
-    title: "What is the narrative?",
-    body: "Big-framed 2029 OL/DL with real power indicators, verified film, and a serious development routine. The right program gets a two-way projection with room to keep climbing.",
+    title: "The scholarship gap is real.",
+    body: "Programs with 2029 OL scholarship openings are already evaluating. Every month that passes without contact is a month a competing program uses to build the relationship first.",
   },
 ];
 
@@ -140,8 +140,8 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
           ))}
         </div>
 
-        <div className="mt-8 rounded-2xl border border-[#C0392B]/15 bg-[#C0392B]/[0.04] p-6 md:p-8">
-          <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#C0392B]/70">
+        <div className="mt-8 rounded-2xl border border-[#D4A843]/15 bg-[#D4A843]/[0.04] p-6 md:p-8">
+          <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#D4A843]/70">
             The Window
           </p>
           <p className="mt-4 text-base leading-7 text-[#F5F0E6]/70 md:text-lg">

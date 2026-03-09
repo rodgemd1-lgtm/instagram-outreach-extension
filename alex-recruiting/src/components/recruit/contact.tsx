@@ -243,12 +243,12 @@ export function ContactCTA() {
               />
             </div>
 
-            {error && <p className="text-sm text-red-400">{error}</p>}
+            {error && <p className="text-sm text-amber-400">{error}</p>}
 
             <button
               type="submit"
               disabled={submitting}
-              className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#C0392B] to-[#A33225] px-10 py-4 text-sm font-bold uppercase tracking-widest text-white shadow-lg shadow-[#C0392B]/25 transition-all duration-300 hover:scale-105 hover:shadow-[#C0392B]/40 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#D4A843] to-[#B8860B] px-10 py-4 text-sm font-bold uppercase tracking-widest text-white shadow-lg shadow-[#D4A843]/25 transition-all duration-300 hover:scale-105 hover:shadow-[#D4A843]/40 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {submitting ? "Sending..." : "Send Message"}
             </button>

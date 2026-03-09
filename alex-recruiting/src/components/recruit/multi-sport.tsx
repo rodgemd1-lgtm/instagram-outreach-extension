@@ -103,7 +103,7 @@ export function MultiSportSection() {
       ref={scopeRef}
       className="relative overflow-hidden px-6 py-28 md:px-12 md:py-40"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(212,168,83,0.12),transparent_28%),radial-gradient(circle_at_80%_20%,rgba(192,57,43,0.12),transparent_24%),linear-gradient(180deg,rgba(10,10,10,0.98),rgba(8,8,8,0.94))]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(212,168,83,0.12),transparent_28%),radial-gradient(circle_at_80%_20%,rgba(212,168,67,0.12),transparent_24%),linear-gradient(180deg,rgba(10,10,10,0.98),rgba(8,8,8,0.94))]" />
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#D4A853]/20 to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-7xl">
@@ -154,7 +154,7 @@ export function MultiSportSection() {
                 </div>
 
                 <div className="border-t border-white/[0.08] bg-black/28 p-6 md:border-t-0 md:border-l md:p-8">
-                  <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#C0392B]/70">
+                  <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#D4A843]/70">
                     Coach Translation
                   </p>
                   <div className="mt-5 space-y-4">
@@ -280,7 +280,7 @@ export function MultiSportSection() {
             style={{ opacity: 0 }}
             className="rounded-[34px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(0,0,0,0.3))] p-6 backdrop-blur-sm md:p-8"
           >
-            <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#C0392B]/70">
+            <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#D4A843]/70">
               Why Coaches Care
             </p>
             <h3 className="mt-4 text-3xl font-semibold tracking-tight text-white">

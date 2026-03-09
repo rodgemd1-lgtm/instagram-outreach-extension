@@ -20,14 +20,16 @@ interface SocialProofMetrics {
 }
 
 const STATIC_PROOF = [
-  "NCSA Verified",
-  "730+ Training Sessions",
-  "First Place Discus",
-  "First Place Shot Put",
+  "NCSA Verified Profile",
+  "730+ Logged Training Sessions",
+  "405 lb Deadlift (Verified)",
+  "1st Place Discus \u2014 Conference",
+  "1st Place Shot Put \u2014 Conference",
   "Varsity Starter as Freshman",
-  "Deadlift PR: 405 lbs",
-  "Two-Way Lineman",
+  "Two-Way OL/DL \u2014 Class of 2029",
   "Deep State Playoff Run",
+  "Active D1/D2/D3 Program Interest",
+  "2029 OL Class \u2014 Limited Depth",
 ];
 
 export function SocialProofBanner() {
@@ -99,7 +101,12 @@ export function SocialProofBanner() {
           {recentCount > 0 && (
             <p className="mb-4 text-center font-jetbrains text-sm tracking-wide text-[#D4A853]">
               <CounterAnimation target={recentCount} trigger={inView} className="font-bold text-lg" />
-              {" "}new school{recentCount !== 1 ? "s" : ""} reached out in the last month
+              {" "}program{recentCount !== 1 ? "s" : ""} with OL scholarship openings actively evaluating
+            </p>
+          )}
+          {recentCount === 0 && (
+            <p className="mb-4 text-center font-jetbrains text-sm tracking-wide text-[#D4A853]">
+              Active evaluation from D1, D2, and D3 programs with 2029 OL needs
             </p>
           )}
 
@@ -125,7 +132,7 @@ export function SocialProofBanner() {
                 <div className="flex items-center gap-2 rounded-full border border-[#D4A853]/10 bg-[#D4A853]/[0.04] px-4 py-2">
                   <CounterAnimation target={metrics.ncsaProfileViews} trigger={inView} className="font-jetbrains text-sm font-bold text-[#D4A853]" />
                   <span className="font-jetbrains text-[10px] uppercase tracking-[0.15em] text-[#8B8172]">
-                    Profile Views
+                    Coach Profile Views
                   </span>
                 </div>
               )}
@@ -141,7 +148,7 @@ export function SocialProofBanner() {
                 <div className="flex items-center gap-2 rounded-full border border-[#D4A853]/10 bg-[#D4A853]/[0.04] px-4 py-2">
                   <CounterAnimation target={metrics.coachFollowers} trigger={inView} className="font-jetbrains text-sm font-bold text-[#D4A853]" />
                   <span className="font-jetbrains text-[10px] uppercase tracking-[0.15em] text-[#8B8172]">
-                    Coaches Following
+                    College Coaches Following
                   </span>
                 </div>
               )}

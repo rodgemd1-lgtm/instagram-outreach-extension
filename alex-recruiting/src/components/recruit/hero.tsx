@@ -96,7 +96,7 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
         )}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(255,255,255,0.2),transparent_24%),linear-gradient(120deg,rgba(8,8,8,0.92)_12%,rgba(8,8,8,0.56)_42%,rgba(8,8,8,0.82)_100%)]" />
         <div className="absolute inset-y-0 right-0 w-[42vw] bg-gradient-to-l from-[#D4A853]/12 via-transparent to-transparent" />
-        <div className="absolute left-[8%] top-[14%] h-52 w-52 rounded-full bg-[#C0392B]/10 blur-[100px]" />
+        <div className="absolute left-[8%] top-[14%] h-52 w-52 rounded-full bg-[#D4A843]/10 blur-[100px]" />
         <div className="absolute right-[8%] top-[24%] h-64 w-64 rounded-full bg-[#D4A853]/10 blur-[120px]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(10,10,10,0.5)_100%)]" />
         <div className="absolute -top-20 -left-20 h-[500px] w-[500px] rounded-full bg-[#D4A853]/8 blur-[160px]" />
@@ -114,7 +114,7 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
       <div className="relative z-10 mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
         <div data-gsap="hero-jersey" style={{ opacity: 0 }}>
           <span
-            className="pointer-events-none absolute left-[-6%] top-1/2 -translate-y-1/2 font-jetbrains text-[14rem] font-black leading-none tracking-tighter text-[#C0392B]/15 blur-[32px] md:text-[24rem] lg:text-[28rem]"
+            className="pointer-events-none absolute left-[-6%] top-1/2 -translate-y-1/2 font-jetbrains text-[14rem] font-black leading-none tracking-tighter text-[#D4A843]/15 blur-[32px] md:text-[24rem] lg:text-[28rem]"
             aria-hidden="true"
           >
             79
@@ -130,7 +130,7 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
             style={{ opacity: 0 }}
             className="mb-6 inline-flex rounded-full border border-white/15 bg-black/35 px-4 py-2 font-jetbrains text-[11px] tracking-[0.35em] text-[#D4A853]/85 backdrop-blur-md"
           >
-            PEWAUKEE HS · CLASS OF 2029 · #79
+            CLASS OF 2029 · EVALUATING NOW · OL/DL · #79
           </span>
 
           <div data-gsap="hero-copy" style={{ opacity: 0 }} className="max-w-4xl">
@@ -138,18 +138,18 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
               Jacob Rodgers
             </h1>
             <p className="mt-4 max-w-3xl text-lg font-medium leading-relaxed text-[#F5F0E6]/72 md:text-2xl">
-              Defensive-line upside. Offensive-line versatility. First-place
-              shot put and discus power. Built through trench training,
-              sports-performance work, and a year-round weight-room routine.
+              6&apos;4&quot; / 285 · Two-way lineman · 405 lb deadlift ·
+              First-place discus. Is this kid in your window? The measurables
+              say yes. The film confirms it.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <Measurable label="Position" value="OL / DL" />
               <Measurable label="Height" value={`6'4"`} />
               <Measurable label="Weight" value="285" />
-              <Measurable label="School" value="Pewaukee HS" />
-              <Measurable label="Track" value="Discus / Shot Put" />
-              <Measurable label="State" value="WI" />
+              <Measurable label="Position" value="OL / DL" />
+              <Measurable label="Deadlift" value="405 lbs" />
+              <Measurable label="Track" value="1st Discus / Shot" />
+              <Measurable label="School" value="Pewaukee HS (WI)" />
             </div>
 
             <div
@@ -158,7 +158,7 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
               className="mt-10 flex flex-wrap gap-4"
             >
               <ActionButton
-                label="Watch Highlight Reel"
+                label="Watch Film"
                 onClick={() => {
                   const filmSection = document.getElementById("film-reel");
                   filmSection?.scrollIntoView({ behavior: "smooth" });
@@ -166,7 +166,7 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
                 primary
               />
               <ActionButton
-                label="Contact Family"
+                label="Start Evaluation"
                 onClick={() => {
                   const contactSection = document.getElementById("contact");
                   contactSection?.scrollIntoView({ behavior: "smooth" });
@@ -184,23 +184,23 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
           <div className="absolute inset-0 bg-[linear-gradient(160deg,rgba(245,158,11,0.14),transparent_40%,rgba(255,255,255,0.03))]" />
           <div className="relative">
             <span className="font-jetbrains text-[10px] tracking-[0.4em] text-[#D4A853]/75">
-              COACH SNAPSHOT
+              15-SECOND COACH READ
             </span>
             <div className="mt-6 grid gap-4">
               <SnapshotCard
-                label="Why Select Jacob"
-                title="Big frame and real two-way projection"
-                body="The film starts with defensive-line finishes, but the offensive-line flexibility, movement skill, and size keep the upside broad."
+                label="The Measurables"
+                title="6'4&quot;, 285, two-way projection, 405 DL"
+                body="Size, verified strength, and OL/DL flexibility. He passes the initial scan before you hit play."
               />
               <SnapshotCard
-                label="Why Stay Interested"
-                title="The film library is broader again"
-                body="The CapCut highlight reel leads now, the older favorite clips are restored, and the coach-first trench reel still stays available as a second pass."
+                label="The Film"
+                title="Position-specific technique, not just highlights"
+                body="Get-off, hand placement, leverage, finish. Film is sorted by what coaches evaluate, not what looks flashy."
               />
               <SnapshotCard
-                label="Moments Of Truth"
-                title="Get-off, leverage, finish, and effort"
-                body="Coaches can now compare the old stack, the newer trench clips, and the main CapCut cut instead of being forced into only one film lens."
+                label="The Window"
+                title="2029 OL class is thin — early movers win"
+                body="Programs evaluating now get a three-year development runway. The class depth at OL means waiting costs you."
               />
             </div>
 
@@ -210,7 +210,7 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
               className="mt-8 flex items-center gap-3 text-sm text-[#F5F0E6]/45"
             >
               <Play className="h-4 w-4 text-[#D4A853]/80" />
-              Scroll for the CapCut highlight, restored legacy clips, newer trench reps, and the athlete-story layer.
+              Film, verified data, development timeline, and coach contact below.
               <ChevronDown className="ml-auto h-4 w-4 animate-bounce text-[#F5F0E6]/30" />
             </div>
           </div>
@@ -267,7 +267,7 @@ function ActionButton({
       onClick={onClick}
       className={
         primary
-          ? "inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#C0392B] to-[#A33225] px-7 py-4 text-sm font-bold uppercase tracking-[0.28em] text-white shadow-lg shadow-[#C0392B]/25 transition-all duration-300 hover:scale-[1.02] hover:shadow-[#C0392B]/40"
+          ? "inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#D4A843] to-[#B8860B] px-7 py-4 text-sm font-bold uppercase tracking-[0.28em] text-white shadow-lg shadow-[#D4A843]/25 transition-all duration-300 hover:scale-[1.02] hover:shadow-[#D4A843]/40"
           : "inline-flex items-center gap-3 rounded-full border border-white/14 bg-black/28 px-7 py-4 text-sm font-semibold uppercase tracking-[0.28em] text-[#F5F0E6]/88 backdrop-blur-md transition-all duration-300 hover:border-[#D4A853]/35 hover:text-white"
       }
     >

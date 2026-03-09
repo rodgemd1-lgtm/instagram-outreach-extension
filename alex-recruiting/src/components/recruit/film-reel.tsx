@@ -25,16 +25,16 @@ interface FilmReelProps {
 
 const coachReasons = [
   {
-    label: "Why keep the CapCut reel first",
-    body: "It is Jacob's own 30-second cut, it stays football-only, and it gets to his best visual moments faster than the longer reels.",
+    label: "30-second evaluation cut",
+    body: "Lead reel is football-only, sorted by position-specific technique: get-off, hand placement, leverage, finish. Not a highlight reel \u2014 an evaluation reel.",
   },
   {
-    label: "Why the older clips came back",
-    body: "Some of the earlier site clips are cleaner from a coach-readability standpoint, so they now sit beside the newer trench clips instead of disappearing.",
+    label: "Game context on every clip",
+    body: "Each clip includes opponent level, play type, and technique focus so you can evaluate without guessing what you are watching.",
   },
   {
-    label: "How to use this page",
-    body: "Watch the CapCut reel, compare the legacy and current clip stacks, then open whichever longer reel best fits your evaluation style.",
+    label: "Coach-first film, not recruit-first",
+    body: "Sorted by what coaches grade \u2014 pad level, strike timing, effort after contact \u2014 not what gets likes on social media.",
   },
 ];
 
@@ -133,14 +133,15 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
               Film
             </span>
             <h2 className="text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
-              Lead with the reel
+              Film is the #1
               <br />
-              he already believes in.
+              decision factor.
             </h2>
             <p className="mt-6 max-w-3xl text-base leading-7 text-[#F5F0E6]/54 md:text-lg">
-              The main player now uses Jacob&apos;s 30-second CapCut highlight.
-              The older clips are back, the newer trench clips stay live, and
-              the coach-first reel is still here as a second pass.
+              Coach-first film: sorted by position-specific technique, not
+              highlight plays. Every clip tagged with opponent context, play
+              type, and the trench skill on display. Watch the 30-second
+              evaluation cut first, then go deeper.
             </p>
           </div>
 
@@ -249,7 +250,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                 More Reels
               </p>
               <h3 className="mt-3 text-3xl font-semibold tracking-tight text-white">
-                Compare the legacy stack, the coach-first reel, and the athlete-context cuts.
+                Full film library: technique reps, game film, and position-specific cuts.
               </h3>
             </div>
 
@@ -276,7 +277,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                       <p className="mt-1 text-sm text-[#F5F0E6]/48">{reel.subtitle}</p>
                     </div>
                     <div className="flex items-center justify-between gap-4">
-                      <p className="font-jetbrains text-[11px] uppercase tracking-[0.24em] text-[#C0392B]/65">
+                      <p className="font-jetbrains text-[11px] uppercase tracking-[0.24em] text-[#D4A843]/65">
                         {reel.durationLabel}
                       </p>
                       <span className="rounded-full border border-white/[0.08] bg-black/24 px-3 py-1 font-jetbrains text-[10px] uppercase tracking-[0.24em] text-[#D4A853]/75">
@@ -293,14 +294,14 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
           </div>
 
           <ClipLibrary
-            title="Restored legacy clips"
-            subtitle="The older site favorites are back on page."
+            title="Verified game film"
+            subtitle="Tagged by opponent level, play type, and technique. Evaluate context, not just the highlight."
             clips={LEGACY_FEATURED_CLIPS}
           />
 
           <ClipLibrary
-            title="Fresh trench clips"
-            subtitle="The newer football batch stays live too."
+            title="Recent trench reps"
+            subtitle="Current-season technique work. See the development curve in real time."
             clips={CURRENT_FEATURED_CLIPS}
           />
         </div>
@@ -373,7 +374,7 @@ function ClipLibrary({
                   </span>
                 ))}
               </div>
-              <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.24em] text-[#C0392B]/65">
+              <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.24em] text-[#D4A843]/65">
                 <span>{clip.durationLabel}</span>
                 <span>{clip.sourceName.replace(".MOV", "")}</span>
               </div>
