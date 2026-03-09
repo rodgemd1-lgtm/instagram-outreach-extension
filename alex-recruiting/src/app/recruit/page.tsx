@@ -14,6 +14,7 @@ import { ScrollProgress } from "@/components/recruit/scroll-progress";
 import { FilmGrainOverlay } from "@/components/recruit/film-grain";
 import { RecruitNav } from "@/components/recruit/nav";
 import { MobileNav } from "@/components/recruit/mobile-nav";
+import { MusicToggle } from "@/components/recruit/music-toggle";
 import { useRecruitPhotos } from "@/hooks/useRecruitPhotos";
 
 export default function RecruitPage() {
@@ -26,6 +27,7 @@ export default function RecruitPage() {
       <MobileNav />
       <ScrollProgress />
       <FilmGrainOverlay />
+      <MusicToggle src="/recruit/audio/ambient.mp3" />
 
       {/* 1. Hero — "Is this kid in my window?" (LAAL: Known-ness) */}
       <RecruitHero backgroundUrl={photoMap.hero} />

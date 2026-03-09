@@ -84,19 +84,19 @@ export function CharacterSection({ backgroundUrl }: { backgroundUrl?: string }) 
 
       <div className="relative z-10 mx-auto max-w-5xl">
         <div className="mb-20 md:mb-32">
-          <span className="mb-6 block font-mono text-[10px] uppercase tracking-[0.5em] text-red-500/60">
+          <span className="mb-6 block font-jetbrains text-[10px] uppercase tracking-[0.5em] text-[#D4A853]/60">
             Character
           </span>
-          <h2 className="mb-6 text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
+          <h2 className="mb-6 font-playfair text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
             Numbers tell you
             <br />
             what he{" "}
-            <span className="bg-gradient-to-r from-red-500 to-rose-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#D4A853] to-[#E8C068] bg-clip-text text-transparent">
               can
             </span>{" "}
             do.
           </h2>
-          <p className="max-w-xl text-base leading-relaxed text-white/40 md:text-lg">
+          <p className="max-w-xl text-base leading-relaxed text-[#F5F0E6]/40 md:text-lg">
             These tell you how he is wired.
           </p>
         </div>
@@ -112,8 +112,8 @@ export function CharacterSection({ backgroundUrl }: { backgroundUrl?: string }) 
               className="group relative"
               style={{ opacity: 0 }}
             >
-              <div className="relative rounded-2xl border border-white/[0.08] bg-black/60 p-8 backdrop-blur-sm transition-colors duration-500 hover:border-red-500/20 md:p-12">
-                <span className="absolute -top-4 -left-2 select-none font-mono text-6xl font-black text-white/[0.03] md:left-6 md:text-8xl">
+              <div className="relative rounded-2xl border border-white/[0.08] bg-black/60 p-8 backdrop-blur-sm transition-colors duration-500 hover:border-[#D4A853]/20 md:p-12">
+                <span className="absolute -top-4 -left-2 select-none font-jetbrains text-6xl font-black text-[#D4A853]/[0.04] md:left-6 md:text-8xl">
                   {trait.icon}
                 </span>
 
@@ -125,12 +125,12 @@ export function CharacterSection({ backgroundUrl }: { backgroundUrl?: string }) 
                   </div>
 
                   <div className="md:w-2/3">
-                    <p className="mb-4 text-base leading-relaxed text-white/70">
+                    <p className="mb-4 text-base leading-relaxed text-[#F5F0E6]/70">
                       {trait.description}
                     </p>
                     <div className="flex items-start gap-3">
-                      <div className="mt-1 h-full min-h-[20px] w-1 rounded-full bg-red-500/30" />
-                      <p className="font-mono text-sm leading-relaxed text-red-500/70">
+                      <div className="mt-1 h-full min-h-[20px] w-1 rounded-full bg-[#D4A853]/30" />
+                      <p className="font-jetbrains text-sm leading-relaxed text-[#D4A853]/70">
                         {trait.evidence}
                       </p>
                     </div>
@@ -141,14 +141,14 @@ export function CharacterSection({ backgroundUrl }: { backgroundUrl?: string }) 
           ))}
         </div>
 
-        <div className="mt-16 rounded-2xl border border-red-500/10 bg-gradient-to-r from-red-500/5 to-rose-500/5 p-10 md:mt-20 md:p-14">
-          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-red-500/60">
+        <div className="mt-16 rounded-2xl border border-[#D4A853]/10 bg-gradient-to-r from-[#D4A853]/5 to-[#E8C068]/5 p-10 md:mt-20 md:p-14">
+          <span className="font-jetbrains text-[10px] uppercase tracking-[0.3em] text-[#D4A853]/60">
             Narrative
           </span>
           <h3 className="mt-4 text-2xl font-semibold tracking-tight text-white">
             The right sentence for a coach to repeat is simple.
           </h3>
-          <p className="mt-4 max-w-3xl text-base leading-7 text-white/58">
+          <p className="mt-4 max-w-3xl text-base leading-7 text-[#F5F0E6]/58">
             Jacob is a big-framed 2029 lineman with defensive-line upside,
             offensive-line flexibility, first-place throwing power, and a work
             habit that already looks like a college development case.

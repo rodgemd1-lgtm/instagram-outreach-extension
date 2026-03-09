@@ -40,10 +40,15 @@ const config: Config = {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(-50%)" },
         },
+        "scroll-ticker": {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
       },
       animation: {
         "jersey-pulse": "jersey-pulse 3s ease-in-out infinite",
         "scroll-left": "scroll-left 30s linear infinite",
+        "scroll-ticker": "scroll-ticker 25s linear infinite",
       },
     },
   },

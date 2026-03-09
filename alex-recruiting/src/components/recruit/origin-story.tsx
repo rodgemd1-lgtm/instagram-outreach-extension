@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   useRecruitAssembly,
   type AssemblyConfig,
 } from "@/hooks/useRecruitAssembly";
+import { TypewriterText } from "./typewriter";
+import { CounterAnimation } from "./counter";
 
 const milestones = [
   {
@@ -51,6 +53,20 @@ const milestones = [
 ];
 
 export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
+  const [inView, setInView] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setInView(true); },
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   const config = useMemo<AssemblyConfig>(
     () => ({
       wave2: [
@@ -79,7 +95,10 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
   return (
     <section
       id="origin"
-      ref={scopeRef}
+      ref={(el) => {
+        (scopeRef as React.MutableRefObject<HTMLElement | null>).current = el;
+        (sectionRef as React.MutableRefObject<HTMLElement | null>).current = el;
+      }}
       className="relative px-6 py-32 md:px-12 md:py-48"
     >
       {backgroundUrl && (
@@ -95,23 +114,23 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
         </div>
       )}
 
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#D4A853]/20 to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-4xl">
         <div className="mb-16 md:mb-24">
-          <span className="mb-6 block font-mono text-[10px] uppercase tracking-[0.5em] text-red-500/60">
+          <span className="mb-6 block font-jetbrains text-[10px] uppercase tracking-[0.5em] text-[#D4A853]/60">
             The Work
           </span>
-          <h2 className="mb-6 text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
+          <h2 className="mb-6 font-playfair text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
             Built early.
             <br />
-            <span className="bg-gradient-to-r from-red-500 to-rose-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#D4A853] to-[#E8C068] bg-clip-text text-transparent">
               Still climbing.
             </span>
             <br />
-            730+ sessions logged.
+            <CounterAnimation target={730} suffix="+" trigger={inView} className="tabular-nums" /> sessions logged.
           </h2>
-          <p className="max-w-2xl text-base leading-7 text-white/48 md:text-lg">
+          <p className="max-w-2xl text-base leading-7 text-[#F5F0E6]/48 md:text-lg">
             Coaches need the real development story, not a polished myth. The
             throughline here is simple: early performance work, steady strength
             gains, two-way football development, and a track-and-field layer
@@ -119,8 +138,17 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
           </p>
         </div>
 
+        {/* Typewriter narrative */}
+        <div className="mb-16 border-l-2 border-[#D4A853]/30 pl-6 md:pl-8">
+          <TypewriterText
+            text="Since age 12, five days a week. 730 sessions. Not because someone made him. Because he chose it."
+            trigger={inView}
+            className="font-playfair italic text-2xl leading-relaxed text-[#F5F0E6]/80 md:text-3xl"
+          />
+        </div>
+
         <div data-gsap="work-timeline" className="relative">
-          <div className="absolute left-4 top-0 bottom-0 w-px bg-white/10 md:left-8" />
+          <div className="absolute left-4 top-0 bottom-0 w-px bg-[#D4A853]/15 md:left-8" />
 
           {milestones.map((milestone) => (
             <div
@@ -129,26 +157,26 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
               style={{ opacity: 0 }}
               className="relative pb-16 pl-12 last:pb-0 md:pl-20"
             >
-              <div className="absolute left-[11px] top-1 h-3 w-3 rounded-full border-2 border-[#0A0A0A] bg-red-500 md:left-[27px]" />
+              <div className="absolute left-[11px] top-1 h-3 w-3 rounded-full border-2 border-[#0A0A0A] bg-[#D4A853] md:left-[27px]" />
 
               <div className="mb-4 flex items-center gap-4">
-                <span className="font-mono text-xs tracking-[0.3em] text-red-500/70">
+                <span className="font-jetbrains text-xs tracking-[0.3em] text-[#D4A853]/70">
                   AGE {milestone.age} - {milestone.year}
                 </span>
               </div>
 
-              <p className="mb-3 text-base font-semibold leading-relaxed text-white/80 md:text-lg">
+              <p className="mb-3 text-base font-semibold leading-relaxed text-[#F5F0E6]/80 md:text-lg">
                 {milestone.headline}
               </p>
 
               {milestone.lifts && (
-                <p className="mb-2 font-mono text-sm tracking-wide text-white/40">
+                <p className="mb-2 font-jetbrains text-sm tracking-wide text-[#F5F0E6]/40">
                   {milestone.lifts}
                 </p>
               )}
 
               {milestone.detail && (
-                <p className="text-sm leading-relaxed text-white/50">
+                <p className="text-sm leading-relaxed text-[#F5F0E6]/50">
                   {milestone.detail}
                 </p>
               )}

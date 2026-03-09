@@ -46,6 +46,19 @@ export function ContactCTA() {
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
 
+    if (!formData.get("name") || !formData.get("school") || !formData.get("email")) {
+      setError("Name, school, and email are required.");
+      setSubmitting(false);
+      return;
+    }
+
+    const emailValue = formData.get("email") as string;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+      setError("Please enter a valid email address.");
+      setSubmitting(false);
+      return;
+    }
+
     try {
       const res = await fetch("/api/recruit/contact", {
         method: "POST",
@@ -74,9 +87,9 @@ export function ContactCTA() {
       ref={scopeRef}
       className="relative px-6 py-32 md:px-12 md:py-48"
     >
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500/20 to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#D4A853]/20 to-transparent" />
 
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-[12rem] font-black leading-none text-white/[0.015] md:text-[20rem]">
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-jetbrains text-[12rem] font-black leading-none text-white/[0.015] md:text-[20rem]">
         79
       </div>
 
@@ -86,13 +99,13 @@ export function ContactCTA() {
           style={{ opacity: 0 }}
           className="mb-16 text-center md:mb-24"
         >
-          <span className="mb-6 block font-mono text-[10px] uppercase tracking-[0.5em] text-red-500/60">
+          <span className="mb-6 block font-jetbrains text-[10px] uppercase tracking-[0.5em] text-[#D4A853]/60">
             Contact
           </span>
-          <h2 className="mb-6 text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
+          <h2 className="font-playfair mb-6 text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
             Let&apos;s Talk
           </h2>
-          <p className="mx-auto max-w-lg text-base leading-relaxed text-white/40 md:text-lg">
+          <p className="mx-auto max-w-lg text-base leading-relaxed text-[#F5F0E6]/40 md:text-lg">
             The cleanest next move is simple: watch the CapCut highlight,
             compare the coach and legacy reels, and send a message through the
             coach form.
@@ -104,25 +117,25 @@ export function ContactCTA() {
           style={{ opacity: 0 }}
           className="mb-12 grid grid-cols-1 gap-6 md:grid-cols-2"
         >
-          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 backdrop-blur-xl shadow-lg shadow-black/20 transition-colors duration-300 hover:border-red-500/20">
-            <span className="mb-4 block text-[10px] uppercase tracking-[0.3em] text-white/30">
+          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 backdrop-blur-xl shadow-lg shadow-black/20 transition-colors duration-300 hover:border-[#D4A853]/20">
+            <span className="mb-4 block text-[10px] uppercase tracking-[0.3em] text-[#F5F0E6]/30">
               Family Contact
             </span>
             <a
               href="mailto:rodgermd1@gmail.com"
-              className="flex items-center gap-3 text-white transition-colors hover:text-red-500"
+              className="flex items-center gap-3 text-white transition-colors hover:text-[#D4A853]"
             >
-              <Mail className="h-4 w-4 text-red-500/60" />
-              <span className="text-sm font-mono">rodgermd1@gmail.com</span>
+              <Mail className="h-4 w-4 text-[#D4A853]/60" />
+              <span className="text-sm font-jetbrains">rodgermd1@gmail.com</span>
             </a>
-            <p className="mt-4 text-sm leading-6 text-white/48">
+            <p className="mt-4 text-sm leading-6 text-[#F5F0E6]/48">
               Coaches can email directly or use the form below. Family follow-up
               should respond within 24 hours.
             </p>
           </div>
 
-          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 backdrop-blur-xl shadow-lg shadow-black/20 transition-colors duration-300 hover:border-red-500/20">
-            <span className="mb-4 block text-[10px] uppercase tracking-[0.3em] text-white/30">
+          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 backdrop-blur-xl shadow-lg shadow-black/20 transition-colors duration-300 hover:border-[#D4A853]/20">
+            <span className="mb-4 block text-[10px] uppercase tracking-[0.3em] text-[#F5F0E6]/30">
               Live Links
             </span>
             <div className="space-y-3">
@@ -162,31 +175,31 @@ export function ContactCTA() {
             style={{ opacity: 0 }}
             className="space-y-6 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 shadow-lg shadow-black/20 backdrop-blur-xl md:p-12"
           >
-            <span className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-white/30">
+            <span className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-[#F5F0E6]/30">
               Or send a message
             </span>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
-                <label className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-white/30">
+                <label className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-[#F5F0E6]/30">
                   Your Name
                 </label>
                 <input
                   type="text"
                   name="name"
                   required
-                  className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-white placeholder-white/20 transition-colors focus:border-red-500/40 focus:outline-none"
+                  className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-white placeholder-white/20 transition-colors focus:border-[#D4A853]/40 focus:outline-none"
                   placeholder="Coach Smith"
                 />
               </div>
               <div>
-                <label className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-white/30">
+                <label className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-[#F5F0E6]/30">
                   School
                 </label>
                 <input
                   type="text"
                   name="school"
                   required
-                  className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-white placeholder-white/20 transition-colors focus:border-red-500/40 focus:outline-none"
+                  className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-white placeholder-white/20 transition-colors focus:border-[#D4A853]/40 focus:outline-none"
                   placeholder="University of Wisconsin"
                 />
               </div>
@@ -194,38 +207,38 @@ export function ContactCTA() {
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
-                <label className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-white/30">
+                <label className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-[#F5F0E6]/30">
                   Email
                 </label>
                 <input
                   type="email"
                   name="email"
                   required
-                  className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-white placeholder-white/20 transition-colors focus:border-red-500/40 focus:outline-none"
+                  className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-white placeholder-white/20 transition-colors focus:border-[#D4A853]/40 focus:outline-none"
                   placeholder="coach@university.edu"
                 />
               </div>
               <div>
-                <label className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-white/30">
+                <label className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-[#F5F0E6]/30">
                   Phone (Optional)
                 </label>
                 <input
                   type="tel"
                   name="phone"
-                  className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-white placeholder-white/20 transition-colors focus:border-red-500/40 focus:outline-none"
+                  className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-white placeholder-white/20 transition-colors focus:border-[#D4A853]/40 focus:outline-none"
                   placeholder="(555) 123-4567"
                 />
               </div>
             </div>
 
             <div>
-              <label className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-white/30">
+              <label className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-[#F5F0E6]/30">
                 Message
               </label>
               <textarea
                 name="message"
                 rows={5}
-                className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-white placeholder-white/20 transition-colors focus:border-red-500/40 focus:outline-none"
+                className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-white placeholder-white/20 transition-colors focus:border-[#D4A853]/40 focus:outline-none"
                 placeholder="We'd like to learn more about Jacob and start a conversation."
               />
             </div>
@@ -235,7 +248,7 @@ export function ContactCTA() {
             <button
               type="submit"
               disabled={submitting}
-              className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-red-600 via-red-500 to-rose-500 px-10 py-4 text-sm font-bold uppercase tracking-widest text-white shadow-lg shadow-red-500/25 transition-all duration-300 hover:scale-105 hover:shadow-red-500/40 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#C0392B] to-[#A33225] px-10 py-4 text-sm font-bold uppercase tracking-widest text-white shadow-lg shadow-[#C0392B]/25 transition-all duration-300 hover:scale-105 hover:shadow-[#C0392B]/40 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {submitting ? "Sending..." : "Send Message"}
             </button>
@@ -278,17 +291,17 @@ function QuickLink({
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 transition-colors hover:border-red-500/25"
+      className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 transition-colors hover:border-[#D4A853]/25"
     >
       <div>
-        <span className="block text-[10px] uppercase tracking-[0.3em] text-white/30">
+        <span className="block text-[10px] uppercase tracking-[0.3em] text-[#F5F0E6]/30">
           {label}
         </span>
-        <span className="mt-1 block text-sm font-mono text-white/80">
+        <span className="mt-1 block text-sm font-jetbrains text-[#F5F0E6]/80">
           {handle}
         </span>
       </div>
-      <ExternalLink className="h-4 w-4 text-red-500/60" />
+      <ExternalLink className="h-4 w-4 text-[#D4A853]/60" />
     </a>
   );
 }

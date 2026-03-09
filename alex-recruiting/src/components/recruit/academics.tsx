@@ -39,38 +39,38 @@ export function AcademicsSection() {
       ref={scopeRef}
       className="relative px-6 py-20 md:px-12 md:py-28"
     >
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#D4A853]/20 to-transparent" />
 
       <div data-gsap="acad-content" className="mx-auto max-w-5xl">
         <div data-gsap-wave="2" style={{ opacity: 0 }}>
-          <span className="mb-6 block font-mono text-[10px] uppercase tracking-[0.5em] text-red-500/60">
+          <span className="mb-6 block font-jetbrains text-[10px] uppercase tracking-[0.5em] text-[#D4A853]/60">
             Academics
           </span>
 
           <div className="mb-8 flex flex-wrap items-center gap-6 md:gap-10">
             <div className="flex items-baseline gap-2">
-              <span className="font-mono text-3xl font-black text-white md:text-4xl">
+              <span className="font-jetbrains text-3xl font-black text-white md:text-4xl">
                 3.25
               </span>
-              <span className="text-[10px] uppercase tracking-[0.3em] text-white/30">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5F0E6]/30">
                 current GPA
               </span>
             </div>
             <div className="hidden h-8 w-px bg-white/10 md:block" />
             <div className="flex items-baseline gap-2">
-              <span className="font-mono text-lg font-bold text-white/80 md:text-xl">
+              <span className="font-jetbrains text-lg font-bold text-[#F5F0E6]/80 md:text-xl">
                 live
               </span>
-              <span className="text-[10px] uppercase tracking-[0.3em] text-white/30">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5F0E6]/30">
                 transcript updates
               </span>
             </div>
             <div className="hidden h-8 w-px bg-white/10 md:block" />
             <div className="flex items-baseline gap-2">
-              <span className="font-mono text-lg font-bold text-white/80 md:text-xl">
+              <span className="font-jetbrains text-lg font-bold text-[#F5F0E6]/80 md:text-xl">
                 early
               </span>
-              <span className="text-[10px] uppercase tracking-[0.3em] text-white/30">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-[#F5F0E6]/30">
                 eligibility path
               </span>
             </div>
@@ -89,7 +89,7 @@ export function AcademicsSection() {
           </div>
 
           <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6">
-            <p className="text-sm leading-7 text-white/52">
+            <p className="text-sm leading-7 text-[#F5F0E6]/52">
               The academic section stays direct on purpose. Coaches do not need
               inflated testing claims or a fake finished story here. They need a
               clean snapshot, a real contact path, and confidence that the
@@ -105,10 +105,10 @@ export function AcademicsSection() {
 function AcademicDetail({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-4 py-3">
-      <span className="mb-1 block text-[9px] uppercase tracking-[0.2em] text-white/30">
+      <span className="mb-1 block text-[9px] uppercase tracking-[0.2em] text-[#F5F0E6]/30">
         {label}
       </span>
-      <span className="font-mono text-sm font-semibold text-white/80">
+      <span className="font-jetbrains text-sm font-semibold text-[#F5F0E6]/80">
         {value}
       </span>
     </div>

@@ -16,6 +16,9 @@ export interface SocialProofData {
   contactFormSubmissions: number;
   competitorOffers: number;
   schoolsEngaged: number;
+  recentSchools: string[];
+  recentSchoolCount: number;
+  schoolNames: string[];
   lastUpdated: string;
 }
 
@@ -31,6 +34,9 @@ async function fetchSocialProofData(): Promise<SocialProofData> {
     contactFormSubmissions: 0,
     competitorOffers: 0,
     schoolsEngaged: 0,
+    recentSchools: [],
+    recentSchoolCount: 0,
+    schoolNames: [],
     lastUpdated: new Date().toISOString(),
   };
 
@@ -93,6 +99,43 @@ async function fetchSocialProofData(): Promise<SocialProofData> {
         .filter(Boolean)
     );
     data.schoolsEngaged = uniqueSchools.size;
+  } catch { /* table may not exist */ }
+
+  // Recent schools (last 30 days)
+  try {
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+    const { data: recentSchoolRows } = await supabase
+      .from("ncsa_leads")
+      .select("school_name, detected_at")
+      .gte("detected_at", thirtyDaysAgo)
+      .order("detected_at", { ascending: false });
+
+    const recentUniqueSchools = [
+      ...new Set(
+        (recentSchoolRows ?? [])
+          .map((s: { school_name: string | null }) => s.school_name?.trim())
+          .filter(Boolean) as string[]
+      ),
+    ];
+    data.recentSchools = recentUniqueSchools;
+    data.recentSchoolCount = recentUniqueSchools.length;
+  } catch { /* table may not exist */ }
+
+  // All school names for ticker
+  try {
+    const { data: allSchoolRows } = await supabase
+      .from("ncsa_leads")
+      .select("school_name")
+      .order("detected_at", { ascending: false });
+
+    const allUniqueSchools = [
+      ...new Set(
+        (allSchoolRows ?? [])
+          .map((s: { school_name: string | null }) => s.school_name?.trim())
+          .filter(Boolean) as string[]
+      ),
+    ];
+    data.schoolNames = allUniqueSchools;
   } catch { /* table may not exist */ }
 
   return data;

@@ -93,18 +93,18 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
         </div>
       )}
 
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-      <div className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-600/[0.03] blur-[150px]" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#D4A853]/20 to-transparent" />
+      <div className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#D4A853]/[0.03] blur-[150px]" />
 
       <div className="relative z-10 mx-auto max-w-5xl">
         <div className="mb-20 md:mb-32">
-          <span className="mb-6 block font-mono text-[10px] uppercase tracking-[0.5em] text-red-500/60">
+          <span className="mb-6 block font-jetbrains text-[10px] uppercase tracking-[0.5em] text-[#D4A853]/60">
             The Fit
           </span>
-          <h2 className="mb-6 text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
+          <h2 className="mb-6 font-playfair text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
             Read this
             <br />
-            <span className="bg-gradient-to-r from-red-500 to-rose-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#D4A853] to-[#E8C068] bg-clip-text text-transparent">
               like a coach.
             </span>
             <br />
@@ -120,9 +120,9 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
               style={{ opacity: 0 }}
               className="group"
             >
-              <div className="relative rounded-2xl border border-white/[0.08] bg-black/60 p-8 backdrop-blur-sm transition-all duration-500 hover:border-red-500/20 md:flex md:items-start md:gap-10 md:p-10">
+              <div className="relative rounded-2xl border border-white/[0.08] bg-black/60 p-8 backdrop-blur-sm transition-all duration-500 hover:border-[#D4A853]/20 md:flex md:items-start md:gap-10 md:p-10">
                 <div className="mb-4 md:mb-0 md:w-20">
-                  <span className="font-mono text-3xl font-black text-red-500/20 transition-colors group-hover:text-red-500/40 md:text-4xl">
+                  <span className="font-jetbrains text-3xl font-black text-[#D4A853]/20 transition-colors group-hover:text-[#D4A853]/40 md:text-4xl">
                     {block.number}
                   </span>
                 </div>
@@ -131,7 +131,7 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
                   <h3 className="mb-3 text-xl font-bold tracking-tight md:text-2xl">
                     {block.title}
                   </h3>
-                  <p className="text-sm leading-relaxed text-white/60 md:text-base">
+                  <p className="text-sm leading-relaxed text-[#F5F0E6]/60 md:text-base">
                     {block.body}
                   </p>
                 </div>
@@ -140,14 +140,25 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
           ))}
         </div>
 
-        <div className="mt-10 rounded-[28px] border border-red-500/12 bg-gradient-to-r from-red-500/8 to-amber-400/6 p-8 md:p-10">
-          <p className="font-mono text-[10px] uppercase tracking-[0.32em] text-red-500/70">
+        <div className="mt-8 rounded-2xl border border-[#C0392B]/15 bg-[#C0392B]/[0.04] p-6 md:p-8">
+          <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#C0392B]/70">
+            The Window
+          </p>
+          <p className="mt-4 text-base leading-7 text-[#F5F0E6]/70 md:text-lg">
+            The coach who sees this early gets a three-year head start on
+            developing him. The coach who waits will be competing against every
+            other program that discovers him.
+          </p>
+        </div>
+
+        <div className="mt-10 rounded-[28px] border border-[#D4A853]/12 bg-gradient-to-r from-[#D4A853]/8 to-[#E8C068]/6 p-8 md:p-10">
+          <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#D4A853]/70">
             Coach Verdict
           </p>
           <h3 className="mt-4 text-2xl font-semibold tracking-tight text-white md:text-3xl">
             Yes, because the projection and the work habit are both believable.
           </h3>
-          <p className="mt-4 max-w-3xl text-sm leading-7 text-white/58 md:text-base">
+          <p className="mt-4 max-w-3xl text-sm leading-7 text-[#F5F0E6]/58 md:text-base">
             This is the kind of page that should lead a coach from identity, to
             film, to development, to fit without asking them to guess what they
             are seeing or why it matters.
@@ -161,14 +172,14 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
               className="rounded-[26px] border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-sm"
             >
               <div className="flex items-center justify-between gap-4">
-                <p className="font-mono text-[10px] uppercase tracking-[0.32em] text-white/35">
+                <p className="font-jetbrains text-[10px] uppercase tracking-[0.32em] text-[#8B8172]">
                   {review.role}
                 </p>
                 <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em] text-emerald-300">
                   {review.verdict}
                 </span>
               </div>
-              <p className="mt-4 text-sm leading-6 text-white/58">{review.body}</p>
+              <p className="mt-4 text-sm leading-6 text-[#F5F0E6]/58">{review.body}</p>
             </div>
           ))}
         </div>
