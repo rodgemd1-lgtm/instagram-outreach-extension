@@ -16,10 +16,12 @@ import { RecruitNav } from "@/components/recruit/nav";
 import { MobileNav } from "@/components/recruit/mobile-nav";
 import { MusicToggle } from "@/components/recruit/music-toggle";
 import { useRecruitPhotos } from "@/hooks/useRecruitPhotos";
+import { useAnalytics } from "@/components/recruit/hooks/use-analytics";
 
 export default function RecruitPage() {
   const pageRef = useRef<HTMLDivElement>(null);
   const { photoMap } = useRecruitPhotos();
+  useAnalytics(); // Registers page visit on mount; section tracking wired later via IntersectionObserver
 
   return (
     <div ref={pageRef}>
