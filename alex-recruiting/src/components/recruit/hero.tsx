@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { KenBurnsImage } from "@/components/recruit/ken-burns";
 import { useMemo } from "react";
 import { ChevronDown, Play } from "lucide-react";
 import {
@@ -92,19 +92,14 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
     >
       <div className="absolute inset-0">
         {backgroundUrl && (
-          <Image
-            src={backgroundUrl}
-            alt="Jacob Rodgers action shot"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
+          <KenBurnsImage src={backgroundUrl} alt="Jacob Rodgers action shot" />
         )}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(255,255,255,0.2),transparent_24%),linear-gradient(120deg,rgba(8,8,8,0.92)_12%,rgba(8,8,8,0.56)_42%,rgba(8,8,8,0.82)_100%)]" />
-        <div className="absolute inset-y-0 right-0 w-[42vw] bg-gradient-to-l from-[#F59E0B]/18 via-transparent to-transparent" />
-        <div className="absolute left-[8%] top-[14%] h-52 w-52 rounded-full bg-red-500/12 blur-[100px]" />
-        <div className="absolute right-[8%] top-[24%] h-64 w-64 rounded-full bg-amber-400/10 blur-[120px]" />
+        <div className="absolute inset-y-0 right-0 w-[42vw] bg-gradient-to-l from-[#D4A853]/12 via-transparent to-transparent" />
+        <div className="absolute left-[8%] top-[14%] h-52 w-52 rounded-full bg-[#C0392B]/10 blur-[100px]" />
+        <div className="absolute right-[8%] top-[24%] h-64 w-64 rounded-full bg-[#D4A853]/10 blur-[120px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(10,10,10,0.5)_100%)]" />
+        <div className="absolute -top-20 -left-20 h-[500px] w-[500px] rounded-full bg-[#D4A853]/8 blur-[160px]" />
       </div>
 
       <div
@@ -119,12 +114,12 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
       <div className="relative z-10 mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
         <div data-gsap="hero-jersey" style={{ opacity: 0 }}>
           <span
-            className="pointer-events-none absolute left-[-6%] top-1/2 -translate-y-1/2 font-mono text-[14rem] font-black leading-none tracking-tighter text-red-500/18 blur-[32px] md:text-[24rem] lg:text-[28rem]"
+            className="pointer-events-none absolute left-[-6%] top-1/2 -translate-y-1/2 font-jetbrains text-[14rem] font-black leading-none tracking-tighter text-[#C0392B]/15 blur-[32px] md:text-[24rem] lg:text-[28rem]"
             aria-hidden="true"
           >
             79
           </span>
-          <span className="pointer-events-none absolute left-[-4%] top-1/2 -translate-y-1/2 font-mono text-[14rem] font-black leading-none tracking-tighter text-white/10 md:text-[24rem] lg:text-[28rem]">
+          <span className="pointer-events-none absolute left-[-4%] top-1/2 -translate-y-1/2 font-jetbrains text-[14rem] font-black leading-none tracking-tighter text-[#F5F0E6]/8 md:text-[24rem] lg:text-[28rem]">
             79
           </span>
         </div>
@@ -133,16 +128,16 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
           <span
             data-gsap="hero-kicker"
             style={{ opacity: 0 }}
-            className="mb-6 inline-flex rounded-full border border-white/15 bg-black/35 px-4 py-2 font-mono text-[11px] tracking-[0.35em] text-amber-300/85 backdrop-blur-md"
+            className="mb-6 inline-flex rounded-full border border-white/15 bg-black/35 px-4 py-2 font-jetbrains text-[11px] tracking-[0.35em] text-[#D4A853]/85 backdrop-blur-md"
           >
             PEWAUKEE HS · CLASS OF 2029 · #79
           </span>
 
           <div data-gsap="hero-copy" style={{ opacity: 0 }} className="max-w-4xl">
-            <h1 className="text-5xl font-black leading-[0.92] tracking-[-0.04em] md:text-8xl lg:text-[7.25rem]">
+            <h1 className="font-playfair text-5xl font-black leading-[0.92] tracking-[-0.04em] md:text-8xl lg:text-[7.25rem]">
               Jacob Rodgers
             </h1>
-            <p className="mt-4 max-w-3xl text-lg font-medium leading-relaxed text-white/72 md:text-2xl">
+            <p className="mt-4 max-w-3xl text-lg font-medium leading-relaxed text-[#F5F0E6]/72 md:text-2xl">
               Defensive-line upside. Offensive-line versatility. First-place
               shot put and discus power. Built through trench training,
               sports-performance work, and a year-round weight-room routine.
@@ -188,7 +183,7 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
         >
           <div className="absolute inset-0 bg-[linear-gradient(160deg,rgba(245,158,11,0.14),transparent_40%,rgba(255,255,255,0.03))]" />
           <div className="relative">
-            <span className="font-mono text-[10px] tracking-[0.4em] text-amber-300/75">
+            <span className="font-jetbrains text-[10px] tracking-[0.4em] text-[#D4A853]/75">
               COACH SNAPSHOT
             </span>
             <div className="mt-6 grid gap-4">
@@ -212,11 +207,11 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
             <div
               data-gsap="hero-scroll-cue"
               style={{ opacity: 0 }}
-              className="mt-8 flex items-center gap-3 text-sm text-white/45"
+              className="mt-8 flex items-center gap-3 text-sm text-[#F5F0E6]/45"
             >
-              <Play className="h-4 w-4 text-amber-300/80" />
+              <Play className="h-4 w-4 text-[#D4A853]/80" />
               Scroll for the CapCut highlight, restored legacy clips, newer trench reps, and the athlete-story layer.
-              <ChevronDown className="ml-auto h-4 w-4 animate-bounce text-white/30" />
+              <ChevronDown className="ml-auto h-4 w-4 animate-bounce text-[#F5F0E6]/30" />
             </div>
           </div>
         </div>
@@ -228,10 +223,10 @@ export function RecruitHero({ backgroundUrl }: { backgroundUrl?: string }) {
 function Measurable({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-full border border-white/12 bg-black/35 px-4 py-3 text-left backdrop-blur-md">
-      <div className="mb-1 text-[9px] uppercase tracking-[0.3em] text-white/35">
+      <div className="mb-1 text-[9px] uppercase tracking-[0.3em] text-[#8B8172]">
         {label}
       </div>
-      <div className="font-mono text-sm font-semibold text-white/92 md:text-base">
+      <div className="font-jetbrains text-sm font-semibold text-[#F5F0E6] md:text-base">
         {value}
       </div>
     </div>
@@ -249,11 +244,11 @@ function SnapshotCard({
 }) {
   return (
     <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5">
-      <div className="text-[9px] uppercase tracking-[0.3em] text-amber-300/60">
+      <div className="text-[9px] uppercase tracking-[0.3em] text-[#D4A853]/60">
         {label}
       </div>
       <h3 className="mt-2 text-lg font-semibold text-white">{title}</h3>
-      <p className="mt-2 text-sm leading-6 text-white/60">{body}</p>
+      <p className="mt-2 text-sm leading-6 text-[#F5F0E6]/60">{body}</p>
     </div>
   );
 }
@@ -272,8 +267,8 @@ function ActionButton({
       onClick={onClick}
       className={
         primary
-          ? "inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-red-600 via-red-500 to-amber-400 px-7 py-4 text-sm font-bold uppercase tracking-[0.28em] text-white shadow-lg shadow-red-500/25 transition-all duration-300 hover:scale-[1.02] hover:shadow-red-500/40"
-          : "inline-flex items-center gap-3 rounded-full border border-white/14 bg-black/28 px-7 py-4 text-sm font-semibold uppercase tracking-[0.28em] text-white/88 backdrop-blur-md transition-all duration-300 hover:border-amber-300/35 hover:text-white"
+          ? "inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#C0392B] to-[#A33225] px-7 py-4 text-sm font-bold uppercase tracking-[0.28em] text-white shadow-lg shadow-[#C0392B]/25 transition-all duration-300 hover:scale-[1.02] hover:shadow-[#C0392B]/40"
+          : "inline-flex items-center gap-3 rounded-full border border-white/14 bg-black/28 px-7 py-4 text-sm font-semibold uppercase tracking-[0.28em] text-[#F5F0E6]/88 backdrop-blur-md transition-all duration-300 hover:border-[#D4A853]/35 hover:text-white"
       }
     >
       {primary && <Play className="h-4 w-4 fill-current" />}
