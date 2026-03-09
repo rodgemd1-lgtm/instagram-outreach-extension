@@ -651,3 +651,31 @@ export const panelSurveys = pgTable("panel_surveys", {
   wouldShare: boolean("would_share"),
   submittedAt: timestamp("submitted_at").defaultNow(),
 });
+
+// ============ RESEARCH PIPELINE ============
+
+export const researchArticles = pgTable("research_articles", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  url: text("url").notNull().unique(),
+  title: text("title"),
+  content: text("content"),
+  dataType: text("data_type").notNull(),
+  source: text("source").notNull(),
+  wordCount: integer("word_count"),
+  scrapedAt: timestamp("scraped_at").defaultNow(),
+  aiSummary: text("ai_summary"),
+  aiInsights: jsonb("ai_insights"),
+  aiActionItems: jsonb("ai_action_items"),
+  aiRelevanceScore: integer("ai_relevance_score"),
+  aiTags: text("ai_tags").array(),
+  aiProcessedAt: timestamp("ai_processed_at"),
+});
+
+export const researchFindings = pgTable("research_findings", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  query: text("query").notNull(),
+  engine: text("engine").notNull().default("exa"),
+  results: jsonb("results").notNull(),
+  resultCount: integer("result_count"),
+  searchedAt: timestamp("searched_at").defaultNow(),
+});
