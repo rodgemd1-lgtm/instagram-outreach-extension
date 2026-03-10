@@ -4,6 +4,10 @@ const nextConfig = {
   // Exclude puppeteer-core from serverless bundles (only used locally for header generation)
   experimental: {
     serverComponentsExternalPackages: ["puppeteer-core"],
+    outputFileTracingExcludes: {
+      "/api/**": ["./public/recruit/**"],
+      "/recruit": ["./public/recruit/**"],
+    },
   },
   headers: async () => [
     {
