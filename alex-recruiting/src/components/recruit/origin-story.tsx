@@ -37,19 +37,23 @@ const timeline: TimelineEntry[] = [
     age: 12,
     year: "2022",
     title: "The turn",
-    body: "The car-ride moment. He\u2019d let himself slip \u2014 and he recognized it before anyone else did. Structured strength training started the next week alongside NX Level. Learning the barbell: stance mechanics, fit position, base block fundamentals. These numbers are not impressive. They are the floor.",
+    body: "The car-ride moment. He\u2019d let himself slip \u2014 and he recognized it before anyone else did. Structured strength training started the next week alongside NX Level. Trench Training with Joel Nellis \u2014 former Wisconsin Badger, now one of the state\u2019s top lineman development coaches \u2014 begins the same year. Learning the barbell and the position at the same time: stance mechanics, fit position, base block fundamentals. These numbers are not impressive. They are the floor.",
     lifts: [
       { label: "Bench", value: 95 },
       { label: "Squat", value: 135 },
     ],
     coda: "The commitment is player-driven, not parent-driven.",
+    link: {
+      text: "Trench Training",
+      href: "https://trenchtraining.com",
+    },
   },
   {
     id: "age-13",
     age: 13,
     year: "2023",
     title: "He built a team around himself",
-    body: "365 sessions. Personal trainer Justin at Performance Edge for compound strength \u2014 power cleans, front squats, bench, deadlift progressions built for OL/DL. Dedicated trench coach Joel for hand combat, punch timing, drive blocks, pass-rush technique. NX Level for speed and agility. IMG camps for national-level competition. Deliberate nutrition \u2014 protein-focused to build muscle, not just grow. Training alongside athletes two and three years older, by choice.",
+    body: "365 sessions. Personal trainer Justin Quintero at Performance Edge for compound strength \u2014 power cleans, front squats, bench, deadlift progressions built for OL/DL. Trench Training with Joel Nellis continuing \u2014 hand combat, punch timing, drive blocks, swim and rip moves, pass-rush technique. NX Level for speed and agility. IMG camps for national-level competition. Deliberate nutrition \u2014 protein-focused to build muscle, not just grow. Training alongside athletes two and three years older, by choice.",
     lifts: [
       { label: "Bench", value: 155 },
       { label: "Squat", value: 225 },
