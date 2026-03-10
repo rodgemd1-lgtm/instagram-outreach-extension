@@ -138,7 +138,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
           (scopeRef as React.MutableRefObject<HTMLElement | null>).current = el;
           pinRef.current = el;
         }}
-        className="relative overflow-hidden bg-black px-6 py-24 md:px-12 md:py-32"
+        className="relative overflow-hidden bg-black px-4 py-16 md:px-12 md:py-32"
       >
         {/* ── observer sentinel for counter/typewriter trigger ── */}
         <div ref={observerRef} className="absolute inset-0 pointer-events-none" />
@@ -164,9 +164,9 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
         {/* ── dialogue layout ── */}
         <div className="relative z-10 mx-auto flex max-w-7xl flex-col md:flex-row md:items-start md:gap-0">
           {/* LEFT — typewriter margin (1/3) */}
-          <div className="mb-10 md:mb-0 md:w-1/3 md:sticky md:top-32">
+          <div className="mb-6 md:mb-0 md:w-1/3 md:sticky md:top-32">
             {/* section label removed per feedback */}
-            <h2 className="text-4xl font-black tracking-tight leading-[0.95] text-white md:text-5xl lg:text-6xl">
+            <h2 className="text-3xl font-black tracking-tight leading-[0.95] text-white md:text-5xl lg:text-6xl">
               <TypewriterText
                 text="Can he play?"
                 trigger={inView}
@@ -174,7 +174,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                 className="text-white"
               />
             </h2>
-            <p className="mt-6 max-w-xs text-lg leading-7 text-white/70 md:text-xl">
+            <p className="mt-4 max-w-xs text-base leading-7 text-white/70 md:mt-6 md:text-xl">
               Film, force production, and effort — every rep, every snap, every game.
             </p>
           </div>
@@ -253,7 +253,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                       key={reel.id}
                       type="button"
                       onClick={() => openFullscreen(reel.src, reel.poster)}
-                      className="group/splash relative aspect-video w-48 shrink-0 overflow-hidden rounded-xl border border-white/[0.08] bg-black focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff000c]/50 md:w-56"
+                      className="group/splash relative aspect-video w-40 shrink-0 overflow-hidden rounded-xl border border-white/[0.08] bg-black focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff000c]/50 md:w-56"
                     >
                       {/* poster */}
                       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -303,21 +303,21 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
             >
               <div
                 data-gsap-wave="2"
-                className="grid grid-cols-3 gap-4 md:grid-cols-5"
+                className="grid grid-cols-3 gap-2 md:grid-cols-5 md:gap-4"
               >
                 {STATS.map((stat) => (
                   <div
                     key={stat.label}
-                    className="flex flex-col items-center rounded-xl border border-white/[0.06] bg-white/[0.02] px-3 py-4 backdrop-blur-sm"
+                    className="flex flex-col items-center rounded-xl border border-white/[0.06] bg-white/[0.02] px-2 py-3 backdrop-blur-sm md:px-3 md:py-4"
                   >
                     <CounterAnimation
                       target={stat.target}
                       suffix={stat.suffix}
                       trigger={inView}
                       duration={1.8}
-                      className="text-2xl font-black tabular-nums text-white md:text-3xl"
+                      className="text-xl font-black tabular-nums text-white md:text-3xl"
                     />
-                    <span className="mt-1 font-jetbrains text-sm uppercase tracking-[0.2em] text-[#ff000c]/80 md:text-base">
+                    <span className="mt-1 font-jetbrains text-[10px] uppercase tracking-[0.15em] text-[#ff000c]/80 md:text-base md:tracking-[0.2em]">
                       {stat.label}
                     </span>
                   </div>

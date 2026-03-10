@@ -9,13 +9,13 @@ import { useEffect, useState } from "react";
    ────────────────────────────────────────────────────────────── */
 
 const sections = [
-  { id: "hero", label: "79" },
-  { id: "film-reel", label: "Film" },
-  { id: "origin", label: "The Work" },
-  { id: "character", label: "Character" },
-  { id: "academics", label: "Academics" },
-  { id: "fit", label: "The Fit" },
-  { id: "contact", label: "Contact" },
+  { id: "hero", label: "79", short: "79" },
+  { id: "film-reel", label: "Film", short: "Film" },
+  { id: "origin", label: "The Work", short: "Work" },
+  { id: "character", label: "Character", short: "Char" },
+  { id: "academics", label: "Academics", short: "Acad" },
+  { id: "fit", label: "The Fit", short: "Fit" },
+  { id: "contact", label: "Contact", short: "Contact" },
 ];
 
 export function RecruitNav() {
@@ -104,28 +104,28 @@ export function RecruitNav() {
         <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-[#000000]/95 backdrop-blur-xl border-t border-white/5"
           style={{ paddingBottom: "env(safe-area-inset-bottom, 8px)" }}
         >
-          <div className="flex items-center justify-around px-2 py-3">
+          <div className="flex items-center justify-around px-1 py-2">
             {sections.map((s) => (
               <button
                 key={s.id}
                 onClick={() => scrollTo(s.id)}
-                className="flex flex-col items-center gap-1 min-w-[48px] min-h-[48px] justify-center"
+                className="flex flex-col items-center gap-0.5 min-w-[40px] min-h-[44px] justify-center px-1"
               >
                 <div
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
                     activeSection === s.id
                       ? "bg-[#ff000c] scale-125"
                       : "bg-[#FFFFFF]/20"
                   }`}
                 />
                 <span
-                  className={`text-[8px] tracking-wider uppercase transition-colors ${
+                  className={`text-[7px] tracking-wider uppercase transition-colors leading-none ${
                     activeSection === s.id
                       ? "text-[#ff000c]"
                       : "text-[#FFFFFF]/50"
                   }`}
                 >
-                  {s.label}
+                  {s.short}
                 </span>
               </button>
             ))}

@@ -66,7 +66,7 @@ export function RecruitHero({ backgroundUrl }: HeroProps) {
       <div
         data-gsap="hero-jersey"
         className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 select-none font-bold text-white opacity-0"
-        style={{ fontSize: "clamp(15rem, 35vw, 40rem)", lineHeight: 0.85 }}
+        style={{ fontSize: "clamp(8rem, 30vw, 40rem)", lineHeight: 0.85 }}
       >
         79
       </div>

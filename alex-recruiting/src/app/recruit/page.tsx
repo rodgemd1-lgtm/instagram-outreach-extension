@@ -21,7 +21,7 @@ export default function RecruitPage() {
   useAnalytics();
 
   return (
-    <div ref={pageRef} className="bg-black">
+    <div ref={pageRef} className="bg-black pb-16 md:pb-0">
       <RecruitNav />
       <FilmGrainOverlay />
 

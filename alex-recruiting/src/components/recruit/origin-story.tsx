@@ -164,7 +164,7 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
         (scopeRef as React.MutableRefObject<HTMLElement | null>).current = el;
         (sectionRef as React.MutableRefObject<HTMLElement | null>).current = el;
       }}
-      className="relative bg-black px-6 py-32 md:px-12 md:py-48"
+      className="relative bg-black px-6 py-20 md:px-12 md:py-48"
     >
       {backgroundUrl && (
         <div className="absolute inset-0">
@@ -182,11 +182,11 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
       {/* Right 2/3 layout */}
       <div className="relative z-10 max-w-6xl ml-auto md:w-2/3 md:pl-8">
         {/* Header */}
-        <div className="mb-16 md:mb-24">
+        <div className="mb-10 md:mb-24">
           <span className="mb-6 block font-jetbrains text-xs uppercase tracking-[0.3em] text-[#ff000c]/80">
             The Work
           </span>
-          <h2 className="mb-6 font-playfair text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl text-white">
+          <h2 className="mb-6 font-playfair text-3xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl text-white">
             Training since age 11.
             <br />
             <CounterAnimation
@@ -235,7 +235,7 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
         </div>
 
         {/* Spacer — keeps quote isolated before timeline scrolls in */}
-        <div className="h-[30vh] md:h-[40vh]" />
+        <div className="h-[15vh] md:h-[40vh]" />
 
         {/* Vertical timeline */}
         <div data-gsap="work-timeline" className="relative">

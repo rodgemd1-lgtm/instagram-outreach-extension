@@ -80,7 +80,7 @@ export function CharacterSection({
         (scopeRef as React.MutableRefObject<HTMLElement | null>).current = el;
         (sectionRef as React.MutableRefObject<HTMLElement | null>).current = el;
       }}
-      className="relative bg-black px-6 py-32 md:px-12 md:py-48"
+      className="relative bg-black px-6 py-20 md:px-12 md:py-48"
     >
       {backgroundUrl && (
         <div className="absolute inset-0">
@@ -96,7 +96,7 @@ export function CharacterSection({
         {/* Right-aligned 2/3 column — Jacob speaks */}
         <div className="ml-auto md:w-2/3 md:pl-8">
           {/* Typewriter intro */}
-          <p className="mb-10 font-jetbrains text-2xl leading-relaxed text-white/90 md:text-3xl">
+          <p className="mb-8 font-jetbrains text-xl leading-relaxed text-white/90 md:mb-10 md:text-3xl">
             <TypewriterText
               text="Numbers tell you what he can do. These tell you what he will do."
               trigger={inView}
@@ -113,7 +113,7 @@ export function CharacterSection({
               <div
                 key={trait.label}
                 data-gsap-wave="2"
-                className="rounded-lg border border-white/5 bg-[#111111] p-8"
+                className="rounded-lg border border-white/5 bg-[#111111] p-5 md:p-8"
                 style={{ opacity: 0 }}
               >
                 <h3 className="mb-2 font-jetbrains text-base font-bold uppercase tracking-[0.2em] text-white">
