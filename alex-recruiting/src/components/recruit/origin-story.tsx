@@ -31,8 +31,8 @@ const timeline: TimelineEntry[] = [
   {
     age: 12,
     year: "2022",
-    title: "Weight training added",
-    body: "NX Level continues. Structured strength program starts alongside movement work.",
+    title: "Rock bottom \u2014 then the turn",
+    body: "He\u2019d been pushing hard but had let himself go. On the drive home one night he turned and said, \u201CDad, don\u2019t ever let me stop. If I don\u2019t want to work out one day, push me.\u201D That was the moment everything changed. Structured strength program starts alongside NX Level.",
     lifts: [
       { label: "Bench", value: 95 },
       { label: "Squat", value: 135 },

@@ -133,6 +133,15 @@ export function ContactCTA() {
                   Family Contact
                 </span>
                 <div className="space-y-2">
+                  <p className="text-sm font-semibold text-white/90">
+                    Mike Rodgers
+                  </p>
+                  <a
+                    href="tel:+12623435680"
+                    className="block text-sm font-jetbrains text-white transition-colors hover:text-[#ff000c]"
+                  >
+                    (262) 343-5680
+                  </a>
                   <a
                     href="mailto:rodgermd1@gmail.com"
                     className="block text-sm font-jetbrains text-white transition-colors hover:text-[#ff000c]"

@@ -229,10 +229,18 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                 data-gsap-wave="2"
                 className="mt-5"
               >
-                <p className="mb-3 font-jetbrains text-xs uppercase tracking-[0.2em] text-[#ff000c]/90">
-                  Full Film Library
-                </p>
-                <div className="flex gap-3 overflow-x-auto pb-3 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10">
+                <div className="mb-3 flex items-center justify-between">
+                  <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#ff000c]/90">
+                    Full Film Library
+                  </p>
+                  <span className="font-jetbrains text-[10px] uppercase tracking-wider text-white/30 md:hidden">
+                    Swipe &rarr;
+                  </span>
+                </div>
+                <div className="relative">
+                  {/* Right edge fade — signals more content on iOS */}
+                  <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-10 w-12 bg-gradient-to-l from-black to-transparent md:hidden" />
+                <div className="flex gap-3 overflow-x-auto pb-3 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10" style={{ WebkitOverflowScrolling: 'touch' }}>
                   {scrollReels.map((reel) => (
                     <button
                       key={reel.id}
@@ -275,6 +283,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                       </div>
                     </button>
                   ))}
+                </div>
                 </div>
               </div>
             </div>

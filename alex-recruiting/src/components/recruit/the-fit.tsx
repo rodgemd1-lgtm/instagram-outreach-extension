@@ -25,6 +25,35 @@ const blocks = [
   },
 ];
 
+const camps = [
+  {
+    name: "IMG Lineman Camp",
+    timing: "Late March 2026",
+    note: "Second year attending",
+  },
+  {
+    name: "Big Man Camp \u2014 Chicago",
+    timing: "May 2026",
+    note: "Evaluating for summer",
+  },
+  {
+    name: "Big Man Camp \u2014 Detroit",
+    timing: "May 2026",
+    note: "Evaluating for summer",
+  },
+  {
+    name: "IMG Skills Camp",
+    timing: "June 2026",
+    note: "Skill-set evaluation",
+  },
+];
+
+const offField = [
+  { label: "Photography", detail: "Active hobbyist \u2014 shoots landscapes and action" },
+  { label: "Snowboarding", detail: "Pewaukee snowboard club \u2014 regular trips to Colorado" },
+  { label: "Technology", detail: "Fascinated by how games are built \u2014 studies design, strategy, and win/loss psychology" },
+];
+
 export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
   const [typewriterTriggered, setTypewriterTriggered] = useState(false);
   const sectionRef = useRef<HTMLDivElement | null>(null);
@@ -151,6 +180,51 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
                 </p>
               </div>
             ))}
+          </div>
+
+          {/* Upcoming camps */}
+          <div className="mt-10">
+            <span className="mb-4 block font-jetbrains text-xs uppercase tracking-[0.3em] text-[#ff000c]/70">
+              Where to See Him
+            </span>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {camps.map((camp) => (
+                <div
+                  key={camp.name}
+                  className="rounded-lg border border-white/5 bg-[#111111] px-5 py-4"
+                >
+                  <p className="text-sm font-semibold text-white/90">
+                    {camp.name}
+                  </p>
+                  <p className="mt-1 font-jetbrains text-xs text-white/50">
+                    {camp.timing}
+                    {camp.note ? ` \u2014 ${camp.note}` : ""}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Off-field interests */}
+          <div className="mt-10">
+            <span className="mb-4 block font-jetbrains text-xs uppercase tracking-[0.3em] text-[#ff000c]/70">
+              Beyond Football
+            </span>
+            <div className="flex flex-wrap gap-3">
+              {offField.map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-lg border border-white/5 bg-[#111111] px-5 py-4"
+                >
+                  <p className="text-sm font-semibold text-white/90">
+                    {item.label}
+                  </p>
+                  <p className="mt-1 text-xs leading-relaxed text-white/50">
+                    {item.detail}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
 
         </div>

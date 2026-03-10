@@ -9,7 +9,7 @@ import { Play } from "lucide-react";
 
 /* ──────────────────────────────────────────────────────────────
    Film & Stats Section — The proof
-   LAAL Mechanism: Known-ness
+   Purpose: Known-ness
    Concrete numbers that establish Jacob's performance — coaches
    evaluate on measurable output, and this section provides it.
 
@@ -45,7 +45,7 @@ export function FilmStats() {
     () => ({
       wave2: [
         {
-          /* LAAL: Known-ness — stats establish measurable identity */
+          /* Purpose: Known-ness — stats establish measurable identity */
           containerSelector: '[data-gsap="stats-grid"]',
           from: { y: 40, opacity: 0, scale: 0.95 },
           to: {
@@ -63,7 +63,7 @@ export function FilmStats() {
           },
         },
         {
-          /* LAAL: Known-ness — highlight cards show game film proof */
+          /* Purpose: Known-ness — highlight cards show game film proof */
           containerSelector: '[data-gsap="highlights-grid"]',
           from: { y: 50, opacity: 0, scale: 0.95 },
           to: {

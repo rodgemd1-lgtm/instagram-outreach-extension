@@ -46,6 +46,7 @@ export function RecruitVideoPlayer({
   const [muted, setMuted] = useState(initialMuted);
   const [showControls, setShowControls] = useState(false);
   const [showPoster, setShowPoster] = useState(mode === "inline");
+  const [loading, setLoading] = useState(true);
 
   // IntersectionObserver for reel mode — auto-play/pause on scroll
   useEffect(() => {
@@ -176,6 +177,13 @@ export function RecruitVideoPlayer({
         </div>
       )}
 
+      {/* Loading spinner */}
+      {loading && !showPoster && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/60">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-[#ff000c]" />
+        </div>
+      )}
+
       {/* Video element */}
       <video
         ref={videoRef}
@@ -186,6 +194,9 @@ export function RecruitVideoPlayer({
         playsInline
         className={`w-full h-full ${mediaFitClass}`}
         onEnded={() => setPlaying(false)}
+        onCanPlay={() => setLoading(false)}
+        onWaiting={() => setLoading(true)}
+        onPlaying={() => setLoading(false)}
       />
 
       {/* Controls overlay — reel mode (show on tap) or inline (show on hover) */}
