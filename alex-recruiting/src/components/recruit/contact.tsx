@@ -1,7 +1,6 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
-import { Check, ExternalLink, Mail, Phone } from "lucide-react";
+import { useMemo, useRef, useState, type FormEvent } from "react";
 import {
   useRecruitAssembly,
   type AssemblyConfig,
@@ -11,23 +10,40 @@ export function ContactCTA() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const sectionRef = useRef<HTMLDivElement | null>(null);
 
   const config = useMemo<AssemblyConfig>(
     () => ({
       wave2: [
+        // Left column slides from left
         {
-          containerSelector: '[data-gsap="contact-content"]',
-          from: { y: 40, opacity: 0 },
+          containerSelector: "[data-contact-left]",
+          from: { x: -60, opacity: 0 },
           to: {
-            y: 0,
+            x: 0,
             opacity: 1,
             duration: 0.5,
             ease: "power2.out",
           },
           individual: false,
-          stagger: 0.12,
           scrollTrigger: {
-            start: "top 70%",
+            start: "top 75%",
+            toggleActions: "play none none reverse",
+          },
+        },
+        // Right column slides from right
+        {
+          containerSelector: "[data-contact-right]",
+          from: { x: 60, opacity: 0 },
+          to: {
+            x: 0,
+            opacity: 1,
+            duration: 0.5,
+            ease: "power2.out",
+          },
+          individual: false,
+          scrollTrigger: {
+            start: "top 75%",
             toggleActions: "play none none reverse",
           },
         },
@@ -46,7 +62,11 @@ export function ContactCTA() {
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
 
-    if (!formData.get("name") || !formData.get("school") || !formData.get("email")) {
+    if (
+      !formData.get("name") ||
+      !formData.get("school") ||
+      !formData.get("email")
+    ) {
       setError("Name, school, and email are required.");
       setSubmitting(false);
       return;
@@ -67,7 +87,6 @@ export function ContactCTA() {
           name: formData.get("name"),
           school: formData.get("school"),
           email: formData.get("email"),
-          phone: formData.get("phone"),
           message: formData.get("message"),
         }),
       });
@@ -84,226 +103,152 @@ export function ContactCTA() {
   return (
     <section
       id="contact"
-      ref={scopeRef}
+      ref={(el) => {
+        (scopeRef as React.MutableRefObject<HTMLElement | null>).current = el;
+        (sectionRef as React.MutableRefObject<HTMLElement | null>).current = el;
+      }}
       className="relative px-6 py-32 md:px-12 md:py-48"
     >
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#ff000c]/20 to-transparent" />
 
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-jetbrains text-[12rem] font-black leading-none text-white/[0.015] md:text-[20rem]">
-        79
-      </div>
-
-      <div data-gsap="contact-content" className="relative z-10 mx-auto max-w-4xl">
-        <div
-          data-gsap-wave="2"
-          style={{ opacity: 0 }}
-          className="mb-16 text-center md:mb-24"
-        >
-          <span className="mb-6 block font-jetbrains text-xs uppercase tracking-[0.3em] text-[#ff000c]/80">
-            Contact
-          </span>
-          <h2 className="font-playfair mb-6 text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
-            Let&apos;s Talk
+      <div className="relative z-10 mx-auto max-w-4xl">
+        {/* Centered heading */}
+        <div className="mb-16 text-center md:mb-20">
+          <h2 className="mb-4 font-playfair text-4xl font-black tracking-tight md:text-6xl">
+            Let&apos;s Talk.
           </h2>
-          <p className="mx-auto max-w-lg text-base leading-relaxed text-[#FFFFFF]/50 md:text-lg">
+          <p className="text-base text-white/50 md:text-lg">
             Interested in Jacob? Reach out directly.
           </p>
         </div>
 
-        <div
-          data-gsap-wave="2"
-          style={{ opacity: 0 }}
-          className="mb-12 grid grid-cols-1 gap-6 md:grid-cols-2"
-        >
-          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 backdrop-blur-xl shadow-lg shadow-black/20 transition-colors duration-300 hover:border-[#ff000c]/20">
-            <span className="mb-4 block text-xs uppercase tracking-[0.2em] text-[#FFFFFF]/50">
-              Family Contact
-            </span>
-            <a
-              href="mailto:rodgermd1@gmail.com"
-              className="flex items-center gap-3 text-white transition-colors hover:text-[#ff000c]"
-            >
-              <Mail className="h-4 w-4 text-[#ff000c]/80" />
-              <span className="text-sm font-jetbrains">rodgermd1@gmail.com</span>
-            </a>
-            <div className="mt-3 flex items-center gap-3 text-white">
-              <Phone className="h-4 w-4 text-[#ff000c]/80" />
-              <span className="text-sm font-jetbrains">(xxx) xxx-xxxx</span>
+        {/* Two-column grid */}
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          {/* LEFT — Contact info + profile links */}
+          <div data-contact-left>
+            <div data-gsap-wave="2" style={{ opacity: 0 }} className="space-y-6">
+              {/* Contact info */}
+              <div>
+                <span className="mb-3 block text-xs uppercase tracking-[0.2em] text-white/50">
+                  Family Contact
+                </span>
+                <div className="space-y-2">
+                  <a
+                    href="mailto:rodgermd1@gmail.com"
+                    className="block text-sm font-jetbrains text-white transition-colors hover:text-[#ff000c]"
+                  >
+                    rodgermd1@gmail.com
+                  </a>
+                  <span className="block text-sm font-jetbrains text-white/60">
+                    (xxx) xxx-xxxx
+                  </span>
+                </div>
+              </div>
+
+              {/* Profile links */}
+              <div>
+                <span className="mb-3 block text-xs uppercase tracking-[0.2em] text-white/50">
+                  Profiles
+                </span>
+                <div className="space-y-2">
+                  <a
+                    href="https://x.com/JacobRodge52987"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block text-sm font-jetbrains text-white/80 transition-colors hover:text-[#ff000c]"
+                  >
+                    Twitter &mdash; @JacobRodge52987
+                  </a>
+                  <a
+                    href="https://www.hudl.com/profile/21702702/Jacob-Rodgers"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block text-sm font-jetbrains text-white/80 transition-colors hover:text-[#ff000c]"
+                  >
+                    Hudl &mdash; Jacob Rodgers
+                  </a>
+                  <a
+                    href="https://www.ncsasports.org/football-recruiting/wisconsin/pewaukee/pewaukee-high-school1/jacob-rodgers2"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block text-sm font-jetbrains text-white/80 transition-colors hover:text-[#ff000c]"
+                  >
+                    NCSA &mdash; Jacob Rodgers
+                  </a>
+                </div>
+              </div>
             </div>
-            <p className="mt-5 text-sm font-semibold text-[#ff000c]/90">
-              Response time: Within 24 hours.
-            </p>
           </div>
 
-          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 backdrop-blur-xl shadow-lg shadow-black/20 transition-colors duration-300 hover:border-[#ff000c]/20">
-            <span className="mb-4 block text-xs uppercase tracking-[0.2em] text-[#FFFFFF]/50">
-              Live Links
-            </span>
-            <div className="space-y-3">
-              <QuickLink
-                label="Main Highlight"
-                handle="Open CapCut Reel"
-                href="/recruit/featured-clips/jacob-capcut-highlight.mp4"
-              />
-              <QuickLink
-                label="Coach Reel"
-                handle="Open Trench Reel"
-                href="/recruit/featured-clips/jacob-impact-reel.mp4"
-              />
-              <QuickLink
-                label="Legacy Reel"
-                handle="Open Restored Reel"
-                href="/recruit/featured-clips/jacob-legacy-trench-reel.mp4"
-              />
-              <QuickLink
-                label="X / Twitter"
-                handle="@JacobRodge52987"
-                href="https://x.com/JacobRodge52987"
-              />
-              <QuickLink
-                label="YouTube Film"
-                handle="Watch Highlights"
-                href="https://youtu.be/wkYGNZTN8Xc"
-              />
+          {/* RIGHT — Contact form */}
+          <div data-contact-right>
+            <div data-gsap-wave="2" style={{ opacity: 0 }}>
+              {!submitted ? (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <input
+                      type="text"
+                      name="name"
+                      required
+                      placeholder="Your name"
+                      className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/30 transition-colors focus:border-[#ff000c]/40 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="text"
+                      name="school"
+                      required
+                      placeholder="School / program"
+                      className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/30 transition-colors focus:border-[#ff000c]/40 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      placeholder="Email"
+                      className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/30 transition-colors focus:border-[#ff000c]/40 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <textarea
+                      name="message"
+                      rows={4}
+                      placeholder="Message (optional)"
+                      className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/30 transition-colors focus:border-[#ff000c]/40 focus:outline-none"
+                    />
+                  </div>
+
+                  {error && <p className="text-sm text-red-400">{error}</p>}
+
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="w-full rounded-lg bg-[#ff000c] px-6 py-3 text-sm font-bold uppercase tracking-widest text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {submitting ? "Sending..." : "Send"}
+                  </button>
+                </form>
+              ) : (
+                <div className="rounded-lg border border-green-500/20 bg-green-500/5 p-6">
+                  <p className="text-sm leading-relaxed text-green-400">
+                    Message sent. We&apos;ll respond within 24 hours.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
 
-        {!submitted ? (
-          <form
-            onSubmit={handleSubmit}
-            data-gsap-wave="2"
-            style={{ opacity: 0 }}
-            className="space-y-6 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 shadow-lg shadow-black/20 backdrop-blur-xl md:p-12"
-          >
-            <span className="mb-2 block text-xs uppercase tracking-[0.2em] text-[#FFFFFF]/50">
-              Send a message
-            </span>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-[#FFFFFF]/50">
-                  Your Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  required
-                  className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-white placeholder-white/20 transition-colors focus:border-[#ff000c]/40 focus:outline-none"
-                  placeholder="Coach Smith"
-                />
-              </div>
-              <div>
-                <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-[#FFFFFF]/50">
-                  School
-                </label>
-                <input
-                  type="text"
-                  name="school"
-                  required
-                  className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-white placeholder-white/20 transition-colors focus:border-[#ff000c]/40 focus:outline-none"
-                  placeholder="University of Wisconsin"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-[#FFFFFF]/50">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  required
-                  className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-white placeholder-white/20 transition-colors focus:border-[#ff000c]/40 focus:outline-none"
-                  placeholder="coach@university.edu"
-                />
-              </div>
-              <div>
-                <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-[#FFFFFF]/50">
-                  Phone (Optional)
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-white placeholder-white/20 transition-colors focus:border-[#ff000c]/40 focus:outline-none"
-                  placeholder="(555) 123-4567"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-[#FFFFFF]/50">
-                Message
-              </label>
-              <textarea
-                name="message"
-                rows={5}
-                className="w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-white placeholder-white/20 transition-colors focus:border-[#ff000c]/40 focus:outline-none"
-                placeholder="Optional message"
-              />
-            </div>
-
-            {error && <p className="text-sm text-red-400">{error}</p>}
-
-            <button
-              type="submit"
-              disabled={submitting}
-              className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#C0392B] to-[#A33225] px-10 py-4 text-sm font-bold uppercase tracking-widest text-white shadow-lg shadow-[#C0392B]/25 transition-all duration-300 hover:scale-105 hover:shadow-[#C0392B]/40 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {submitting ? "Sending..." : "Send"}
-            </button>
-          </form>
-        ) : (
-          <div
-            data-gsap-wave="2"
-            style={{ opacity: 0 }}
-            className="flex items-start gap-4 rounded-2xl border border-green-500/20 bg-green-500/[0.04] p-8 md:p-10"
-          >
-            <div className="mt-1 flex h-10 w-10 items-center justify-center rounded-full bg-green-500/10">
-              <Check className="h-5 w-5 text-green-500" />
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold text-white">
-                Request received.
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-white/50">
-                Family will respond within 24 hours with transcripts, additional
-                film, and scheduling availability. Thank you for evaluating Jacob.
-              </p>
-            </div>
-          </div>
-        )}
+        {/* Footer identity anchor */}
+        <div className="mt-16 text-center">
+          <p className="text-xs uppercase tracking-[0.3em] text-white/30">
+            Jacob Rodgers &middot; #79 &middot; DT/OG &middot; Class of 2029
+          </p>
+        </div>
       </div>
     </section>
-  );
-}
-
-function QuickLink({
-  label,
-  handle,
-  href,
-}: {
-  label: string;
-  handle: string;
-  href: string;
-}) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-      className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 transition-colors hover:border-[#ff000c]/25"
-    >
-      <div>
-        <span className="block text-xs uppercase tracking-[0.2em] text-[#FFFFFF]/50">
-          {label}
-        </span>
-        <span className="mt-1 block text-sm font-jetbrains text-[#FFFFFF]/80">
-          {handle}
-        </span>
-      </div>
-      <ExternalLink className="h-4 w-4 text-[#ff000c]/80" />
-    </a>
   );
 }
