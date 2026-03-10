@@ -57,7 +57,7 @@ async function sendNotificationEmail(inquiry: CoachInquiryRecord) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "Jacob Rodgers Recruiting <notifications@jacobrodgers.com>",
+          from: "Jacob Rodgers Recruiting <onboarding@resend.dev>",
           to: NOTIFICATION_EMAILS,
           reply_to: inquiry.email,
           subject,

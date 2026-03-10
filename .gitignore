@@ -6,3 +6,4 @@ dist/
 **/* 2.*
 node_modules_corrupt_*/
 alex-recruiting/node_modules_corrupt_*/
+.vercel
