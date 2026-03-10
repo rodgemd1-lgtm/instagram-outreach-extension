@@ -109,7 +109,7 @@ export function CharacterSection({
               <div
                 key={trait.label}
                 data-gsap-wave="2"
-                className="rounded-lg border-l-2 border-[#ff000c] bg-[#111111] p-8"
+                className="rounded-lg border border-white/5 bg-[#111111] p-8"
                 style={{ opacity: 0 }}
               >
                 <h3 className="mb-2 font-jetbrains text-base font-bold uppercase tracking-[0.2em] text-white">

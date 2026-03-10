@@ -329,7 +329,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
               >
                 {/* Hudl link removed — profile URL returns 404. Re-add when real Hudl profile exists. */}
                 <Link
-                  href="https://www.ncsasports.org/football-recruiting/wisconsin/pewaukee/pewaukee-high-school1/jacob-rodgers2"
+                  href="https://recruit-match.ncsasports.org/clientrms/athlete_profiles/13603435"
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.04] px-5 py-2.5 text-sm font-semibold text-white/80 transition hover:border-white/30 hover:text-white"

@@ -143,10 +143,10 @@ export function ContactCTA() {
                     (262) 343-5680
                   </a>
                   <a
-                    href="mailto:rodgermd1@gmail.com"
+                    href="mailto:rodgemd1@gmail.com"
                     className="block text-sm font-jetbrains text-white transition-colors hover:text-[#ff000c]"
                   >
-                    rodgermd1@gmail.com
+                    rodgemd1@gmail.com
                   </a>
                 </div>
               </div>
@@ -167,7 +167,7 @@ export function ContactCTA() {
                   </a>
                   {/* Hudl link removed — profile URL was returning 404. Re-add with verified URL. */}
                   <a
-                    href="https://www.ncsasports.org/football-recruiting/wisconsin/pewaukee/pewaukee-high-school1/jacob-rodgers2"
+                    href="https://recruit-match.ncsasports.org/clientrms/athlete_profiles/13603435"
                     target="_blank"
                     rel="noreferrer"
                     className="block text-sm font-jetbrains text-white/80 transition-colors hover:text-[#ff000c]"

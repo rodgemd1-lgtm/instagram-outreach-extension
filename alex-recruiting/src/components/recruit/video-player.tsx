@@ -199,6 +199,20 @@ export function RecruitVideoPlayer({
         onPlaying={() => setLoading(false)}
       />
 
+      {/* Muted indicator — shows when playing but muted, prompts user to tap */}
+      {mode === "reel" && playing && muted && !showControls && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleMute();
+          }}
+          className="absolute top-3 right-3 z-20 flex items-center gap-1.5 rounded-full bg-black/70 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-white/80 backdrop-blur-sm transition-opacity hover:bg-black/90"
+        >
+          <VolumeX className="w-3.5 h-3.5" />
+          <span>Tap for sound</span>
+        </button>
+      )}
+
       {/* Controls overlay — reel mode (show on tap) or inline (show on hover) */}
       {(mode === "reel" ? showControls : !showPoster) && (
         <div

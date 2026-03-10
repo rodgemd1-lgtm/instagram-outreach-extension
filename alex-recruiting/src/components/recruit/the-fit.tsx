@@ -33,25 +33,20 @@ const camps = [
   },
   {
     name: "Big Man Camp \u2014 Chicago",
-    timing: "May 2026",
-    note: "Evaluating for summer",
-  },
-  {
-    name: "Big Man Camp \u2014 Detroit",
-    timing: "May 2026",
-    note: "Evaluating for summer",
+    timing: "Summer 2026",
+    note: "",
   },
   {
     name: "IMG Skills Camp",
-    timing: "June 2026",
-    note: "Skill-set evaluation",
+    timing: "Summer 2026",
+    note: "Signing up shortly",
   },
 ];
 
 const offField = [
-  { label: "Photography", detail: "Active hobbyist \u2014 shoots landscapes and action" },
-  { label: "Snowboarding", detail: "Pewaukee snowboard club \u2014 regular trips to Colorado" },
-  { label: "Technology", detail: "Fascinated by how games are built \u2014 studies design, strategy, and win/loss psychology" },
+  { label: "Photography", detail: "Fascinated by how photos are made, analyzed, and modified \u2014 interested in the technology behind photography and wants to explore sports photography" },
+  { label: "Snowboarding", detail: "Expert-level rider \u2014 handles double black diamonds including the top of Breckenridge. Reached this level in just two years" },
+  { label: "Technology", detail: "Fascinated by games and how computers are built and made \u2014 pushes himself to improve as he explores this area" },
 ];
 
 export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
@@ -203,6 +198,19 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
                 </div>
               ))}
             </div>
+            <p className="mt-4 text-sm leading-relaxed text-white/50">
+              Interested in having Jacob at your camp? Send camp information
+              via{" "}
+              <a
+                href="https://recruit-match.ncsasports.org/clientrms/athlete_profiles/13603435"
+                target="_blank"
+                rel="noreferrer"
+                className="text-[#ff000c]/70 underline underline-offset-2 transition-colors hover:text-[#ff000c]"
+              >
+                NCSA
+              </a>{" "}
+              or use the contact form below.
+            </p>
           </div>
 
           {/* Off-field interests */}

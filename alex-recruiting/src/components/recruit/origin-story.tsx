@@ -9,6 +9,7 @@ import { CounterAnimation } from "./counter";
 import { TypewriterText } from "./typewriter";
 
 interface TimelineEntry {
+  id: string;
   age: number;
   year: string;
   title: string;
@@ -20,6 +21,7 @@ interface TimelineEntry {
 
 const timeline: TimelineEntry[] = [
   {
+    id: "age-11",
     age: 11,
     year: "2021",
     title: "NX Level begins",
@@ -30,6 +32,7 @@ const timeline: TimelineEntry[] = [
     },
   },
   {
+    id: "age-12",
     age: 12,
     year: "2022",
     title: "Rock bottom \u2014 then the turn",
@@ -40,6 +43,7 @@ const timeline: TimelineEntry[] = [
     ],
   },
   {
+    id: "age-13",
     age: 13,
     year: "2023",
     title: "365 sessions",
@@ -50,10 +54,22 @@ const timeline: TimelineEntry[] = [
     ],
   },
   {
+    id: "age-14-8th",
     age: 14,
+    year: "2023-24",
+    title: "Eighth grade \u2014 starter on both sides of the ball",
+    body: "Started every game, both offense and defense, the entire game. Coaches called him out by name \u2014 told opposing teams to watch out for him. His team made it to the semi-finals, one of the last four teams standing. He was a key defensive player in every round.",
+    lifts: [
+      { label: "Bench", value: 225 },
+      { label: "Squat", value: 315 },
+    ],
+  },
+  {
+    id: "age-15-freshman",
+    age: 15,
     year: "2024-25",
     title: "Freshman on Varsity \u00b7 Starter on JV",
-    body: "Called in to play varsity. Started and played full JV games. Two games in one day. 11 pancakes. 3 sacks. Fumble recovery. State playoff run.",
+    body: "Called in to play varsity as a freshman. Started and played full JV games. Two games in one day. 11 pancakes. 3 sacks. Fumble recovery. State playoff run.",
     lifts: [
       { label: "Bench", value: 265 },
       { label: "Squat", value: 350 },
@@ -61,6 +77,7 @@ const timeline: TimelineEntry[] = [
     ],
   },
   {
+    id: "age-15-now",
     age: 15,
     year: "NOW",
     title: "The trajectory has not flattened",
@@ -214,7 +231,7 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
 
           {timeline.map((entry) => (
             <div
-              key={entry.age}
+              key={entry.id}
               data-gsap-wave="2"
               style={{ opacity: 0 }}
               className="relative pb-14 pl-12 last:pb-0 md:pl-16"
