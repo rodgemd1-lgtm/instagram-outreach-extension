@@ -64,10 +64,11 @@ export function ContactCTA() {
 
     if (
       !formData.get("name") ||
+      !formData.get("title") ||
       !formData.get("school") ||
       !formData.get("email")
     ) {
-      setError("Name, school, and email are required.");
+      setError("Name, title, school, and email are required.");
       setSubmitting(false);
       return;
     }
@@ -92,10 +93,21 @@ export function ContactCTA() {
         }),
       });
 
-      if (!res.ok) throw new Error("Failed to send");
+      const payload = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        throw new Error(
+          payload?.error ?? "Something went wrong. Please try emailing us directly."
+        );
+      }
+
       setSubmitted(true);
-    } catch {
-      setError("Something went wrong. Please try emailing us directly.");
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please try emailing us directly."
+      );
     } finally {
       setSubmitting(false);
     }
@@ -199,8 +211,9 @@ export function ContactCTA() {
                     <input
                       type="text"
                       name="title"
+                      required
                       autoComplete="organization-title"
-                      placeholder="Title / role (e.g. Head Coach, D-Line Coach)"
+                      placeholder="Coaching position (e.g. Head Coach, D-Line Coach)"
                       className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-base text-white placeholder-white/30 transition-colors focus:border-[#ff000c]/40 focus:outline-none"
                     />
                   </div>
