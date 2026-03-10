@@ -189,8 +189,9 @@ export function ContactCTA() {
                       type="text"
                       name="name"
                       required
+                      autoComplete="name"
                       placeholder="Your name"
-                      className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/30 transition-colors focus:border-[#ff000c]/40 focus:outline-none"
+                      className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-base text-white placeholder-white/30 transition-colors focus:border-[#ff000c]/40 focus:outline-none"
                     />
                   </div>
                   <div>
@@ -198,8 +199,9 @@ export function ContactCTA() {
                       type="text"
                       name="school"
                       required
+                      autoComplete="organization"
                       placeholder="School / program"
-                      className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/30 transition-colors focus:border-[#ff000c]/40 focus:outline-none"
+                      className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-base text-white placeholder-white/30 transition-colors focus:border-[#ff000c]/40 focus:outline-none"
                     />
                   </div>
                   <div>
@@ -207,8 +209,9 @@ export function ContactCTA() {
                       type="email"
                       name="email"
                       required
+                      autoComplete="email"
                       placeholder="Email"
-                      className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/30 transition-colors focus:border-[#ff000c]/40 focus:outline-none"
+                      className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-base text-white placeholder-white/30 transition-colors focus:border-[#ff000c]/40 focus:outline-none"
                     />
                   </div>
                   <div>
@@ -216,7 +219,7 @@ export function ContactCTA() {
                       name="message"
                       rows={4}
                       placeholder="Message (optional)"
-                      className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/30 transition-colors focus:border-[#ff000c]/40 focus:outline-none"
+                      className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-base text-white placeholder-white/30 transition-colors focus:border-[#ff000c]/40 focus:outline-none"
                     />
                   </div>
 

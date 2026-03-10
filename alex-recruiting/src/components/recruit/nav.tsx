@@ -13,6 +13,7 @@ const sections = [
   { id: "film-reel", label: "Film" },
   { id: "origin", label: "The Work" },
   { id: "character", label: "Character" },
+  { id: "academics", label: "Academics" },
   { id: "fit", label: "The Fit" },
   { id: "contact", label: "Contact" },
 ];

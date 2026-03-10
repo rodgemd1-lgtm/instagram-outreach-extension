@@ -215,7 +215,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                     poster={FEATURED_RECRUIT_REEL.poster}
                     mode="reel"
                     objectFit="contain"
-                    initialMuted={false}
+                    initialMuted={true}
                     onFullscreen={() =>
                       openFullscreen(FEATURED_RECRUIT_REEL.src, FEATURED_RECRUIT_REEL.poster)
                     }
