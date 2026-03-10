@@ -116,7 +116,7 @@ export function RecruitHero({ backgroundUrl }: HeroProps) {
           <button
             onClick={() => {
               document
-                .getElementById("film")
+                .getElementById("film-reel")
                 ?.scrollIntoView({ behavior: "smooth" });
             }}
             className="group flex items-center gap-2 text-sm uppercase tracking-widest text-white/50 transition-colors hover:text-white"

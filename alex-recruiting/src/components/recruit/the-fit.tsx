@@ -102,7 +102,7 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
         (scopeRef as React.MutableRefObject<HTMLElement | null>).current = el;
         (sectionRef as React.MutableRefObject<HTMLElement | null>).current = el;
       }}
-      className="relative px-6 py-32 md:px-12 md:py-48"
+      className="relative bg-black px-6 py-32 md:px-12 md:py-48"
     >
       {backgroundUrl && (
         <div className="absolute inset-0">

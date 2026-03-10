@@ -138,7 +138,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
           (scopeRef as React.MutableRefObject<HTMLElement | null>).current = el;
           pinRef.current = el;
         }}
-        className="relative overflow-hidden px-6 py-24 md:px-12 md:py-32"
+        className="relative overflow-hidden bg-black px-6 py-24 md:px-12 md:py-32"
       >
         {/* ── observer sentinel for counter/typewriter trigger ── */}
         <div ref={observerRef} className="absolute inset-0 pointer-events-none" />
@@ -186,7 +186,6 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
             {/* ── main reel ── */}
             <div
               data-gsap="beat2-content"
-              style={{ opacity: 0 }}
             >
               <div
                 data-gsap-wave="2"
@@ -279,7 +278,6 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
             {/* ── stat counters ── */}
             <div
               data-gsap="beat2-grid"
-              style={{ opacity: 0 }}
               className="mt-8"
             >
               <div
@@ -309,7 +307,6 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
             {/* ── Hudl CTA + external film links ── */}
             <div
               data-gsap="beat2-grid"
-              style={{ opacity: 0 }}
               className="mt-8"
             >
               <div

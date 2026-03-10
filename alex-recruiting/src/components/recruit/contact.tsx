@@ -107,7 +107,7 @@ export function ContactCTA() {
         (scopeRef as React.MutableRefObject<HTMLElement | null>).current = el;
         (sectionRef as React.MutableRefObject<HTMLElement | null>).current = el;
       }}
-      className="relative px-6 py-32 md:px-12 md:py-48"
+      className="relative bg-black px-6 py-32 md:px-12 md:py-48"
     >
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#ff000c]/20 to-transparent" />
 

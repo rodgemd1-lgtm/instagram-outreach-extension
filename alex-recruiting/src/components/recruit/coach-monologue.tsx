@@ -61,7 +61,7 @@ export function CoachMonologue({ id, lines }: CoachMonologueProps) {
         (scopeRef as React.MutableRefObject<HTMLElement | null>).current = el;
         (sectionRef as React.MutableRefObject<HTMLElement | null>).current = el;
       }}
-      className="relative px-6 py-16 md:py-24 md:bg-transparent bg-[#111111]"
+      className="relative px-6 py-16 md:py-24 bg-black"
     >
       <div
         data-monologue={id}

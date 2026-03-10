@@ -36,7 +36,7 @@ export function AcademicsSection() {
     <section
       id="academics"
       ref={scopeRef}
-      className="relative py-8"
+      className="relative bg-black py-8"
     >
       <div
         data-gsap="acad-bar"
