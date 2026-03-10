@@ -90,7 +90,7 @@ const timeline: TimelineEntry[] = [
     age: 15,
     year: "NOW",
     title: "The curve has not flattened",
-    body: "School lifts. Performance Edge twice a week. NX Level once a week. Four concurrent training tracks \u2014 none dropped, all progressing. Track and field: first in discus, first in shot put at 285 pounds. The rate of improvement has not slowed.",
+    body: "School lifts. Performance Edge twice a week. NX Level once a week. Mental performance coaching through IMG Academy \u2014 because he realized sports are as much mental as physical. Blocking out noise, recovering from setbacks, leading through adversity. Five concurrent training tracks \u2014 none dropped, all progressing. Track and field: first in discus, first in shot put at 285 pounds. The rate of improvement has not slowed.",
     coda: "Still in the steep part of the curve.",
     link: {
       text: "NX Level Sports Performance",

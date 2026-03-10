@@ -17,6 +17,10 @@ const traits = [
     body: "Learns from his peers just as much as his coaches. Takes correction, applies it the next rep.",
   },
   {
+    label: "MENTALLY TOUGH",
+    body: "Works with a mental performance coach through IMG Academy. Blocking noise, getting up after setbacks, leading when the scoreboard doesn\u2019t cooperate. He chose this training himself \u2014 because he understands that the mental game separates good from great. Every inch matters.",
+  },
+  {
     label: "RELENTLESS",
     body: "Has not missed a scheduled session since 2021. 730+. NX Level. Trainer. Discus. Shot put. Snowboarding. Football. He doesn\u2019t stop.",
   },
