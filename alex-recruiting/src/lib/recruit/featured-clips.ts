@@ -22,11 +22,13 @@ export interface SupportingRecruitReel {
 }
 
 export const FEATURED_RECRUIT_REEL = {
-  src: "/recruit/featured-clips/jacob-coach-reel.mp4",
-  poster: "/recruit/featured-clips/posters/jacob-coach-reel.jpg",
-  title: "Coach-Ready Highlight Reel",
+  src: "/recruit/featured-clips/jacob-ncsa-highlight.mp4",
+  poster: "/recruit/featured-clips/posters/jacob-ncsa-highlight.jpg",
+  title: "Official Recruiting Highlight",
   subtitle:
-    "Full-speed hooks, slow-motion technique, and contact volume — built for evaluation.",
+    "Full game film and evaluation footage — featured on NCSA Athletic Recruiting.",
+  /** NCSA credibility badge — shown in the film section UI */
+  ncsaBadge: true as const,
 };
 
 export const LEGACY_FEATURED_CLIPS: FeaturedRecruitClip[] = [
@@ -156,6 +158,18 @@ export const CURRENT_FEATURED_CLIPS: FeaturedRecruitClip[] = [
 ];
 
 export const SUPPORTING_RECRUIT_REELS: SupportingRecruitReel[] = [
+  {
+    id: "coach-reel",
+    title: "Coach-Ready Highlight Reel",
+    subtitle:
+      "Custom-edited evaluation reel — full-speed hooks, slow-motion technique, and contact volume.",
+    src: "/recruit/featured-clips/jacob-coach-reel.mp4",
+    poster: "/recruit/featured-clips/posters/jacob-coach-reel.jpg",
+    durationLabel: "1m 12s",
+    lens: "Evaluation",
+    analysisNotes:
+      "The previous featured reel, purpose-built for coach evaluation. Demoted to supporting role after the NCSA highlight proved stronger.",
+  },
   {
     id: "quick-highlight",
     title: "30-second highlight cut",
