@@ -25,7 +25,7 @@ const timeline: TimelineEntry[] = [
     body: "Twice a week. Speed, agility, footwork. Movement training before football volume.",
     link: {
       text: "NX Level Sports Performance",
-      href: "https://nxlevelsportsperformance.com",
+      href: "https://www.gonxlevel.com",
     },
   },
   {
@@ -51,8 +51,8 @@ const timeline: TimelineEntry[] = [
   {
     age: 14,
     year: "2024-25",
-    title: "Freshman on Varsity · Starter on JV",
-    body: "Called in to play varsity. Started and played full JV games. Two games in one day. 11 pancakes. 3 sacks. Fumble recovery. State playoff run.",
+    title: "Freshman year — Varsity & JV",
+    body: "Played both levels as a freshman. Two games in one day. 11 pancakes. 3 sacks. Fumble recovery. State playoff run.",
     lifts: [
       { label: "Bench", value: 265 },
       { label: "Squat", value: 350 },
@@ -66,7 +66,7 @@ const timeline: TimelineEntry[] = [
     body: "School lifts + personal trainer 2x/week + NX Level 1x/week. Off-season: building size, speed, agility. Track: 1st discus, 1st shot put.",
     link: {
       text: "NX Level Sports Performance",
-      href: "https://nxlevelsportsperformance.com",
+      href: "https://www.gonxlevel.com",
     },
   },
 ];

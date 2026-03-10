@@ -16,7 +16,7 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Jacob Rodgers | #79 | OL/DL | Class of 2029 | Pewaukee Pirates",
   description:
-    "6'4\" 285 | Class of 2029 lineman with defensive-line upside, offensive-line versatility, first-place track-and-field power, restored legacy film, and Jacob's CapCut highlight reel. Pewaukee HS, Wisconsin.",
+    "6'4\" 285 | Class of 2029 lineman with defensive-line upside, offensive-line versatility, first-place track-and-field power, and full film library. Pewaukee HS, Wisconsin.",
   openGraph: {
     title: "Jacob Rodgers | #79 OL/DL | Class of 2029 | Pewaukee Pirates",
     description:

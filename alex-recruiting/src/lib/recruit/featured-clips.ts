@@ -166,7 +166,7 @@ export const SUPPORTING_RECRUIT_REELS: SupportingRecruitReel[] = [
     durationLabel: "43s",
     lens: "Evaluation",
     analysisNotes:
-      "Use this when you want the strongest trench moments stitched together without the faster social pacing of the CapCut reel.",
+      "Use this when you want the strongest trench moments stitched together without the faster social pacing of the highlight reel.",
   },
   {
     id: "legacy-reel",
@@ -218,17 +218,4 @@ export const SUPPORTING_RECRUIT_REELS: SupportingRecruitReel[] = [
   },
 ];
 
-export const FULL_FILM_LINKS = [
-  {
-    label: "Full YouTube highlight reel",
-    href: "https://youtu.be/wkYGNZTN8Xc",
-    description:
-      "Longer compiled cut for coaches who want more total rep volume after the website reel stack.",
-  },
-  {
-    label: "Additional YouTube film",
-    href: "https://youtu.be/03w9hRlXTzU",
-    description:
-      "Secondary reel for staff who want another external pass after comparing the site-based video library.",
-  },
-];
+/* YouTube links removed — replaced by on-site scrollable film bar */

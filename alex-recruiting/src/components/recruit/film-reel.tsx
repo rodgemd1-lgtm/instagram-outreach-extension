@@ -317,15 +317,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                 data-gsap-wave="2"
                 className="flex flex-wrap gap-3"
               >
-                <Link
-                  href="https://www.hudl.com/profile/21702986/Jacob-Rodgers"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full border border-[#ff000c]/30 bg-[#ff000c]/10 px-5 py-2.5 text-sm font-semibold text-[#ff000c] transition hover:bg-[#ff000c]/20"
-                >
-                  View his profile on Hudl
-                  <span className="text-xs">&#8599;</span>
-                </Link>
+                {/* Hudl link removed — profile URL returns 404. Re-add when real Hudl profile exists. */}
                 <Link
                   href="https://www.ncsasports.org/football-recruiting/wisconsin/pewaukee/pewaukee-high-school1/jacob-rodgers2"
                   target="_blank"

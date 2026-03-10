@@ -159,14 +159,7 @@ export function ContactCTA() {
                   >
                     Twitter &mdash; @JacobRodge52987
                   </a>
-                  <a
-                    href="https://www.hudl.com/profile/21702702/Jacob-Rodgers"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="block text-sm font-jetbrains text-white/80 transition-colors hover:text-[#ff000c]"
-                  >
-                    Hudl &mdash; Jacob Rodgers
-                  </a>
+                  {/* Hudl link removed — profile URL was returning 404. Re-add with verified URL. */}
                   <a
                     href="https://www.ncsasports.org/football-recruiting/wisconsin/pewaukee/pewaukee-high-school1/jacob-rodgers2"
                     target="_blank"
