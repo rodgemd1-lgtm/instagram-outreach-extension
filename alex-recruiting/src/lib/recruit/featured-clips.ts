@@ -222,13 +222,13 @@ export const SUPPORTING_RECRUIT_REELS: SupportingRecruitReel[] = [
     id: "workout-reel",
     title: "Workout highlight reel",
     subtitle:
-      "Squat, agility, and deadlift highlights — action-only cuts from training at Winner's Edge.",
+      "Squats, broad jumps, and deadlifts — action-only cuts from training at Winner's Edge.",
     src: "/recruit/supporting-reels/workout-reel.mp4",
     poster: "/recruit/supporting-reels/workout-reel.jpg",
-    durationLabel: "44s",
+    durationLabel: "41s",
     lens: "Development",
     analysisNotes:
-      "Tight action-only training cut — squats open for compound power, agility shows 285 lbs moving laterally, deadlift lockout closes as the visual anchor.",
+      "Splash intro into tight action-only training cut — squats for compound power, broad jumps for explosiveness, deadlift lockout as the visual anchor.",
   },
   {
     id: "snowboard-cut",
