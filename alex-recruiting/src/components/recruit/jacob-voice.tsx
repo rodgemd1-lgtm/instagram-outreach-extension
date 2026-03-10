@@ -7,15 +7,15 @@ import {
   useRecruitAssembly,
   type AssemblyConfig,
 } from "@/hooks/useRecruitAssembly";
-import { TypewriterText } from "./typewriter";
 
 /* ──────────────────────────────────────────────────────────────
    Jacob's Voice — The athlete speaks for himself.
 
    Visual treatment is intentionally different from Coach Monologue:
-   - Coach: left-aligned, dark bg, italic, "Coach's Evaluation" label
-   - Jacob: right-aligned, subtle border-left accent, no italic,
-     "In His Own Words" label — signals first-person authenticity
+   - Coach: left-aligned, dark bg, italic, typewriter delivery
+   - Jacob: right-aligned, no container, no italic, fade-in as
+     a whole unit. Raw text on black — the absence of framing
+     IS the design signal.
    ────────────────────────────────────────────────────────────── */
 
 const JACOB_PARAGRAPHS = [
@@ -32,15 +32,15 @@ export function JacobVoice() {
       wave2: [
         {
           containerSelector: '[data-gsap="jacob-voice"]',
-          from: { x: 60, opacity: 0 },
+          from: { y: 40, opacity: 0 },
           to: {
-            x: 0,
+            y: 0,
             opacity: 1,
-            duration: 0.7,
+            duration: 0.6,
             ease: "power2.out",
           },
           scrollTrigger: {
-            start: "top 80%",
+            start: "top 85%",
             toggleActions: "play none none reverse",
           },
         },
@@ -50,7 +50,7 @@ export function JacobVoice() {
 
   const scopeRef = useRecruitAssembly(config);
 
-  /* ── Pin on desktop so typewriter completes before scroll-away ── */
+  /* ── Pin on desktop so the content holds ── */
   useLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     const el = sectionRef.current;
@@ -61,7 +61,7 @@ export function JacobVoice() {
       const trigger = ScrollTrigger.create({
         trigger: el,
         start: "top top",
-        end: "+=40%",
+        end: "+=30%",
         pin: true,
         pinSpacing: true,
       });
@@ -91,52 +91,52 @@ export function JacobVoice() {
         (scopeRef as React.MutableRefObject<HTMLElement | null>).current = el;
         (sectionRef as React.MutableRefObject<HTMLElement | null>).current = el;
       }}
-      className="relative flex min-h-[60svh] items-center px-6 py-24 md:py-32 bg-black"
+      className="relative flex min-h-[50svh] items-center px-6 py-24 md:py-32 bg-black"
     >
-      {/* Ambient glow — warm, positioned right (Jacob's side) */}
-      <div className="absolute right-[8%] top-1/2 -translate-y-1/2 h-64 w-64 rounded-full bg-[#ff000c]/[0.04] blur-[120px] pointer-events-none" />
+      {/* Subtle top border */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
 
-      {/* Top border */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#ff000c]/10 to-transparent" />
-
+      {/* No label. No container. Just Jacob speaking. */}
       <div
         data-gsap="jacob-voice"
         className="relative z-10 ml-auto md:w-2/3 md:pl-8"
       >
-        {/* Voice label — distinct from coach */}
-        <span className="mb-4 block font-jetbrains text-xs uppercase tracking-[0.3em] text-white/40">
-          In His Own Words
-        </span>
-
         <div
           data-gsap-wave="2"
           style={{ opacity: 0 }}
-          className="rounded-2xl border border-white/[0.08] bg-[#0a0a0a] p-8 md:p-12"
+          className="relative"
         >
+          {/* Oversized quotation mark — visual anchor for "someone is speaking" */}
+          <span
+            className="absolute -top-8 -left-2 font-playfair text-7xl leading-none text-white/[0.06] select-none pointer-events-none md:-left-6 md:-top-10 md:text-8xl"
+            aria-hidden="true"
+          >
+            &ldquo;
+          </span>
+
           <div className="space-y-6">
             {JACOB_PARAGRAPHS.map((paragraph, i) => (
               <p
                 key={i}
-                className="text-lg leading-relaxed text-white/80 md:text-xl"
+                className={`text-lg leading-relaxed md:text-xl ${
+                  inView
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-4"
+                } transition-all duration-700 ease-out`}
+                style={{
+                  transitionDelay: `${i * 200}ms`,
+                  color: "rgba(255, 255, 255, 0.78)",
+                }}
               >
-                {i === 0 ? (
-                  <TypewriterText
-                    text={paragraph}
-                    trigger={inView}
-                    speed={25}
-                    className="text-white/80"
-                  />
-                ) : (
-                  paragraph
-                )}
+                {paragraph}
               </p>
             ))}
           </div>
 
-          {/* Attribution */}
+          {/* Attribution — minimal */}
           <div className="mt-8 flex items-center gap-3">
             <div className="h-px flex-1 bg-white/[0.06]" />
-            <span className="font-jetbrains text-xs tracking-[0.2em] text-white/30">
+            <span className="font-jetbrains text-xs tracking-[0.2em] text-white/25">
               Jacob, age 15
             </span>
           </div>

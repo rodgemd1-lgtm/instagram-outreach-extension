@@ -52,11 +52,11 @@ export default function RecruitPage() {
         ]}
       />
 
-      {/* Beat 6: Character (Jacob — right 2/3) */}
-      <CharacterSection backgroundUrl={photoMap.character} />
-
-      {/* Beat 7: Jacob speaks (Jacob — right 2/3) */}
+      {/* Beat 6: Jacob answers the coach's question (Jacob — right 2/3) */}
       <JacobVoice />
+
+      {/* Beat 7: Character — external validation (Jacob — right 2/3) */}
+      <CharacterSection backgroundUrl={photoMap.character} />
 
       {/* Beat 8: Coach closes the arc (Coach — left 2/3) */}
       <CoachMonologue
