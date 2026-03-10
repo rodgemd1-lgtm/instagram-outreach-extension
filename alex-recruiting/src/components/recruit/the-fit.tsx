@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useRef, useState, useEffect } from "react";
+import { useLayoutEffect, useMemo, useRef, useState, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   useRecruitAssembly,
   type AssemblyConfig,
@@ -52,6 +54,27 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
   );
 
   const scopeRef = useRecruitAssembly(config);
+
+  /* ── Pin section for progressive disclosure ── */
+  useLayoutEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const mm = gsap.matchMedia();
+    mm.add("(min-width: 768px)", () => {
+      const trigger = ScrollTrigger.create({
+        trigger: el,
+        start: "top top",
+        end: "+=60%",
+        pin: true,
+        pinSpacing: true,
+      });
+      return () => trigger.kill();
+    });
+
+    return () => mm.revert();
+  }, []);
 
   // IntersectionObserver for typewriter trigger
   useEffect(() => {

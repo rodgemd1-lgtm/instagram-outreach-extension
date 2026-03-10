@@ -2,7 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   useRecruitAssembly,
   type AssemblyConfig,
@@ -97,6 +99,28 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
   );
 
   const scopeRef = useRecruitAssembly(config);
+  const pinRef = useRef<HTMLElement | null>(null);
+
+  /* ── Pin section while stat counters animate ── */
+  useLayoutEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    const el = pinRef.current;
+    if (!el) return;
+
+    const mm = gsap.matchMedia();
+    mm.add("(min-width: 768px)", () => {
+      const trigger = ScrollTrigger.create({
+        trigger: el,
+        start: "top top",
+        end: "+=50%",
+        pin: true,
+        pinSpacing: true,
+      });
+      return () => trigger.kill();
+    });
+
+    return () => mm.revert();
+  }, []);
 
   const openFullscreen = useCallback((src: string, poster?: string) => {
     setModalSrc(src);
@@ -110,7 +134,10 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
     <>
       <section
         id="film-reel"
-        ref={scopeRef}
+        ref={(el) => {
+          (scopeRef as React.MutableRefObject<HTMLElement | null>).current = el;
+          pinRef.current = el;
+        }}
         className="relative overflow-hidden px-6 py-24 md:px-12 md:py-32"
       >
         {/* ── observer sentinel for counter/typewriter trigger ── */}
