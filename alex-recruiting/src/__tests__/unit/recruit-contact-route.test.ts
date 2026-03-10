@@ -109,7 +109,7 @@ describe("POST /api/recruit/contact", () => {
         message: "Interested in Jacob.",
         phone: null,
         ncaa_compliant: false,
-        status: "new",
+        status: "pending",
       })
     );
     expect(mockInsert.mock.calls[0]?.[0]?.created_at).toEqual(expect.any(String));

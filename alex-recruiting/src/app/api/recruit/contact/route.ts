@@ -131,7 +131,7 @@ export async function POST(req: NextRequest) {
       phone,
       message,
       ncaa_compliant: false,
-      status: "new",
+      status: "pending",
       created_at: new Date().toISOString(),
     };
 
