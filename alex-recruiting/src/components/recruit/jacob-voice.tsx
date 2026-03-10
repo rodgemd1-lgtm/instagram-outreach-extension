@@ -141,7 +141,7 @@ export function JacobVoice() {
               return (
                 <p
                   key={i}
-                  className={`${isLast ? "text-2xl font-bold md:text-3xl" : "text-lg md:text-xl"} leading-relaxed`}
+                  className={`${isLast ? "text-3xl font-bold md:text-4xl" : "text-xl md:text-2xl"} leading-relaxed`}
                   style={{
                     color: isLast ? "rgba(255, 255, 255, 0.95)" : "rgba(255, 255, 255, 0.78)",
                     minHeight: isActive ? undefined : 0,

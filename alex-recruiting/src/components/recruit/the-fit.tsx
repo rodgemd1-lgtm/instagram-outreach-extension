@@ -148,7 +148,7 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
         <div className="mr-auto md:w-2/3 md:pr-8">
           {/* Typewriter intro */}
           <div className="mb-10 rounded-lg bg-[#111111] p-6 md:bg-transparent md:p-0">
-            <p className="text-lg leading-relaxed text-white/80 md:text-xl">
+            <p className="text-2xl leading-relaxed text-white/80 md:text-3xl">
               <TypewriterText
                 text="Here's why Jacob should be on your board."
                 trigger={typewriterTriggered}
@@ -179,7 +179,7 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
 
           {/* Upcoming camps */}
           <div className="mt-10">
-            <span className="mb-4 block font-jetbrains text-xs uppercase tracking-[0.3em] text-[#ff000c]/70">
+            <span className="mb-4 block font-jetbrains text-sm uppercase tracking-[0.3em] text-[#ff000c]/70">
               Where to See Him
             </span>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -188,17 +188,17 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
                   key={camp.name}
                   className="rounded-lg border border-white/5 bg-[#111111] px-5 py-4"
                 >
-                  <p className="text-sm font-semibold text-white/90">
+                  <p className="text-base font-semibold text-white/90">
                     {camp.name}
                   </p>
-                  <p className="mt-1 font-jetbrains text-xs text-white/50">
+                  <p className="mt-1 font-jetbrains text-sm text-white/50">
                     {camp.timing}
                     {camp.note ? ` \u2014 ${camp.note}` : ""}
                   </p>
                 </div>
               ))}
             </div>
-            <p className="mt-4 text-sm leading-relaxed text-white/50">
+            <p className="mt-4 text-base leading-relaxed text-white/50">
               Interested in having Jacob at your camp? Send camp information
               via{" "}
               <a
@@ -215,7 +215,7 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
 
           {/* Off-field interests */}
           <div className="mt-10">
-            <span className="mb-4 block font-jetbrains text-xs uppercase tracking-[0.3em] text-[#ff000c]/70">
+            <span className="mb-4 block font-jetbrains text-sm uppercase tracking-[0.3em] text-[#ff000c]/70">
               Beyond Football
             </span>
             <div className="flex flex-wrap gap-3">
@@ -224,10 +224,10 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
                   key={item.label}
                   className="rounded-lg border border-white/5 bg-[#111111] px-5 py-4"
                 >
-                  <p className="text-sm font-semibold text-white/90">
+                  <p className="text-base font-semibold text-white/90">
                     {item.label}
                   </p>
-                  <p className="mt-1 text-xs leading-relaxed text-white/50">
+                  <p className="mt-1 text-sm leading-relaxed text-white/50">
                     {item.detail}
                   </p>
                 </div>

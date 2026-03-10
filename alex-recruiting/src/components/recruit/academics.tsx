@@ -81,10 +81,10 @@ export function AcademicsSection() {
           <span className="mb-4 block font-jetbrains text-xs uppercase tracking-[0.3em] text-[#ff000c]/80">
             Academics
           </span>
-          <p className="text-2xl font-black text-white md:text-3xl">
+          <p className="text-3xl font-black text-white md:text-4xl">
             GPA: <span className="tabular-nums">3.25</span>
           </p>
-          <p className="mt-2 text-sm text-white/50">
+          <p className="mt-2 text-base text-white/50">
             NCAA Eligible &middot; NCSA Verified
           </p>
         </div>
@@ -95,10 +95,10 @@ export function AcademicsSection() {
           style={{ opacity: 0 }}
           className="mb-8 rounded-lg border border-white/5 bg-[#111111] p-6 md:p-8"
         >
-          <p className="mb-1 font-jetbrains text-xs uppercase tracking-[0.2em] text-[#ff000c]/70">
+          <p className="mb-2 font-jetbrains text-sm uppercase tracking-[0.2em] text-[#ff000c]/70">
             Why this GPA matters
           </p>
-          <p className="text-sm leading-relaxed text-white/70 md:text-base">
+          <p className="text-base leading-relaxed text-white/70 md:text-lg">
             Pewaukee High School ranks in the top 6% of Wisconsin high schools
             and requires 28 graduation credits &mdash; nearly double the state minimum
             of 15.5. A 3.25 here is earned under a course load that most schools
@@ -117,13 +117,13 @@ export function AcademicsSection() {
               key={stat.label}
               className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-4 py-4 text-center"
             >
-              <p className="text-xl font-black text-white md:text-2xl">
+              <p className="text-2xl font-black text-white md:text-3xl">
                 {stat.value}
               </p>
-              <p className="mt-1 font-jetbrains text-[10px] uppercase tracking-[0.2em] text-[#ff000c]/70">
+              <p className="mt-1 font-jetbrains text-xs uppercase tracking-[0.2em] text-[#ff000c]/70">
                 {stat.label}
               </p>
-              <p className="mt-1 text-[10px] text-white/40">
+              <p className="mt-1 text-xs text-white/40">
                 {stat.context}
               </p>
             </div>
@@ -136,15 +136,15 @@ export function AcademicsSection() {
           style={{ opacity: 0 }}
           className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-center"
         >
-          <span className="text-xs text-white/40">
+          <span className="text-sm text-white/40">
             #27 in WI (U.S. News)
           </span>
           <span className="inline-block h-1 w-1 rounded-full bg-[#ff000c]/50" />
-          <span className="text-xs text-white/40">
+          <span className="text-sm text-white/40">
             Baldrige National Quality Award
           </span>
           <span className="inline-block h-1 w-1 rounded-full bg-[#ff000c]/50" />
-          <span className="text-xs text-white/40">
+          <span className="text-sm text-white/40">
             97% graduation rate
           </span>
         </div>

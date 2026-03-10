@@ -10,7 +10,7 @@ import { TypewriterText } from "./typewriter";
 const traits = [
   {
     label: "TEAM FIRST",
-    body: "Freshmen don\u2019t start on varsity at Pewaukee. Jacob earned it from day one. Shows up doing the work seniors do. Never acted like it was owed.",
+    body: "Freshmen don\u2019t get on varsity at Pewaukee. Jacob earned it from day one. Shows up doing the work seniors do. Never acted like it was owed.",
   },
   {
     label: "COACHABLE",
@@ -96,7 +96,7 @@ export function CharacterSection({
         {/* Right-aligned 2/3 column — Jacob speaks */}
         <div className="ml-auto md:w-2/3 md:pl-8">
           {/* Typewriter intro */}
-          <p className="mb-10 font-jetbrains text-xl leading-relaxed text-white/90 md:text-2xl">
+          <p className="mb-10 font-jetbrains text-2xl leading-relaxed text-white/90 md:text-3xl">
             <TypewriterText
               text="Numbers tell you what he can do. These tell you what he will do."
               trigger={inView}

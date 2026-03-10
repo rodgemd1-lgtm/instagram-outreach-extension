@@ -201,8 +201,8 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
           </h2>
         </div>
 
-        {/* ── Car-ride moment — standalone emotional beat ── */}
-        <div data-gsap="car-ride" className="mb-20 md:mb-28">
+        {/* ── Car-ride moment — standalone emotional beat (appears alone first) ── */}
+        <div data-gsap="car-ride" className="mb-0">
           <div
             data-gsap-wave="2"
             style={{ opacity: 0 }}
@@ -233,6 +233,9 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
             </p>
           </div>
         </div>
+
+        {/* Spacer — keeps quote isolated before timeline scrolls in */}
+        <div className="h-[30vh] md:h-[40vh]" />
 
         {/* Vertical timeline */}
         <div data-gsap="work-timeline" className="relative">
