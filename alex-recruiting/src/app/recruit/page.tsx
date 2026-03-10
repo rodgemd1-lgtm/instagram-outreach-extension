@@ -3,59 +3,62 @@
 import { useRef } from "react";
 import { RecruitHero } from "@/components/recruit/hero";
 import { FilmReel } from "@/components/recruit/film-reel";
+import { CoachMonologue } from "@/components/recruit/coach-monologue";
 import { OriginStory } from "@/components/recruit/origin-story";
-import { MultiSportSection } from "@/components/recruit/multi-sport";
 import { CharacterSection } from "@/components/recruit/character";
 import { AcademicsSection } from "@/components/recruit/academics";
 import { TheFit } from "@/components/recruit/the-fit";
 import { ContactCTA } from "@/components/recruit/contact";
-import { SocialProofBanner } from "@/components/recruit/social-proof";
-import { ScrollProgress } from "@/components/recruit/scroll-progress";
 import { FilmGrainOverlay } from "@/components/recruit/film-grain";
-import { RecruitNav } from "@/components/recruit/nav";
-import { MobileNav } from "@/components/recruit/mobile-nav";
-import { MusicToggle } from "@/components/recruit/music-toggle";
 import { useRecruitPhotos } from "@/hooks/useRecruitPhotos";
 import { useAnalytics } from "@/components/recruit/hooks/use-analytics";
 
 export default function RecruitPage() {
   const pageRef = useRef<HTMLDivElement>(null);
   const { photoMap } = useRecruitPhotos();
-  useAnalytics(); // Registers page visit on mount; section tracking wired later via IntersectionObserver
+  useAnalytics();
 
   return (
-    <div ref={pageRef}>
-      <RecruitNav />
-      <MobileNav />
-      <ScrollProgress />
+    <div ref={pageRef} className="bg-black">
       <FilmGrainOverlay />
-      <MusicToggle src="/recruit/audio/ambient.mp3" />
 
-      {/* 1. Hero — "Is this kid in my window?" (LAAL: Known-ness) */}
+      {/* Beat 1: Introduction (Jacob — right 2/3) */}
       <RecruitHero backgroundUrl={photoMap.hero} />
 
-      {/* 2. Film + Stats — "Can he play? What are his numbers?" (LAAL: Known-ness) */}
+      {/* Beat 2: Film + Stats (Jacob — right 2/3) */}
       <FilmReel backgroundUrl={photoMap["film-reel"]} />
 
-      {/* 2.5 Social Proof — credibility signal between film and origin */}
-      <SocialProofBanner />
+      {/* Beat 3: Coach evaluates (Coach — left 2/3) */}
+      <CoachMonologue
+        id="coach-eval-1"
+        lines={[
+          "He's got D1 size at 15. 445 deadlift as a freshman.",
+          "But is he self-made, or just big?",
+        ]}
+      />
 
-      {/* 3. The Work — "What's his work ethic?" (LAAL: Temporal Window) */}
+      {/* Beat 4: The Work (Jacob — right 2/3) */}
       <OriginStory backgroundUrl={photoMap.origin} />
 
-      {/* 4. Multi-sport transfer — "What else supports the projection?" */}
-      <MultiSportSection />
+      {/* Beat 5: Coach reflects (Coach — left 2/3) */}
+      <CoachMonologue
+        id="coach-eval-2"
+        lines={[
+          "Four years of documented work. Real facility. Real trainer.",
+          "The kid is serious. But will he fit our locker room?",
+        ]}
+      />
 
-      {/* 5. Character — "Will he fit our locker room?" (LAAL: Ownership) */}
+      {/* Beat 6: Character (Jacob — right 2/3) */}
       <CharacterSection backgroundUrl={photoMap.character} />
 
-      {/* 6. Academics — "Will he qualify?" (LAAL: Continuity Thread) */}
+      {/* Beat 7: Academics (Neutral — centered bar) */}
       <AcademicsSection />
 
-      {/* 7. The Fit — "Why should we recruit him?" (LAAL: Ownership + Loss Aversion) */}
+      {/* Beat 8: The Fit (Coach — left 2/3) */}
       <TheFit backgroundUrl={photoMap.fit} />
 
-      {/* 8. Contact — "How do I reach out?" (LAAL: Forgiving Stakes) */}
+      {/* Beat 9: Contact (Both — converge to center) */}
       <ContactCTA />
     </div>
   );
