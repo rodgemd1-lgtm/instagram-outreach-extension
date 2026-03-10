@@ -51,3 +51,6 @@ public/thumbnails/
 
 # local task store
 .rec-tasks.json
+
+# worktrees
+.worktrees/
