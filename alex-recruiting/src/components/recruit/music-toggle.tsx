@@ -60,14 +60,14 @@ export function MusicToggle({ src, volume = 0.15 }: MusicToggleProps) {
   return (
     <button
       onClick={toggle}
-      className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-[#D4A853]/20 bg-[#0A0A0A]/80 backdrop-blur-xl transition-all duration-300 hover:border-[#D4A853]/40 hover:scale-105 md:bottom-auto md:top-6 md:right-20"
+      className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-[#ff000c]/20 bg-[#000000]/80 backdrop-blur-xl transition-all duration-300 hover:border-[#ff000c]/40 hover:scale-105 md:bottom-auto md:top-6 md:right-20"
       aria-label={muted ? "Unmute background music" : "Mute background music"}
       title={muted ? "Play music" : "Mute music"}
     >
       {muted ? (
-        <VolumeX className="h-5 w-5 text-[#8B8172]" />
+        <VolumeX className="h-5 w-5 text-[#9CA3AF]" />
       ) : (
-        <Volume2 className="h-5 w-5 text-[#D4A853]" />
+        <Volume2 className="h-5 w-5 text-[#ff000c]" />
       )}
     </button>
   );

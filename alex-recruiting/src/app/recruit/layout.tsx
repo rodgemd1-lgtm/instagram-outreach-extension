@@ -51,7 +51,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#0A0A0A",
+  themeColor: "#000000",
 };
 
 export default function RecruitLayout({
@@ -61,7 +61,7 @@ export default function RecruitLayout({
 }) {
   return (
     <div
-      className={`recruit-page bg-[#0A0A0A] text-[#F5F0E6] min-h-screen overflow-x-hidden ${playfair.variable} ${jetbrains.variable}`}
+      className={`recruit-page bg-black text-white min-h-screen overflow-x-hidden ${playfair.variable} ${jetbrains.variable}`}
       style={{
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
         touchAction: "pan-y",

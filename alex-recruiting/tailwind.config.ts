@@ -16,13 +16,13 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         "pirate-red": {
-          DEFAULT: "#CC0022",
-          dark: "#990019",
-          light: "#E6003D",
+          DEFAULT: "#ff000c",
+          dark: "#cc000a",
+          light: "#ff3340",
         },
         "pirate-black": {
           DEFAULT: "#111111",
-          deep: "#0A0A0A",
+          deep: "#000000",
         },
       },
       keyframes: {

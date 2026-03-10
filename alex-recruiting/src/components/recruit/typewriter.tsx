@@ -54,7 +54,7 @@ export function TypewriterText({
     <span className={className}>
       {text.slice(0, displayedCount)}
       {started && !done && (
-        <span className="inline-block w-[2px] h-[1em] bg-[#D4A853] ml-0.5 animate-pulse align-text-bottom" />
+        <span className="inline-block w-[2px] h-[1em] bg-[#ff000c] ml-0.5 animate-pulse align-text-bottom" />
       )}
     </span>
   );

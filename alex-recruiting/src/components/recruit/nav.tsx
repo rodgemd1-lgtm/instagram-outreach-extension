@@ -60,14 +60,14 @@ export function RecruitNav() {
       <nav
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
           scrolled
-            ? "bg-[#0A0A0A]/90 backdrop-blur-xl border-b border-white/5"
+            ? "bg-[#000000]/90 backdrop-blur-xl border-b border-white/5"
             : "bg-transparent"
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <button
             onClick={() => scrollTo("hero")}
-            className="font-playfair text-sm tracking-normal text-[#F5F0E6]/60 hover:text-[#F5F0E6] transition-colors min-h-[48px] flex items-center"
+            className="font-playfair text-sm tracking-normal text-[#FFFFFF]/60 hover:text-[#FFFFFF] transition-colors min-h-[48px] flex items-center"
           >
             JACOB RODGERS
           </button>
@@ -79,8 +79,8 @@ export function RecruitNav() {
                 onClick={() => scrollTo(s.id)}
                 className={`text-xs tracking-widest uppercase transition-all duration-300 min-h-[48px] px-2 flex items-center ${
                   activeSection === s.id
-                    ? "text-[#D4A853]"
-                    : "text-[#F5F0E6]/50 hover:text-[#F5F0E6]/60"
+                    ? "text-[#ff000c]"
+                    : "text-[#FFFFFF]/50 hover:text-[#FFFFFF]/60"
                 }`}
               >
                 {s.label}
@@ -92,8 +92,8 @@ export function RecruitNav() {
             onClick={() => scrollTo("contact")}
             className={`text-xs tracking-widest uppercase px-4 py-2 rounded-full border transition-all duration-300 min-h-[48px] flex items-center ${
               scrolled
-                ? "border-[#D4A853]/50 text-[#D4A853] hover:bg-[#D4A853]/10"
-                : "border-[#F5F0E6]/20 text-[#F5F0E6]/60 hover:text-[#F5F0E6]"
+                ? "border-[#ff000c]/50 text-[#ff000c] hover:bg-[#ff000c]/10"
+                : "border-[#FFFFFF]/20 text-[#FFFFFF]/60 hover:text-[#FFFFFF]"
             }`}
           >
             Contact
@@ -103,7 +103,7 @@ export function RecruitNav() {
 
       {/* Mobile bottom nav — section dots */}
       {scrolled && (
-        <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-white/5"
+        <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-[#000000]/95 backdrop-blur-xl border-t border-white/5"
           style={{ paddingBottom: "env(safe-area-inset-bottom, 8px)" }}
         >
           <div className="flex items-center justify-around px-2 py-3">
@@ -116,15 +116,15 @@ export function RecruitNav() {
                 <div
                   className={`w-2 h-2 rounded-full transition-all duration-300 ${
                     activeSection === s.id
-                      ? "bg-[#D4A853] scale-125"
-                      : "bg-[#F5F0E6]/20"
+                      ? "bg-[#ff000c] scale-125"
+                      : "bg-[#FFFFFF]/20"
                   }`}
                 />
                 <span
                   className={`text-[8px] tracking-wider uppercase transition-colors ${
                     activeSection === s.id
-                      ? "text-[#D4A853]"
-                      : "text-[#F5F0E6]/50"
+                      ? "text-[#ff000c]"
+                      : "text-[#FFFFFF]/50"
                   }`}
                 >
                   {s.label}

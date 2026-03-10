@@ -9,28 +9,28 @@ import {
 
 const traits = [
   {
-    trait: "Locker Room Fit",
+    trait: "Coachable",
     icon: "01",
     description:
-      "Coaches rank locker room fit as a top-3 recruiting factor. Jacob trains with older athletes, takes coaching from multiple sources, and shows up for offseason work without being asked. The pattern coaches look for: does he make the room better?",
+      "Plays both sides of the ball \u2014 DT and OG \u2014 wherever the coaching staff needs him. Started JV and varsity in the same season. No questions asked. Just lined up and played.",
     evidence:
-      "Trained alongside upperclassmen since age 13. Multiple coaches, same response: get the correction, apply it on the next rep. No ego, just work.",
+      "Multiple coaches, same response: get the correction, apply it on the next rep.",
   },
   {
-    trait: "Coachable Under Pressure",
+    trait: "Team First",
     icon: "02",
     description:
-      "Research shows the #1 trait coaches evaluate in character is coachability under adversity. Jacob has taken coaching from school staff, private OL/DL trainers, and sports-performance coaches across 730+ sessions. The correction-to-application cycle is fast.",
+      "Freshmen don\u2019t typically start at Pewaukee. Jacob earned it by showing up every day, doing the work seniors do, and never acting like it was owed to him.",
     evidence:
-      "Two-way development (OL and DL) requires absorbing different coaching systems simultaneously. That adaptability is visible in the film and the training logs.",
+      "Trained alongside upperclassmen since age 13. Two games in one day when the team needed him.",
   },
   {
-    trait: "Verified Competitor",
+    trait: "Relentless",
     icon: "03",
     description:
-      "Multi-sport athletes project better at the college level. Track and field (first-place discus and shot put), football (two-way starter), and year-round lifting all point to the same profile: a big athlete who competes, not just trains.",
+      "Has not missed a scheduled training session since October 2022. 730+ sessions. Five days a week. Personal trainer. NX Level. Discus. Shot put. Football.",
     evidence:
-      "405 lb deadlift, first-place conference throws, and a state playoff run as a freshman. The competitive edge is documented, not claimed.",
+      "445 lb deadlift, first-place conference throws, and a state playoff run as a freshman.",
   },
 ];
 
@@ -76,7 +76,7 @@ export function CharacterSection({ backgroundUrl }: { backgroundUrl?: string }) 
             sizes="100vw"
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-[#0A0A0A]/95" />
+          <div className="absolute inset-0 bg-[#000000]/95" />
         </div>
       )}
 
@@ -84,20 +84,20 @@ export function CharacterSection({ backgroundUrl }: { backgroundUrl?: string }) 
 
       <div className="relative z-10 mx-auto max-w-5xl">
         <div className="mb-20 md:mb-32">
-          <span className="mb-6 block font-jetbrains text-xs uppercase tracking-[0.3em] text-[#D4A853]/80">
+          <span className="mb-6 block font-jetbrains text-xs uppercase tracking-[0.3em] text-[#ff000c]/80">
             Character
           </span>
           <h2 className="mb-6 font-playfair text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
             Will he fit
             <br />
             your{" "}
-            <span className="bg-gradient-to-r from-[#D4A853] to-[#E8C068] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#ff000c] to-[#ff000c] bg-clip-text text-transparent">
               locker room
             </span>
             ?
           </h2>
-          <p className="max-w-xl text-base leading-relaxed text-[#F5F0E6]/40 md:text-lg">
-            The traits coaches explicitly evaluate, backed by evidence.
+          <p className="max-w-xl text-base leading-relaxed text-[#FFFFFF]/40 md:text-lg">
+            Three traits. Evidence for each.
           </p>
         </div>
 
@@ -112,8 +112,8 @@ export function CharacterSection({ backgroundUrl }: { backgroundUrl?: string }) 
               className="group relative"
               style={{ opacity: 0 }}
             >
-              <div className="relative rounded-2xl border border-white/[0.08] bg-black/60 p-8 backdrop-blur-sm transition-colors duration-500 hover:border-[#D4A853]/20 md:p-12">
-                <span className="absolute -top-4 -left-2 select-none font-jetbrains text-6xl font-black text-[#D4A853]/[0.04] md:left-6 md:text-8xl">
+              <div className="relative rounded-2xl border border-white/[0.08] bg-black/60 p-8 backdrop-blur-sm transition-colors duration-500 hover:border-[#ff000c]/20 md:p-12">
+                <span className="absolute -top-4 -left-2 select-none font-jetbrains text-6xl font-black text-[#ff000c]/[0.04] md:left-6 md:text-8xl">
                   {trait.icon}
                 </span>
 
@@ -125,12 +125,12 @@ export function CharacterSection({ backgroundUrl }: { backgroundUrl?: string }) 
                   </div>
 
                   <div className="md:w-2/3">
-                    <p className="mb-4 text-base leading-relaxed text-[#F5F0E6]/80">
+                    <p className="mb-4 text-base leading-relaxed text-[#FFFFFF]/80">
                       {trait.description}
                     </p>
                     <div className="flex items-start gap-3">
-                      <div className="mt-1 h-full min-h-[20px] w-1 rounded-full bg-[#D4A853]/30" />
-                      <p className="font-jetbrains text-sm leading-relaxed text-[#D4A853]/90">
+                      <div className="mt-1 h-full min-h-[20px] w-1 rounded-full bg-[#ff000c]/30" />
+                      <p className="font-jetbrains text-sm leading-relaxed text-[#ff000c]/90">
                         {trait.evidence}
                       </p>
                     </div>
@@ -141,17 +141,26 @@ export function CharacterSection({ backgroundUrl }: { backgroundUrl?: string }) 
           ))}
         </div>
 
-        <div className="mt-16 rounded-2xl border border-[#D4A853]/10 bg-gradient-to-r from-[#D4A853]/5 to-[#E8C068]/5 p-10 md:mt-20 md:p-14">
-          <span className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#D4A853]/80">
+        <div className="mt-16 rounded-2xl border border-[#ff000c]/10 bg-gradient-to-r from-[#ff000c]/5 to-[#ff000c]/5 p-10 md:mt-20 md:p-14">
+          <span className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#ff000c]/80">
             Narrative
           </span>
           <h3 className="mt-4 text-2xl font-semibold tracking-tight text-white">
             The coach&apos;s one-liner.
           </h3>
-          <p className="mt-4 max-w-3xl text-base leading-7 text-[#F5F0E6]/58">
-            6&apos;4&quot;, 285, two-way lineman, 405 deadlift, first-place
+          <p className="mt-4 max-w-3xl text-base leading-7 text-[#FFFFFF]/58">
+            6&apos;4&quot;, 285, two-way lineman, 445 deadlift, first-place
             throws, 730+ training sessions, locker room fit, and a development
             curve that has not flattened. He makes the room better.
+          </p>
+        </div>
+
+        <div className="mt-8 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8">
+          <p className="font-playfair italic text-xl text-[#FFFFFF]/70 md:text-2xl leading-relaxed">
+            &ldquo;[Attributed quote from head coach or position coach &mdash; real name, real title, real words about Jacob&apos;s character and coachability]&rdquo;
+          </p>
+          <p className="mt-4 font-jetbrains text-sm text-[#ff000c]/80">
+            &mdash; Coach [Name], [Title], Pewaukee HS
           </p>
         </div>
       </div>

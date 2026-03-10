@@ -23,21 +23,6 @@ interface FilmReelProps {
   backgroundUrl?: string;
 }
 
-const coachReasons = [
-  {
-    label: "30-second evaluation cut",
-    body: "Lead reel is football-only, sorted by position-specific technique: get-off, hand placement, leverage, finish. Not a highlight reel \u2014 an evaluation reel.",
-  },
-  {
-    label: "Game context on every clip",
-    body: "Each clip includes opponent level, play type, and technique focus so you can evaluate without guessing what you are watching.",
-  },
-  {
-    label: "Coach-first film, not recruit-first",
-    body: "Sorted by what coaches grade \u2014 pad level, strike timing, effort after contact \u2014 not what gets likes on social media.",
-  },
-];
-
 export function FilmReel({ backgroundUrl }: FilmReelProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalSrc, setModalSrc] = useState("");
@@ -124,28 +109,23 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
             <div className="absolute inset-0 bg-[linear-gradient(160deg,rgba(8,8,8,0.96),rgba(8,8,8,0.78)_48%,rgba(8,8,8,0.94)_100%)]" />
           </div>
         )}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#D4A853]/20 to-transparent" />
-        <div className="absolute right-[8%] top-[10%] h-72 w-72 rounded-full bg-[#D4A853]/8 blur-[120px]" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#ff000c]/20 to-transparent" />
+        <div className="absolute right-[8%] top-[10%] h-72 w-72 rounded-full bg-[#ff000c]/8 blur-[120px]" />
 
         <div className="relative z-10 mx-auto max-w-7xl">
           <div data-gsap="film-header" style={{ opacity: 0 }} className="max-w-4xl">
-            <span className="mb-6 block font-jetbrains text-xs uppercase tracking-[0.3em] text-[#D4A853]/80">
+            <span className="mb-6 block font-jetbrains text-xs uppercase tracking-[0.3em] text-[#ff000c]/80">
               Film
             </span>
             <h2 className="text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
-              Film is the #1
-              <br />
-              decision factor.
+              See him play.
             </h2>
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-[#F5F0E6]/70 md:text-xl">
-              Coach-first film: sorted by position-specific technique, not
-              highlight plays. Every clip tagged with opponent context, play
-              type, and the trench skill on display. Watch the 30-second
-              evaluation cut first, then go deeper.
+            <p className="mt-6 text-lg tracking-wide text-[#FFFFFF]/50 md:text-xl">
+              Freshman season &nbsp;|&nbsp; DT &amp; OG &nbsp;|&nbsp; Pewaukee HS &nbsp;|&nbsp; State Playoff Run
             </p>
           </div>
 
-          <div className="mt-12 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+          <div className="mt-12 space-y-6">
             <div
               data-gsap="film-stage"
               style={{ opacity: 0 }}
@@ -153,13 +133,13 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
             >
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
-                  <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#D4A853]/90">
+                  <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#ff000c]/90">
                     Main Highlight
                   </p>
                   <h3 className="mt-2 text-2xl font-semibold tracking-tight text-white">
                     {FEATURED_RECRUIT_REEL.title}
                   </h3>
-                  <p className="mt-2 max-w-2xl text-sm leading-6 text-[#F5F0E6]/52">
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-[#FFFFFF]/52">
                     {FEATURED_RECRUIT_REEL.subtitle}
                   </p>
                 </div>
@@ -168,7 +148,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                   onClick={() =>
                     openFullscreen(FEATURED_RECRUIT_REEL.src, FEATURED_RECRUIT_REEL.poster)
                   }
-                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white/70 transition hover:border-[#D4A853]/30 hover:text-[#F5F0E6]"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white/70 transition hover:border-[#ff000c]/30 hover:text-[#FFFFFF]"
                 >
                   Fullscreen
                   <ArrowRight className="h-4 w-4" />
@@ -189,64 +169,39 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
               </div>
             </div>
 
-            <div className="grid gap-6">
-              <div
-                data-gsap="film-stage"
-                style={{ opacity: 0 }}
-                className="rounded-[34px] border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-sm"
-              >
-                <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#D4A853]/90">
-                  Coach Lens
-                </p>
-                <div className="mt-5 space-y-4">
-                  {coachReasons.map((reason) => (
-                    <div
-                      key={reason.label}
-                      className="rounded-[22px] border border-white/[0.08] bg-black/24 p-4"
-                    >
-                      <p className="text-sm font-semibold text-white">{reason.label}</p>
-                      <p className="mt-2 text-sm leading-6 text-[#F5F0E6]/58">
-                        {reason.body}
+            <div
+              data-gsap="film-stage"
+              style={{ opacity: 0 }}
+              className="rounded-[34px] border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-sm"
+            >
+              <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#ff000c]/90">
+                External Film
+              </p>
+              <div className="mt-5 grid gap-3 md:grid-cols-2">
+                {FULL_FILM_LINKS.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-start justify-between gap-4 rounded-[22px] border border-white/[0.08] bg-black/24 px-4 py-4 transition hover:border-[#ff000c]/25"
+                  >
+                    <div>
+                      <p className="text-sm font-semibold text-white">{link.label}</p>
+                      <p className="mt-2 text-sm leading-6 text-[#FFFFFF]/52">
+                        {link.description}
                       </p>
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              <div
-                data-gsap="film-stage"
-                style={{ opacity: 0 }}
-                className="rounded-[34px] border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-sm"
-              >
-                <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#D4A853]/90">
-                  External Film
-                </p>
-                <div className="mt-5 space-y-3">
-                  {FULL_FILM_LINKS.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-start justify-between gap-4 rounded-[22px] border border-white/[0.08] bg-black/24 px-4 py-4 transition hover:border-[#D4A853]/25"
-                    >
-                      <div>
-                        <p className="text-sm font-semibold text-white">{link.label}</p>
-                        <p className="mt-2 text-sm leading-6 text-[#F5F0E6]/52">
-                          {link.description}
-                        </p>
-                      </div>
-                      <ExternalLink className="mt-1 h-4 w-4 shrink-0 text-[#F5F0E6]/38" />
-                    </Link>
-                  ))}
-                </div>
+                    <ExternalLink className="mt-1 h-4 w-4 shrink-0 text-[#FFFFFF]/38" />
+                  </Link>
+                ))}
               </div>
             </div>
           </div>
 
           <div className="mt-12">
             <div data-gsap="film-header" style={{ opacity: 0 }} className="max-w-3xl">
-              <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#D4A853]/90">
+              <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#ff000c]/90">
                 More Reels
               </p>
               <h3 className="mt-3 text-3xl font-semibold tracking-tight text-white">
@@ -274,17 +229,17 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                   <div className="space-y-3 p-5">
                     <div>
                       <p className="text-lg font-semibold text-white">{reel.title}</p>
-                      <p className="mt-1 text-sm text-[#F5F0E6]/65">{reel.subtitle}</p>
+                      <p className="mt-1 text-sm text-[#FFFFFF]/65">{reel.subtitle}</p>
                     </div>
                     <div className="flex items-center justify-between gap-4">
                       <p className="font-jetbrains text-xs uppercase tracking-[0.16em] text-[#C0392B]/80">
                         {reel.durationLabel}
                       </p>
-                      <span className="rounded-full border border-white/[0.08] bg-black/24 px-3 py-1 font-jetbrains text-xs uppercase tracking-[0.16em] text-[#D4A853]/90">
+                      <span className="rounded-full border border-white/[0.08] bg-black/24 px-3 py-1 font-jetbrains text-xs uppercase tracking-[0.16em] text-[#ff000c]/90">
                         {reel.lens}
                       </span>
                     </div>
-                    <p className="text-sm leading-6 text-[#F5F0E6]/56">
+                    <p className="text-sm leading-6 text-[#FFFFFF]/56">
                       {reel.analysisNotes}
                     </p>
                   </div>
@@ -329,13 +284,13 @@ function ClipLibrary({
   return (
     <div className="mt-12">
       <div data-gsap="film-header" style={{ opacity: 0 }} className="max-w-3xl">
-        <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#D4A853]/90">
+        <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#ff000c]/90">
           Featured Clips
         </p>
         <h3 className="mt-3 text-3xl font-semibold tracking-tight text-white">
           {title}
         </h3>
-        <p className="mt-3 text-sm leading-6 text-[#F5F0E6]/70 md:text-base">
+        <p className="mt-3 text-sm leading-6 text-[#FFFFFF]/70 md:text-base">
           {subtitle}
         </p>
       </div>
@@ -355,20 +310,20 @@ function ClipLibrary({
                 mode="inline"
                 className="h-full w-full rounded-none"
               />
-              <div className="pointer-events-none absolute left-4 top-4 rounded-full border border-white/15 bg-black/55 px-3 py-1 font-jetbrains text-xs tracking-[0.2em] text-[#F5F0E6]/80">
+              <div className="pointer-events-none absolute left-4 top-4 rounded-full border border-white/15 bg-black/55 px-3 py-1 font-jetbrains text-xs tracking-[0.2em] text-[#FFFFFF]/80">
                 {clip.rank}
               </div>
             </div>
             <div className="space-y-3 p-5">
               <div>
                 <p className="text-lg font-semibold text-white">{clip.title}</p>
-                <p className="mt-1 text-sm text-[#F5F0E6]/65">{clip.subtitle}</p>
+                <p className="mt-1 text-sm text-[#FFFFFF]/65">{clip.subtitle}</p>
               </div>
               <div className="flex flex-wrap gap-2">
                 {clip.moments.map((moment) => (
                   <span
                     key={moment}
-                    className="rounded-full border border-white/[0.08] bg-black/24 px-3 py-1 font-jetbrains text-xs uppercase tracking-[0.16em] text-[#D4A853]/90"
+                    className="rounded-full border border-white/[0.08] bg-black/24 px-3 py-1 font-jetbrains text-xs uppercase tracking-[0.16em] text-[#ff000c]/90"
                   >
                     {moment}
                   </span>
@@ -378,7 +333,7 @@ function ClipLibrary({
                 <span>{clip.durationLabel}</span>
                 <span>{clip.sourceName.replace(".MOV", "")}</span>
               </div>
-              <p className="text-sm leading-6 text-[#F5F0E6]/56">{clip.analysisNotes}</p>
+              <p className="text-sm leading-6 text-[#FFFFFF]/56">{clip.analysisNotes}</p>
             </div>
           </div>
         ))}

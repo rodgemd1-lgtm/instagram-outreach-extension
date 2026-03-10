@@ -62,7 +62,7 @@ export function MobileNav() {
       }`}
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
-      <div className="bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-white/5">
+      <div className="bg-[#000000]/95 backdrop-blur-xl border-t border-white/5">
         <div className="flex items-center justify-around px-2 py-2">
           {sections.map((s) => (
             <button
