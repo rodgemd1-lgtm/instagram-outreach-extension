@@ -180,7 +180,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
           </div>
 
           {/* RIGHT — main content (2/3) */}
-          <div className="ml-auto md:w-2/3 md:pl-8">
+          <div className="ml-auto min-w-0 w-full md:w-2/3 md:pl-8">
             {/* ── main reel ── */}
             <div
               data-gsap="beat2-content"
