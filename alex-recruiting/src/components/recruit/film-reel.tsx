@@ -174,7 +174,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                 className="text-white"
               />
             </h2>
-            <p className="mt-6 max-w-xs text-base leading-7 text-white/60 md:text-lg">
+            <p className="mt-6 max-w-xs text-lg leading-7 text-white/70 md:text-xl">
               Jacob answers with film, force production, and effort that shows up every rep.
             </p>
           </div>
@@ -309,7 +309,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                       duration={1.8}
                       className="text-2xl font-black tabular-nums text-white md:text-3xl"
                     />
-                    <span className="mt-1 font-jetbrains text-xs uppercase tracking-[0.2em] text-[#ff000c]/80">
+                    <span className="mt-1 font-jetbrains text-sm uppercase tracking-[0.2em] text-[#ff000c]/80 md:text-base">
                       {stat.label}
                     </span>
                   </div>

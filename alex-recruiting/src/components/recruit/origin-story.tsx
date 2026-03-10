@@ -51,8 +51,8 @@ const timeline: TimelineEntry[] = [
   {
     age: 14,
     year: "2024-25",
-    title: "Freshman on Varsity",
-    body: "Two games in one day. 11 pancakes. 3 sacks. Fumble recovery. State playoff run.",
+    title: "Freshman on Varsity \u00b7 Starter on JV",
+    body: "Called in to play varsity. Started and played full JV games. Two games in one day. 11 pancakes. 3 sacks. Fumble recovery. State playoff run.",
     lifts: [
       { label: "Bench", value: 265 },
       { label: "Squat", value: 350 },
