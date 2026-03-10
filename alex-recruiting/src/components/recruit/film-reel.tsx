@@ -327,6 +327,12 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                   View NCSA profile
                   <span className="text-xs">&#8599;</span>
                 </Link>
+                <Link
+                  href="#contact"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#ff000c] px-5 py-2.5 text-sm font-bold uppercase tracking-widest text-white transition hover:opacity-90"
+                >
+                  Reach Out
+                </Link>
               </div>
             </div>
           </div>

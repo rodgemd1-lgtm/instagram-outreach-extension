@@ -13,9 +13,7 @@ const sections = [
   { id: "hero", label: "79" },
   { id: "film-reel", label: "Film" },
   { id: "origin", label: "The Work" },
-  { id: "athlete", label: "Athlete" },
   { id: "character", label: "Character" },
-  { id: "academics", label: "Academics" },
   { id: "fit", label: "The Fit" },
   { id: "contact", label: "Contact" },
 ];

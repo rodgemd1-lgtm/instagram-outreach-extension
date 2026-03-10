@@ -22,9 +22,6 @@ const traits = [
   },
 ];
 
-const coachQuote =
-  "[Attributed quote from head coach or position coach \u2014 real name, real title, real words about Jacob\u2019s character and coachability]";
-
 export function CharacterSection({
   backgroundUrl,
 }: {
@@ -125,21 +122,6 @@ export function CharacterSection({
             ))}
           </div>
 
-          {/* Coach quote placeholder — types last */}
-          <div className="mt-10">
-            <p className="font-playfair text-lg italic leading-relaxed text-white/50 md:text-xl">
-              &ldquo;
-              <TypewriterText
-                text={coachQuote}
-                trigger={inView}
-                speed={25}
-              />
-              &rdquo;
-            </p>
-            <p className="mt-3 font-jetbrains text-sm text-[#ff000c]/80">
-              &mdash; Coach [Name], [Title], Pewaukee HS
-            </p>
-          </div>
         </div>
       </div>
     </section>

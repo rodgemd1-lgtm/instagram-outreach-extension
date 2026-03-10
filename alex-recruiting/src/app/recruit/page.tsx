@@ -10,6 +10,7 @@ import { AcademicsSection } from "@/components/recruit/academics";
 import { TheFit } from "@/components/recruit/the-fit";
 import { ContactCTA } from "@/components/recruit/contact";
 import { FilmGrainOverlay } from "@/components/recruit/film-grain";
+import { RecruitNav } from "@/components/recruit/nav";
 import { useRecruitPhotos } from "@/hooks/useRecruitPhotos";
 import { useAnalytics } from "@/components/recruit/hooks/use-analytics";
 
@@ -20,6 +21,7 @@ export default function RecruitPage() {
 
   return (
     <div ref={pageRef} className="bg-black">
+      <RecruitNav />
       <FilmGrainOverlay />
 
       {/* Beat 1: Introduction (Jacob — right 2/3) */}

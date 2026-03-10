@@ -139,9 +139,6 @@ export function ContactCTA() {
                   >
                     rodgermd1@gmail.com
                   </a>
-                  <span className="block text-sm font-jetbrains text-white/60">
-                    (xxx) xxx-xxxx
-                  </span>
                 </div>
               </div>
 

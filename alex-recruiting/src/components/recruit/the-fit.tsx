@@ -153,16 +153,6 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
             ))}
           </div>
 
-          {/* Live activity indicator */}
-          <div className="mt-8 flex items-center gap-3">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#ff000c] opacity-75" />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#ff000c]" />
-            </span>
-            <span className="text-xs text-white/40">
-              12 programs have viewed this page this month
-            </span>
-          </div>
         </div>
       </div>
     </section>
