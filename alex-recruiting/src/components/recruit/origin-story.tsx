@@ -1,54 +1,73 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   useRecruitAssembly,
   type AssemblyConfig,
 } from "@/hooks/useRecruitAssembly";
-import { TypewriterText } from "./typewriter";
 import { CounterAnimation } from "./counter";
 
-const milestones = [
+interface TimelineEntry {
+  age: number;
+  year: string;
+  title: string;
+  body: string;
+  lifts?: { label: string; value: number }[];
+  link?: { text: string; href: string };
+  coda?: string;
+}
+
+const timeline: TimelineEntry[] = [
   {
-    age: "11",
+    age: 11,
     year: "2021",
-    headline: "NX Level sports-performance training begins \u2014 movement quality before football volume.",
-    lifts: null,
-    detail:
-      "Movement training at NX Level. Speed work, body control, agility. Two years before high-school football.",
+    title: "NX Level begins",
+    body: "Twice a week. Speed, agility, footwork. Movement training before football volume.",
+    link: {
+      text: "NX Level Sports Performance",
+      href: "https://nxlevelsportsperformance.com",
+    },
   },
   {
-    age: "12",
+    age: 12,
     year: "2022",
-    headline: "Structured strength program starts. Five days a week, every week.",
-    lifts: "Bench: 95  |  Squat: 135  |  Deadlift: 185",
-    detail:
-      "Structured five-day-a-week program begins. Foundation lifts.",
+    title: "Weight training added",
+    body: "NX Level continues. Structured strength program starts alongside movement work.",
+    lifts: [
+      { label: "Bench", value: 95 },
+      { label: "Squat", value: 135 },
+    ],
   },
   {
-    age: "13",
+    age: 13,
     year: "2023",
-    headline: "Private line coaching + training with older athletes. Strength curve accelerates.",
-    lifts: "Bench: 155 (+63%)  |  Squat: 225 (+67%)  |  Deadlift: 275 (+49%)",
-    detail:
-      "Learning OL and DL technique from position coaches while training alongside upperclassmen. Two-way development starts here.",
+    title: "365 sessions",
+    body: "Personal trainer. Compound movements for OL/DL. Training with older athletes. Strength curve accelerates.",
+    lifts: [
+      { label: "Bench", value: 155 },
+      { label: "Squat", value: 225 },
+    ],
   },
   {
-    age: "14",
+    age: 14,
     year: "2024-25",
-    headline: "Freshman film year: 11 pancakes, 3 sacks, fumble recovery, state playoff run.",
-    lifts: "Bench: 265 (+71%)  |  Squat: 350 (+56%)  |  Deadlift: 445 (+62%)",
-    detail:
-      "JV starter who also started varsity, sometimes playing two games in one day. 445 lb deadlift verified. First-place discus and shot put at conference.",
+    title: "Freshman starter — varsity AND JV",
+    body: "Two games in one day. 11 pancakes. 3 sacks. Fumble recovery. State playoff run.",
+    lifts: [
+      { label: "Bench", value: 265 },
+      { label: "Squat", value: 350 },
+      { label: "Deadlift", value: 445 },
+    ],
   },
   {
-    age: "15",
+    age: 15,
     year: "NOW",
-    headline: "IMG camps, trench training, and continued acceleration. The curve has not flattened.",
-    lifts: null,
-    detail:
-      "730+ total sessions. Offseason lifts trending up. Camp exposure expanding.",
+    title: "The trajectory has not flattened",
+    body: "School lifts + personal trainer 2x/week + NX Level 1x/week. Off-season: building size, speed, agility. Track: 1st discus, 1st shot put.",
+    link: {
+      text: "NX Level Sports Performance",
+      href: "https://nxlevelsportsperformance.com",
+    },
   },
 ];
 
@@ -60,8 +79,10 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
     const el = sectionRef.current;
     if (!el) return;
     const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setInView(true); },
-      { threshold: 0.15 }
+      ([entry]) => {
+        if (entry.isIntersecting) setInView(true);
+      },
+      { threshold: 0.1 }
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -72,12 +93,13 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
       wave2: [
         {
           containerSelector: '[data-gsap="work-timeline"]',
-          from: { y: 40, opacity: 0 },
+          from: { x: 60, opacity: 0 },
           to: {
-            y: 0,
+            x: 0,
             opacity: 1,
             duration: 0.5,
             ease: "power2.out",
+            stagger: 0.15,
           },
           individual: true,
           scrollTrigger: {
@@ -103,79 +125,109 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
     >
       {backgroundUrl && (
         <div className="absolute inset-0">
-          <Image
+          <img
             src={backgroundUrl}
             alt=""
-            fill
-            sizes="100vw"
-            className="object-cover"
+            className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-[#000000]/95" />
+          <div className="absolute inset-0 bg-black/95" />
         </div>
       )}
 
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#ff000c]/20 to-transparent" />
 
-      <div className="relative z-10 mx-auto max-w-4xl">
+      {/* Right 2/3 layout */}
+      <div className="relative z-10 mx-auto max-w-6xl ml-auto md:w-2/3 md:pl-8">
+        {/* Header */}
         <div className="mb-16 md:mb-24">
           <span className="mb-6 block font-jetbrains text-xs uppercase tracking-[0.3em] text-[#ff000c]/80">
             The Work
           </span>
-          <h2 className="mb-6 font-playfair text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl">
-            Built early.
+          <h2 className="mb-6 font-playfair text-4xl font-black tracking-tight leading-[0.95] md:text-6xl lg:text-7xl text-white">
+            Training since age 11.
             <br />
-            <span className="bg-gradient-to-r from-[#ff000c] to-[#ff000c] bg-clip-text text-transparent">
-              Still climbing.
-            </span>
+            <CounterAnimation
+              target={730}
+              suffix="+"
+              trigger={inView}
+              className="tabular-nums"
+            />{" "}
+            sessions.
             <br />
-            <CounterAnimation target={730} suffix="+" trigger={inView} className="tabular-nums" /> sessions logged.
+            Still going.
           </h2>
-          <p className="max-w-2xl text-lg leading-8 text-[#FFFFFF]/65 md:text-xl">
-            730+ logged sessions. Bench: 95 &rarr; 265. Squat: 135 &rarr; 350.
-            Deadlift: 185 &rarr; 445. First-place discus and shot put.
-          </p>
         </div>
 
-        {/* Typewriter narrative */}
-        <div className="mb-16 border-l-2 border-[#ff000c]/30 pl-6 md:pl-8">
-          <TypewriterText
-            text="730+ sessions since age 12. 445 lb deadlift. First-place discus. Every number verified."
-            trigger={inView}
-            className="font-playfair italic text-2xl leading-relaxed text-[#FFFFFF]/80 md:text-3xl"
-          />
-        </div>
-
+        {/* Vertical timeline */}
         <div data-gsap="work-timeline" className="relative">
-          <div className="absolute left-4 top-0 bottom-0 w-px bg-[#ff000c]/15 md:left-8" />
+          {/* Red connector line */}
+          <div className="absolute left-4 top-0 bottom-0 w-px bg-[#ff000c]/30 md:left-6" />
 
-          {milestones.map((milestone) => (
+          {timeline.map((entry) => (
             <div
-              key={milestone.age}
+              key={entry.age}
               data-gsap-wave="2"
               style={{ opacity: 0 }}
-              className="relative pb-16 pl-12 last:pb-0 md:pl-20"
+              className="relative pb-14 pl-12 last:pb-0 md:pl-16"
             >
-              <div className="absolute left-[11px] top-1 h-3 w-3 rounded-full border-2 border-[#000000] bg-[#ff000c] md:left-[27px]" />
+              {/* Timeline dot */}
+              <div className="absolute left-[11px] top-1.5 h-3 w-3 rounded-full border-2 border-black bg-[#ff000c] md:left-[19px]" />
 
-              <div className="mb-4 flex items-center gap-4">
-                <span className="font-jetbrains text-xs tracking-[0.3em] text-[#ff000c]/90">
-                  AGE {milestone.age} - {milestone.year}
+              {/* Age / year label */}
+              <div className="mb-3 flex items-baseline gap-3">
+                <span className="font-jetbrains text-sm font-bold tracking-[0.2em] text-[#ff000c]">
+                  AGE {entry.age}
+                </span>
+                <span className="font-jetbrains text-xs tracking-wider text-white/40">
+                  ({entry.year})
                 </span>
               </div>
 
-              <p className="mb-3 text-base font-semibold leading-relaxed text-[#FFFFFF]/80 md:text-lg">
-                {milestone.headline}
+              {/* Title */}
+              <p className="mb-2 text-lg font-semibold leading-snug text-white/90 md:text-xl">
+                {entry.title}
               </p>
 
-              {milestone.lifts && (
-                <p className="mb-2 font-jetbrains text-sm tracking-wide text-[#FFFFFF]/40">
-                  {milestone.lifts}
-                </p>
+              {/* Body */}
+              <p className="mb-3 text-base leading-relaxed text-white/60">
+                {entry.body}
+              </p>
+
+              {/* Lift counters */}
+              {entry.lifts && (
+                <div className="mb-3 flex flex-wrap gap-x-6 gap-y-1">
+                  {entry.lifts.map((lift) => (
+                    <span
+                      key={lift.label}
+                      className="font-jetbrains text-sm tracking-wide text-white/50"
+                    >
+                      {lift.label}:{" "}
+                      <CounterAnimation
+                        target={lift.value}
+                        trigger={inView}
+                        className="tabular-nums text-white/80"
+                      />
+                    </span>
+                  ))}
+                </div>
               )}
 
-              {milestone.detail && (
-                <p className="text-sm leading-relaxed text-[#FFFFFF]/50">
-                  {milestone.detail}
+              {/* Link */}
+              {entry.link && (
+                <a
+                  href={entry.link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block text-sm text-[#ff000c]/70 underline underline-offset-2 transition-colors hover:text-[#ff000c]"
+                >
+                  {entry.link.text}
+                </a>
+              )}
+
+              {/* Coda */}
+              {entry.coda && (
+                <p className="mt-2 font-playfair text-base italic text-white/70">
+                  {entry.coda}
                 </p>
               )}
             </div>
