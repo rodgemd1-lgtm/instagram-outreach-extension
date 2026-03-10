@@ -19,9 +19,8 @@ import { TypewriterText } from "./typewriter";
    ────────────────────────────────────────────────────────────── */
 
 const JACOB_PARAGRAPHS = [
-  "Walking into the varsity weight room as a freshman was honestly kind of terrifying. These guys are three years older than me \u2014 they already know everything, the plays, the lifts, how to carry themselves. I remember just thinking, can I actually do this?",
-  "But then I think back to this car ride me and my dad had when I was 12, where I told him don\u2019t ever let me stop \u2014 and I meant it. That moment still feels real.",
-  "I\u2019m not where I need to be yet, I know that. But I\u2019m not done closing those gaps either.",
+  "First day of high school football, I walked into the weight room and the seniors were moving weight I couldn\u2019t even get off the rack. I\u2019m lining up across from guys who\u2019ve been doing this three years longer than me and outweigh me by fifty pounds. There\u2019s this voice in your head that goes, \u201CYou don\u2019t belong here.\u201D I still hear it sometimes.",
+  "But I remember this car ride home with my dad where I told him, \u201CDon\u2019t ever let me stop.\u201D I didn\u2019t know if I was good enough. I just knew I wasn\u2019t done.",
 ];
 
 export function JacobVoice() {
@@ -138,7 +137,7 @@ export function JacobVoice() {
           <div className="mt-8 flex items-center gap-3">
             <div className="h-px flex-1 bg-white/[0.06]" />
             <span className="font-jetbrains text-xs tracking-[0.2em] text-white/30">
-              Jacob Rodgers &middot; Class of 2029
+              Jacob, age 15
             </span>
           </div>
         </div>
