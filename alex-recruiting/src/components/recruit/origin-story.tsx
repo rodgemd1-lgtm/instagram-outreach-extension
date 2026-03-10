@@ -51,8 +51,8 @@ const timeline: TimelineEntry[] = [
   {
     age: 14,
     year: "2024-25",
-    title: "Freshman starter — varsity AND JV",
-    body: "Two games in one day. 11 pancakes. 3 sacks. Fumble recovery. State playoff run.",
+    title: "Freshman on Varsity · Starter on JV",
+    body: "Called in to play varsity. Started and played full JV games. Two games in one day. 11 pancakes. 3 sacks. Fumble recovery. State playoff run.",
     lifts: [
       { label: "Bench", value: 265 },
       { label: "Squat", value: 350 },
@@ -189,7 +189,7 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
               </p>
 
               {/* Body */}
-              <p className="mb-3 text-base leading-relaxed text-white/60">
+              <p className="mb-3 text-base leading-relaxed text-white/70 md:text-lg">
                 {entry.body}
               </p>
 

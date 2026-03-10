@@ -141,12 +141,12 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
                 key={block.label}
                 data-gsap-wave="2"
                 style={{ opacity: 0 }}
-                className="rounded-lg border border-white/5 bg-[#111111] p-6 md:bg-black/50"
+                className="rounded-lg border border-white/5 bg-[#111111] p-8 md:bg-black/50"
               >
-                <span className="mb-2 block font-jetbrains text-xs font-bold uppercase tracking-[0.2em] text-[#ff000c]">
+                <span className="mb-2 block font-jetbrains text-sm font-bold uppercase tracking-[0.2em] text-[#ff000c]">
                   {block.label}
                 </span>
-                <p className="text-sm leading-relaxed text-white/70 md:text-base">
+                <p className="text-base leading-relaxed text-white/70 md:text-lg">
                   {block.body}
                 </p>
               </div>

@@ -24,9 +24,9 @@ export interface SupportingRecruitReel {
 export const FEATURED_RECRUIT_REEL = {
   src: "/recruit/featured-clips/jacob-capcut-highlight.mp4",
   poster: "/recruit/featured-clips/posters/jacob-capcut-highlight.jpg",
-  title: "CapCut highlight reel",
+  title: "Highlight Reel",
   subtitle:
-    "Jacob's own 30-second CapCut cut now leads the page. It keeps the original football energy while fitting the website cleanly.",
+    "Jacob's 30-second highlight cut — every rep, every snap.",
 };
 
 export const LEGACY_FEATURED_CLIPS: FeaturedRecruitClip[] = [

@@ -95,7 +95,7 @@ export function CharacterSection({
         {/* Right-aligned 2/3 column — Jacob speaks */}
         <div className="ml-auto md:w-2/3 md:pl-8">
           {/* Typewriter intro */}
-          <p className="mb-10 font-jetbrains text-lg leading-relaxed text-white/90 md:text-xl">
+          <p className="mb-10 font-jetbrains text-xl leading-relaxed text-white/90 md:text-2xl">
             <TypewriterText
               text="Numbers tell you what he can do. These tell you what he will do."
               trigger={inView}
@@ -106,19 +106,19 @@ export function CharacterSection({
           {/* Trait cards — G-Card stack */}
           <div
             data-gsap="character-cards"
-            className="space-y-4"
+            className="space-y-6"
           >
             {traits.map((trait) => (
               <div
                 key={trait.label}
                 data-gsap-wave="2"
-                className="rounded-lg border-l-2 border-[#ff000c] bg-[#111111] p-6"
+                className="rounded-lg border-l-2 border-[#ff000c] bg-[#111111] p-8"
                 style={{ opacity: 0 }}
               >
-                <h3 className="mb-2 font-jetbrains text-sm font-bold uppercase tracking-[0.2em] text-white">
+                <h3 className="mb-2 font-jetbrains text-base font-bold uppercase tracking-[0.2em] text-white">
                   {trait.label}
                 </h3>
-                <p className="text-base leading-relaxed text-white/70">
+                <p className="text-lg leading-relaxed text-white/70">
                   {trait.body}
                 </p>
               </div>

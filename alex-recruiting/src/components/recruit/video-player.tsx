@@ -27,6 +27,8 @@ interface RecruitVideoPlayerProps {
   className?: string;
   /** How the poster/video should fit inside frame */
   objectFit?: "cover" | "contain";
+  /** Start unmuted (default: true — muted) */
+  initialMuted?: boolean;
 }
 
 export function RecruitVideoPlayer({
@@ -36,11 +38,12 @@ export function RecruitVideoPlayer({
   onFullscreen,
   className = "",
   objectFit = "cover",
+  initialMuted = true,
 }: RecruitVideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
-  const [muted, setMuted] = useState(true);
+  const [muted, setMuted] = useState(initialMuted);
   const [showControls, setShowControls] = useState(false);
   const [showPoster, setShowPoster] = useState(mode === "inline");
 
