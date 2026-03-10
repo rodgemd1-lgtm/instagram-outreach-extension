@@ -43,15 +43,15 @@ const winterReels = [
 
 const reviewPanels = [
   {
-    label: "Marcus, coach lens",
+    label: "Coach lens",
     body: "Track results matter because they validate force production. Winter footage matters because it shows balance and body control for a 285-pound athlete.",
   },
   {
-    label: "Jordan, film producer",
+    label: "Film production",
     body: "The winter assets now sit as support material, not filler. Coaches see football first, then the movement proof that makes the projection stronger.",
   },
   {
-    label: "Prism + Lens, design studio",
+    label: "Design studio",
     body: "The section is rebuilt as a story block with asymmetry, motion, and visual rhythm instead of static cards stacked in a grid.",
   },
 ];
@@ -255,7 +255,7 @@ export function MultiSportSection() {
                   className="rounded-[34px] border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-sm md:p-8"
                 >
                   <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#ff000c]/90">
-                    Susan&apos;s Review Board
+                    Expert Review
                   </p>
                   <div className="mt-5 grid gap-4 md:grid-cols-3">
                     {reviewPanels.map((panel) => (
