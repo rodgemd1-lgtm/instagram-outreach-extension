@@ -127,7 +127,7 @@ export function ContactCTA() {
       <div className="relative z-10 mx-auto max-w-4xl">
         {/* Centered heading */}
         <div className="mb-16 text-center md:mb-20">
-          <h2 className="mb-4 font-playfair text-4xl font-black tracking-tight md:text-6xl">
+          <h2 className="mb-4 font-playfair text-4xl font-black tracking-tight text-white md:text-6xl">
             Start the Conversation.
           </h2>
           <p className="text-base text-white/50 md:text-lg">

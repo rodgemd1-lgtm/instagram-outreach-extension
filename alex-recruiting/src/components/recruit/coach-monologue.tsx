@@ -84,7 +84,7 @@ export function CoachMonologue({ id, lines }: CoachMonologueProps) {
         (scopeRef as React.MutableRefObject<HTMLElement | null>).current = el;
         (sectionRef as React.MutableRefObject<HTMLElement | null>).current = el;
       }}
-      className="relative flex min-h-[50svh] items-center px-6 py-24 md:py-32 bg-black"
+      className="relative flex min-h-[50svh] items-center px-6 py-24 md:px-12 md:py-32 bg-black"
     >
       {/* Ambient red glow — atmospheric presence */}
       <div className="absolute left-[8%] top-1/2 -translate-y-1/2 h-64 w-64 rounded-full bg-[#ff000c]/[0.06] blur-[120px] pointer-events-none" />

@@ -110,7 +110,7 @@ export function JacobVoice() {
         (scopeRef as React.MutableRefObject<HTMLElement | null>).current = el;
         (sectionRef as React.MutableRefObject<HTMLElement | null>).current = el;
       }}
-      className="relative flex min-h-[50svh] items-center px-6 py-24 md:py-32 bg-black"
+      className="relative flex min-h-[50svh] items-center px-6 py-24 md:px-12 md:py-32 bg-black"
     >
       {/* Subtle top border */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />

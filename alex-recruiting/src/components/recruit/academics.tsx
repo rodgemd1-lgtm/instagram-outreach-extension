@@ -68,7 +68,7 @@ export function AcademicsSection() {
         (scopeRef as React.MutableRefObject<HTMLElement | null>).current = el;
         (sectionRef as React.MutableRefObject<HTMLElement | null>).current = el;
       }}
-      className="relative bg-black px-6 py-24 md:px-12 md:py-32"
+      className="relative bg-black px-6 py-32 md:px-12 md:py-48"
     >
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#ff000c]/20 to-transparent" />
 
@@ -136,15 +136,15 @@ export function AcademicsSection() {
           style={{ opacity: 0 }}
           className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-center"
         >
-          <span className="text-sm text-white/40">
+          <span className="text-sm text-white/50">
             #27 in WI (U.S. News)
           </span>
           <span className="inline-block h-1 w-1 rounded-full bg-[#ff000c]/50" />
-          <span className="text-sm text-white/40">
+          <span className="text-sm text-white/50">
             Baldrige National Quality Award
           </span>
           <span className="inline-block h-1 w-1 rounded-full bg-[#ff000c]/50" />
-          <span className="text-sm text-white/40">
+          <span className="text-sm text-white/50">
             97% graduation rate
           </span>
         </div>

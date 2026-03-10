@@ -148,7 +148,7 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
         <div className="mr-auto md:w-2/3 md:pr-8">
           {/* Typewriter intro */}
           <div className="mb-10 rounded-lg bg-[#111111] p-6 md:bg-transparent md:p-0">
-            <p className="text-2xl leading-relaxed text-white/80 md:text-3xl">
+            <p className="font-jetbrains text-2xl leading-relaxed text-white/80 md:text-3xl">
               <TypewriterText
                 text="Here's why Jacob should be on your board."
                 trigger={typewriterTriggered}

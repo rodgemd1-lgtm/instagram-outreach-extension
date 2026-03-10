@@ -180,7 +180,7 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#ff000c]/20 to-transparent" />
 
       {/* Right 2/3 layout */}
-      <div className="relative z-10 mx-auto max-w-6xl ml-auto md:w-2/3 md:pl-8">
+      <div className="relative z-10 max-w-6xl ml-auto md:w-2/3 md:pl-8">
         {/* Header */}
         <div className="mb-16 md:mb-24">
           <span className="mb-6 block font-jetbrains text-xs uppercase tracking-[0.3em] text-[#ff000c]/80">
@@ -226,7 +226,7 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
               </p>
             </blockquote>
 
-            <p className="mt-6 text-base leading-relaxed text-white/50 md:text-lg">
+            <p className="mt-6 text-base leading-relaxed text-white/70 md:text-lg">
               On the drive home one night, after he&apos;d let himself slip, Jacob
               turned and said the words that changed everything. Structured
               training started the next week. He hasn&apos;t stopped since.
