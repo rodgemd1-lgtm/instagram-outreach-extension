@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS coach_inquiries (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   coach_name TEXT NOT NULL,
   coach_title TEXT,
-  school_name TEXT NOT NULL,
+  school TEXT NOT NULL,
   email TEXT NOT NULL,
   phone TEXT,
   message TEXT,

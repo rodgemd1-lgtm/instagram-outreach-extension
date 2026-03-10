@@ -6,7 +6,7 @@ import { isSupabaseConfigured, createAdminClient } from "@/lib/supabase/admin";
 interface CoachInquiryRecord {
   coach_name: string;
   coach_title: string | null;
-  school_name: string;
+  school: string;
   email: string;
   phone: string | null;
   message: string | null;
@@ -28,13 +28,13 @@ const NOTIFICATION_EMAILS = [
 async function sendNotificationEmail(inquiry: CoachInquiryRecord) {
   const resendKey = process.env.RESEND_API_KEY;
 
-  const subject = `🏈 New Coach Inquiry: ${inquiry.coach_name} — ${inquiry.school_name}`;
+  const subject = `🏈 New Coach Inquiry: ${inquiry.coach_name} — ${inquiry.school}`;
   const body = [
     `A coach just reached out through Jacob's recruiting page.`,
     ``,
     `Name: ${inquiry.coach_name}`,
     inquiry.coach_title ? `Title: ${inquiry.coach_title}` : null,
-    `School: ${inquiry.school_name}`,
+    `School: ${inquiry.school}`,
     `Email: ${inquiry.email}`,
     inquiry.phone ? `Phone: ${inquiry.phone}` : null,
     ``,
@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
     const inquiry: CoachInquiryRecord = {
       coach_name: name,
       coach_title: title || null,
-      school_name: school,
+      school,
       email,
       phone: phone || null,
       message: message || null,
