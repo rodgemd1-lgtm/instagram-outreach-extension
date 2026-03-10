@@ -175,7 +175,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
               />
             </h2>
             <p className="mt-6 max-w-xs text-lg leading-7 text-white/70 md:text-xl">
-              Jacob answers with film, force production, and effort that shows up every rep.
+              Film, force production, and effort — every rep, every snap, every game.
             </p>
           </div>
 

@@ -47,7 +47,7 @@ export default function RecruitPage() {
       <CoachMonologue
         id="coach-eval-2"
         lines={[
-          "Four years of documented work. Real facility. Real trainer.",
+          "Years of documented work. Real facility. Real trainer.",
           "The kid is serious. But will he fit our locker room?",
         ]}
       />
@@ -62,8 +62,8 @@ export default function RecruitPage() {
       <CoachMonologue
         id="coach-eval-3"
         lines={[
-          "Self-made. Coachable. The kid just told me who he is.",
-          "Get him on campus.",
+          "Four years of work before anyone was watching. 445 deadlift as a freshman. Two games in one day and produced in both.",
+          "Self-made. Coachable. Get him on campus.",
         ]}
       />
 

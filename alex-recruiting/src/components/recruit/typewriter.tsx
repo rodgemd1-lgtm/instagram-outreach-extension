@@ -8,6 +8,7 @@ interface TypewriterTextProps {
   className?: string;
   autoStart?: boolean;
   trigger?: boolean;
+  onComplete?: () => void;
 }
 
 export function TypewriterText({
@@ -16,6 +17,7 @@ export function TypewriterText({
   className = "",
   autoStart = false,
   trigger = false,
+  onComplete,
 }: TypewriterTextProps) {
   const [displayedCount, setDisplayedCount] = useState(0);
   const [started, setStarted] = useState(autoStart);
@@ -49,6 +51,16 @@ export function TypewriterText({
   }, [started, text, speed, reducedMotion]);
 
   const done = displayedCount >= text.length;
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
+  const firedRef = useRef(false);
+
+  useEffect(() => {
+    if (done && started && !firedRef.current) {
+      firedRef.current = true;
+      onCompleteRef.current?.();
+    }
+  }, [done, started]);
 
   return (
     <span className={className}>

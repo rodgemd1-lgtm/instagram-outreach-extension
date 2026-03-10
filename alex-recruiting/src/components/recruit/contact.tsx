@@ -85,6 +85,7 @@ export function ContactCTA() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: formData.get("name"),
+          title: formData.get("title"),
           school: formData.get("school"),
           email: formData.get("email"),
           message: formData.get("message"),
@@ -115,10 +116,10 @@ export function ContactCTA() {
         {/* Centered heading */}
         <div className="mb-16 text-center md:mb-20">
           <h2 className="mb-4 font-playfair text-4xl font-black tracking-tight md:text-6xl">
-            Let&apos;s Talk.
+            Start the Conversation.
           </h2>
           <p className="text-base text-white/50 md:text-lg">
-            Interested in Jacob? Reach out directly.
+            Interested in Jacob? We&apos;d love to hear from you.
           </p>
         </div>
 
@@ -191,6 +192,15 @@ export function ContactCTA() {
                       required
                       autoComplete="name"
                       placeholder="Your name"
+                      className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-base text-white placeholder-white/30 transition-colors focus:border-[#ff000c]/40 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="text"
+                      name="title"
+                      autoComplete="organization-title"
+                      placeholder="Title / role (e.g. Head Coach, D-Line Coach)"
                       className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-base text-white placeholder-white/30 transition-colors focus:border-[#ff000c]/40 focus:outline-none"
                     />
                   </div>

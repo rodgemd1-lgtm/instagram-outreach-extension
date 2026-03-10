@@ -13,15 +13,15 @@ import { TypewriterText } from "./typewriter";
 const blocks = [
   {
     label: "DEVELOPMENT RUNWAY",
-    body: "If you see what he can do at 15, imagine his full potential in college.",
+    body: "6\u20194\u201d, 285 as a freshman. 445 deadlift, still accelerating. Three more years of structured development ahead \u2014 with the training infrastructure already in place.",
   },
   {
     label: "WHAT HE\u2019S LOOKING FOR",
-    body: "A program with a strong D-line and O-line tradition. He wants to help on both sides of the field.",
+    body: "A program with a strong D-line and O-line tradition where he can contribute on both sides of the ball. Development-focused coaching staff. Competitive culture.",
   },
   {
     label: "THE WINDOW",
-    body: "Building his school list now. Sophomore film drops this fall. The conversation starts here.",
+    body: "Building his school list now. Sophomore film drops this fall. Early conversations welcome \u2014 the evaluation starts here.",
   },
 ];
 
@@ -44,9 +44,9 @@ const camps = [
 ];
 
 const offField = [
-  { label: "Photography", detail: "Fascinated by how photos are made, analyzed, and modified \u2014 interested in the technology behind photography and wants to explore sports photography" },
-  { label: "Snowboarding", detail: "Expert-level rider \u2014 handles double black diamonds including the top of Breckenridge. Reached this level in just two years" },
-  { label: "Technology", detail: "Fascinated by games and how computers are built and made \u2014 pushes himself to improve as he explores this area" },
+  { label: "Photography", detail: "Sports photography and photo technology" },
+  { label: "Snowboarding", detail: "Double black diamonds at Breckenridge in two years" },
+  { label: "Technology", detail: "PC building and game development" },
 ];
 
 export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
@@ -150,7 +150,7 @@ export function TheFit({ backgroundUrl }: { backgroundUrl?: string }) {
           <div className="mb-10 rounded-lg bg-[#111111] p-6 md:bg-transparent md:p-0">
             <p className="text-lg leading-relaxed text-white/80 md:text-xl">
               <TypewriterText
-                text="If you're evaluating a lineman right now, here's why Jacob should be on your board."
+                text="Here's why Jacob should be on your board."
                 trigger={typewriterTriggered}
                 speed={30}
                 className=""

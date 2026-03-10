@@ -70,7 +70,7 @@ const timeline: TimelineEntry[] = [
       { label: "Bench", value: 225 },
       { label: "Squat", value: 315 },
     ],
-    coda: "Game-planned against as an eighth grader. Film study self-initiated.",
+    coda: "When opposing coaches call out your number before the snap, the evaluation has already started.",
   },
   {
     id: "age-15-freshman",
@@ -83,7 +83,7 @@ const timeline: TimelineEntry[] = [
       { label: "Squat", value: 350 },
       { label: "Deadlift", value: 445 },
     ],
-    coda: "Varsity production as a freshman. Lift numbers still accelerating. Three more years of development remaining.",
+    coda: "This is year one of four. Everything you just saw is the floor.",
   },
   {
     id: "age-15-now",
@@ -212,7 +212,7 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
             <div className="absolute -left-8 top-1/2 -translate-y-1/2 h-40 w-40 rounded-full bg-[#ff000c]/[0.06] blur-[80px] pointer-events-none" />
 
             <span className="mb-6 block font-jetbrains text-xs uppercase tracking-[0.3em] text-[#ff000c]/70">
-              Age 12 &mdash; The Moment
+              Age 12
             </span>
 
             <blockquote className="relative z-10">
