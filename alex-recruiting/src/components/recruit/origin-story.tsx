@@ -6,6 +6,7 @@ import {
   type AssemblyConfig,
 } from "@/hooks/useRecruitAssembly";
 import { CounterAnimation } from "./counter";
+import { TypewriterText } from "./typewriter";
 
 interface TimelineEntry {
   age: number;
@@ -32,7 +33,7 @@ const timeline: TimelineEntry[] = [
     age: 12,
     year: "2022",
     title: "Rock bottom \u2014 then the turn",
-    body: "He\u2019d been pushing hard but had let himself go. On the drive home one night he turned and said, \u201CDad, don\u2019t ever let me stop. If I don\u2019t want to work out one day, push me.\u201D That was the moment everything changed. Structured strength program starts alongside NX Level.",
+    body: "The car-ride moment. Everything changed. Structured strength program starts alongside NX Level.",
     lifts: [
       { label: "Bench", value: 95 },
       { label: "Squat", value: 135 },
@@ -91,6 +92,21 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
   const config = useMemo<AssemblyConfig>(
     () => ({
       wave2: [
+        {
+          containerSelector: '[data-gsap="car-ride"]',
+          from: { y: 30, opacity: 0 },
+          to: {
+            y: 0,
+            opacity: 1,
+            duration: 0.7,
+            ease: "power2.out",
+          },
+          individual: false,
+          scrollTrigger: {
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+        },
         {
           containerSelector: '[data-gsap="work-timeline"]',
           from: { x: 60, opacity: 0 },
@@ -156,6 +172,39 @@ export function OriginStory({ backgroundUrl }: { backgroundUrl?: string }) {
             <br />
             Still going.
           </h2>
+        </div>
+
+        {/* ── Car-ride moment — standalone emotional beat ── */}
+        <div data-gsap="car-ride" className="mb-20 md:mb-28">
+          <div
+            data-gsap-wave="2"
+            style={{ opacity: 0 }}
+            className="relative rounded-2xl border border-white/[0.08] bg-gradient-to-br from-[#111111] to-[#0a0a0a] p-8 md:p-12"
+          >
+            {/* Ambient glow behind the quote */}
+            <div className="absolute -left-8 top-1/2 -translate-y-1/2 h-40 w-40 rounded-full bg-[#ff000c]/[0.06] blur-[80px] pointer-events-none" />
+
+            <span className="mb-6 block font-jetbrains text-xs uppercase tracking-[0.3em] text-[#ff000c]/70">
+              Age 12 &mdash; The Moment
+            </span>
+
+            <blockquote className="relative z-10">
+              <p className="font-playfair text-2xl italic leading-relaxed text-white/90 md:text-3xl lg:text-4xl">
+                <TypewriterText
+                  text={`"Dad, don\u2019t ever let me stop. If I don\u2019t want to work out one day, push me."`}
+                  trigger={inView}
+                  speed={40}
+                  className="text-white/90"
+                />
+              </p>
+            </blockquote>
+
+            <p className="mt-6 text-base leading-relaxed text-white/50 md:text-lg">
+              On the drive home one night, after he&apos;d let himself slip, Jacob
+              turned and said the words that changed everything. Structured
+              training started the next week. He hasn&apos;t stopped since.
+            </p>
+          </div>
         </div>
 
         {/* Vertical timeline */}

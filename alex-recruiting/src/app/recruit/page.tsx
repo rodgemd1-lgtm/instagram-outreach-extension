@@ -6,6 +6,7 @@ import { FilmReel } from "@/components/recruit/film-reel";
 import { CoachMonologue } from "@/components/recruit/coach-monologue";
 import { OriginStory } from "@/components/recruit/origin-story";
 import { CharacterSection } from "@/components/recruit/character";
+import { JacobVoice } from "@/components/recruit/jacob-voice";
 import { AcademicsSection } from "@/components/recruit/academics";
 import { TheFit } from "@/components/recruit/the-fit";
 import { ContactCTA } from "@/components/recruit/contact";
@@ -54,13 +55,25 @@ export default function RecruitPage() {
       {/* Beat 6: Character (Jacob — right 2/3) */}
       <CharacterSection backgroundUrl={photoMap.character} />
 
-      {/* Beat 7: Academics (Neutral — centered bar) */}
+      {/* Beat 7: Jacob speaks (Jacob — right 2/3) */}
+      <JacobVoice />
+
+      {/* Beat 8: Coach closes the arc (Coach — left 2/3) */}
+      <CoachMonologue
+        id="coach-eval-3"
+        lines={[
+          "Self-made. Coachable. The kid just told me who he is.",
+          "Get him on campus.",
+        ]}
+      />
+
+      {/* Beat 9: Academics (Neutral — centered bar) */}
       <AcademicsSection />
 
-      {/* Beat 8: The Fit (Coach — left 2/3) */}
+      {/* Beat 10: The Fit (Coach — left 2/3) */}
       <TheFit backgroundUrl={photoMap.fit} />
 
-      {/* Beat 9: Contact (Both — converge to center) */}
+      {/* Beat 11: Contact (Both — converge to center) */}
       <ContactCTA />
     </div>
   );

@@ -253,6 +253,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                       <img
                         src={reel.poster}
                         alt={reel.title}
+                        loading="lazy"
                         className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover/splash:scale-105"
                       />
                       {/* dark overlay */}
