@@ -207,18 +207,6 @@ export const SUPPORTING_RECRUIT_REELS: SupportingRecruitReel[] = [
       "This brings the prior featured film back into the page instead of burying it behind old commits or outside links.",
   },
   {
-    id: "training-cut",
-    title: "Power-development reel",
-    subtitle:
-      "Weight-room footage showing size, force-production, and body transformation.",
-    src: "/recruit/supporting-reels/training-cut.mp4",
-    poster: "/recruit/supporting-reels/training-cut.jpg",
-    durationLabel: "16s",
-    lens: "Development",
-    analysisNotes:
-      "Shows transferable force production and reinforces that the development habits are already in place before college staff input.",
-  },
-  {
     id: "workout-reel",
     title: "Workout highlight reel",
     subtitle:

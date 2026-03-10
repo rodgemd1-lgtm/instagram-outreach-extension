@@ -29,6 +29,8 @@ interface RecruitVideoPlayerProps {
   objectFit?: "cover" | "contain";
   /** Start unmuted (default: true — muted) */
   initialMuted?: boolean;
+  /** External pause signal — forces video to pause when true */
+  externalPause?: boolean;
 }
 
 export function RecruitVideoPlayer({
@@ -39,6 +41,7 @@ export function RecruitVideoPlayer({
   className = "",
   objectFit = "cover",
   initialMuted = true,
+  externalPause = false,
 }: RecruitVideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -84,6 +87,16 @@ export function RecruitVideoPlayer({
       setPlaying(true);
     }
   }, [mode]);
+
+  // External pause signal — parent can force pause (e.g., when modal opens)
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (externalPause && !video.paused) {
+      video.pause();
+      setPlaying(false);
+    }
+  }, [externalPause]);
 
   const togglePlay = useCallback(() => {
     const video = videoRef.current;

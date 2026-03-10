@@ -223,6 +223,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                     mode="reel"
                     objectFit="contain"
                     initialMuted={true}
+                    externalPause={modalOpen}
                     onFullscreen={() =>
                       openFullscreen(FEATURED_RECRUIT_REEL.src, FEATURED_RECRUIT_REEL.poster)
                     }
