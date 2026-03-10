@@ -1,11 +1,14 @@
 "use client";
 
-import { useCallback, useRef, useEffect } from "react";
+import { useCallback, useRef, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
 /**
  * Fullscreen video overlay modal.
- * Uses native HTML dialog for proper focus trapping + escape key support.
+ *
+ * Rendered via React Portal to document.body so GSAP ScrollTrigger pin
+ * re-parenting doesn't break React's DOM reconciliation (insertBefore crash).
  */
 
 interface VideoModalProps {
@@ -21,6 +24,10 @@ interface VideoModalProps {
 
 export function VideoModal({ src, poster, open, onClose }: VideoModalProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  // Wait for client mount before portal rendering
+  useEffect(() => setMounted(true), []);
 
   // Play when opened, pause when closed
   useEffect(() => {
@@ -54,9 +61,9 @@ export function VideoModal({ src, poster, open, onClose }: VideoModalProps) {
     return () => window.removeEventListener("keydown", handler);
   }, [open, onClose]);
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-xl"
       onClick={handleBackdropClick}
@@ -81,6 +88,7 @@ export function VideoModal({ src, poster, open, onClose }: VideoModalProps) {
           className="w-full rounded-lg"
         />
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
