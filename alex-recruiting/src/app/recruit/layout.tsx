@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     ],
     videos: [
       {
-        url: "/recruit/featured-clips/jacob-capcut-highlight.mp4",
+        url: "/recruit/featured-clips/jacob-coach-reel.mp4",
         width: 1280,
         height: 720,
         type: "video/mp4",

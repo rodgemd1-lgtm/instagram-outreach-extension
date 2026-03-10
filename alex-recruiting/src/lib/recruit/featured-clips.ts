@@ -22,11 +22,11 @@ export interface SupportingRecruitReel {
 }
 
 export const FEATURED_RECRUIT_REEL = {
-  src: "/recruit/featured-clips/jacob-capcut-highlight.mp4",
-  poster: "/recruit/featured-clips/posters/jacob-capcut-highlight.jpg",
-  title: "Highlight Reel",
+  src: "/recruit/featured-clips/jacob-coach-reel.mp4",
+  poster: "/recruit/featured-clips/posters/jacob-coach-reel.jpg",
+  title: "Coach-Ready Highlight Reel",
   subtitle:
-    "Jacob's 30-second highlight cut — every rep, every snap.",
+    "Full-speed hooks, slow-motion technique, and contact volume — built for evaluation.",
 };
 
 export const LEGACY_FEATURED_CLIPS: FeaturedRecruitClip[] = [
@@ -157,16 +157,40 @@ export const CURRENT_FEATURED_CLIPS: FeaturedRecruitClip[] = [
 
 export const SUPPORTING_RECRUIT_REELS: SupportingRecruitReel[] = [
   {
-    id: "coach-reel",
-    title: "Coach-first trench reel",
+    id: "quick-highlight",
+    title: "30-second highlight cut",
     subtitle:
-      "The rebuilt reel from this pass, now with a centered intro and outro that stay inside the video frame.",
+      "Fast social-paced highlight reel — every rep, every snap in 30 seconds.",
+    src: "/recruit/featured-clips/jacob-capcut-highlight.mp4",
+    poster: "/recruit/featured-clips/posters/jacob-capcut-highlight.jpg",
+    durationLabel: "30s",
+    lens: "Highlight",
+    analysisNotes:
+      "Quick-hit reel for social sharing or coaches who want a fast first impression before watching the full coach reel.",
+  },
+  {
+    id: "impact-reel",
+    title: "Trench impact reel",
+    subtitle:
+      "Strongest trench moments stitched together — pure contact and effort.",
     src: "/recruit/featured-clips/jacob-impact-reel.mp4",
     poster: "/recruit/featured-clips/posters/jacob-impact-reel.jpg",
     durationLabel: "43s",
     lens: "Evaluation",
     analysisNotes:
-      "Use this when you want the strongest trench moments stitched together without the faster social pacing of the highlight reel.",
+      "Use this when you want the strongest trench moments without the faster social pacing of the highlight reel.",
+  },
+  {
+    id: "extended-highlight",
+    title: "Extended highlight reel",
+    subtitle:
+      "Longer compiled reel for coaches who want a bigger sample before reaching out.",
+    src: "/recruit/media-lab/reels/jacob-highlight-reel.mp4",
+    poster: "/recruit/featured-clips/posters/jacob-extended-highlight.jpg",
+    durationLabel: "1m 41s",
+    lens: "Archive",
+    analysisNotes:
+      "The broader film-library pass for coaches who want more than the short stacks and want to compare eras.",
   },
   {
     id: "legacy-reel",
@@ -181,22 +205,10 @@ export const SUPPORTING_RECRUIT_REELS: SupportingRecruitReel[] = [
       "This brings the prior featured film back into the page instead of burying it behind old commits or outside links.",
   },
   {
-    id: "extended-highlight",
-    title: "Extended highlight reel",
-    subtitle:
-      "Longer compiled site reel kept available for anyone who wants a bigger sample before reaching out.",
-    src: "/recruit/media-lab/reels/jacob-highlight-reel.mp4",
-    poster: "/recruit/featured-clips/posters/jacob-extended-highlight.jpg",
-    durationLabel: "1m 41s",
-    lens: "Archive",
-    analysisNotes:
-      "This is the broader film-library pass for coaches who want more than the short stacks and want to compare eras.",
-  },
-  {
     id: "training-cut",
     title: "Power-development reel",
     subtitle:
-      "Weight-room footage that supports the size, force-production, and body-transformation story.",
+      "Weight-room footage showing size, force-production, and body transformation.",
     src: "/recruit/supporting-reels/training-cut.mp4",
     poster: "/recruit/supporting-reels/training-cut.jpg",
     durationLabel: "16s",
@@ -208,13 +220,13 @@ export const SUPPORTING_RECRUIT_REELS: SupportingRecruitReel[] = [
     id: "snowboard-cut",
     title: "Winter athlete reel",
     subtitle:
-      "Freshly uploaded snowboard footage showing edge control, confidence at speed, and balance outside football.",
+      "Snowboard footage showing edge control, confidence at speed, and balance outside football.",
     src: "/recruit/winter/reels/snowboard-run-1.mp4",
     poster: "/recruit/winter/posters/snowboard-run-1.jpg",
     durationLabel: "15s",
     lens: "Athlete",
     analysisNotes:
-      "Useful for the well-rounded-athlete story because it shows confidence and body control in a completely different movement context using the new uploaded winter footage.",
+      "Useful for the well-rounded-athlete story because it shows confidence and body control in a completely different movement context.",
   },
 ];
 
