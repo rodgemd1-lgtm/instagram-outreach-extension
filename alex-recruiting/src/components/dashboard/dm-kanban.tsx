@@ -1,149 +1,75 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { Badge } from "@/components/dashboard/badge";
-
-// ─── Public card interface ──────────────────────────────────────────────────
-export interface DMCard {
-  id: string;
-  coachId: string;
-  coachName: string;
-  schoolName: string;
-  content: string;
-  templateType: string;
-  status: string;
-  sentAt: string | null;
-  respondedAt: string | null;
-  createdAt: string;
-}
+import type { DMMessage } from "@/lib/types";
 
 interface DMKanbanProps {
-  dms: DMCard[];
-  coaches: { id: string; priorityTier: string }[];
-  onCardClick: (dm: DMCard) => void;
+  dms: DMMessage[];
+  onCardClick: (dm: DMMessage) => void;
 }
 
-// ─── Column definitions ─────────────────────────────────────────────────────
-interface Column {
-  key: string;
-  label: string;
-  statuses: string[];
-}
+const COLUMNS = [
+  { status: "drafted", label: "Queued", color: "border-t-dash-warning" },
+  { status: "sent", label: "Sent", color: "border-t-dash-accent" },
+  { status: "approved", label: "Approved", color: "border-t-dash-gold" },
+  { status: "responded", label: "Replied", color: "border-t-dash-success" },
+  { status: "no_response", label: "No Response", color: "border-t-dash-muted" },
+] as const;
 
-const COLUMNS: Column[] = [
-  { key: "queued", label: "Queued", statuses: ["drafted", "not_sent"] },
-  { key: "approved", label: "Approved", statuses: ["approved"] },
-  { key: "sent", label: "Sent", statuses: ["sent"] },
-  { key: "replied", label: "Replied", statuses: ["responded"] },
-  { key: "no_response", label: "No Response", statuses: ["no_response"] },
-];
-
-// ─── Helpers ────────────────────────────────────────────────────────────────
-function timeAgo(dateStr: string | null): string {
+function formatTimeSince(dateStr: string | null | undefined): string {
   if (!dateStr) return "";
-  const now = Date.now();
-  const then = new Date(dateStr).getTime();
-  const diffMs = now - then;
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  if (diffDays === 0) return "today";
-  if (diffDays === 1) return "1d ago";
-  if (diffDays < 30) return `${diffDays}d ago`;
-  const months = Math.floor(diffDays / 30);
-  return `${months}mo ago`;
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const days = Math.floor(diff / 86400000);
+  if (days === 0) return "Today";
+  if (days === 1) return "1d ago";
+  if (days < 7) return `${days}d ago`;
+  return `${Math.floor(days / 7)}w ago`;
 }
 
-function tierBadgeVariant(tier: string): "accent" | "success" | "muted" {
-  switch (tier) {
-    case "Tier 1":
-      return "accent";
-    case "Tier 2":
-      return "success";
-    default:
-      return "muted";
-  }
-}
-
-function templateLabel(type: string): string {
-  switch (type) {
-    case "intro":
-      return "Intro";
-    case "postCamp":
-      return "Post-Camp";
-    case "postFollow":
-      return "After Follow";
-    case "valueAdd":
-      return "Value Add";
-    default:
-      return type;
-  }
-}
-
-// ─── Component ──────────────────────────────────────────────────────────────
-export function DMKanban({ dms, coaches, onCardClick }: DMKanbanProps) {
-  const coachMap = new Map(coaches.map((c) => [c.id, c.priorityTier]));
-
+export function DMKanban({ dms, onCardClick }: DMKanbanProps) {
   return (
-    <div className="flex gap-4 overflow-x-auto pb-4">
+    <div className="flex gap-3 overflow-x-auto pb-4" style={{ WebkitOverflowScrolling: "touch" }}>
       {COLUMNS.map((col) => {
-        const cards = dms.filter((dm) => col.statuses.includes(dm.status));
-
+        const columnDMs = dms.filter((dm) => dm.status === col.status);
         return (
-          <div key={col.key} className="w-64 shrink-0 md:w-72">
+          <div key={col.status} className="min-w-[240px] flex-1">
             {/* Column header */}
-            <div className="mb-3 flex items-center gap-2">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-dash-muted">
-                {col.label}
-              </h3>
-              <Badge variant="muted">{cards.length}</Badge>
+            <div className={cn("mb-3 rounded-t-lg border-t-2 px-3 py-2", col.color)}>
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold uppercase tracking-wider text-dash-text">
+                  {col.label}
+                </span>
+                <span className="rounded-full bg-dash-surface-raised px-2 py-0.5 text-[10px] font-bold text-dash-muted">
+                  {columnDMs.length}
+                </span>
+              </div>
             </div>
 
-            {/* Card stack */}
-            <div className="flex flex-col gap-2">
-              {cards.length === 0 ? (
-                <div className="flex h-24 items-center justify-center rounded-xl border border-dashed border-dash-border">
-                  <span className="text-xs text-dash-muted/50">No messages</span>
+            {/* Cards */}
+            <div className="space-y-2">
+              {columnDMs.map((dm) => (
+                <button
+                  key={dm.id}
+                  type="button"
+                  onClick={() => onCardClick(dm)}
+                  className="w-full rounded-lg border border-dash-border bg-dash-surface p-3 text-left transition-all hover:border-dash-accent/30 hover:bg-dash-surface-raised"
+                >
+                  <p className="text-sm font-medium text-dash-text">{dm.coachName}</p>
+                  <p className="text-xs text-dash-muted">{dm.schoolName}</p>
+                  <p className="mt-2 line-clamp-2 text-xs text-dash-text-secondary">
+                    {dm.content.slice(0, 80)}{dm.content.length > 80 ? "..." : ""}
+                  </p>
+                  <div className="mt-2 flex items-center justify-between">
+                    <Badge variant="muted" className="text-[10px]">{dm.templateType}</Badge>
+                    <span className="text-[10px] text-dash-muted">{formatTimeSince(dm.sentAt || dm.createdAt)}</span>
+                  </div>
+                </button>
+              ))}
+              {columnDMs.length === 0 && (
+                <div className="rounded-lg border border-dashed border-dash-border-subtle py-8 text-center text-xs text-dash-muted/50">
+                  Empty
                 </div>
-              ) : (
-                cards.map((dm) => {
-                  const tier = coachMap.get(dm.coachId) ?? "";
-
-                  return (
-                    <button
-                      key={dm.id}
-                      type="button"
-                      onClick={() => onCardClick(dm)}
-                      className="cursor-pointer rounded-xl border border-dash-border bg-dash-surface p-3 text-left transition-colors hover:bg-dash-surface-raised"
-                    >
-                      {/* Coach + school */}
-                      <p className="text-sm font-semibold text-dash-text">
-                        {dm.coachName}
-                      </p>
-                      <p className="mt-0.5 text-xs text-dash-muted">
-                        {dm.schoolName}
-                      </p>
-
-                      {/* Message preview */}
-                      <p className="mt-2 line-clamp-2 text-xs text-dash-text-secondary">
-                        {dm.content}
-                      </p>
-
-                      {/* Footer: tier + template + time */}
-                      <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                        {tier && (
-                          <Badge variant={tierBadgeVariant(tier)}>{tier}</Badge>
-                        )}
-                        {dm.templateType && dm.templateType !== "manual" && (
-                          <Badge variant="default">
-                            {templateLabel(dm.templateType)}
-                          </Badge>
-                        )}
-                        <span className="ml-auto text-[10px] text-dash-muted">
-                          {timeAgo(dm.sentAt ?? dm.createdAt)}
-                        </span>
-                      </div>
-                    </button>
-                  );
-                })
               )}
             </div>
           </div>

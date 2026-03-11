@@ -1,287 +1,164 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Search, ChevronDown } from "lucide-react";
-import { SlideOver } from "@/components/dashboard/slide-over";
-import { Badge } from "@/components/dashboard/badge";
+import { useState, useEffect, useCallback } from "react";
+import { Send, Save, CheckCircle } from "lucide-react";
+import { SlideOver } from "./slide-over";
 import type { Coach, DMMessage } from "@/lib/types";
 
-// ─── Template content ───────────────────────────────────────────────────────
-const TEMPLATES: Record<string, { label: string; body: string }> = {
-  intro: {
-    label: "Intro",
-    body: `Coach {LAST_NAME}, my name is Jacob Rodgers. I'm a Class of 2029 OL from Pewaukee High School in Wisconsin (6'4", 285). I've been following {SCHOOL} and really admire the way your offensive line plays. I'd love the opportunity to learn more about your program and what you look for in a lineman. Here is a link to my film: https://www.hudl.com/profile/jacobrodgers`,
-  },
-  postCamp: {
-    label: "Post-Camp",
-    body: `Coach {LAST_NAME}, just got back from camp and wanted to stay on your radar. I learned a ton working with your staff and the competitive atmosphere at {SCHOOL} is exactly what I'm looking for. I'll keep working and would love any feedback on areas to improve. Thank you for your time.`,
-  },
-  postFollow: {
-    label: "After Follow",
-    body: `Coach {LAST_NAME}, thank you for the follow! I've had {SCHOOL} on my radar and it means a lot that you're keeping an eye on my development. I'm putting in the work this offseason and would love to visit campus when the time is right.`,
-  },
-  valueAdd: {
-    label: "Value Add",
-    body: `Coach {LAST_NAME}, wanted to share some updated film and measurables from this offseason. I've been focused on improving my footwork and pad level. Here's my latest highlight reel: https://www.hudl.com/profile/jacobrodgers. I'd appreciate any feedback you have for me. Thank you, Coach.`,
-  },
-};
-
-// ─── Props ──────────────────────────────────────────────────────────────────
 interface DMComposerProps {
   open: boolean;
   onClose: () => void;
   coaches: Coach[];
-  editDM?: DMMessage;
+  existingDM?: DMMessage | null;
+  preselectedCoachId?: string | null;
   onSaved: () => void;
 }
 
-// ─── Helpers ────────────────────────────────────────────────────────────────
-function getLastName(fullName: string): string {
-  const parts = fullName.trim().split(/\s+/);
-  return parts[parts.length - 1] ?? fullName;
-}
+const TEMPLATES = [
+  {
+    type: "intro",
+    label: "Intro",
+    template: `Coach {coachName},\n\nMy name is Jacob Rodgers \u2014 Class of 2029 OL/DL out of Pewaukee HS, Wisconsin. I've been following {schoolName}'s program and love what you're building.\n\nI'd love to get on your radar. Here's my film: https://alex-recruiting.vercel.app/recruit\n\n6'4" 285 | 445 DL | 265 Bench | 350 Squat\n\nThank you for your time, Coach.`,
+  },
+  {
+    type: "follow_up",
+    label: "Follow-up",
+    template: `Coach {coachName},\n\nI reached out a few weeks ago \u2014 wanted to follow up. I've been putting in work this spring and have updated film on my profile.\n\nWould love the chance to visit campus or attend a camp this summer if you have availability.\n\nhttps://alex-recruiting.vercel.app/recruit`,
+  },
+  {
+    type: "value_add",
+    label: "Value Add",
+    template: `Coach {coachName},\n\nWanted to share an update \u2014 just posted new training film from this week. Numbers continue to climb (445 DL, 265 Bench, 350 Squat as a freshman).\n\nI'll be at IMG Lineman Camp late March. Would be great to connect.\n\nhttps://alex-recruiting.vercel.app/recruit`,
+  },
+  {
+    type: "soft_close",
+    label: "Soft Close",
+    template: `Coach {coachName},\n\nI'm putting together my camp schedule for summer 2026. Does {schoolName} have any prospect camps or events I should know about?\n\nI'd love the opportunity to work out in front of your staff.\n\nThank you, Coach.`,
+  },
+];
 
-function tierVariant(tier: string): "accent" | "success" | "muted" {
-  switch (tier) {
-    case "Tier 1":
-      return "accent";
-    case "Tier 2":
-      return "success";
-    default:
-      return "muted";
-  }
-}
-
-// ─── Component ──────────────────────────────────────────────────────────────
-export function DMComposer({
-  open,
-  onClose,
-  coaches,
-  editDM,
-  onSaved,
-}: DMComposerProps) {
-  // Coach selector state
+export function DMComposer({ open, onClose, coaches, existingDM, preselectedCoachId, onSaved }: DMComposerProps) {
+  const [selectedCoachId, setSelectedCoachId] = useState("");
   const [coachSearch, setCoachSearch] = useState("");
-  const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const searchRef = useRef<HTMLInputElement>(null);
-
-  // Message state
-  const [templateKey, setTemplateKey] = useState<string>("");
+  const [templateType, setTemplateType] = useState("intro");
   const [content, setContent] = useState("");
   const [reviewed, setReviewed] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Populate from editDM when opening
-  useEffect(() => {
-    if (!open) return;
+  const selectedCoach = coaches.find((c) => c.id === selectedCoachId);
 
-    if (editDM) {
-      const match = coaches.find((c) => c.id === editDM.coachId);
-      setSelectedCoach(match ?? null);
-      setContent(editDM.content);
-      setTemplateKey(editDM.templateType ?? "");
-      setCoachSearch("");
+  function applyTemplate(type: string, coach: Coach | null) {
+    const tpl = TEMPLATES.find((t) => t.type === type);
+    if (!tpl || !coach) return;
+    const filled = tpl.template
+      .replace(/\{coachName\}/g, coach.name.split(" ").pop() || coach.name)
+      .replace(/\{schoolName\}/g, coach.schoolName);
+    setContent(filled);
+    setTemplateType(type);
+  }
+
+  useEffect(() => {
+    if (existingDM) {
+      setSelectedCoachId(existingDM.coachId);
+      setContent(existingDM.content);
+      setTemplateType(existingDM.templateType);
+    } else if (preselectedCoachId) {
+      setSelectedCoachId(preselectedCoachId);
+      const coach = coaches.find((c) => c.id === preselectedCoachId);
+      if (coach) applyTemplate("intro", coach);
     } else {
-      setSelectedCoach(null);
+      setSelectedCoachId("");
       setContent("");
-      setTemplateKey("");
-      setCoachSearch("");
+      setTemplateType("intro");
     }
     setReviewed(false);
-    setSaving(false);
-  }, [open, editDM, coaches]);
+  }, [existingDM, preselectedCoachId, open]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Filtered coaches for dropdown
-  const filtered = useMemo(() => {
-    if (!coachSearch.trim()) return coaches.slice(0, 8);
-    const q = coachSearch.toLowerCase();
-    return coaches
-      .filter(
-        (c) =>
-          c.name.toLowerCase().includes(q) ||
-          c.schoolName.toLowerCase().includes(q)
-      )
-      .slice(0, 8);
-  }, [coaches, coachSearch]);
+  const handleCoachSelect = (coachId: string) => {
+    setSelectedCoachId(coachId);
+    const coach = coaches.find((c) => c.id === coachId);
+    if (coach) applyTemplate(templateType, coach);
+  };
 
-  // Apply template
-  const applyTemplate = useCallback(
-    (key: string) => {
-      setTemplateKey(key);
-      const tpl = TEMPLATES[key];
-      if (!tpl) return;
-      const coach = selectedCoach;
-      let text = tpl.body;
-      if (coach) {
-        text = text
-          .replace(/\{LAST_NAME\}/g, getLastName(coach.name))
-          .replace(/\{SCHOOL\}/g, coach.schoolName);
-      }
-      setContent(text);
-    },
-    [selectedCoach]
-  );
+  const handleSave = useCallback(async () => {
+    if (!selectedCoach) return;
+    setSaving(true);
+    try {
+      await fetch("/api/dms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          coachId: selectedCoach.id,
+          coachName: selectedCoach.name,
+          schoolName: selectedCoach.schoolName,
+          templateType,
+          content,
+          sendNow: false,
+        }),
+      });
+      onSaved();
+      onClose();
+    } catch (err) {
+      console.error("Failed to save DM:", err);
+    } finally {
+      setSaving(false);
+    }
+  }, [selectedCoach, templateType, content, onSaved, onClose]);
 
-  // Select a coach
-  const selectCoach = useCallback(
-    (coach: Coach) => {
-      setSelectedCoach(coach);
-      setCoachSearch("");
-      setShowDropdown(false);
-      // Re-apply current template with new coach
-      if (templateKey) {
-        const tpl = TEMPLATES[templateKey];
-        if (tpl) {
-          setContent(
-            tpl.body
-              .replace(/\{LAST_NAME\}/g, getLastName(coach.name))
-              .replace(/\{SCHOOL\}/g, coach.schoolName)
-          );
-        }
-      }
-    },
-    [templateKey]
-  );
-
-  // Submit handler
-  const submit = useCallback(
-    async (action: "draft" | "approve" | "send") => {
-      if (!selectedCoach || !content.trim()) return;
-      setSaving(true);
-
-      const body: Record<string, unknown> = {
-        coachId: selectedCoach.id,
-        coachName: selectedCoach.name,
-        schoolName: selectedCoach.schoolName,
-        templateType: templateKey || "manual",
-        content: content.trim(),
-        sendNow: action === "send",
-        xHandle: selectedCoach.xHandle || undefined,
-      };
-
-      // For approve, we add status logic after save (the API defaults to drafted)
-      try {
-        const res = await fetch("/api/dms", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
-
-        if (res.ok) {
-          onSaved();
-          onClose();
-        }
-      } catch {
-        // Silently fail for now
-      } finally {
-        setSaving(false);
-      }
-    },
-    [selectedCoach, content, templateKey, onSaved, onClose]
-  );
+  const filteredCoaches = coachSearch
+    ? coaches.filter((c) => c.name.toLowerCase().includes(coachSearch.toLowerCase()) || c.schoolName.toLowerCase().includes(coachSearch.toLowerCase()))
+    : coaches.slice(0, 20);
 
   return (
-    <SlideOver
-      open={open}
-      onClose={onClose}
-      title={editDM ? "Edit DM" : "Compose DM"}
-      subtitle="Draft a direct message to a coach"
-      wide
-    >
-      <div className="flex flex-col gap-6">
-        {/* ── Coach selector ──────────────────────────────────────────────── */}
+    <SlideOver open={open} onClose={onClose} title={existingDM ? "Edit DM" : "New DM"}>
+      <div className="space-y-5">
+        {/* Coach selector */}
         <div>
-          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-dash-muted">
-            Coach
-          </label>
-
+          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-dash-muted">To Coach</label>
           {selectedCoach ? (
-            <div className="flex items-center justify-between rounded-lg border border-dash-border bg-dash-surface-raised px-3 py-2.5">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-dash-text">
-                  {selectedCoach.name}
-                </span>
-                <span className="text-xs text-dash-muted">
-                  {selectedCoach.schoolName}
-                </span>
-                <Badge variant={tierVariant(selectedCoach.priorityTier)}>
-                  {selectedCoach.priorityTier}
-                </Badge>
+            <div className="flex items-center justify-between rounded-lg border border-dash-border bg-dash-surface-raised p-3">
+              <div>
+                <p className="text-sm font-medium text-dash-text">{selectedCoach.name}</p>
+                <p className="text-xs text-dash-muted">{selectedCoach.schoolName} &middot; {selectedCoach.division}</p>
               </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedCoach(null);
-                  setTimeout(() => searchRef.current?.focus(), 50);
-                }}
-                className="text-xs font-medium text-dash-accent hover:text-dash-accent-hover"
-              >
-                Change
-              </button>
+              <button type="button" onClick={() => setSelectedCoachId("")} className="text-xs text-dash-accent hover:underline">Change</button>
             </div>
           ) : (
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-dash-muted" />
+            <div>
               <input
-                ref={searchRef}
                 type="text"
                 value={coachSearch}
-                onChange={(e) => {
-                  setCoachSearch(e.target.value);
-                  setShowDropdown(true);
-                }}
-                onFocus={() => setShowDropdown(true)}
-                placeholder="Search coaches by name or school..."
-                className="w-full rounded-lg border border-dash-border bg-dash-surface py-2.5 pl-9 pr-3 text-sm text-dash-text placeholder:text-dash-muted/50 focus:border-dash-accent focus:outline-none focus:ring-1 focus:ring-dash-accent"
+                onChange={(e) => setCoachSearch(e.target.value)}
+                placeholder="Search coaches..."
+                className="w-full rounded-lg border border-dash-border bg-dash-surface px-3 py-2 text-sm text-dash-text placeholder:text-dash-muted/50 focus:border-dash-accent focus:outline-none"
               />
-              <ChevronDown className="absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-dash-muted" />
-
-              {showDropdown && filtered.length > 0 && (
-                <div className="absolute left-0 right-0 z-10 mt-1 max-h-64 overflow-y-auto rounded-lg border border-dash-border bg-dash-bg shadow-lg">
-                  {filtered.map((coach) => (
-                    <button
-                      key={coach.id}
-                      type="button"
-                      onClick={() => selectCoach(coach)}
-                      className="flex w-full items-center gap-2 px-3 py-2.5 text-left transition-colors hover:bg-dash-surface-raised"
-                    >
-                      <span className="text-sm font-medium text-dash-text">
-                        {coach.name}
-                      </span>
-                      <span className="text-xs text-dash-muted">
-                        {coach.schoolName}
-                      </span>
-                      <Badge
-                        variant={tierVariant(coach.priorityTier)}
-                        className="ml-auto"
-                      >
-                        {coach.priorityTier}
-                      </Badge>
-                    </button>
-                  ))}
-                </div>
-              )}
+              <div className="mt-1 max-h-40 overflow-y-auto rounded-lg border border-dash-border bg-dash-surface">
+                {filteredCoaches.map((coach) => (
+                  <button
+                    key={coach.id}
+                    type="button"
+                    onClick={() => handleCoachSelect(coach.id)}
+                    className="flex w-full items-center justify-between px-3 py-2 text-left hover:bg-dash-surface-raised"
+                  >
+                    <span className="text-sm text-dash-text">{coach.name}</span>
+                    <span className="text-xs text-dash-muted">{coach.schoolName}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           )}
         </div>
 
-        {/* ── Template picker ─────────────────────────────────────────────── */}
+        {/* Template picker */}
         <div>
-          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-dash-muted">
-            Template
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(TEMPLATES).map(([key, tpl]) => (
+          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-dash-muted">Template</label>
+          <div className="flex gap-1.5">
+            {TEMPLATES.map((tpl) => (
               <button
-                key={key}
+                key={tpl.type}
                 type="button"
-                onClick={() => applyTemplate(key)}
-                className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
-                  templateKey === key
-                    ? "bg-dash-accent text-white"
-                    : "bg-dash-surface-raised text-dash-text-secondary hover:bg-dash-surface-raised/80"
-                }`}
+                onClick={() => { setTemplateType(tpl.type); if (selectedCoach) applyTemplate(tpl.type, selectedCoach); }}
+                className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${templateType === tpl.type ? "bg-dash-accent text-white" : "border border-dash-border text-dash-text-secondary hover:bg-dash-surface-raised"}`}
               >
                 {tpl.label}
               </button>
@@ -289,63 +166,53 @@ export function DMComposer({
           </div>
         </div>
 
-        {/* ── Message textarea ────────────────────────────────────────────── */}
+        {/* Message */}
         <div>
-          <div className="mb-1.5 flex items-center justify-between">
-            <label className="text-xs font-semibold uppercase tracking-wider text-dash-muted">
-              Message
-            </label>
-            <span className="text-[10px] text-dash-muted">
-              {content.length} chars
-            </span>
-          </div>
+          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-dash-muted">Message</label>
           <textarea
-            rows={6}
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="Type your message..."
-            className="w-full rounded-lg border border-dash-border bg-dash-surface px-3 py-2.5 text-sm text-dash-text placeholder:text-dash-muted/50 focus:border-dash-accent focus:outline-none focus:ring-1 focus:ring-dash-accent"
+            rows={10}
+            className="w-full rounded-lg border border-dash-border bg-dash-surface p-3 font-mono text-sm text-dash-text placeholder:text-dash-muted/50 focus:border-dash-accent focus:outline-none"
+            placeholder="Select a coach and template to generate a message..."
           />
+          <p className="mt-1 text-right text-xs text-dash-muted">{content.length} chars</p>
         </div>
 
-        {/* ── Family review gate ──────────────────────────────────────────── */}
-        <label className="flex items-center gap-2.5 rounded-lg border border-dash-border bg-dash-surface-raised px-3 py-3 cursor-pointer">
+        {/* Family review gate */}
+        <label className="flex items-center gap-3 rounded-lg border border-dash-border bg-dash-surface-raised p-3 cursor-pointer">
           <input
             type="checkbox"
             checked={reviewed}
             onChange={(e) => setReviewed(e.target.checked)}
-            className="h-4 w-4 rounded border-dash-border text-dash-accent focus:ring-dash-accent"
+            className="h-4 w-4 rounded border-dash-border accent-dash-accent"
           />
-          <span className="text-sm font-medium text-dash-text">
-            Mike has reviewed this message
-          </span>
+          <div>
+            <p className="text-sm font-medium text-dash-text">Dad has reviewed this message</p>
+            <p className="text-xs text-dash-muted">Required before queueing</p>
+          </div>
+          {reviewed && <CheckCircle className="ml-auto h-4 w-4 text-dash-success" />}
         </label>
 
-        {/* ── Action buttons ──────────────────────────────────────────────── */}
-        <div className="flex flex-wrap gap-2 border-t border-dash-border pt-4">
+        {/* Actions */}
+        <div className="flex gap-2 border-t border-dash-border pt-4">
           <button
             type="button"
-            disabled={!selectedCoach || !content.trim() || saving}
-            onClick={() => submit("draft")}
-            className="rounded-lg border border-dash-border px-4 py-2 text-xs font-semibold text-dash-text transition-colors hover:bg-dash-surface-raised disabled:cursor-not-allowed disabled:opacity-40"
+            onClick={handleSave}
+            disabled={saving || !content || !selectedCoach}
+            className="flex items-center gap-2 rounded-lg border border-dash-border px-4 py-2 text-sm font-medium text-dash-text-secondary hover:bg-dash-surface-raised transition-colors disabled:opacity-50"
           >
+            <Save className="h-4 w-4" />
             Save Draft
           </button>
           <button
             type="button"
-            disabled={!selectedCoach || !content.trim() || !reviewed || saving}
-            onClick={() => submit("approve")}
-            className="rounded-lg bg-dash-accent px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-dash-accent-hover disabled:cursor-not-allowed disabled:opacity-40"
+            onClick={handleSave}
+            disabled={saving || !content || !selectedCoach || !reviewed}
+            className="flex items-center gap-2 rounded-lg bg-dash-accent px-4 py-2 text-sm font-medium text-white hover:bg-dash-accent-hover transition-colors disabled:opacity-50"
           >
-            Approve &amp; Queue
-          </button>
-          <button
-            type="button"
-            disabled={!selectedCoach || !content.trim() || !reviewed || saving}
-            onClick={() => submit("send")}
-            className="rounded-lg bg-dash-success px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-dash-success/90 disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            Send Now
+            <Send className="h-4 w-4" />
+            Approve & Queue
           </button>
         </div>
       </div>
