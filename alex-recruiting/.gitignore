@@ -54,3 +54,9 @@ public/thumbnails/
 
 # worktrees
 .worktrees/
+
+# Large media files — use Vercel Blob, CDN, or external hosting instead.
+# These bloat the git repo and cause serverless function size limit errors.
+public/recruit/
+public/optimized-media/
+public/Media Clips For Mike to Add/
