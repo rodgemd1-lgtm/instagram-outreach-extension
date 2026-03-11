@@ -80,7 +80,7 @@ export function DMComposer({ open, onClose, coaches, existingDM, preselectedCoac
     if (coach) applyTemplate(templateType, coach);
   };
 
-  const handleSave = useCallback(async () => {
+  const handleSave = useCallback(async (status: "drafted" | "approved") => {
     if (!selectedCoach) return;
     setSaving(true);
     try {
@@ -93,6 +93,7 @@ export function DMComposer({ open, onClose, coaches, existingDM, preselectedCoac
           schoolName: selectedCoach.schoolName,
           templateType,
           content,
+          status,
           sendNow: false,
         }),
       });
@@ -198,7 +199,7 @@ export function DMComposer({ open, onClose, coaches, existingDM, preselectedCoac
         <div className="flex gap-2 border-t border-dash-border pt-4">
           <button
             type="button"
-            onClick={handleSave}
+            onClick={() => handleSave("drafted")}
             disabled={saving || !content || !selectedCoach}
             className="flex items-center gap-2 rounded-lg border border-dash-border px-4 py-2 text-sm font-medium text-dash-text-secondary hover:bg-dash-surface-raised transition-colors disabled:opacity-50"
           >
@@ -207,7 +208,7 @@ export function DMComposer({ open, onClose, coaches, existingDM, preselectedCoac
           </button>
           <button
             type="button"
-            onClick={handleSave}
+            onClick={() => handleSave("approved")}
             disabled={saving || !content || !selectedCoach || !reviewed}
             className="flex items-center gap-2 rounded-lg bg-dash-accent px-4 py-2 text-sm font-medium text-white hover:bg-dash-accent-hover transition-colors disabled:opacity-50"
           >

@@ -133,8 +133,10 @@ export function CoachTable({ coaches, onCoachClick }: CoachTableProps) {
             {filtered.map((coach) => (
               <tr
                 key={coach.id}
+                tabIndex={0}
                 onClick={() => onCoachClick(coach)}
-                className="cursor-pointer transition-colors hover:bg-dash-surface-raised"
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onCoachClick(coach); } }}
+                className="cursor-pointer transition-colors hover:bg-dash-surface-raised focus:bg-dash-surface-raised focus:outline-none"
               >
                 <td className="px-4 py-3 font-medium text-dash-text">{coach.name}</td>
                 <td className="px-4 py-3 text-dash-text-secondary">{coach.schoolName}</td>

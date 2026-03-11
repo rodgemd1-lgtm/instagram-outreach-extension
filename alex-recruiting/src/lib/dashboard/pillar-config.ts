@@ -22,9 +22,14 @@ export function toBackendPillar(calendarPillar: CalendarPillar): string {
     case "film": return "performance";
     case "training": return "work_ethic";
     case "academic": return "character";
-    case "camp": return "character";
-    case "lifestyle": return "character";
+    case "camp": return "performance";
+    case "lifestyle": return "work_ethic";
   }
+}
+
+export function toCalendarPillarExact(backendPillar: string, hint?: string): CalendarPillar {
+  if (hint && ALL_PILLARS.includes(hint as CalendarPillar)) return hint as CalendarPillar;
+  return toCalendarPillar(backendPillar);
 }
 
 export const ALL_PILLARS: CalendarPillar[] = ["film", "training", "academic", "camp", "lifestyle"];

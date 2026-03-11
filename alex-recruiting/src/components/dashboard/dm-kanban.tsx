@@ -61,7 +61,7 @@ export function DMKanban({ dms, onCardClick }: DMKanbanProps) {
                     {dm.content.slice(0, 80)}{dm.content.length > 80 ? "..." : ""}
                   </p>
                   <div className="mt-2 flex items-center justify-between">
-                    <Badge variant="muted" className="text-[10px]">{dm.templateType}</Badge>
+                    <Badge variant="outline" className="text-[10px]">{dm.templateType}</Badge>
                     <span className="text-[10px] text-dash-muted">{formatTimeSince(dm.sentAt || dm.createdAt)}</span>
                   </div>
                 </button>

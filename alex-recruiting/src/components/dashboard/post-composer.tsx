@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
 import { SlideOver } from "./slide-over";
-import { Badge } from "./badge";
+import { Badge } from "@/components/ui/badge";
 import { PILLAR_CONFIG, ALL_PILLARS, type CalendarPillar } from "@/lib/dashboard/pillar-config";
 import { toBackendPillar } from "@/lib/dashboard/pillar-config";
 import { cn } from "@/lib/utils";
@@ -40,11 +40,11 @@ interface PostComposerProps {
 function statusVariant(status: string) {
   switch (status) {
     case "posted":
-      return "success" as const;
+      return "posted" as const;
     case "scheduled":
-      return "accent" as const;
+      return "approved" as const;
     case "draft":
-      return "warning" as const;
+      return "draft" as const;
     default:
       return "default" as const;
   }
@@ -217,7 +217,6 @@ export function PostComposer({
             value={content}
             onChange={(e) => setContent(e.target.value)}
             rows={4}
-            maxLength={280}
             placeholder="What's happening on the recruiting trail?"
             className="w-full rounded-lg border border-dash-border bg-dash-bg px-3 py-2 text-sm text-dash-text placeholder:text-dash-muted focus:border-dash-accent focus:outline-none focus:ring-1 focus:ring-dash-accent"
           />
