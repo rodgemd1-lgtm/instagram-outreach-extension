@@ -106,7 +106,7 @@ export function CoachMonologue({ id, lines }: CoachMonologueProps) {
             text={fullText}
             trigger={inView}
             speed={35}
-            className="text-lg italic leading-relaxed text-white/70 md:text-2xl"
+            className="text-xl italic leading-relaxed text-white/70 md:text-2xl"
           />
         </div>
       </div>

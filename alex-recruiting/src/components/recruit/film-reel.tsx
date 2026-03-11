@@ -174,7 +174,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                 className="text-white"
               />
             </h2>
-            <p className="mt-4 max-w-xs text-base leading-7 text-white/70 md:mt-6 md:text-xl">
+            <p className="mt-4 max-w-xs text-lg leading-7 text-white/70 md:mt-6 md:text-xl">
               Film, force production, and effort — every rep, every snap, every game.
             </p>
           </div>
@@ -316,9 +316,9 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                       suffix={stat.suffix}
                       trigger={inView}
                       duration={1.8}
-                      className="text-xl font-black tabular-nums text-white md:text-3xl"
+                      className="text-2xl font-black tabular-nums text-white md:text-3xl"
                     />
-                    <span className="mt-1 font-jetbrains text-[10px] uppercase tracking-[0.15em] text-[#ff000c]/80 md:text-base md:tracking-[0.2em]">
+                    <span className="mt-1 font-jetbrains text-sm uppercase tracking-[0.15em] text-[#ff000c]/80 md:text-base md:tracking-[0.2em]">
                       {stat.label}
                     </span>
                   </div>

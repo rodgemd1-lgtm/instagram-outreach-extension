@@ -76,8 +76,8 @@ const timeline: TimelineEntry[] = [
     id: "age-15-freshman",
     age: 15,
     year: "2024-25",
-    title: "Two games in one day. Produced in both.",
-    body: "Called up to varsity as a freshman. Started and played full JV games. Some weeks \u2014 two full games in the same day. 11 pancake blocks. 3 sacks. Fumble recovery. State playoff run. Film study proficient \u2014 setting up, reviewing, and self-correcting from his own tape.",
+    title: "Freshman on Varsity · Starter on JV",
+    body: "Called in to play varsity. Started and played full JV games. Two games in one day. 11 pancakes. 3 sacks. Fumble recovery. State playoff run.",
     lifts: [
       { label: "Bench", value: 265 },
       { label: "Squat", value: 350 },
