@@ -7,3 +7,4 @@ dist/
 node_modules_corrupt_*/
 alex-recruiting/node_modules_corrupt_*/
 .vercel
+.claude-plugin/
