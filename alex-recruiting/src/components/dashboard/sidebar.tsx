@@ -13,14 +13,14 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const NAV_ITEMS = [
+const NAV_ITEMS: ReadonlyArray<{ href: string; label: string; icon: typeof Home; exact?: boolean }> = [
   { href: "/dashboard", label: "Overview", icon: Home, exact: true },
   { href: "/dashboard/calendar", label: "Calendar", icon: Calendar },
   { href: "/dashboard/outreach", label: "Outreach", icon: Mail },
   { href: "/dashboard/coaches", label: "Coaches", icon: Users },
   { href: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/dashboard/team", label: "Team", icon: MessageSquare },
-] as const;
+];
 
 export function DashboardSidebar() {
   const pathname = usePathname();

@@ -11,13 +11,13 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const MOBILE_TABS = [
+const MOBILE_TABS: ReadonlyArray<{ href: string; label: string; icon: typeof Home; exact?: boolean }> = [
   { href: "/dashboard", label: "Home", icon: Home, exact: true },
   { href: "/dashboard/calendar", label: "Calendar", icon: Calendar },
   { href: "/dashboard/outreach", label: "Outreach", icon: Mail },
   { href: "/dashboard/coaches", label: "Coaches", icon: Users },
   { href: "/dashboard/analytics", label: "Stats", icon: BarChart3 },
-] as const;
+];
 
 export function DashboardMobileNav() {
   const pathname = usePathname();
