@@ -1,6 +1,8 @@
 # Dashboard v2.0 — Design Document
 
-> **Date:** 2026-03-11
+> **Date:** 2026-03-11 (updated)
+> **Priority:** X Content + Calendar first, then Coach CRM, DM Outreach, Analytics
+> **Status:** APPROVED — ready for implementation planning
 > **Goal:** Build a usable daily-driver dashboard for managing Jacob's X account and college coach outreach. Replace placeholder pages with real, API-wired UI.
 
 ## Architecture
