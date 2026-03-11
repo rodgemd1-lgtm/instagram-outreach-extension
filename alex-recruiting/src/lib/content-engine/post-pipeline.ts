@@ -113,16 +113,21 @@ export async function createScheduledPost(
 
   if (isSupabaseConfigured()) {
     const supabase = createAdminClient();
+
+    // Build insert payload — only include media columns if they have values
+    // (the scheduled_posts table may not have media_type/media_url columns yet)
+    const insertPayload: Record<string, unknown> = {
+      content,
+      scheduled_at: scheduledAt.toISOString(),
+      status: "pending",
+    };
+    if (pillar) insertPayload.pillar = pillar;
+    if (mediaType) insertPayload.media_type = mediaType;
+    if (mediaUrl) insertPayload.media_url = mediaUrl;
+
     const { data, error } = await supabase
       .from("scheduled_posts")
-      .insert({
-        content,
-        media_type: mediaType,
-        media_url: mediaUrl,
-        scheduled_at: scheduledAt.toISOString(),
-        status: "pending",
-        pillar,
-      })
+      .insert(insertPayload)
       .select()
       .single();
 

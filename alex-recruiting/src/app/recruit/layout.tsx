@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/recruit/photos/promo-graphic.jpg",
+        url: "/recruit/photos/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Jacob Rodgers #79 — Pewaukee Pirates Football",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     title: "Jacob Rodgers | #79 OL/DL | Pewaukee Pirates",
     description:
       "6'4\" 285 lineman. Defensive-line upside, offensive-line versatility, restored film, and track-and-field power.",
-    images: ["/recruit/photos/promo-graphic.jpg"],
+    images: ["/recruit/photos/og-image.jpg"],
   },
 };
 

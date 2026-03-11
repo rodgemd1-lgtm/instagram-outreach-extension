@@ -15,9 +15,11 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+// Use the canonical production URL so OG/Twitter cards resolve correctly.
+// VERCEL_URL returns a deployment-specific hash URL that is 401 to crawlers.
 const metadataBaseUrl =
   process.env.NEXT_PUBLIC_APP_URL ??
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+  "https://alex-recruiting.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(metadataBaseUrl),

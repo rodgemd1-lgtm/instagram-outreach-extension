@@ -289,48 +289,53 @@ export async function processSequences(): Promise<ProcessResult> {
         continue;
       }
 
-      // Select the appropriate template
-      const templateData = selectTemplate(seq.currentStep, "Tier 2");
-      if (!templateData) {
-        result.errors.push(`No template found for step ${seq.currentStep} in sequence ${seq.id}`);
-        result.details.push({
-          sequenceId: seq.id,
-          coachName: seq.coachName,
-          step: seq.currentStep,
-          action: "error",
-          reason: "no template available for this step",
-        });
-        continue;
-      }
-
-      // Build and fill the template
-      const vars = buildTemplateVars(seq.coachName, seq.school);
-      const baseMessage = fillDMTemplate(templateData.template, vars);
-
-      // Use Anthropic to personalize and tighten the message
-      const personalizedMessage = await generateDMDraft(
-        seq.coachName,
-        seq.school,
-        templateData.name,
-        `This is step ${seq.currentStep} of 4 in Jacob's DM sequence. Base template:\n${baseMessage}\n\nPersonalize this for a ${seq.currentStep === 1 ? "cold initial outreach" : `follow-up (step ${seq.currentStep})`}. Keep under 280 characters if possible. Be genuine and direct. Do not be sycophantic.`
-      );
-
+      // Fetch coach data first — we need the tier for template selection
       let coachHandle: string | null = null;
       let coachName = seq.coachName;
       let schoolName = seq.school;
+      let coachTier: DMTier = "Tier 2"; // fallback if lookup fails
 
       if (isSupabaseConfigured()) {
         const supabase = createAdminClient();
         const { data: coachRow } = await supabase
           .from("coaches")
-          .select("name, school_name, x_handle")
+          .select("name, school_name, x_handle, priority_tier")
           .eq("id", seq.coachId)
           .maybeSingle();
 
         coachHandle = coachRow?.x_handle ?? null;
         coachName = coachRow?.name ?? coachName;
         schoolName = coachRow?.school_name ?? schoolName;
+        if (coachRow?.priority_tier) {
+          coachTier = coachRow.priority_tier as DMTier;
+        }
       }
+
+      // Select the appropriate template using the coach's actual tier
+      const templateData = selectTemplate(seq.currentStep, coachTier);
+      if (!templateData) {
+        result.errors.push(`No template found for step ${seq.currentStep} (${coachTier}) in sequence ${seq.id}`);
+        result.details.push({
+          sequenceId: seq.id,
+          coachName: seq.coachName,
+          step: seq.currentStep,
+          action: "error",
+          reason: `no template available for step ${seq.currentStep} at ${coachTier}`,
+        });
+        continue;
+      }
+
+      // Build and fill the template
+      const vars = buildTemplateVars(coachName, schoolName);
+      const baseMessage = fillDMTemplate(templateData.template, vars);
+
+      // Use Anthropic to personalize and tighten the message
+      const personalizedMessage = await generateDMDraft(
+        coachName,
+        schoolName,
+        templateData.name,
+        `This is step ${seq.currentStep} of 4 in Jacob's DM sequence. Base template:\n${baseMessage}\n\nPersonalize this for a ${seq.currentStep === 1 ? "cold initial outreach" : `follow-up (step ${seq.currentStep})`}. Keep under 280 characters if possible. Be genuine and direct. Do not be sycophantic.`
+      );
 
       if (!coachHandle) {
         result.skipped++;
