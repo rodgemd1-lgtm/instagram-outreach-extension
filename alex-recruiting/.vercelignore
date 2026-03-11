@@ -9,6 +9,8 @@ node_modules_corrupt_*
 .susan
 docs
 /supabase/
+public/Media Clips For Mike to Add
+public/optimized-media
 src/app 2
 src/components 2
 src/lib 2

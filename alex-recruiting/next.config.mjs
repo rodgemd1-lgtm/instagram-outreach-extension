@@ -3,11 +3,17 @@ const nextConfig = {
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
   // Exclude puppeteer-core from serverless bundles (only used locally for header generation)
+  serverExternalPackages: ["puppeteer-core"],
   experimental: {
-    serverComponentsExternalPackages: ["puppeteer-core"],
+    // Exclude large media directories from ALL serverless function bundles.
+    // public/recruit/ is 264 MB of video/photo files — exceeds Vercel's 250 MB limit.
+    // Using '*' wildcard to cover every route, not just /api/**.
     outputFileTracingExcludes: {
-      "/api/**": ["./public/recruit/**"],
-      "/recruit": ["./public/recruit/**"],
+      "*": [
+        "./public/recruit/**/*",
+        "./public/optimized-media/**/*",
+        "./public/Media Clips For Mike to Add/**/*",
+      ],
     },
   },
   headers: async () => [
