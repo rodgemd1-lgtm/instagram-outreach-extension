@@ -7,7 +7,7 @@ import { MobileBottomNav } from "@/components/mobile-nav";
 import { OperatorDock } from "@/components/operator-dock";
 
 // Routes that bypass the standard app shell (sidebar/header)
-const STANDALONE_ROUTES = ["/recruit"];
+const STANDALONE_ROUTES = ["/recruit", "/dashboard"];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

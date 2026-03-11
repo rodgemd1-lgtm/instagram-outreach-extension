@@ -13,6 +13,7 @@ import {
   Film,
   Flame,
   Home,
+  LayoutDashboard,
   Mail,
   MessageSquarePlus,
   Palette,
@@ -64,6 +65,7 @@ export const navSections: AppNavSection[] = [
       { href: "/audit", label: "Live Audit", icon: ShieldCheck, blurb: "Readiness score and blockers" },
       { href: "/agency", label: "Agency", icon: UsersRound, blurb: "Team, roles, and process" },
       { href: "/analytics", label: "Analytics", icon: BarChart3, blurb: "Signals, cadence, and outcomes" },
+      { href: "/dashboard", label: "Dashboard v2", icon: LayoutDashboard, blurb: "New operations dashboard" },
     ],
   },
   {

@@ -24,6 +24,22 @@ const config: Config = {
           DEFAULT: "#111111",
           deep: "#000000",
         },
+        dash: {
+          bg: "#0F1117",
+          surface: "#1A1D27",
+          "surface-raised": "#22252F",
+          border: "#2A2D37",
+          "border-subtle": "#1F2229",
+          text: "#E4E4E7",
+          "text-secondary": "#A1A1AA",
+          muted: "#71717A",
+          accent: "#3B82F6",
+          "accent-hover": "#2563EB",
+          success: "#22C55E",
+          warning: "#F59E0B",
+          danger: "#EF4444",
+          gold: "#D4A853",
+        },
       },
       keyframes: {
         "jersey-pulse": {
