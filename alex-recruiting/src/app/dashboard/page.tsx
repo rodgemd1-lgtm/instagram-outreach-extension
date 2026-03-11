@@ -48,13 +48,17 @@ export default function DashboardPage() {
     async function loadStats() {
       try {
         // Fetch real stats from existing API endpoints
-        const [analyticsRes, coachesRes] = await Promise.allSettled([
+        const [analyticsRes, coachesRes, postsRes, dmsRes] = await Promise.allSettled([
           fetch("/api/analytics"),
           fetch("/api/coaches"),
+          fetch("/api/posts"),
+          fetch("/api/dms"),
         ]);
 
         let profileViews = 0;
         let coachFollowers = 0;
+        let postsThisWeek = 0;
+        let dmsSent = 0;
 
         if (analyticsRes.status === "fulfilled" && analyticsRes.value.ok) {
           const data = await analyticsRes.value.json();
@@ -66,11 +70,26 @@ export default function DashboardPage() {
           coachFollowers = Array.isArray(data) ? data.length : data?.coaches?.length ?? 0;
         }
 
+        if (postsRes.status === "fulfilled" && postsRes.value.ok) {
+          const data = await postsRes.value.json();
+          const posts: { status: string; updatedAt: string }[] = data?.posts ?? [];
+          const oneWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+          postsThisWeek = posts.filter(
+            (p) => p.status === "posted" && new Date(p.updatedAt).getTime() >= oneWeekAgo
+          ).length;
+        }
+
+        if (dmsRes.status === "fulfilled" && dmsRes.value.ok) {
+          const data = await dmsRes.value.json();
+          const dms: { status: string }[] = data?.dms ?? [];
+          dmsSent = dms.filter((d) => d.status === "sent").length;
+        }
+
         setStats({
           profileViews,
           coachFollowers,
-          dmsSent: 0,
-          postsThisWeek: 0,
+          dmsSent,
+          postsThisWeek,
         });
       } catch {
         // Use fallback zeros
