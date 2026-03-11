@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/dashboard/badge";
+import { Badge } from "@/components/ui/badge";
 import type { DMMessage } from "@/lib/types";
 
 interface DMKanbanProps {

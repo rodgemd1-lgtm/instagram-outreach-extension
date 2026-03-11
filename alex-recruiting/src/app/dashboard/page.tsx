@@ -18,6 +18,9 @@ interface DashboardStats {
   coachFollowers: number;
   dmsSent: number;
   postsThisWeek: number;
+  draftDMs: number;
+  draftPosts: number;
+  staleCoaches: number;
 }
 
 interface ActionItem {
@@ -41,6 +44,9 @@ export default function DashboardPage() {
     coachFollowers: 0,
     dmsSent: 0,
     postsThisWeek: 0,
+    draftDMs: 0,
+    draftPosts: 0,
+    staleCoaches: 0,
   });
   const [loading, setLoading] = useState(true);
 
@@ -65,9 +71,18 @@ export default function DashboardPage() {
           profileViews = data?.totalViews ?? 0;
         }
 
+        let draftPosts = 0;
+        let draftDMs = 0;
+        let staleCoaches = 0;
+
         if (coachesRes.status === "fulfilled" && coachesRes.value.ok) {
           const data = await coachesRes.value.json();
-          coachFollowers = Array.isArray(data) ? data.length : data?.coaches?.length ?? 0;
+          const coaches: { lastEngaged: string | null }[] = Array.isArray(data) ? data : data?.coaches ?? [];
+          coachFollowers = coaches.length;
+          const twoWeeksAgo = Date.now() - 14 * 24 * 60 * 60 * 1000;
+          staleCoaches = coaches.filter(
+            (c) => c.lastEngaged && new Date(c.lastEngaged).getTime() < twoWeeksAgo
+          ).length;
         }
 
         if (postsRes.status === "fulfilled" && postsRes.value.ok) {
@@ -77,12 +92,14 @@ export default function DashboardPage() {
           postsThisWeek = posts.filter(
             (p) => p.status === "posted" && new Date(p.updatedAt).getTime() >= oneWeekAgo
           ).length;
+          draftPosts = posts.filter((p) => p.status === "draft").length;
         }
 
         if (dmsRes.status === "fulfilled" && dmsRes.value.ok) {
           const data = await dmsRes.value.json();
           const dms: { status: string }[] = data?.dms ?? [];
           dmsSent = dms.filter((d) => d.status === "sent").length;
+          draftDMs = dms.filter((d) => d.status === "drafted").length;
         }
 
         setStats({
@@ -90,6 +107,9 @@ export default function DashboardPage() {
           coachFollowers,
           dmsSent,
           postsThisWeek,
+          draftDMs,
+          draftPosts,
+          staleCoaches,
         });
       } catch {
         // Use fallback zeros
@@ -101,29 +121,44 @@ export default function DashboardPage() {
     void loadStats();
   }, []);
 
-  const actionItems: ActionItem[] = [
-    {
-      id: "1",
-      title: "Review 3 pending DM drafts",
-      description: "Outreach to Wisconsin, Iowa State, and NDSU coaches",
+  const actionItems: ActionItem[] = [];
+
+  if (stats.draftDMs > 0) {
+    actionItems.push({
+      id: "dm-drafts",
+      title: `Review ${stats.draftDMs} pending DM draft${stats.draftDMs !== 1 ? "s" : ""}`,
+      description: "Outreach messages waiting for approval",
       href: "/dashboard/outreach",
       priority: "high",
-    },
-    {
-      id: "2",
-      title: "Schedule this week's posts",
-      description: "5 posts drafted, none scheduled yet",
+    });
+  }
+  if (stats.draftPosts > 0) {
+    actionItems.push({
+      id: "post-drafts",
+      title: `Schedule ${stats.draftPosts} draft post${stats.draftPosts !== 1 ? "s" : ""}`,
+      description: "Posts drafted but not yet scheduled",
       href: "/dashboard/calendar",
       priority: "high",
-    },
-    {
-      id: "3",
-      title: "Upload new training clips",
-      description: "Spring training film from last week",
-      href: "/media-import",
+    });
+  }
+  if (stats.staleCoaches > 0) {
+    actionItems.push({
+      id: "stale-coaches",
+      title: `${stats.staleCoaches} coach${stats.staleCoaches !== 1 ? "es" : ""} need follow-up`,
+      description: "No engagement in 14+ days",
+      href: "/dashboard/coaches",
       priority: "medium",
-    },
-  ];
+    });
+  }
+  if (actionItems.length === 0) {
+    actionItems.push({
+      id: "all-clear",
+      title: "All caught up!",
+      description: "No urgent action items right now",
+      href: "/dashboard/calendar",
+      priority: "low",
+    });
+  }
 
   const upcomingEvents: UpcomingEvent[] = [
     {
