@@ -15,6 +15,30 @@ import {
   type CalendarPillar,
 } from "@/lib/dashboard/pillar-config";
 
+/* ------------------------------------------------------------------ */
+/*  Pillar color overrides for cinematic dark theme                     */
+/* ------------------------------------------------------------------ */
+
+const DARK_PILLAR_COLORS: Record<CalendarPillar, string> = {
+  film: "#ff000c",
+  training: "#D4A853",
+  academic: "rgba(255,255,255,0.8)",
+  camp: "#F59E0B",
+  lifestyle: "#D4A853",
+};
+
+/* ------------------------------------------------------------------ */
+/*  Target distribution                                                */
+/* ------------------------------------------------------------------ */
+
+const TARGET_DISTRIBUTION: Record<CalendarPillar, number> = {
+  film: 40,
+  training: 40,
+  academic: 20,
+  camp: 0,
+  lifestyle: 0,
+};
+
 interface PillarChartProps {
   posts: { pillar: string }[];
 }
@@ -36,23 +60,39 @@ export function PillarChart({ posts }: PillarChartProps) {
     }
   }
 
-  const data = Object.entries(PILLAR_CONFIG).map(([key, cfg]) => ({
-    name: cfg.label,
-    count: counts[key as CalendarPillar],
-    color: cfg.color,
-  }));
+  const total = Object.values(counts).reduce((a, b) => a + b, 0);
+
+  const data = Object.entries(PILLAR_CONFIG).map(([key, cfg]) => {
+    const k = key as CalendarPillar;
+    const pct = total > 0 ? Math.round((counts[k] / total) * 100) : 0;
+    const target = TARGET_DISTRIBUTION[k];
+    return {
+      name: cfg.label,
+      count: counts[k],
+      pct,
+      target,
+      color: DARK_PILLAR_COLORS[k],
+    };
+  });
 
   return (
-    <div className="rounded-xl border border-dash-border bg-dash-surface p-5">
-      <h3 className="mb-4 text-sm font-semibold text-dash-text">
-        Posts by Pillar
-      </h3>
+    <div className="rounded-xl border border-white/5 bg-transparent p-5">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-[10px] uppercase tracking-[0.2em] text-white/40">
+          Posts by Pillar
+        </h3>
+        {total > 0 && (
+          <span className="text-xs text-white/40 font-mono">
+            {total} total
+          </span>
+        )}
+      </div>
       <div className="h-48">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart layout="vertical" data={data}>
             <XAxis
               type="number"
-              tick={{ fill: "#71717A", fontSize: 11 }}
+              tick={{ fill: "rgba(255,255,255,0.4)", fontSize: 11, fontFamily: "JetBrains Mono, monospace" }}
               axisLine={false}
               tickLine={false}
               allowDecimals={false}
@@ -60,17 +100,25 @@ export function PillarChart({ posts }: PillarChartProps) {
             <YAxis
               type="category"
               dataKey="name"
-              tick={{ fill: "#A1A1AA", fontSize: 11 }}
+              tick={{ fill: "rgba(255,255,255,0.4)", fontSize: 11 }}
               axisLine={false}
               tickLine={false}
               width={70}
             />
             <Tooltip
               contentStyle={{
-                background: "#1A1D27",
-                border: "1px solid #2A2D37",
+                background: "#0A0A0A",
+                border: "1px solid rgba(255,255,255,0.05)",
                 borderRadius: 8,
                 fontSize: 12,
+                color: "#ffffff",
+              }}
+              itemStyle={{ color: "#ffffff" }}
+              labelStyle={{ color: "rgba(255,255,255,0.6)" }}
+              formatter={(value: number, _name: string, props: { payload: { pct: number; target: number } }) => {
+                const { pct, target } = props.payload;
+                const targetStr = target > 0 ? ` (target: ${target}%)` : "";
+                return [`${value} posts (${pct}%)${targetStr}`, ""];
               }}
             />
             <Bar dataKey="count" radius={[0, 4, 4, 0]}>
@@ -80,6 +128,13 @@ export function PillarChart({ posts }: PillarChartProps) {
             </Bar>
           </BarChart>
         </ResponsiveContainer>
+      </div>
+      {/* Target distribution indicator */}
+      <div className="mt-3 flex items-center gap-4 text-[10px] uppercase tracking-[0.2em] text-white/30">
+        <span>Target:</span>
+        <span className="text-[#ff000c]">Film 40%</span>
+        <span className="text-[#D4A853]">Training 40%</span>
+        <span className="text-white/60">Academic 20%</span>
       </div>
     </div>
   );

@@ -187,7 +187,7 @@ export function PostComposer({
 
   /* ---- Character count ---- */
   const charCount = content.length;
-  const charWarning = charCount >= 260;
+  const charWarning = charCount >= 250;
   const charOver = charCount > 280;
 
   return (
@@ -210,7 +210,7 @@ export function PostComposer({
 
         {/* ---- Content textarea ---- */}
         <div>
-          <label className="mb-1.5 block text-xs font-medium text-dash-text-secondary">
+          <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-white/40">
             Content
           </label>
           <textarea
@@ -218,16 +218,16 @@ export function PostComposer({
             onChange={(e) => setContent(e.target.value)}
             rows={4}
             placeholder="What's happening on the recruiting trail?"
-            className="w-full rounded-lg border border-dash-border bg-dash-bg px-3 py-2 text-sm text-dash-text placeholder:text-dash-muted focus:border-dash-accent focus:outline-none focus:ring-1 focus:ring-dash-accent"
+            className="w-full rounded-lg border border-white/10 bg-[#111111] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#ff000c] focus:outline-none focus:ring-1 focus:ring-[#ff000c]"
           />
           <p
             className={cn(
               "mt-1 text-right text-xs",
               charOver
-                ? "text-dash-danger font-semibold"
+                ? "text-[#EF4444] font-semibold"
                 : charWarning
-                  ? "text-dash-danger"
-                  : "text-dash-muted"
+                  ? "text-[#F59E0B]"
+                  : "text-white/40"
             )}
           >
             {charCount}/280
@@ -236,7 +236,7 @@ export function PostComposer({
 
         {/* ---- Pillar selector ---- */}
         <div>
-          <label className="mb-1.5 block text-xs font-medium text-dash-text-secondary">
+          <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-white/40">
             Pillar
           </label>
           <div className="flex flex-wrap gap-2">
@@ -249,13 +249,20 @@ export function PostComposer({
                   type="button"
                   onClick={() => handlePillarChange(p)}
                   className={cn(
-                    "rounded-full px-3 py-1 text-xs font-medium transition-colors",
+                    "rounded-lg px-3 py-2 text-xs font-medium transition-colors border",
                     selected
-                      ? cn(cfg.bgClass, cfg.textClass, "ring-1 ring-current")
-                      : "bg-dash-surface-raised text-dash-muted hover:text-dash-text"
+                      ? "border-current bg-white/5"
+                      : "border-white/5 bg-[#0A0A0A] text-white/40 hover:text-white/60 hover:bg-[#111111]"
                   )}
+                  style={selected ? { color: cfg.color, borderColor: cfg.color } : undefined}
                 >
-                  {cfg.label}
+                  <span className="flex items-center gap-1.5">
+                    <span
+                      className="inline-block h-2 w-2 rounded-full"
+                      style={{ backgroundColor: cfg.color }}
+                    />
+                    {cfg.label}
+                  </span>
                 </button>
               );
             })}
@@ -264,7 +271,7 @@ export function PostComposer({
 
         {/* ---- Hashtags ---- */}
         <div>
-          <label className="mb-1.5 block text-xs font-medium text-dash-text-secondary">
+          <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-white/40">
             Hashtags
           </label>
           <input
@@ -272,53 +279,70 @@ export function PostComposer({
             value={hashtags}
             onChange={(e) => setHashtags(e.target.value)}
             placeholder="#FilmDontLie, #OLPlay"
-            className="w-full rounded-lg border border-dash-border bg-dash-bg px-3 py-2 text-sm text-dash-text placeholder:text-dash-muted focus:border-dash-accent focus:outline-none focus:ring-1 focus:ring-dash-accent"
+            className="w-full rounded-lg border border-white/10 bg-[#111111] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#ff000c] focus:outline-none focus:ring-1 focus:ring-[#ff000c]"
           />
-          <p className="mt-1 text-[11px] text-dash-muted">Comma-separated</p>
+          {/* Hashtag suggestion pills */}
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {PILLAR_HASHTAGS[pillar].map((tag) => (
+              <button
+                key={tag}
+                type="button"
+                onClick={() => {
+                  const current = hashtags.split(",").map((t) => t.trim()).filter(Boolean);
+                  if (!current.includes(tag)) {
+                    setHashtags(current.length ? `${hashtags}, ${tag}` : tag);
+                  }
+                }}
+                className="rounded-full bg-white/5 px-2.5 py-1 text-[11px] text-white/60 hover:bg-white/10 hover:text-white transition-colors"
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* ---- Media URL ---- */}
         <div>
-          <label className="mb-1.5 block text-xs font-medium text-dash-text-secondary">
-            Media URL <span className="text-dash-muted">(optional)</span>
+          <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-white/40">
+            Media URL <span className="text-white/20">(optional)</span>
           </label>
           <input
             type="text"
             value={mediaUrl}
             onChange={(e) => setMediaUrl(e.target.value)}
             placeholder="/optimized-media/clip.mp4 or https://..."
-            className="w-full rounded-lg border border-dash-border bg-dash-bg px-3 py-2 text-sm text-dash-text placeholder:text-dash-muted focus:border-dash-accent focus:outline-none focus:ring-1 focus:ring-dash-accent"
+            className="w-full rounded-lg border border-white/10 bg-[#111111] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#ff000c] focus:outline-none focus:ring-1 focus:ring-[#ff000c]"
           />
         </div>
 
         {/* ---- Date + Time ---- */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-dash-text-secondary">
+            <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-white/40">
               Date
             </label>
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full rounded-lg border border-dash-border bg-dash-bg px-3 py-2 text-sm text-dash-text focus:border-dash-accent focus:outline-none focus:ring-1 focus:ring-dash-accent"
+              className="w-full rounded-lg border border-white/10 bg-[#111111] px-3 py-2 text-sm text-white focus:border-[#ff000c] focus:outline-none focus:ring-1 focus:ring-[#ff000c] [color-scheme:dark]"
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-dash-text-secondary">
+            <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-white/40">
               Time
             </label>
             <input
               type="time"
               value={time}
               onChange={(e) => setTime(e.target.value)}
-              className="w-full rounded-lg border border-dash-border bg-dash-bg px-3 py-2 text-sm text-dash-text focus:border-dash-accent focus:outline-none focus:ring-1 focus:ring-dash-accent"
+              className="w-full rounded-lg border border-white/10 bg-[#111111] px-3 py-2 text-sm text-white focus:border-[#ff000c] focus:outline-none focus:ring-1 focus:ring-[#ff000c] [color-scheme:dark]"
             />
           </div>
         </div>
 
         {/* ---- Tip ---- */}
-        <p className="rounded-lg bg-dash-accent/10 px-3 py-2 text-xs text-dash-accent">
+        <p className="rounded-lg bg-[#ff000c]/10 border border-[#ff000c]/20 px-3 py-2 text-xs text-[#ff000c]">
           Coaches are most active 7-9am CT on Tue/Wed/Thu
         </p>
 
@@ -326,9 +350,16 @@ export function PostComposer({
         <div className="flex flex-wrap gap-2 pt-2">
           <button
             type="button"
+            onClick={onClose}
+            className="rounded-lg bg-white/5 px-4 py-2 text-sm font-medium text-white/60 transition-colors hover:bg-white/10"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
             disabled={saving || !content.trim() || charOver}
             onClick={handleSaveDraft}
-            className="rounded-lg border border-dash-border px-4 py-2 text-sm font-medium text-dash-text transition-colors hover:bg-dash-surface-raised disabled:opacity-50"
+            className="rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/5 disabled:opacity-50"
           >
             Save Draft
           </button>
@@ -336,7 +367,7 @@ export function PostComposer({
             type="button"
             disabled={saving || !content.trim() || charOver}
             onClick={handleSchedule}
-            className="rounded-lg bg-dash-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-dash-accent/90 disabled:opacity-50"
+            className="rounded-lg bg-[#ff000c] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#cc000a] disabled:opacity-50"
           >
             Schedule
           </button>
@@ -344,7 +375,7 @@ export function PostComposer({
             type="button"
             disabled={saving || !content.trim() || charOver}
             onClick={handlePostNow}
-            className="rounded-lg bg-dash-success px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-dash-success/90 disabled:opacity-50"
+            className="rounded-lg bg-[#22C55E] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#22C55E]/90 disabled:opacity-50"
           >
             Post Now
           </button>
