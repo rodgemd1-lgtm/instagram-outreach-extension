@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 interface PipelineStage {
   label: string;
   count: number;
@@ -8,19 +12,40 @@ interface PipelineFunnelProps {
   stages: PipelineStage[];
 }
 
+const STAGE_COLORS = ["#ff000c", "#D4A853", "#22C55E", "#22C55E"];
+
 export function PipelineFunnel({ stages }: PipelineFunnelProps) {
+  const [mounted, setMounted] = useState(false);
   const maxCount = Math.max(...stages.map((s) => s.count), 1);
+
+  useEffect(() => {
+    const t = setTimeout(() => setMounted(true), 50);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
     <div className="rounded-xl border border-white/5 bg-[#0A0A0A] p-6">
       <h3 className="mb-5 text-[10px] font-medium uppercase tracking-[0.2em] text-white/40">
         Coach Pipeline
       </h3>
-      <div className="space-y-1">
+      <div className="space-y-0">
         {stages.map((stage, index) => {
-          const widthPct = Math.max((stage.count / maxCount) * 100, 6);
+          // Each stage narrows: top width is based on this stage's count,
+          // bottom width is based on next stage (or slightly narrower)
+          const topPct = Math.max((stage.count / maxCount) * 100, 12);
+          const nextPct =
+            index < stages.length - 1
+              ? Math.max((stages[index + 1].count / maxCount) * 100, 8)
+              : topPct * 0.7;
 
-          // Compute conversion rate from previous stage
+          const topLeft = (100 - topPct) / 2;
+          const topRight = topLeft + topPct;
+          const botLeft = (100 - nextPct) / 2;
+          const botRight = botLeft + nextPct;
+
+          const clipPath = `polygon(${topLeft}% 0%, ${topRight}% 0%, ${botRight}% 100%, ${botLeft}% 100%)`;
+
+          // Conversion rate from previous stage
           let conversionRate: number | null = null;
           if (index > 0 && stages[index - 1].count > 0) {
             conversionRate = Math.round(
@@ -28,11 +53,13 @@ export function PipelineFunnel({ stages }: PipelineFunnelProps) {
             );
           }
 
+          const color = STAGE_COLORS[index] || stage.color;
+
           return (
             <div key={stage.label}>
               {/* Conversion rate between stages */}
               {conversionRate !== null && (
-                <div className="flex items-center gap-2 py-1.5 pl-1">
+                <div className="flex items-center justify-center gap-2 py-1">
                   <svg
                     className="h-3 w-3 text-white/20"
                     viewBox="0 0 12 12"
@@ -47,36 +74,34 @@ export function PipelineFunnel({ stages }: PipelineFunnelProps) {
                     />
                   </svg>
                   <span
-                    className={`font-jetbrains text-xs font-medium ${
+                    className={`font-mono text-xs font-medium ${
                       conversionRate >= 20
                         ? "text-[#22C55E]"
                         : "text-[#F59E0B]"
                     }`}
                   >
-                    {conversionRate}% conversion
+                    {conversionRate}%
                   </span>
                 </div>
               )}
 
-              {/* Stage bar */}
-              <div className="flex items-center gap-4">
-                <span className="w-28 shrink-0 text-xs text-white/40">
-                  {stage.label}
-                </span>
-                <div className="relative flex-1">
-                  <div className="h-8 w-full rounded bg-white/[0.03]">
-                    <div
-                      className="flex h-8 items-center rounded px-3 transition-all duration-700"
-                      style={{
-                        width: `${widthPct}%`,
-                        backgroundColor: stage.color,
-                      }}
-                    >
-                      <span className="font-jetbrains text-xs font-bold text-white">
-                        {stage.count}
-                      </span>
-                    </div>
-                  </div>
+              {/* Funnel trapezoid */}
+              <div
+                className="relative mx-auto flex h-12 items-center justify-center transition-all duration-700"
+                style={{
+                  clipPath: mounted ? clipPath : `polygon(50% 0%, 50% 0%, 50% 100%, 50% 100%)`,
+                  backgroundColor: color,
+                  opacity: mounted ? 1 : 0,
+                  transitionDelay: `${index * 100}ms`,
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-medium text-white/90">
+                    {stage.label}
+                  </span>
+                  <span className="font-mono text-sm font-bold text-white">
+                    {stage.count}
+                  </span>
                 </div>
               </div>
             </div>
