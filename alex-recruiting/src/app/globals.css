@@ -193,20 +193,36 @@ body {
 /* ── Dashboard command-center tokens ── */
 /* Matches Jacob's recruit page: pure black base, #ff000c red accent */
 .dashboard-shell {
+  /* Surface scale */
   --dash-bg: #000000;
-  --dash-surface: #0A0A0A;
-  --dash-surface-raised: #111111;
-  --dash-border: rgba(255, 255, 255, 0.05);
-  --dash-border-subtle: rgba(255, 255, 255, 0.03);
+  --dash-surface: #080808;
+  --dash-surface-raised: #121212;
+  --dash-surface-3: #1A1A1A;
+  /* Border scale */
+  --dash-border: #1F1F1F;
+  --dash-border-subtle: #0A0A0A;
+  --dash-border-strong: #2A2A2A;
+  /* Text scale */
   --dash-text: #FFFFFF;
-  --dash-text-secondary: rgba(255, 255, 255, 0.60);
-  --dash-muted: rgba(255, 255, 255, 0.40);
+  --dash-text-secondary: #A1A1AA;
+  --dash-muted: #71717A;
+  --dash-text-muted: #71717A;
+  --dash-text-disabled: #3F3F46;
+  /* Accent */
   --dash-accent: #ff000c;
-  --dash-accent-hover: #cc000a;
+  --dash-accent-hover: #e6000b;
+  --dash-accent-subtle: #1a0001;
+  /* Status */
   --dash-success: #22C55E;
   --dash-warning: #F59E0B;
-  --dash-danger: #EF4444;
+  --dash-danger: #DC2626;
+  --dash-info: #3B82F6;
+  /* Brand */
   --dash-gold: #D4A853;
+  --dash-gold-subtle: #1a1508;
+  /* Typography */
+  --dash-font-display: 'Playfair Display', Georgia, serif;
+  --dash-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
 .dashboard-shell {
@@ -231,6 +247,13 @@ body {
 .dashboard-shell ::selection {
   background: rgba(255, 0, 12, 0.3);
   color: #fff;
+}
+
+.font-dash-display {
+  font-family: var(--dash-font-display);
+}
+.font-dash-mono {
+  font-family: var(--dash-font-mono);
 }
 
 /* Recruit page styles */
