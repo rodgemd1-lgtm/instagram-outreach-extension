@@ -12,7 +12,7 @@ export function FunnelChart({ stages }: FunnelChartProps) {
         return (
           <div key={stage.label} className="flex items-center gap-3">
             <div className="w-24 text-right">
-              <span className="text-xs font-medium text-dash-text-secondary">{stage.label}</span>
+              <span className="text-xs font-medium text-white/40">{stage.label}</span>
             </div>
             <div className="flex-1">
               <div
@@ -22,7 +22,7 @@ export function FunnelChart({ stages }: FunnelChartProps) {
                   backgroundColor: stage.color,
                 }}
               >
-                <span className="text-xs font-bold text-white">{stage.value}</span>
+                <span className="font-jetbrains text-xs font-bold text-white">{stage.value}</span>
               </div>
             </div>
           </div>

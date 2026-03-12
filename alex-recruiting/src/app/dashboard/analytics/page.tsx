@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Eye, TrendingUp, Users, Mail, Loader2 } from "lucide-react";
 import { StatCard } from "@/components/dashboard/stat-card";
-import { PillarChart } from "@/components/dashboard/pillar-chart";
+import { BarChart } from "@/components/dashboard/bar-chart";
 import { PipelineFunnel } from "@/components/dashboard/pipeline-funnel";
 import { ActivityFeed } from "@/components/dashboard/activity-feed";
 
@@ -92,11 +92,23 @@ export default function AnalyticsPage() {
   ).length;
 
   const pipelineStages = [
-    { label: "Total Coaches", count: totalCoaches, color: "#3B82F6" },
-    { label: "DM Sent", count: dmSentCount, color: "#F97316" },
+    { label: "Total Coaches", count: totalCoaches, color: "#ff000c" },
+    { label: "DM Sent", count: dmSentCount, color: "#D4A853" },
     { label: "Replied", count: repliedCount, color: "#22C55E" },
-    { label: "Mutual Follow", count: mutualFollowCount, color: "#D4A853" },
+    { label: "Mutual Follow", count: mutualFollowCount, color: "#22C55E" },
   ];
+
+  // Build content distribution from posts
+  const pillarCounts: Record<string, number> = {};
+  posts.forEach((p) => {
+    const pillar = p.pillar || "Other";
+    pillarCounts[pillar] = (pillarCounts[pillar] || 0) + 1;
+  });
+  const contentData = Object.entries(pillarCounts).map(([label, value]) => ({
+    label,
+    value,
+    color: "#ff000c",
+  }));
 
   // Synthesize activities from posted posts
   const activities: ActivityItem[] = posts
@@ -112,7 +124,7 @@ export default function AnalyticsPage() {
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-dash-muted" />
+        <Loader2 className="h-8 w-8 animate-spin text-white/40" />
       </div>
     );
   }
@@ -121,46 +133,59 @@ export default function AnalyticsPage() {
     <div className="animate-fade-in">
       {/* Page header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-dash-text">
-          Analytics
+        <h1 className="text-2xl font-bold uppercase tracking-tight text-white">
+          ANALYTICS
         </h1>
-        <p className="mt-1 text-sm text-dash-muted">
-          Engagement, growth, and recruiting funnel metrics.
+        <p className="mt-1 text-sm text-white/40">
+          Track recruiting progress and identify what&apos;s working.
         </p>
       </div>
 
       {/* Stat cards */}
       <div className="mb-8 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
         <StatCard
-          label="Followers"
-          value={analytics?.totalFollowers ?? 0}
+          label="Pipeline Total"
+          value={totalCoaches}
           icon={Users}
         />
         <StatCard
-          label="Engagement"
-          value={`${analytics?.avgEngagementRate ?? 0}%`}
+          label="DMs Sent"
+          value={dmSentCount}
+          icon={Mail}
+        />
+        <StatCard
+          label="Response Rate"
+          value={`${analytics?.dmResponseRate ?? 0}%`}
           icon={TrendingUp}
         />
         <StatCard
-          label="Profile Views"
+          label="Profile Score"
           value={analytics?.profileVisits ?? 0}
           icon={Eye}
         />
-        <StatCard
-          label="DM Response"
-          value={`${analytics?.dmResponseRate ?? 0}%`}
-          icon={Mail}
-        />
       </div>
 
-      {/* Two-column: Pillar chart + Pipeline funnel */}
-      <div className="mb-8 grid gap-6 md:grid-cols-2">
-        <PillarChart posts={posts} />
+      {/* Pipeline funnel — full width */}
+      <div className="mb-8">
         <PipelineFunnel stages={pipelineStages} />
       </div>
 
-      {/* Activity feed */}
-      <ActivityFeed activities={activities} />
+      {/* Two-column: Content distribution + Activity feed */}
+      <div className="grid gap-6 md:grid-cols-2">
+        <div className="rounded-xl border border-white/5 bg-[#0A0A0A] p-6">
+          <h3 className="mb-4 text-[10px] font-medium uppercase tracking-[0.2em] text-white/40">
+            Content Distribution
+          </h3>
+          {contentData.length > 0 ? (
+            <BarChart data={contentData} />
+          ) : (
+            <p className="py-8 text-center text-sm text-white/40">
+              No content data yet.
+            </p>
+          )}
+        </div>
+        <ActivityFeed activities={activities} />
+      </div>
     </div>
   );
 }

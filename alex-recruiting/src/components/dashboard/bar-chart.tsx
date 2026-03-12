@@ -11,10 +11,10 @@ export function BarChart({ data, maxValue }: BarChartProps) {
       {data.map((item) => (
         <div key={item.label}>
           <div className="mb-1 flex items-center justify-between">
-            <span className="text-xs font-medium text-dash-text-secondary">{item.label}</span>
-            <span className="text-xs font-bold tabular-nums text-dash-text">{item.value}</span>
+            <span className="text-xs font-medium text-white/40">{item.label}</span>
+            <span className="font-jetbrains text-xs font-bold tabular-nums text-white">{item.value}</span>
           </div>
-          <div className="h-3 w-full overflow-hidden rounded-full bg-dash-surface-raised">
+          <div className="h-3 w-full overflow-hidden rounded-full bg-white/[0.03]">
             <div
               className="h-full rounded-full transition-all duration-700"
               style={{
