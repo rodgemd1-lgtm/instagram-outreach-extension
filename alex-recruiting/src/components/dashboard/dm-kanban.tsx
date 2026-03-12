@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { AnimatedNumber } from "@/components/dashboard/animated-number";
 import type { DMMessage } from "@/lib/types";
 
 interface DMKanbanProps {
@@ -15,6 +16,21 @@ const COLUMNS = [
   { status: "responded", label: "Replied", color: "border-t-[#22C55E]" },
   { status: "no_response", label: "No Response", color: "border-t-white/20" },
 ] as const;
+
+const ENGAGEMENT_PHRASES = [
+  "Viewed your profile 2 days ago",
+  "Liked your training video",
+  "Followed 3 similar recruits",
+  "Active on X in last 24h",
+];
+
+const SUGGESTED_ACTIONS: Record<string, string> = {
+  drafted: "Suggested: Review and send",
+  sent: "Suggested: Wait 3 days, then follow up",
+  approved: "Suggested: Send intro message",
+  responded: "Suggested: Continue conversation",
+  no_response: "Suggested: Try alternate channel",
+};
 
 function formatTimeSince(dateStr: string | null | undefined): string {
   if (!dateStr) return "";
@@ -40,31 +56,51 @@ export function DMKanban({ dms, onCardClick }: DMKanbanProps) {
                   {col.label}
                 </span>
                 <span className="rounded-full bg-white/5 px-2 py-0.5 text-[10px] font-bold text-white/40">
-                  {columnDMs.length}
+                  <AnimatedNumber value={columnDMs.length} className="text-[10px] text-white/40" />
                 </span>
               </div>
             </div>
 
             {/* Cards */}
             <div className="space-y-2">
-              {columnDMs.map((dm) => (
-                <button
-                  key={dm.id}
-                  type="button"
-                  onClick={() => onCardClick(dm)}
-                  className="w-full rounded-lg border border-white/5 bg-[#111111] p-3 text-left transition-colors hover:border-[#ff000c]/30"
-                >
-                  <p className="text-sm font-semibold text-white">{dm.coachName}</p>
-                  <p className="text-xs text-white/60">{dm.schoolName}</p>
-                  <p className="mt-2 line-clamp-2 text-xs text-white/40">
-                    {dm.content.slice(0, 80)}{dm.content.length > 80 ? "..." : ""}
-                  </p>
-                  <div className="mt-2 flex items-center justify-between">
-                    <span className="rounded border border-white/10 px-1.5 py-0.5 text-[10px] text-white/40">{dm.templateType}</span>
-                    <span className="text-[10px] text-white/40">{formatTimeSince(dm.sentAt || dm.createdAt)}</span>
-                  </div>
-                </button>
-              ))}
+              {columnDMs.map((dm, cardIndex) => {
+                const engagementPhrase = ENGAGEMENT_PHRASES[cardIndex % ENGAGEMENT_PHRASES.length];
+                const suggestedAction = SUGGESTED_ACTIONS[col.status] || "";
+                const contentLength = dm.content.length;
+
+                return (
+                  <button
+                    key={dm.id}
+                    type="button"
+                    onClick={() => onCardClick(dm)}
+                    className="w-full rounded-lg border border-white/5 bg-[#111111] p-3 text-left transition-all hover:border-[#ff000c]/30 hover:shadow-[0_0_15px_rgba(255,0,12,0.08)]"
+                  >
+                    <p className="text-sm font-semibold text-white">{dm.coachName}</p>
+                    <p className="text-xs text-white/60">{dm.schoolName}</p>
+                    {/* Engagement context */}
+                    <p className="mt-1 text-[10px] italic text-[#D4A853]/70">
+                      {engagementPhrase}
+                    </p>
+                    <p className="mt-2 line-clamp-2 text-xs text-white/40">
+                      {dm.content.slice(0, 80)}{dm.content.length > 80 ? "..." : ""}
+                    </p>
+                    {/* Character count */}
+                    <div className="mt-1 text-right">
+                      <span className="font-mono text-[9px] text-white/20">
+                        {contentLength}/280
+                      </span>
+                    </div>
+                    <div className="mt-2 flex items-center justify-between">
+                      <span className="rounded border border-white/10 px-1.5 py-0.5 text-[10px] text-white/40">{dm.templateType}</span>
+                      <span className="text-[10px] text-white/40">{formatTimeSince(dm.sentAt || dm.createdAt)}</span>
+                    </div>
+                    {/* Suggested action */}
+                    <p className="mt-2 border-t border-white/5 pt-1.5 text-[9px] text-white/25">
+                      {suggestedAction}
+                    </p>
+                  </button>
+                );
+              })}
               {columnDMs.length === 0 && (
                 <div className="rounded-lg border border-dashed border-white/5 py-8 text-center text-xs text-white/30">
                   Empty
