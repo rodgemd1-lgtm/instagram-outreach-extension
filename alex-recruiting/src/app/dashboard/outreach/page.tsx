@@ -51,15 +51,15 @@ export default function OutreachPage() {
     <div className="animate-fade-in">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-dash-text">DM Outreach</h1>
-          <p className="mt-1 text-sm text-dash-muted">
+          <h1 className="text-2xl font-bold uppercase tracking-tight text-white">DM Outreach</h1>
+          <p className="mt-1 text-sm text-white/40">
             Review, approve, and track coach outreach.
           </p>
         </div>
         <button
           type="button"
           onClick={() => { setSelectedDM(null); setComposerOpen(true); }}
-          className="flex items-center gap-2 rounded-lg bg-dash-accent px-4 py-2 text-sm font-medium text-white hover:bg-dash-accent-hover transition-colors"
+          className="flex items-center gap-2 rounded-lg bg-[#ff000c] px-4 py-2 text-xs font-medium uppercase tracking-widest text-white hover:bg-[#cc000a] transition-colors"
         >
           <Plus className="h-4 w-4" />
           New DM
@@ -68,7 +68,7 @@ export default function OutreachPage() {
 
       {loading ? (
         <div className="flex items-center justify-center py-24">
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-dash-accent border-t-transparent" />
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#ff000c] border-t-transparent" />
         </div>
       ) : dms.length === 0 ? (
         <EmptyState

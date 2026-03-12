@@ -115,14 +115,14 @@ export function DMComposer({ open, onClose, coaches, existingDM, preselectedCoac
       <div className="space-y-5">
         {/* Coach selector */}
         <div>
-          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-dash-muted">To Coach</label>
+          <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-white/40">To Coach</label>
           {selectedCoach ? (
-            <div className="flex items-center justify-between rounded-lg border border-dash-border bg-dash-surface-raised p-3">
+            <div className="flex items-center justify-between rounded-lg border border-white/10 bg-[#111111] p-3">
               <div>
-                <p className="text-sm font-medium text-dash-text">{selectedCoach.name}</p>
-                <p className="text-xs text-dash-muted">{selectedCoach.schoolName} &middot; {selectedCoach.division}</p>
+                <p className="text-sm font-semibold text-white">{selectedCoach.name}</p>
+                <p className="text-xs text-white/60">{selectedCoach.schoolName} &middot; {selectedCoach.division}</p>
               </div>
-              <button type="button" onClick={() => setSelectedCoachId("")} className="text-xs text-dash-accent hover:underline">Change</button>
+              <button type="button" onClick={() => setSelectedCoachId("")} className="text-xs text-[#ff000c] hover:underline">Change</button>
             </div>
           ) : (
             <div>
@@ -131,18 +131,18 @@ export function DMComposer({ open, onClose, coaches, existingDM, preselectedCoac
                 value={coachSearch}
                 onChange={(e) => setCoachSearch(e.target.value)}
                 placeholder="Search coaches..."
-                className="w-full rounded-lg border border-dash-border bg-dash-surface px-3 py-2 text-sm text-dash-text placeholder:text-dash-muted/50 focus:border-dash-accent focus:outline-none"
+                className="w-full rounded-lg border border-white/10 bg-[#111111] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#ff000c] focus:outline-none"
               />
-              <div className="mt-1 max-h-40 overflow-y-auto rounded-lg border border-dash-border bg-dash-surface">
+              <div className="mt-1 max-h-40 overflow-y-auto rounded-lg border border-white/10 bg-[#0A0A0A]">
                 {filteredCoaches.map((coach) => (
                   <button
                     key={coach.id}
                     type="button"
                     onClick={() => handleCoachSelect(coach.id)}
-                    className="flex w-full items-center justify-between px-3 py-2 text-left hover:bg-dash-surface-raised"
+                    className="flex w-full items-center justify-between px-3 py-2 text-left hover:bg-[#111111]"
                   >
-                    <span className="text-sm text-dash-text">{coach.name}</span>
-                    <span className="text-xs text-dash-muted">{coach.schoolName}</span>
+                    <span className="text-sm text-white">{coach.name}</span>
+                    <span className="text-xs text-white/60">{coach.schoolName}</span>
                   </button>
                 ))}
               </div>
@@ -152,14 +152,14 @@ export function DMComposer({ open, onClose, coaches, existingDM, preselectedCoac
 
         {/* Template picker */}
         <div>
-          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-dash-muted">Template</label>
+          <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-white/40">Template</label>
           <div className="flex gap-1.5">
             {TEMPLATES.map((tpl) => (
               <button
                 key={tpl.type}
                 type="button"
                 onClick={() => { setTemplateType(tpl.type); if (selectedCoach) applyTemplate(tpl.type, selectedCoach); }}
-                className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${templateType === tpl.type ? "bg-dash-accent text-white" : "border border-dash-border text-dash-text-secondary hover:bg-dash-surface-raised"}`}
+                className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${templateType === tpl.type ? "border border-[#ff000c] bg-[#ff000c]/5 text-white" : "border border-white/5 bg-[#0A0A0A] text-white/60 hover:border-[#ff000c]/30"}`}
               >
                 {tpl.label}
               </button>
@@ -169,39 +169,39 @@ export function DMComposer({ open, onClose, coaches, existingDM, preselectedCoac
 
         {/* Message */}
         <div>
-          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-dash-muted">Message</label>
+          <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-white/40">Message</label>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             rows={10}
-            className="w-full rounded-lg border border-dash-border bg-dash-surface p-3 font-mono text-sm text-dash-text placeholder:text-dash-muted/50 focus:border-dash-accent focus:outline-none"
+            className="w-full rounded-lg border border-white/10 bg-[#111111] p-3 font-mono text-sm text-white placeholder:text-white/30 focus:border-[#ff000c] focus:outline-none"
             placeholder="Select a coach and template to generate a message..."
           />
-          <p className="mt-1 text-right text-xs text-dash-muted">{content.length} chars</p>
+          <p className="mt-1 text-right text-xs text-white/40">{content.length} chars</p>
         </div>
 
         {/* Family review gate */}
-        <label className="flex items-center gap-3 rounded-lg border border-dash-border bg-dash-surface-raised p-3 cursor-pointer">
+        <label className="flex items-center gap-3 rounded-lg border border-white/10 bg-[#111111] p-3 cursor-pointer">
           <input
             type="checkbox"
             checked={reviewed}
             onChange={(e) => setReviewed(e.target.checked)}
-            className="h-4 w-4 rounded border-dash-border accent-dash-accent"
+            className="h-4 w-4 rounded border-white/10 accent-[#ff000c]"
           />
           <div>
-            <p className="text-sm font-medium text-dash-text">Dad has reviewed this message</p>
-            <p className="text-xs text-dash-muted">Required before queueing</p>
+            <p className="text-sm font-medium text-white">Dad has reviewed this message</p>
+            <p className="text-xs text-white/40">Required before queueing</p>
           </div>
-          {reviewed && <CheckCircle className="ml-auto h-4 w-4 text-dash-success" />}
+          {reviewed && <CheckCircle className="ml-auto h-4 w-4 text-[#22C55E]" />}
         </label>
 
         {/* Actions */}
-        <div className="flex gap-2 border-t border-dash-border pt-4">
+        <div className="flex gap-2 border-t border-white/5 pt-4">
           <button
             type="button"
             onClick={() => handleSave("drafted")}
             disabled={saving || !content || !selectedCoach}
-            className="flex items-center gap-2 rounded-lg border border-dash-border px-4 py-2 text-sm font-medium text-dash-text-secondary hover:bg-dash-surface-raised transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 rounded-lg bg-white/5 px-4 py-2 text-sm font-medium text-white/60 hover:bg-white/10 transition-colors disabled:opacity-50"
           >
             <Save className="h-4 w-4" />
             Save Draft
@@ -210,7 +210,7 @@ export function DMComposer({ open, onClose, coaches, existingDM, preselectedCoac
             type="button"
             onClick={() => handleSave("approved")}
             disabled={saving || !content || !selectedCoach || !reviewed}
-            className="flex items-center gap-2 rounded-lg bg-dash-accent px-4 py-2 text-sm font-medium text-white hover:bg-dash-accent-hover transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 rounded-lg bg-[#ff000c] px-4 py-2 text-sm font-medium text-white hover:bg-[#cc000a] transition-colors disabled:opacity-50"
           >
             <Send className="h-4 w-4" />
             Approve & Queue
