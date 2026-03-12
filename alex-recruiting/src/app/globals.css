@@ -191,17 +191,18 @@ body {
 }
 
 /* ── Dashboard command-center tokens ── */
+/* Matches Jacob's recruit page: pure black base, #ff000c red accent */
 .dashboard-shell {
-  --dash-bg: #0F1117;
-  --dash-surface: #1A1D27;
-  --dash-surface-raised: #22252F;
-  --dash-border: #2A2D37;
-  --dash-border-subtle: #1F2229;
-  --dash-text: #E4E4E7;
-  --dash-text-secondary: #A1A1AA;
-  --dash-muted: #71717A;
-  --dash-accent: #3B82F6;
-  --dash-accent-hover: #2563EB;
+  --dash-bg: #000000;
+  --dash-surface: #0A0A0A;
+  --dash-surface-raised: #111111;
+  --dash-border: rgba(255, 255, 255, 0.05);
+  --dash-border-subtle: rgba(255, 255, 255, 0.03);
+  --dash-text: #FFFFFF;
+  --dash-text-secondary: rgba(255, 255, 255, 0.60);
+  --dash-muted: rgba(255, 255, 255, 0.40);
+  --dash-accent: #ff000c;
+  --dash-accent-hover: #cc000a;
   --dash-success: #22C55E;
   --dash-warning: #F59E0B;
   --dash-danger: #EF4444;
@@ -213,21 +214,22 @@ body {
   color: var(--dash-text);
   font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
 }
 
 .dashboard-shell ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 0, 12, 0.15);
 }
 .dashboard-shell ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 0, 12, 0.30);
 }
 .dashboard-shell ::-webkit-scrollbar-track {
   background: transparent;
 }
 
 .dashboard-shell ::selection {
-  background: rgba(59, 130, 246, 0.3);
+  background: rgba(255, 0, 12, 0.3);
   color: #fff;
 }
 
@@ -283,6 +285,21 @@ body {
 }
 .animate-scroll-ticker {
   animation: scroll-ticker 30s linear infinite;
+}
+
+/* Staggered fade-in-up for card grids */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.4s ease-out both;
 }
 
 @media (prefers-reduced-motion: reduce) {

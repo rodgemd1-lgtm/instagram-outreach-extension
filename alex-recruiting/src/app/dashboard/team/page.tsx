@@ -156,17 +156,18 @@ export default function TeamPage() {
 
       {/* Team Grid */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        {members.map((member) => {
+        {members.map((member, index) => {
           const isSelected = selectedMember === member.id;
           return (
             <button
               key={member.id}
               onClick={() => handleSelectMember(member.id)}
-              className={`group rounded-xl border p-4 text-left transition-all ${
+              className={`animate-fade-in-up group rounded-xl border p-4 text-left transition-all ${
                 isSelected
                   ? "border-[#ff000c]/50 bg-[#111111]"
                   : "border-white/5 bg-[#0A0A0A] hover:border-[#ff000c]/30 hover:bg-[#111111]"
               }`}
+              style={{ animationDelay: `${index * 50}ms` }}
             >
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#ff000c]/20 text-sm font-bold text-[#ff000c]">

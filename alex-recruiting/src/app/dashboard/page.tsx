@@ -213,32 +213,16 @@ export default function DashboardPage() {
 
       {/* Stat cards */}
       <div className="mb-8 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
-        <StatCard
-          label="Profile Views"
-          value={loading ? "..." : stats.profileViews}
-          change="+12 this week"
-          changeType="up"
-          icon={Eye}
-        />
-        <StatCard
-          label="Coaches in DB"
-          value={loading ? "..." : stats.coachFollowers}
-          change="183 total"
-          changeType="neutral"
-          icon={Users}
-        />
-        <StatCard
-          label="DMs Sent"
-          value={loading ? "..." : stats.dmsSent}
-          icon={Mail}
-        />
-        <StatCard
-          label="Posts This Week"
-          value={loading ? "..." : stats.postsThisWeek}
-          change="Target: 5-7"
-          changeType="neutral"
-          icon={FileText}
-        />
+        {[
+          { label: "Profile Views", value: loading ? "..." : stats.profileViews, change: "+12 this week", changeType: "up" as const, icon: Eye },
+          { label: "Coaches in DB", value: loading ? "..." : stats.coachFollowers, change: "183 total", changeType: "neutral" as const, icon: Users },
+          { label: "DMs Sent", value: loading ? "..." : stats.dmsSent, icon: Mail },
+          { label: "Posts This Week", value: loading ? "..." : stats.postsThisWeek, change: "Target: 5-7", changeType: "neutral" as const, icon: FileText },
+        ].map((card, index) => (
+          <div key={card.label} className="animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+            <StatCard {...card} />
+          </div>
+        ))}
       </div>
 
       {/* Two-column: Action items + Upcoming events */}
@@ -246,9 +230,12 @@ export default function DashboardPage() {
         {/* Action items */}
         <div className="rounded-xl border border-white/5 bg-[#0A0A0A]">
           <div className="flex items-center justify-between border-b border-white/5 px-5 py-4">
-            <h2 className="text-sm font-semibold text-white">
-              Action Items
-            </h2>
+            <div className="flex items-center gap-3">
+              <div className="h-6 w-1 rounded-full bg-[#ff000c]" />
+              <h2 className="text-[10px] uppercase tracking-[0.2em] text-white/40">
+                Action Items
+              </h2>
+            </div>
             <span className="rounded-full bg-[#EF4444]/10 px-2.5 py-0.5 text-xs font-semibold text-[#EF4444]">
               {actionItems.filter((a) => a.priority === "high").length} urgent
             </span>
@@ -277,9 +264,12 @@ export default function DashboardPage() {
         {/* Upcoming events */}
         <div className="rounded-xl border border-white/5 bg-[#0A0A0A]">
           <div className="flex items-center justify-between border-b border-white/5 px-5 py-4">
-            <h2 className="text-sm font-semibold text-white">
-              Upcoming Events
-            </h2>
+            <div className="flex items-center gap-3">
+              <div className="h-6 w-1 rounded-full bg-[#ff000c]" />
+              <h2 className="text-[10px] uppercase tracking-[0.2em] text-white/40">
+                Upcoming Events
+              </h2>
+            </div>
             <Link
               href="/dashboard/calendar"
               className="text-xs font-medium text-[#ff000c] hover:text-[#ff000c]"
@@ -312,50 +302,23 @@ export default function DashboardPage() {
 
       {/* Quick links */}
       <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
-        <Link
-          href="/recruit"
-          className="group rounded-xl border border-white/5 bg-[#0A0A0A] p-4 transition-colors hover:border-[#ff000c]/30 hover:bg-[#111111]"
-        >
-          <TrendingUp className="h-5 w-5 text-[#ff000c]" />
-          <p className="mt-3 text-sm font-semibold text-white">
-            Recruit Site
-          </p>
-          <p className="mt-0.5 text-xs text-white/40">View public profile</p>
-        </Link>
-        <Link
-          href="/dashboard/content"
-          className="group rounded-xl border border-white/5 bg-[#0A0A0A] p-4 transition-colors hover:border-[#ff000c]/30 hover:bg-[#111111]"
-        >
-          <FileText className="h-5 w-5 text-[#ff000c]" />
-          <p className="mt-3 text-sm font-semibold text-white">
-            Content
-          </p>
-          <p className="mt-0.5 text-xs text-white/40">Review and publish</p>
-        </Link>
-        <Link
-          href="/dashboard/team"
-          className="group rounded-xl border border-white/5 bg-[#0A0A0A] p-4 transition-colors hover:border-[#ff000c]/30 hover:bg-[#111111]"
-        >
-          <MessageSquare className="h-5 w-5 text-[#ff000c]" />
-          <p className="mt-3 text-sm font-semibold text-white">
-            Team
-          </p>
-          <p className="mt-0.5 text-xs text-white/40">
-            Chat with your team
-          </p>
-        </Link>
-        <Link
-          href="/dashboard/coaches"
-          className="group rounded-xl border border-white/5 bg-[#0A0A0A] p-4 transition-colors hover:border-[#ff000c]/30 hover:bg-[#111111]"
-        >
-          <Mail className="h-5 w-5 text-[#ff000c]" />
-          <p className="mt-3 text-sm font-semibold text-white">
-            Coach Pipeline
-          </p>
-          <p className="mt-0.5 text-xs text-white/40">
-            CRM and outreach
-          </p>
-        </Link>
+        {[
+          { href: "/recruit", icon: TrendingUp, label: "Recruit Site", desc: "View public profile" },
+          { href: "/dashboard/content", icon: FileText, label: "Content", desc: "Review and publish" },
+          { href: "/dashboard/team", icon: MessageSquare, label: "Team", desc: "Chat with your team" },
+          { href: "/dashboard/coaches", icon: Mail, label: "Coach Pipeline", desc: "CRM and outreach" },
+        ].map((link, index) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className="animate-fade-in-up group rounded-xl border border-white/5 bg-[#0A0A0A] p-4 transition-all duration-300 hover:border-[#ff000c]/30 hover:bg-[#111111] hover:shadow-[0_0_15px_rgba(255,0,12,0.1)]"
+            style={{ animationDelay: `${index * 50}ms` }}
+          >
+            <link.icon className="h-5 w-5 text-[#ff000c]" />
+            <p className="mt-3 text-sm font-semibold text-white">{link.label}</p>
+            <p className="mt-0.5 text-xs text-white/40">{link.desc}</p>
+          </Link>
+        ))}
       </div>
     </div>
   );

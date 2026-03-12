@@ -143,26 +143,16 @@ export default function AnalyticsPage() {
 
       {/* Stat cards */}
       <div className="mb-8 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
-        <StatCard
-          label="Pipeline Total"
-          value={totalCoaches}
-          icon={Users}
-        />
-        <StatCard
-          label="DMs Sent"
-          value={dmSentCount}
-          icon={Mail}
-        />
-        <StatCard
-          label="Response Rate"
-          value={`${analytics?.dmResponseRate ?? 0}%`}
-          icon={TrendingUp}
-        />
-        <StatCard
-          label="Profile Score"
-          value={analytics?.profileVisits ?? 0}
-          icon={Eye}
-        />
+        {[
+          { label: "Pipeline Total", value: totalCoaches, icon: Users },
+          { label: "DMs Sent", value: dmSentCount, icon: Mail },
+          { label: "Response Rate", value: `${analytics?.dmResponseRate ?? 0}%`, icon: TrendingUp },
+          { label: "Profile Score", value: analytics?.profileVisits ?? 0, icon: Eye },
+        ].map((card, index) => (
+          <div key={card.label} className="animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+            <StatCard {...card} />
+          </div>
+        ))}
       </div>
 
       {/* Pipeline funnel — full width */}
