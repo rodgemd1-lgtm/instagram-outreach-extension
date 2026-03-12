@@ -333,3 +333,97 @@ body {
     animation: none;
   }
 }
+
+/* ── Dashboard Polish: Micro-interactions + Consistency ── */
+
+/* Dashboard Button System */
+.dash-btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-xs font-medium uppercase tracking-widest transition-all duration-200;
+}
+.dash-btn-primary {
+  @apply dash-btn bg-[#ff000c] text-white hover:bg-[#e6000b] active:scale-[0.98];
+}
+.dash-btn-secondary {
+  @apply dash-btn border border-[#ff000c]/30 text-[#ff000c] hover:bg-[#ff000c]/10 active:scale-[0.98];
+}
+.dash-btn-ghost {
+  @apply dash-btn text-white/50 hover:bg-white/5 hover:text-white/70;
+}
+.dash-btn-danger {
+  @apply dash-btn bg-[#DC2626] text-white hover:bg-[#B91C1C] active:scale-[0.98];
+}
+
+/* Dashboard Focus States */
+.dash-focus:focus-visible {
+  @apply outline-none ring-2 ring-[#ff000c]/50 ring-offset-2 ring-offset-black;
+}
+
+/* Dashboard Skeleton Loading */
+@keyframes dash-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.dash-skeleton {
+  @apply rounded bg-white/5;
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+  background-size: 200% 100%;
+  animation: dash-shimmer 1.5s ease-in-out infinite;
+}
+
+/* Dashboard micro-interactions */
+@keyframes dash-pulse-ring {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 0, 12, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(255, 0, 12, 0); }
+}
+
+@keyframes dash-breathe {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes dash-slide-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dash-count-up {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dash-pulse-ring {
+  animation: dash-pulse-ring 2s ease-in-out infinite;
+}
+
+.dash-breathe {
+  animation: dash-breathe 3s ease-in-out infinite;
+}
+
+.dash-slide-up {
+  animation: dash-slide-up 0.4s ease-out;
+}
+
+/* Dashboard card hover */
+.dash-card {
+  @apply rounded-xl border border-white/5 bg-[#0A0A0A] transition-all duration-200;
+}
+
+.dash-card:hover {
+  @apply border-white/10 bg-[#111111] shadow-[0_0_20px_rgba(255,0,12,0.05)];
+  transform: translateY(-1px);
+}
+
+.dash-card-accent:hover {
+  @apply border-[#ff000c]/20;
+}
+
+/* Dashboard section header pattern */
+.dash-section-header {
+  @apply flex items-center gap-3;
+}
+
+.dash-section-header::before {
+  content: '';
+  @apply block h-6 w-1 rounded-full bg-[#ff000c];
+}
