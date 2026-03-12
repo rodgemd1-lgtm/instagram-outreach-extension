@@ -382,3 +382,60 @@ Present verification report:
 - Ask: "Everything checks out. Ready to deploy, or any fixes needed?"
 
 Wait for user approval. If approved, proceed to deployment (git push, Vercel deploy, etc.).
+
+---
+
+## Design Skill Library
+
+The studio has access to 72 specialized design skills organized across three sources. Invoke these skills during the appropriate pipeline phase for deeper guidance.
+
+### UI/UX Pro Max (7 skills)
+
+Comprehensive design intelligence with 50+ styles, 161 color palettes, 57 font pairings, 99 UX guidelines, and 25 chart types.
+
+| Skill | Use During |
+|-------|-----------|
+| `ui-ux-pro-max` | All phases — master design reference with style database, color palettes, font pairings |
+| `design-system` | Phase 3 — token architecture, component specs, theming |
+| `design` | Phase 4-5 — page design patterns and layout guidance |
+| `ui-styling` | Phase 5 — styling implementation, CSS patterns |
+| `brand` | Phase 2 — brand identity, visual language, positioning |
+| `banner-design` | Phase 5 — hero sections, promotional banners |
+| `slides` | Phase 5 — presentation/deck design (for deck project type) |
+
+### Designer Skills Collection (63 skills)
+
+Research-through-delivery design methodology.
+
+**Research (Phase 1):**
+`competitive-analysis`, `user-persona`, `empathy-map`, `interview-script`, `summarize-interview`, `journey-map`, `jobs-to-be-done`, `diary-study-plan`, `affinity-diagram`, `card-sort-analysis`, `usability-test-plan`
+
+**Strategy (Phase 2):**
+`design-brief`, `design-principles`, `north-star-vision`, `experience-map`, `stakeholder-alignment`, `metrics-definition`, `opportunity-framework`, `ux-writing`
+
+**Design System (Phase 3):**
+`color-system`, `typography-scale`, `spacing-system`, `design-token`, `theming-system`, `naming-convention`, `icon-system`, `component-spec`, `pattern-library`, `documentation-template`, `accessibility-audit`
+
+**Layout & Interaction (Phase 4):**
+`layout-grid`, `responsive-design`, `visual-hierarchy`, `dark-mode-design`, `data-visualization`, `illustration-style`, `animation-principles`, `micro-interaction-spec`, `state-machine`, `loading-states`, `error-handling-ux`, `feedback-patterns`, `gesture-patterns`, `user-flow-diagram`, `wireframe-spec`
+
+**Build & Review (Phase 5):**
+`design-qa-checklist`, `design-critique`, `design-review-process`, `handoff-spec`, `design-rationale`, `case-study`, `presentation-deck`
+
+**Verify (Phase 6):**
+`heuristic-evaluation`, `accessibility-test-plan`, `a-b-test-design`, `click-test-plan`, `prototype-strategy`, `test-scenario`, `design-sprint-plan`, `design-token-audit`, `design-system-adoption`
+
+### External Resources
+
+| Resource | URL | Use For |
+|----------|-----|---------|
+| 21st.dev | https://21st.dev | React/Tailwind UI components, agent templates, pre-built blocks |
+| shadcn/ui | https://ui.shadcn.com | Component primitives (already in project stack) |
+
+### How to Use Skills in Pipeline
+
+During each phase, invoke the relevant skills for deeper guidance. Example:
+- Phase 1 research: invoke `competitive-analysis` skill for structured competitor audit
+- Phase 3 design system: invoke `color-system` + `typography-scale` + `spacing-system` for detailed token generation
+- Phase 5 build: invoke `ui-ux-pro-max` for style reference, `responsive-design` for breakpoint strategy
+- Phase 6 verify: invoke `heuristic-evaluation` + `accessibility-audit` for structured verification
