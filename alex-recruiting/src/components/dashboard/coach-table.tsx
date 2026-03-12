@@ -4,6 +4,8 @@ import { useState, useMemo } from "react";
 import { Search, ArrowUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { EngagementMeter } from "./engagement-meter";
+import { calculateEngagement } from "@/lib/dashboard/engagement-scoring";
 import type { Coach } from "@/lib/types";
 
 interface CoachTableProps {
@@ -44,6 +46,28 @@ function formatRelativeDate(dateStr: string | null): string {
   if (days < 7) return `${days}d ago`;
   if (days < 30) return `${Math.floor(days / 7)}w ago`;
   return `${Math.floor(days / 30)}mo ago`;
+}
+
+function getEngagementScore(coach: Coach): number {
+  const daysAgo = coach.lastEngaged
+    ? Math.floor((Date.now() - new Date(coach.lastEngaged).getTime()) / 86400000)
+    : null;
+  return calculateEngagement({
+    isFollowed: coach.followStatus !== "not_followed",
+    isFollowedBack: coach.followStatus === "followed_back",
+    dmSent: ["sent", "responded", "approved"].includes(coach.dmStatus),
+    dmReplied: coach.dmStatus === "responded",
+    lastInteractionDays: daysAgo,
+    interactionCount: coach.xActivityScore,
+  }).score;
+}
+
+function getTierBorderColor(tier: string): string {
+  switch (tier) {
+    case "Tier 1": return "border-l-[#ff000c]";
+    case "Tier 2": return "border-l-[#D4A853]";
+    default: return "border-l-white/20";
+  }
 }
 
 export function CoachTable({ coaches, onCoachClick }: CoachTableProps) {
@@ -112,7 +136,7 @@ export function CoachTable({ coaches, onCoachClick }: CoachTableProps) {
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-white/5">
-              {([["name", "Coach"], ["schoolName", "School"], ["division", "Division"], ["priorityTier", "Tier"], ["olNeedScore", "OL Need"]] as [SortKey, string][]).map(([key, label]) => (
+              {([["name", "Coach"], ["schoolName", "School"], ["division", "Division"], ["priorityTier", "Tier"], ["olNeedScore", "Engagement"]] as [SortKey, string][]).map(([key, label]) => (
                 <th key={key} className="px-4 py-3">
                   <button type="button" onClick={() => toggleSort(key)} className="flex items-center gap-1 text-[10px] uppercase tracking-[0.2em] text-white/40 hover:text-white">
                     {label}
@@ -130,24 +154,26 @@ export function CoachTable({ coaches, onCoachClick }: CoachTableProps) {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((coach) => (
+            {filtered.map((coach, idx) => (
               <tr
                 key={coach.id}
                 tabIndex={0}
                 onClick={() => onCoachClick(coach)}
                 onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onCoachClick(coach); } }}
-                className="cursor-pointer border-b border-white/5 transition-colors hover:bg-[#111111] focus:bg-[#111111] focus:outline-none"
+                className={cn(
+                  "cursor-pointer border-b border-white/5 border-l-2 transition-all",
+                  getTierBorderColor(coach.priorityTier),
+                  idx % 2 === 0 ? "bg-transparent" : "bg-white/[0.02]",
+                  "hover:bg-white/[0.04] hover:shadow-[0_0_20px_rgba(255,0,12,0.05)]",
+                  "focus:bg-white/[0.04] focus:outline-none"
+                )}
               >
                 <td className="px-4 py-3 font-medium text-white">{coach.name}</td>
                 <td className="px-4 py-3 text-white/60">{coach.schoolName}</td>
                 <td className="px-4 py-3"><Badge variant="outline" className="text-[10px]">{coach.division}</Badge></td>
                 <td className="px-4 py-3"><Badge variant={coach.priorityTier === "Tier 1" ? "tier1" : coach.priorityTier === "Tier 2" ? "tier2" : "tier3"} className="text-[10px]">{coach.priorityTier}</Badge></td>
-                <td className="px-4 py-3">
-                  <div className="flex gap-0.5">
-                    {[1, 2, 3, 4, 5].map((n) => (
-                      <div key={n} className={cn("h-2 w-2 rounded-full", n <= coach.olNeedScore ? "bg-[#ff000c]" : "bg-white/10")} />
-                    ))}
-                  </div>
+                <td className="px-4 py-3 min-w-[120px]">
+                  <EngagementMeter score={getEngagementScore(coach)} />
                 </td>
                 <td className="px-4 py-3"><Badge variant={getFollowBadgeVariant(coach.followStatus)} className="text-[10px]">{coach.followStatus.replace("_", " ")}</Badge></td>
                 <td className="px-4 py-3"><Badge variant={getDmBadgeVariant(coach.dmStatus)} className="text-[10px]">{coach.dmStatus.replace("_", " ")}</Badge></td>
