@@ -35,15 +35,15 @@ export default function CoachesPage() {
   return (
     <div className="animate-fade-in">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight text-dash-text">Coach CRM</h1>
-        <p className="mt-1 text-sm text-dash-muted">
+        <h1 className="text-2xl font-bold uppercase tracking-tight text-white">Coach CRM</h1>
+        <p className="mt-1 text-sm text-white/40">
           {coaches.length} coaches tracked. Filter, sort, and manage relationships.
         </p>
       </div>
 
       {loading ? (
         <div className="flex items-center justify-center py-24">
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-dash-accent border-t-transparent" />
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#ff000c] border-t-transparent" />
         </div>
       ) : coaches.length === 0 ? (
         <EmptyState

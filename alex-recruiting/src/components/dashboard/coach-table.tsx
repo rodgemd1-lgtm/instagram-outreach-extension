@@ -79,20 +79,20 @@ export function CoachTable({ coaches, onCoachClick }: CoachTableProps) {
     else { setSortKey(key); setSortDir("asc"); }
   };
 
-  const selectClass = "rounded-lg border border-dash-border bg-dash-surface px-2 py-1.5 text-xs text-dash-text focus:border-dash-accent focus:outline-none";
+  const selectClass = "rounded-lg border border-white/10 bg-[#111111] px-2 py-1.5 text-xs text-white focus:border-[#ff000c] focus:outline-none";
 
   return (
     <div>
       {/* Filter bar */}
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-dash-muted" />
+          <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-white/30" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search coaches or schools..."
-            className="w-full rounded-lg border border-dash-border bg-dash-surface py-1.5 pl-8 pr-3 text-xs text-dash-text placeholder:text-dash-muted/50 focus:border-dash-accent focus:outline-none"
+            className="w-full rounded-lg border border-white/10 bg-[#111111] py-1.5 pl-8 pr-3 text-xs text-white placeholder:text-white/30 focus:border-[#ff000c] focus:outline-none"
           />
         </div>
         <select value={division} onChange={(e) => setDivision(e.target.value)} className={selectClass}>
@@ -104,54 +104,54 @@ export function CoachTable({ coaches, onCoachClick }: CoachTableProps) {
         <select value={dmStatus} onChange={(e) => setDmStatus(e.target.value)} className={selectClass}>
           {DM_STATUS_OPTIONS.map((o) => <option key={o} value={o}>{o === "All" ? "All DM Status" : o.replace("_", " ")}</option>)}
         </select>
-        <span className="text-xs text-dash-muted">{filtered.length} coaches</span>
+        <span className="text-xs text-white/40">{filtered.length} coaches</span>
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto rounded-xl border border-dash-border">
+      <div className="overflow-x-auto rounded-xl border border-white/5 bg-[#0A0A0A]">
         <table className="w-full text-left text-sm">
           <thead>
-            <tr className="border-b border-dash-border bg-dash-surface-raised">
+            <tr className="border-b border-white/5">
               {([["name", "Coach"], ["schoolName", "School"], ["division", "Division"], ["priorityTier", "Tier"], ["olNeedScore", "OL Need"]] as [SortKey, string][]).map(([key, label]) => (
                 <th key={key} className="px-4 py-3">
-                  <button type="button" onClick={() => toggleSort(key)} className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-dash-muted hover:text-dash-text">
+                  <button type="button" onClick={() => toggleSort(key)} className="flex items-center gap-1 text-[10px] uppercase tracking-[0.2em] text-white/40 hover:text-white">
                     {label}
                     <ArrowUpDown className="h-3 w-3" />
                   </button>
                 </th>
               ))}
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-dash-muted">Follow</th>
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-dash-muted">DM</th>
+              <th className="px-4 py-3 text-[10px] uppercase tracking-[0.2em] text-white/40">Follow</th>
+              <th className="px-4 py-3 text-[10px] uppercase tracking-[0.2em] text-white/40">DM</th>
               <th className="px-4 py-3">
-                <button type="button" onClick={() => toggleSort("lastEngaged")} className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-dash-muted hover:text-dash-text">
+                <button type="button" onClick={() => toggleSort("lastEngaged")} className="flex items-center gap-1 text-[10px] uppercase tracking-[0.2em] text-white/40 hover:text-white">
                   Engaged <ArrowUpDown className="h-3 w-3" />
                 </button>
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-dash-border-subtle">
+          <tbody>
             {filtered.map((coach) => (
               <tr
                 key={coach.id}
                 tabIndex={0}
                 onClick={() => onCoachClick(coach)}
                 onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onCoachClick(coach); } }}
-                className="cursor-pointer transition-colors hover:bg-dash-surface-raised focus:bg-dash-surface-raised focus:outline-none"
+                className="cursor-pointer border-b border-white/5 transition-colors hover:bg-[#111111] focus:bg-[#111111] focus:outline-none"
               >
-                <td className="px-4 py-3 font-medium text-dash-text">{coach.name}</td>
-                <td className="px-4 py-3 text-dash-text-secondary">{coach.schoolName}</td>
+                <td className="px-4 py-3 font-medium text-white">{coach.name}</td>
+                <td className="px-4 py-3 text-white/60">{coach.schoolName}</td>
                 <td className="px-4 py-3"><Badge variant="outline" className="text-[10px]">{coach.division}</Badge></td>
                 <td className="px-4 py-3"><Badge variant={coach.priorityTier === "Tier 1" ? "tier1" : coach.priorityTier === "Tier 2" ? "tier2" : "tier3"} className="text-[10px]">{coach.priorityTier}</Badge></td>
                 <td className="px-4 py-3">
                   <div className="flex gap-0.5">
                     {[1, 2, 3, 4, 5].map((n) => (
-                      <div key={n} className={cn("h-2 w-2 rounded-full", n <= coach.olNeedScore ? "bg-dash-accent" : "bg-dash-border")} />
+                      <div key={n} className={cn("h-2 w-2 rounded-full", n <= coach.olNeedScore ? "bg-[#ff000c]" : "bg-white/10")} />
                     ))}
                   </div>
                 </td>
                 <td className="px-4 py-3"><Badge variant={getFollowBadgeVariant(coach.followStatus)} className="text-[10px]">{coach.followStatus.replace("_", " ")}</Badge></td>
                 <td className="px-4 py-3"><Badge variant={getDmBadgeVariant(coach.dmStatus)} className="text-[10px]">{coach.dmStatus.replace("_", " ")}</Badge></td>
-                <td className="px-4 py-3 text-xs text-dash-muted">{formatRelativeDate(coach.lastEngaged)}</td>
+                <td className="px-4 py-3 text-xs text-white/40">{formatRelativeDate(coach.lastEngaged)}</td>
               </tr>
             ))}
           </tbody>
