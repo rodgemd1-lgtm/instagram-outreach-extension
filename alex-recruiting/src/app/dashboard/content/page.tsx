@@ -1,18 +1,33 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { isSameDay, format } from "date-fns";
 import { Plus, Loader2 } from "lucide-react";
 import { CalendarGrid, type CalendarPost } from "@/components/dashboard/calendar-grid";
 import { PostComposer } from "@/components/dashboard/post-composer";
 import { PillarChart } from "@/components/dashboard/pillar-chart";
+import { ContentStreak } from "@/components/dashboard/content-streak";
+import { AnimatedNumber } from "@/components/dashboard/animated-number";
+import { useDashboardAssembly } from "@/hooks/useDashboardAssembly";
 import { toCalendarPillar, PILLAR_CONFIG, type CalendarPillar } from "@/lib/dashboard/pillar-config";
+
+/* ------------------------------------------------------------------ */
+/*  Pillar balance targets                                             */
+/* ------------------------------------------------------------------ */
+
+const PILLAR_TARGETS: { pillar: CalendarPillar; label: string; target: number; color: string }[] = [
+  { pillar: "film",     label: "Film",     target: 40, color: PILLAR_CONFIG.film.color },
+  { pillar: "training", label: "Training", target: 40, color: PILLAR_CONFIG.training.color },
+  { pillar: "academic", label: "Academic", target: 20, color: PILLAR_CONFIG.academic.color },
+];
 
 /* ------------------------------------------------------------------ */
 /*  Page                                                               */
 /* ------------------------------------------------------------------ */
 
 export default function ContentPage() {
+  const scopeRef = useDashboardAssembly();
+
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [posts, setPosts] = useState<CalendarPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,6 +67,84 @@ export default function ContentPage() {
     fetchPosts();
   }, [fetchPosts]);
 
+  /* ---- Pillar balance calculations ---- */
+  const pillarStats = useMemo(() => {
+    const now = new Date();
+    const monthPosts = posts.filter((p) => {
+      if (!p.scheduledFor) return false;
+      const d = new Date(p.scheduledFor);
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    });
+
+    const total = monthPosts.length || 1; // avoid division by zero
+    const counts: Record<string, number> = { film: 0, training: 0, academic: 0 };
+
+    for (const p of monthPosts) {
+      if (p.pillar in counts) {
+        counts[p.pillar]++;
+      }
+    }
+
+    return PILLAR_TARGETS.map((t) => ({
+      ...t,
+      actual: Math.round((counts[t.pillar] / total) * 100),
+      count: counts[t.pillar],
+    }));
+  }, [posts]);
+
+  /* ---- Next suggested post ---- */
+  const suggestion = useMemo(() => {
+    let maxGap = -Infinity;
+    let suggestedPillar = pillarStats[0];
+
+    for (const ps of pillarStats) {
+      const gap = ps.target - ps.actual;
+      if (gap > maxGap) {
+        maxGap = gap;
+        suggestedPillar = ps;
+      }
+    }
+
+    if (maxGap <= 0) return null;
+
+    return {
+      pillar: suggestedPillar.label,
+      actual: suggestedPillar.actual,
+      target: suggestedPillar.target,
+    };
+  }, [pillarStats]);
+
+  /* ---- Monthly stats ---- */
+  const monthlyStats = useMemo(() => {
+    const now = new Date();
+    const monthPosts = posts.filter((p) => {
+      if (!p.scheduledFor) return false;
+      const d = new Date(p.scheduledFor);
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    });
+
+    const totalPosts = monthPosts.length;
+
+    // Average posts per week (assume ~4.3 weeks per month)
+    const avgPerWeek = totalPosts > 0 ? Math.round((totalPosts / 4.3) * 10) / 10 : 0;
+
+    // Best performing pillar by count
+    const pillarCounts: Record<string, number> = {};
+    for (const p of monthPosts) {
+      pillarCounts[p.pillar] = (pillarCounts[p.pillar] || 0) + 1;
+    }
+    let bestPillar = "—";
+    let bestCount = 0;
+    for (const [pillar, count] of Object.entries(pillarCounts)) {
+      if (count > bestCount) {
+        bestCount = count;
+        bestPillar = PILLAR_CONFIG[pillar as CalendarPillar]?.label ?? pillar;
+      }
+    }
+
+    return { totalPosts, avgPerWeek, bestPillar };
+  }, [posts]);
+
   /* ---- Handlers ---- */
   function handleDayClick(date: Date) {
     setMobileDay((prev) => (prev && isSameDay(prev, date) ? null : date));
@@ -82,16 +175,14 @@ export default function ContentPage() {
     : [];
 
   return (
-    <div className="animate-fade-in bg-black text-white min-h-screen -m-6 p-6">
+    <div ref={scopeRef} className="animate-fade-in bg-black text-white min-h-screen -m-6 p-6">
       {/* ---- Page header ---- */}
-      <div className="mb-6 flex items-start justify-between">
-        <div>
+      <div className="mb-6 flex items-start justify-between" data-dash-animate>
+        <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold uppercase tracking-tight text-white">
             Content Engine
           </h1>
-          <p className="mt-1 text-sm text-white/40">
-            Plan, create, and schedule X/Twitter content.
-          </p>
+          <ContentStreak days={7} />
         </div>
         <button
           type="button"
@@ -103,6 +194,10 @@ export default function ContentPage() {
         </button>
       </div>
 
+      <p className="mb-6 -mt-4 text-sm text-white/40">
+        Plan, create, and schedule X/Twitter content.
+      </p>
+
       {/* ---- Loading state ---- */}
       {loading ? (
         <div className="flex items-center justify-center py-24">
@@ -110,19 +205,104 @@ export default function ContentPage() {
         </div>
       ) : (
         <>
+          {/* ---- Pillar Balance Gauge ---- */}
+          <div
+            className="mb-6 rounded-xl border border-white/5 bg-[#0A0A0A] p-4"
+            data-dash-animate
+          >
+            <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.15em] text-white/40">
+              Pillar Balance
+            </h2>
+            <div className="space-y-2.5">
+              {pillarStats.map((ps) => (
+                <div key={ps.pillar} className="flex items-center gap-3">
+                  <span className="w-16 text-xs font-medium text-white/60">
+                    {ps.label}
+                  </span>
+                  <div className="relative flex-1 h-2 rounded-full bg-white/5 overflow-hidden">
+                    <div
+                      className="absolute inset-y-0 left-0 rounded-full transition-all duration-700"
+                      style={{
+                        width: `${Math.min(ps.actual, 100)}%`,
+                        backgroundColor: ps.color,
+                        opacity: 0.8,
+                      }}
+                    />
+                    {/* target marker */}
+                    <div
+                      className="absolute inset-y-0 w-0.5 bg-white/30"
+                      style={{ left: `${ps.target}%` }}
+                    />
+                  </div>
+                  <span className="w-16 text-right font-mono text-xs text-white/50">
+                    <AnimatedNumber value={ps.actual} format="percent" className="text-xs" />
+                    <span className="text-white/20"> / {ps.target}%</span>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ---- Next Suggested Post ---- */}
+          {suggestion && (
+            <div
+              className="mb-6 rounded-lg border border-white/5 bg-gradient-to-r from-[#0A0A0A] to-transparent p-4 border-l-2 border-l-[#EF4444]"
+              data-dash-animate
+            >
+              <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-white/40 mb-1">
+                Next Suggested Post
+              </p>
+              <p className="text-sm text-white/70">
+                Your <span className="font-semibold text-white">{suggestion.pillar}</span> content
+                is at {suggestion.actual}% (target: {suggestion.target}%). Consider posting a{" "}
+                {suggestion.pillar.toLowerCase()} piece to rebalance your content mix.
+              </p>
+            </div>
+          )}
+
+          {/* ---- Stats row ---- */}
+          <div className="mb-6 flex gap-3" data-dash-animate>
+            <div className="flex-1 rounded-lg border border-white/5 bg-[#0A0A0A] px-4 py-3 text-center">
+              <div className="font-mono text-lg font-bold text-white">
+                <AnimatedNumber value={monthlyStats.totalPosts} />
+              </div>
+              <div className="text-[10px] uppercase tracking-[0.15em] text-white/40 mt-0.5">
+                Posts this month
+              </div>
+            </div>
+            <div className="flex-1 rounded-lg border border-white/5 bg-[#0A0A0A] px-4 py-3 text-center">
+              <div className="font-mono text-lg font-bold text-white">
+                {monthlyStats.avgPerWeek}
+              </div>
+              <div className="text-[10px] uppercase tracking-[0.15em] text-white/40 mt-0.5">
+                Avg / week
+              </div>
+            </div>
+            <div className="flex-1 rounded-lg border border-white/5 bg-[#0A0A0A] px-4 py-3 text-center">
+              <div className="text-lg font-bold text-white">
+                {monthlyStats.bestPillar}
+              </div>
+              <div className="text-[10px] uppercase tracking-[0.15em] text-white/40 mt-0.5">
+                Top pillar
+              </div>
+            </div>
+          </div>
+
           {/* ---- Pillar distribution chart ---- */}
-          <div className="mb-6">
+          <div className="mb-6" data-dash-animate>
             <PillarChart posts={posts} />
           </div>
 
           {/* ---- Calendar grid ---- */}
-          <CalendarGrid
-            currentMonth={currentMonth}
-            posts={posts}
-            onMonthChange={setCurrentMonth}
-            onDayClick={handleDayClick}
-            onPostClick={handlePostClick}
-          />
+          <div data-dash-animate>
+            <CalendarGrid
+              currentMonth={currentMonth}
+              posts={posts}
+              onMonthChange={setCurrentMonth}
+              onDayClick={handleDayClick}
+              onPostClick={handlePostClick}
+            />
+          </div>
 
           {/* ---- Mobile day detail panel ---- */}
           {mobileDay && (
