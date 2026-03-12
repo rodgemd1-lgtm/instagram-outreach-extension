@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { MessageSquare, Send, X } from "lucide-react";
+import { useDashboardAssembly } from "@/hooks/useDashboardAssembly";
 
 interface Message {
   role: "user" | "assistant";
@@ -18,6 +19,46 @@ const members = [
   { id: "casey", name: "Casey Ward", role: "Network Growth" },
 ];
 
+const MEMBER_COLORS: Record<string, string> = {
+  devin: "#ff000c",
+  marcus: "#ff000c",
+  nina: "#D4A853",
+  trey: "#22C55E",
+  jordan: "#F59E0B",
+  sophie: "#3B82F6",
+  casey: "#22C55E",
+};
+
+const MEMBER_STATUS: Record<string, string> = {
+  devin: "System ready",
+  marcus: "2 camp deadlines approaching",
+  nina: "3 coaches need follow-up",
+  trey: "Tuesday post performing 2x avg",
+  jordan: "New highlight reel ready",
+  sophie: "Engagement up 15% this week",
+  casey: "5 new peer connections found",
+};
+
+const MEMBER_TAGS: Record<string, string[]> = {
+  devin: ["Architecture", "Integrations", "Coordination"],
+  marcus: ["NCAA Rules", "School Targeting", "Camp Strategy"],
+  nina: ["Coach Intel", "NCSA", "DM Strategy"],
+  trey: ["Content Calendar", "Hashtags", "Post Drafting"],
+  jordan: ["Video Library", "Highlight Reels", "Clip Editing"],
+  sophie: ["Scoring Engine", "Engagement Metrics", "Competitor Analysis"],
+  casey: ["Follow Strategy", "Peer Network", "Community"],
+};
+
+const MEMBER_PROMPTS: Record<string, string[]> = {
+  devin: ["System status report", "What needs attention today?", "Recruiting pipeline summary"],
+  marcus: ["NCAA calendar update", "Which camps to register for?", "Recruiting strategy check"],
+  nina: ["Who should I DM next?", "Any new coach activity?", "Draft a follow-up message"],
+  trey: ["What should I post today?", "Content performance recap", "Draft a training post"],
+  jordan: ["Film highlight status", "Best clips this week", "What footage needs editing?"],
+  sophie: ["Weekly analytics report", "Engagement trends", "Profile audit score"],
+  casey: ["New connections to make", "Peer recruit updates", "Engagement opportunities"],
+};
+
 export default function TeamPage() {
   const [selectedMember, setSelectedMember] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -25,6 +66,7 @@ export default function TeamPage() {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const scopeRef = useDashboardAssembly();
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -143,45 +185,83 @@ export default function TeamPage() {
   const selectedMemberData = members.find((m) => m.id === selectedMember);
 
   return (
-    <div className="animate-fade-in">
+    <div ref={scopeRef}>
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-8" data-dash-animate>
         <h1 className="text-2xl font-bold uppercase tracking-tight text-white">
           REC Team
         </h1>
         <p className="mt-1 text-sm text-white/40">
-          Your 7-person virtual recruiting agency.
+          Your 7-person virtual recruiting agency
         </p>
+        {/* Team status bar */}
+        <div className="mt-3 flex items-center gap-2">
+          {members.map((member) => (
+            <div
+              key={member.id}
+              className="flex items-center gap-1.5"
+              title={`${member.name}: ${MEMBER_STATUS[member.id]}`}
+            >
+              <span
+                className="block h-2 w-2 rounded-full"
+                style={{ backgroundColor: MEMBER_COLORS[member.id] }}
+              />
+              <span className="hidden text-[10px] text-white/30 sm:inline">
+                {member.name.split(" ")[0]}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Team Grid */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        {members.map((member, index) => {
+        {members.map((member) => {
           const isSelected = selectedMember === member.id;
+          const color = MEMBER_COLORS[member.id];
           return (
             <button
               key={member.id}
               onClick={() => handleSelectMember(member.id)}
-              className={`animate-fade-in-up group rounded-xl border p-4 text-left transition-all ${
+              data-dash-animate
+              className={`group rounded-xl border p-4 text-left transition-all ${
                 isSelected
                   ? "border-[#ff000c]/50 bg-[#111111]"
                   : "border-white/5 bg-[#0A0A0A] hover:border-[#ff000c]/30 hover:bg-[#111111]"
               }`}
-              style={{ animationDelay: `${index * 50}ms` }}
             >
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#ff000c]/20 text-sm font-bold text-[#ff000c]">
+                {/* Avatar with colored ring */}
+                <div
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold"
+                  style={{
+                    boxShadow: `0 0 0 2px ${color}`,
+                    color: color,
+                    backgroundColor: `${color}20`,
+                  }}
+                >
                   {member.name[0]}
                 </div>
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-white">
-                    {member.name}
-                  </p>
+                  <div className="flex items-center gap-1.5">
+                    <p className="truncate text-sm font-semibold text-white">
+                      {member.name}
+                    </p>
+                    {/* Green online pulse dot */}
+                    <span className="relative flex h-2 w-2 shrink-0">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+                    </span>
+                  </div>
                   <p className="truncate text-xs text-white/40">{member.role}</p>
                 </div>
               </div>
+              {/* Status insight */}
+              <p className="mt-2 truncate text-[11px] text-white/30">
+                {MEMBER_STATUS[member.id]}
+              </p>
               <div
-                className={`mt-3 flex items-center gap-1.5 text-xs font-medium text-[#ff000c] transition-opacity ${
+                className={`mt-2 flex items-center gap-1.5 text-xs font-medium text-[#ff000c] transition-opacity ${
                   isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                 }`}
               >
@@ -195,20 +275,51 @@ export default function TeamPage() {
 
       {/* Inline Chat Area */}
       {selectedMemberData && (
-        <div className="mt-6 flex h-[400px] flex-col rounded-xl border border-white/5 bg-[#0A0A0A]">
+        <div
+          className="mt-6 flex min-h-[500px] flex-col rounded-xl border border-white/5 bg-[#0A0A0A]"
+          data-dash-animate
+        >
           {/* Chat Header */}
           <div className="flex items-center justify-between border-b border-white/5 px-5 py-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#ff000c]/20 text-xs font-bold text-[#ff000c]">
+              <div
+                className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold"
+                style={{
+                  boxShadow: `0 0 0 2px ${MEMBER_COLORS[selectedMemberData.id]}`,
+                  color: MEMBER_COLORS[selectedMemberData.id],
+                  backgroundColor: `${MEMBER_COLORS[selectedMemberData.id]}20`,
+                }}
+              >
                 {selectedMemberData.name[0]}
               </div>
               <div>
-                <p className="text-sm font-semibold text-white">
-                  {selectedMemberData.name}
-                </p>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">
-                  {selectedMemberData.role}
-                </p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-semibold text-white">
+                    {selectedMemberData.name}
+                  </p>
+                  {/* Online indicator */}
+                  <span className="flex items-center gap-1">
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500" />
+                    </span>
+                    <span className="text-[10px] text-green-400">Online</span>
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">
+                    {selectedMemberData.role}
+                  </p>
+                  <span className="text-[10px] text-white/20">|</span>
+                  {MEMBER_TAGS[selectedMemberData.id]?.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-white/5 bg-white/5 px-1.5 py-0.5 text-[9px] text-white/30"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
             <button
@@ -237,7 +348,7 @@ export default function TeamPage() {
                   <div
                     className={`max-w-[80%] rounded-xl px-4 py-2.5 text-sm ${
                       message.role === "user"
-                        ? "border border-[#ff000c]/20 bg-[#ff000c]/10 text-white"
+                        ? "bg-gradient-to-r from-[#ff000c]/15 to-[#ff000c]/5 border border-[#ff000c]/20 text-white"
                         : "border border-white/10 bg-white/5 text-white/90"
                     }`}
                   >
@@ -248,11 +359,9 @@ export default function TeamPage() {
               {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
                 <div className="flex justify-start">
                   <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-                    <div className="flex gap-1.5">
-                      <span className="h-2 w-2 animate-pulse rounded-full bg-white/40" />
-                      <span className="h-2 w-2 animate-pulse rounded-full bg-white/40 [animation-delay:0.2s]" />
-                      <span className="h-2 w-2 animate-pulse rounded-full bg-white/40 [animation-delay:0.4s]" />
-                    </div>
+                    <p className="animate-pulse text-xs text-white/50">
+                      {selectedMemberData.name} is analyzing...
+                    </p>
                   </div>
                 </div>
               )}
@@ -262,6 +371,18 @@ export default function TeamPage() {
 
           {/* Input Area */}
           <div className="border-t border-white/5 px-4 py-3">
+            {/* Quick prompts */}
+            <div className="mb-2 flex flex-wrap gap-1.5">
+              {MEMBER_PROMPTS[selectedMemberData.id]?.map((prompt) => (
+                <button
+                  key={prompt}
+                  onClick={() => setInputValue(prompt)}
+                  className="rounded-full border border-white/5 bg-white/5 px-2.5 py-1 text-[11px] text-white/40 transition-colors hover:border-white/10 hover:bg-white/10 hover:text-white/60"
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
             <div className="flex items-center gap-2">
               <input
                 ref={inputRef}
