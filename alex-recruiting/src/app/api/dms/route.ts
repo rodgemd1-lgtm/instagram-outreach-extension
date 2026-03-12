@@ -45,11 +45,12 @@ export async function GET() {
         .order("created_at", { ascending: false });
 
       if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        console.error("[GET /api/dms] Supabase error, falling back to memory:", error.message);
+        // fall through to in-memory path below
+      } else {
+        const dms = ((data ?? []) as DMMessageRow[]).map(mapRow);
+        return NextResponse.json({ dms, total: dms.length });
       }
-
-      const dms = ((data ?? []) as DMMessageRow[]).map(mapRow);
-      return NextResponse.json({ dms, total: dms.length });
     } catch (error) {
       console.error("[GET /api/dms] Supabase error, falling back to memory:", error);
     }

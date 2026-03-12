@@ -31,80 +31,90 @@ const targets = {
 };
 
 export async function GET() {
-  const snapshot = await getDashboardSnapshot();
+  let snapshot;
+  try {
+    snapshot = await getDashboardSnapshot();
+  } catch (err) {
+    console.error("[GET /api/analytics] Dashboard snapshot error:", err);
+    snapshot = null;
+  }
 
   let postsPublished = 0;
-  let avgEngagementRate = snapshot.engagement.rate;
-  let dmsSent = snapshot.weeklyStats.dmsSent;
-  let dmResponseRate = snapshot.weeklyStats.responseRate;
+  let avgEngagementRate = snapshot?.engagement.rate ?? 0;
+  let dmsSent = snapshot?.weeklyStats.dmsSent ?? 0;
+  let dmResponseRate = snapshot?.weeklyStats.responseRate ?? 0;
   let auditScore = 0;
   let history: AnalyticsSnapshot[] = [];
 
   if (isSupabaseConfigured()) {
-    const supabase = createAdminClient();
+    try {
+      const supabase = createAdminClient();
 
-    const [
-      postsResponse,
-      dmsResponse,
-      auditsResponse,
-      historyResponse,
-    ] = await Promise.all([
-      supabase.from("posts").select("engagement_rate"),
-      supabase.from("dm_messages").select("sent_at, responded_at"),
-      supabase.from("profile_audits").select("total_score").order("date", { ascending: false }).limit(1),
-      supabase
-        .from("analytics_snapshots")
-        .select("date, total_followers, coach_follows, dms_sent, dm_response_rate, posts_published, avg_engagement_rate, profile_visits, audit_score")
-        .order("date", { ascending: false })
-        .limit(8),
-    ]);
+      const [
+        postsResponse,
+        dmsResponse,
+        auditsResponse,
+        historyResponse,
+      ] = await Promise.all([
+        supabase.from("posts").select("engagement_rate"),
+        supabase.from("dm_messages").select("sent_at, responded_at"),
+        supabase.from("profile_audits").select("total_score").order("date", { ascending: false }).limit(1),
+        supabase
+          .from("analytics_snapshots")
+          .select("date, total_followers, coach_follows, dms_sent, dm_response_rate, posts_published, avg_engagement_rate, profile_visits, audit_score")
+          .order("date", { ascending: false })
+          .limit(8),
+      ]);
 
-    const posts = (postsResponse.data ?? []) as PostRow[];
-    if (posts.length > 0) {
-      postsPublished = posts.length;
-      const withEngagement = posts.filter((post) => (post.engagement_rate ?? 0) > 0);
-      if (withEngagement.length > 0) {
-        avgEngagementRate = Number(
-          (
-            withEngagement.reduce((sum, post) => sum + (post.engagement_rate ?? 0), 0) /
-            withEngagement.length
-          ).toFixed(1)
-        );
+      const posts = (postsResponse.data ?? []) as PostRow[];
+      if (posts.length > 0) {
+        postsPublished = posts.length;
+        const withEngagement = posts.filter((post) => (post.engagement_rate ?? 0) > 0);
+        if (withEngagement.length > 0) {
+          avgEngagementRate = Number(
+            (
+              withEngagement.reduce((sum, post) => sum + (post.engagement_rate ?? 0), 0) /
+              withEngagement.length
+            ).toFixed(1)
+          );
+        }
       }
+
+      const dms = (dmsResponse.data ?? []) as DMRow[];
+      const sentCount = dms.filter((dm) => dm.sent_at).length;
+      const respondedCount = dms.filter((dm) => dm.responded_at).length;
+      if (sentCount > 0) {
+        dmsSent = sentCount;
+        dmResponseRate = Math.round((respondedCount / sentCount) * 100);
+      }
+
+      auditScore = Number(auditsResponse.data?.[0]?.total_score ?? 0);
+
+      history = ((historyResponse.data ?? []) as SnapshotRow[]).map((row) => ({
+        date: row.date,
+        totalFollowers: row.total_followers ?? 0,
+        coachFollows: row.coach_follows ?? 0,
+        dmsSent: row.dms_sent ?? 0,
+        dmResponseRate: row.dm_response_rate ?? 0,
+        postsPublished: row.posts_published ?? 0,
+        avgEngagementRate: row.avg_engagement_rate ?? 0,
+        profileVisits: row.profile_visits ?? 0,
+        auditScore: (row.audit_score ?? 0) as AnalyticsSnapshot["auditScore"],
+      }));
+    } catch (err) {
+      console.error("[GET /api/analytics] Supabase error, using fallback data:", err);
     }
-
-    const dms = (dmsResponse.data ?? []) as DMRow[];
-    const sentCount = dms.filter((dm) => dm.sent_at).length;
-    const respondedCount = dms.filter((dm) => dm.responded_at).length;
-    if (sentCount > 0) {
-      dmsSent = sentCount;
-      dmResponseRate = Math.round((respondedCount / sentCount) * 100);
-    }
-
-    auditScore = Number(auditsResponse.data?.[0]?.total_score ?? 0);
-
-    history = ((historyResponse.data ?? []) as SnapshotRow[]).map((row) => ({
-      date: row.date,
-      totalFollowers: row.total_followers ?? 0,
-      coachFollows: row.coach_follows ?? 0,
-      dmsSent: row.dms_sent ?? 0,
-      dmResponseRate: row.dm_response_rate ?? 0,
-      postsPublished: row.posts_published ?? 0,
-      avgEngagementRate: row.avg_engagement_rate ?? 0,
-      profileVisits: row.profile_visits ?? 0,
-      auditScore: (row.audit_score ?? 0) as AnalyticsSnapshot["auditScore"],
-    }));
   }
 
   const current: AnalyticsSnapshot = {
     date: new Date().toISOString(),
-    totalFollowers: snapshot.followers.count,
-    coachFollows: snapshot.coachFollows.count,
+    totalFollowers: snapshot?.followers.count ?? 0,
+    coachFollows: snapshot?.coachFollows.count ?? 0,
     dmsSent,
     dmResponseRate,
     postsPublished,
     avgEngagementRate,
-    profileVisits: snapshot.weeklyStats.profileVisits,
+    profileVisits: snapshot?.weeklyStats.profileVisits ?? 0,
     auditScore: auditScore as AnalyticsSnapshot["auditScore"],
   };
 
