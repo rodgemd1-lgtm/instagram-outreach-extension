@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
 import { DashboardMobileNav } from "@/components/dashboard/mobile-nav";
+import { DashboardFilmGrain } from "@/components/dashboard/film-grain";
 
 export const metadata: Metadata = {
   title: "Dashboard | Alex Recruiting",
@@ -14,6 +15,9 @@ export default function DashboardLayout({
 }) {
   return (
     <div className="dashboard-shell min-h-screen">
+      {/* Film grain overlay */}
+      <DashboardFilmGrain />
+
       {/* Desktop sidebar */}
       <DashboardSidebar />
 
