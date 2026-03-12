@@ -38,10 +38,10 @@ export function getEngagementRate(impressions: number, engagements: number): num
 
 export function getPillarColor(pillar: string): string {
   switch (pillar) {
-    case "performance": return "bg-blue-500";
-    case "work_ethic": return "bg-orange-500";
-    case "character": return "bg-green-500";
-    default: return "bg-gray-500";
+    case "performance": return "bg-[#ff000c]/20 text-[#ff000c]";
+    case "work_ethic": return "bg-[#D4A853]/20 text-[#D4A853]";
+    case "character": return "bg-white/10 text-white/80";
+    default: return "bg-white/5 text-white/40";
   }
 }
 
@@ -56,23 +56,23 @@ export function getPillarLabel(pillar: string): string {
 
 export function getTierColor(tier: string): string {
   switch (tier) {
-    case "Tier 1": return "text-[var(--app-navy-strong)] bg-[rgba(15,40,75,0.08)] border-[rgba(15,40,75,0.12)]";
-    case "Tier 2": return "text-blue-600 bg-blue-50 border-blue-200";
-    case "Tier 3": return "text-green-600 bg-green-50 border-green-200";
-    default: return "text-gray-600 bg-gray-50 border-gray-200";
+    case "Tier 1": return "text-[#ff000c] bg-[#ff000c]/10 border-[#ff000c]/20";
+    case "Tier 2": return "text-[#D4A853] bg-[#D4A853]/10 border-[#D4A853]/20";
+    case "Tier 3": return "text-white/60 bg-white/5 border-white/10";
+    default: return "text-white/40 bg-white/5 border-white/10";
   }
 }
 
 export function getStatusColor(status: string): string {
   switch (status) {
-    case "draft": return "text-yellow-600 bg-yellow-50";
-    case "approved": return "text-blue-600 bg-blue-50";
-    case "scheduled": return "text-[var(--app-navy-strong)] bg-[rgba(15,40,75,0.08)]";
-    case "posted": return "text-green-600 bg-green-50";
-    case "rejected": return "text-red-600 bg-red-50";
-    case "sent": return "text-green-600 bg-green-50";
-    case "responded": return "text-emerald-600 bg-emerald-50";
-    case "no_response": return "text-orange-600 bg-orange-50";
-    default: return "text-gray-600 bg-gray-50";
+    case "draft": return "text-[#F59E0B] bg-[#F59E0B]/10";
+    case "approved": return "text-[#ff000c] bg-[#ff000c]/10";
+    case "scheduled": return "text-[#D4A853] bg-[#D4A853]/10";
+    case "posted": return "text-[#22C55E] bg-[#22C55E]/10";
+    case "rejected": return "text-[#EF4444] bg-[#EF4444]/10";
+    case "sent": return "text-[#22C55E] bg-[#22C55E]/10";
+    case "responded": return "text-[#22C55E] bg-[#22C55E]/10";
+    case "no_response": return "text-[#F59E0B] bg-[#F59E0B]/10";
+    default: return "text-white/40 bg-white/5";
   }
 }

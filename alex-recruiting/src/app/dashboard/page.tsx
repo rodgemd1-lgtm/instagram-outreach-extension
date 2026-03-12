@@ -8,6 +8,7 @@ import {
   Eye,
   FileText,
   Mail,
+  MessageSquare,
   TrendingUp,
   Users,
 } from "lucide-react";
@@ -182,31 +183,31 @@ export default function DashboardPage() {
   ];
 
   const typeColors: Record<string, string> = {
-    camp: "bg-dash-accent/20 text-dash-accent",
-    deadline: "bg-dash-warning/20 text-dash-warning",
-    post: "bg-dash-success/20 text-dash-success",
-    followup: "bg-dash-gold/20 text-dash-gold",
+    camp: "bg-[#ff000c]/20 text-[#ff000c]",
+    deadline: "bg-[#F59E0B]/20 text-[#F59E0B]",
+    post: "bg-[#22C55E]/20 text-[#22C55E]",
+    followup: "bg-[#D4A853]/20 text-[#D4A853]",
   };
 
   const priorityColors: Record<string, string> = {
-    high: "border-l-dash-danger",
-    medium: "border-l-dash-warning",
-    low: "border-l-dash-muted",
+    high: "border-l-[#EF4444]",
+    medium: "border-l-[#F59E0B]",
+    low: "border-l-white/10",
   };
 
   return (
     <div className="animate-fade-in">
       {/* Page header */}
       <div className="mb-8">
-        <p className="text-sm font-medium text-dash-muted">
+        <p className="text-sm font-medium text-white/40">
           {new Date().toLocaleDateString("en-US", {
             weekday: "long",
             month: "long",
             day: "numeric",
           })}
         </p>
-        <h1 className="mt-1 text-2xl font-bold tracking-tight text-dash-text md:text-3xl">
-          Welcome back, Jacob.
+        <h1 className="mt-1 text-2xl font-bold uppercase tracking-tight text-white md:text-3xl">
+          Command Center
         </h1>
       </div>
 
@@ -243,60 +244,60 @@ export default function DashboardPage() {
       {/* Two-column: Action items + Upcoming events */}
       <div className="grid gap-6 md:grid-cols-2">
         {/* Action items */}
-        <div className="rounded-xl border border-dash-border bg-dash-surface">
-          <div className="flex items-center justify-between border-b border-dash-border px-5 py-4">
-            <h2 className="text-sm font-semibold text-dash-text">
+        <div className="rounded-xl border border-white/5 bg-[#0A0A0A]">
+          <div className="flex items-center justify-between border-b border-white/5 px-5 py-4">
+            <h2 className="text-sm font-semibold text-white">
               Action Items
             </h2>
-            <span className="rounded-full bg-dash-danger/10 px-2.5 py-0.5 text-xs font-semibold text-dash-danger">
+            <span className="rounded-full bg-[#EF4444]/10 px-2.5 py-0.5 text-xs font-semibold text-[#EF4444]">
               {actionItems.filter((a) => a.priority === "high").length} urgent
             </span>
           </div>
-          <div className="divide-y divide-dash-border-subtle">
+          <div className="divide-y divide-white/5">
             {actionItems.map((item) => (
               <Link
                 key={item.id}
                 href={item.href}
-                className={`group flex items-center justify-between border-l-2 px-5 py-4 transition-colors hover:bg-dash-surface-raised ${priorityColors[item.priority]}`}
+                className={`group flex items-center justify-between border-l-2 px-5 py-4 transition-colors hover:bg-[#111111] ${priorityColors[item.priority]}`}
               >
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-dash-text">
+                  <p className="text-sm font-medium text-white">
                     {item.title}
                   </p>
-                  <p className="mt-0.5 text-xs text-dash-muted">
+                  <p className="mt-0.5 text-xs text-white/40">
                     {item.description}
                   </p>
                 </div>
-                <ArrowRight className="ml-3 h-4 w-4 shrink-0 text-dash-muted opacity-0 transition-opacity group-hover:opacity-100" />
+                <ArrowRight className="ml-3 h-4 w-4 shrink-0 text-white/40 opacity-0 transition-opacity group-hover:opacity-100" />
               </Link>
             ))}
           </div>
         </div>
 
         {/* Upcoming events */}
-        <div className="rounded-xl border border-dash-border bg-dash-surface">
-          <div className="flex items-center justify-between border-b border-dash-border px-5 py-4">
-            <h2 className="text-sm font-semibold text-dash-text">
+        <div className="rounded-xl border border-white/5 bg-[#0A0A0A]">
+          <div className="flex items-center justify-between border-b border-white/5 px-5 py-4">
+            <h2 className="text-sm font-semibold text-white">
               Upcoming Events
             </h2>
             <Link
               href="/dashboard/calendar"
-              className="text-xs font-medium text-dash-accent hover:text-dash-accent-hover"
+              className="text-xs font-medium text-[#ff000c] hover:text-[#ff000c]"
             >
               View calendar
             </Link>
           </div>
-          <div className="divide-y divide-dash-border-subtle">
+          <div className="divide-y divide-white/5">
             {upcomingEvents.map((event) => (
               <div key={event.id} className="flex items-center gap-4 px-5 py-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-dash-surface-raised">
-                  <Calendar className="h-4 w-4 text-dash-muted" />
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#111111]">
+                  <Calendar className="h-4 w-4 text-white/40" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-dash-text">
+                  <p className="text-sm font-medium text-white">
                     {event.title}
                   </p>
-                  <p className="mt-0.5 text-xs text-dash-muted">{event.date}</p>
+                  <p className="mt-0.5 text-xs text-white/40">{event.date}</p>
                 </div>
                 <span
                   className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${typeColors[event.type]}`}
@@ -313,45 +314,45 @@ export default function DashboardPage() {
       <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
         <Link
           href="/recruit"
-          className="group rounded-xl border border-dash-border bg-dash-surface p-4 transition-colors hover:border-dash-accent/30 hover:bg-dash-surface-raised"
+          className="group rounded-xl border border-white/5 bg-[#0A0A0A] p-4 transition-colors hover:border-[#ff000c]/30 hover:bg-[#111111]"
         >
-          <TrendingUp className="h-5 w-5 text-dash-accent" />
-          <p className="mt-3 text-sm font-semibold text-dash-text">
+          <TrendingUp className="h-5 w-5 text-[#ff000c]" />
+          <p className="mt-3 text-sm font-semibold text-white">
             Recruit Site
           </p>
-          <p className="mt-0.5 text-xs text-dash-muted">View public profile</p>
+          <p className="mt-0.5 text-xs text-white/40">View public profile</p>
         </Link>
         <Link
-          href="/posts"
-          className="group rounded-xl border border-dash-border bg-dash-surface p-4 transition-colors hover:border-dash-accent/30 hover:bg-dash-surface-raised"
+          href="/dashboard/content"
+          className="group rounded-xl border border-white/5 bg-[#0A0A0A] p-4 transition-colors hover:border-[#ff000c]/30 hover:bg-[#111111]"
         >
-          <FileText className="h-5 w-5 text-dash-accent" />
-          <p className="mt-3 text-sm font-semibold text-dash-text">
-            Post Queue
+          <FileText className="h-5 w-5 text-[#ff000c]" />
+          <p className="mt-3 text-sm font-semibold text-white">
+            Content
           </p>
-          <p className="mt-0.5 text-xs text-dash-muted">Review and publish</p>
+          <p className="mt-0.5 text-xs text-white/40">Review and publish</p>
         </Link>
         <Link
-          href="/agency"
-          className="group rounded-xl border border-dash-border bg-dash-surface p-4 transition-colors hover:border-dash-accent/30 hover:bg-dash-surface-raised"
+          href="/dashboard/team"
+          className="group rounded-xl border border-white/5 bg-[#0A0A0A] p-4 transition-colors hover:border-[#ff000c]/30 hover:bg-[#111111]"
         >
-          <Users className="h-5 w-5 text-dash-accent" />
-          <p className="mt-3 text-sm font-semibold text-dash-text">
-            REC Team
+          <MessageSquare className="h-5 w-5 text-[#ff000c]" />
+          <p className="mt-3 text-sm font-semibold text-white">
+            Team
           </p>
-          <p className="mt-0.5 text-xs text-dash-muted">
+          <p className="mt-0.5 text-xs text-white/40">
             Chat with your team
           </p>
         </Link>
         <Link
-          href="/coaches"
-          className="group rounded-xl border border-dash-border bg-dash-surface p-4 transition-colors hover:border-dash-accent/30 hover:bg-dash-surface-raised"
+          href="/dashboard/coaches"
+          className="group rounded-xl border border-white/5 bg-[#0A0A0A] p-4 transition-colors hover:border-[#ff000c]/30 hover:bg-[#111111]"
         >
-          <Mail className="h-5 w-5 text-dash-accent" />
-          <p className="mt-3 text-sm font-semibold text-dash-text">
+          <Mail className="h-5 w-5 text-[#ff000c]" />
+          <p className="mt-3 text-sm font-semibold text-white">
             Coach Pipeline
           </p>
-          <p className="mt-0.5 text-xs text-dash-muted">
+          <p className="mt-0.5 text-xs text-white/40">
             CRM and outreach
           </p>
         </Link>
