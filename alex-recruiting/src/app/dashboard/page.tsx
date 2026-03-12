@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
-  Calendar,
   Eye,
   FileText,
   Mail,
@@ -12,7 +11,12 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
+import { useDashboardAssembly } from "@/hooks/useDashboardAssembly";
 import { StatCard } from "@/components/dashboard/stat-card";
+import { DailyBrief } from "@/components/dashboard/daily-brief";
+import { ReadinessScoreGauge } from "@/components/dashboard/readiness-score";
+import { RecruitingTimeline } from "@/components/dashboard/recruiting-timeline";
+import { SignalFeed } from "@/components/dashboard/signal-feed";
 
 interface DashboardStats {
   profileViews: number;
@@ -24,22 +28,9 @@ interface DashboardStats {
   staleCoaches: number;
 }
 
-interface ActionItem {
-  id: string;
-  title: string;
-  description: string;
-  href: string;
-  priority: "high" | "medium" | "low";
-}
-
-interface UpcomingEvent {
-  id: string;
-  title: string;
-  date: string;
-  type: "camp" | "deadline" | "post" | "followup";
-}
-
 export default function DashboardPage() {
+  const scopeRef = useDashboardAssembly();
+
   const [stats, setStats] = useState<DashboardStats>({
     profileViews: 0,
     coachFollowers: 0,
@@ -54,13 +45,13 @@ export default function DashboardPage() {
   useEffect(() => {
     async function loadStats() {
       try {
-        // Fetch real stats from existing API endpoints
-        const [analyticsRes, coachesRes, postsRes, dmsRes] = await Promise.allSettled([
-          fetch("/api/analytics"),
-          fetch("/api/coaches"),
-          fetch("/api/posts"),
-          fetch("/api/dms"),
-        ]);
+        const [analyticsRes, coachesRes, postsRes, dmsRes] =
+          await Promise.allSettled([
+            fetch("/api/analytics"),
+            fetch("/api/coaches"),
+            fetch("/api/posts"),
+            fetch("/api/dms"),
+          ]);
 
         let profileViews = 0;
         let coachFollowers = 0;
@@ -78,20 +69,26 @@ export default function DashboardPage() {
 
         if (coachesRes.status === "fulfilled" && coachesRes.value.ok) {
           const data = await coachesRes.value.json();
-          const coaches: { lastEngaged: string | null }[] = Array.isArray(data) ? data : data?.coaches ?? [];
+          const coaches: { lastEngaged: string | null }[] = Array.isArray(data)
+            ? data
+            : (data?.coaches ?? []);
           coachFollowers = coaches.length;
           const twoWeeksAgo = Date.now() - 14 * 24 * 60 * 60 * 1000;
           staleCoaches = coaches.filter(
-            (c) => c.lastEngaged && new Date(c.lastEngaged).getTime() < twoWeeksAgo
+            (c) =>
+              c.lastEngaged && new Date(c.lastEngaged).getTime() < twoWeeksAgo
           ).length;
         }
 
         if (postsRes.status === "fulfilled" && postsRes.value.ok) {
           const data = await postsRes.value.json();
-          const posts: { status: string; updatedAt: string }[] = data?.posts ?? [];
+          const posts: { status: string; updatedAt: string }[] =
+            data?.posts ?? [];
           const oneWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
           postsThisWeek = posts.filter(
-            (p) => p.status === "posted" && new Date(p.updatedAt).getTime() >= oneWeekAgo
+            (p) =>
+              p.status === "posted" &&
+              new Date(p.updatedAt).getTime() >= oneWeekAgo
           ).length;
           draftPosts = posts.filter((p) => p.status === "draft").length;
         }
@@ -122,203 +119,125 @@ export default function DashboardPage() {
     void loadStats();
   }, []);
 
-  const actionItems: ActionItem[] = [];
-
-  if (stats.draftDMs > 0) {
-    actionItems.push({
-      id: "dm-drafts",
-      title: `Review ${stats.draftDMs} pending DM draft${stats.draftDMs !== 1 ? "s" : ""}`,
-      description: "Outreach messages waiting for approval",
-      href: "/dashboard/outreach",
-      priority: "high",
-    });
-  }
-  if (stats.draftPosts > 0) {
-    actionItems.push({
-      id: "post-drafts",
-      title: `Schedule ${stats.draftPosts} draft post${stats.draftPosts !== 1 ? "s" : ""}`,
-      description: "Posts drafted but not yet scheduled",
-      href: "/dashboard/calendar",
-      priority: "high",
-    });
-  }
-  if (stats.staleCoaches > 0) {
-    actionItems.push({
-      id: "stale-coaches",
-      title: `${stats.staleCoaches} coach${stats.staleCoaches !== 1 ? "es" : ""} need follow-up`,
-      description: "No engagement in 14+ days",
+  // Quick actions data
+  const quickActions = [
+    {
+      href: "/recruit",
+      icon: TrendingUp,
+      label: "Recruit Site",
+      desc: "View public profile",
+    },
+    {
+      href: "/dashboard/content",
+      icon: FileText,
+      label: "Content",
+      desc: "Review and publish",
+    },
+    {
+      href: "/dashboard/team",
+      icon: MessageSquare,
+      label: "Team",
+      desc: "Chat with your team",
+    },
+    {
       href: "/dashboard/coaches",
-      priority: "medium",
-    });
-  }
-  if (actionItems.length === 0) {
-    actionItems.push({
-      id: "all-clear",
-      title: "All caught up!",
-      description: "No urgent action items right now",
-      href: "/dashboard/calendar",
-      priority: "low",
-    });
-  }
-
-  const upcomingEvents: UpcomingEvent[] = [
-    {
-      id: "1",
-      title: "Wisconsin Spring Prospect Camp",
-      date: "Apr 12, 2026",
-      type: "camp",
-    },
-    {
-      id: "2",
-      title: "NCAA Contact Period Opens",
-      date: "Jun 15, 2027",
-      type: "deadline",
-    },
-    {
-      id: "3",
-      title: "Film highlight update due",
-      date: "Mar 15, 2026",
-      type: "followup",
+      icon: Mail,
+      label: "Coach Pipeline",
+      desc: "CRM and outreach",
     },
   ];
 
-  const typeColors: Record<string, string> = {
-    camp: "bg-[#ff000c]/20 text-[#ff000c]",
-    deadline: "bg-[#F59E0B]/20 text-[#F59E0B]",
-    post: "bg-[#22C55E]/20 text-[#22C55E]",
-    followup: "bg-[#D4A853]/20 text-[#D4A853]",
-  };
-
-  const priorityColors: Record<string, string> = {
-    high: "border-l-[#EF4444]",
-    medium: "border-l-[#F59E0B]",
-    low: "border-l-white/10",
-  };
-
   return (
-    <div className="animate-fade-in">
-      {/* Page header */}
-      <div className="mb-8">
-        <p className="text-sm font-medium text-white/40">
-          {new Date().toLocaleDateString("en-US", {
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-          })}
-        </p>
-        <h1 className="mt-1 text-2xl font-bold uppercase tracking-tight text-white md:text-3xl">
-          Command Center
-        </h1>
+    <div ref={scopeRef}>
+      {/* 1. Daily Brief — Hero with typewriter */}
+      <div data-dash-animate>
+        <DailyBrief />
       </div>
 
-      {/* Stat cards */}
-      <div className="mb-8 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
-        {[
-          { label: "Profile Views", value: loading ? "..." : stats.profileViews, change: "+12 this week", changeType: "up" as const, icon: Eye },
-          { label: "Coaches in DB", value: loading ? "..." : stats.coachFollowers, change: "183 total", changeType: "neutral" as const, icon: Users },
-          { label: "DMs Sent", value: loading ? "..." : stats.dmsSent, icon: Mail },
-          { label: "Posts This Week", value: loading ? "..." : stats.postsThisWeek, change: "Target: 5-7", changeType: "neutral" as const, icon: FileText },
-        ].map((card, index) => (
-          <div key={card.label} className="animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
-            <StatCard {...card} />
-          </div>
-        ))}
-      </div>
+      {/* 2. Readiness Score + Stat Cards row */}
+      <div
+        className="mb-8 grid gap-6 md:grid-cols-[320px_1fr]"
+        data-dash-animate
+      >
+        <ReadinessScoreGauge />
 
-      {/* Two-column: Action items + Upcoming events */}
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* Action items */}
-        <div className="rounded-xl border border-white/5 bg-[#0A0A0A]">
-          <div className="flex items-center justify-between border-b border-white/5 px-5 py-4">
-            <div className="flex items-center gap-3">
-              <div className="h-6 w-1 rounded-full bg-[#ff000c]" />
-              <h2 className="text-[10px] uppercase tracking-[0.2em] text-white/40">
-                Action Items
-              </h2>
-            </div>
-            <span className="rounded-full bg-[#EF4444]/10 px-2.5 py-0.5 text-xs font-semibold text-[#EF4444]">
-              {actionItems.filter((a) => a.priority === "high").length} urgent
-            </span>
-          </div>
-          <div className="divide-y divide-white/5">
-            {actionItems.map((item) => (
-              <Link
-                key={item.id}
-                href={item.href}
-                className={`group flex items-center justify-between border-l-2 px-5 py-4 transition-colors hover:bg-[#111111] ${priorityColors[item.priority]}`}
-              >
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-white">
-                    {item.title}
-                  </p>
-                  <p className="mt-0.5 text-xs text-white/40">
-                    {item.description}
-                  </p>
-                </div>
-                <ArrowRight className="ml-3 h-4 w-4 shrink-0 text-white/40 opacity-0 transition-opacity group-hover:opacity-100" />
-              </Link>
-            ))}
-          </div>
+        {/* Stat cards 2x2 grid */}
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            {
+              label: "Profile Views",
+              value: loading ? 0 : stats.profileViews,
+              change: "+12 this week",
+              changeType: "up" as const,
+              icon: Eye,
+              sparkline: [3, 7, 5, 12, 9, 14, 18],
+            },
+            {
+              label: "Coaches in DB",
+              value: loading ? 0 : stats.coachFollowers,
+              change: "183 total",
+              changeType: "neutral" as const,
+              icon: Users,
+              sparkline: [150, 155, 160, 165, 170, 178, 183],
+            },
+            {
+              label: "DMs Sent",
+              value: loading ? 0 : stats.dmsSent,
+              change: "+3 this week",
+              changeType: "up" as const,
+              icon: Mail,
+              sparkline: [1, 2, 1, 3, 2, 4, 3],
+            },
+            {
+              label: "Posts This Week",
+              value: loading ? 0 : stats.postsThisWeek,
+              change: "Target: 5-7",
+              changeType: "neutral" as const,
+              icon: FileText,
+              sparkline: [2, 4, 3, 5, 4, 6, 3],
+            },
+          ].map((card) => (
+            <StatCard key={card.label} {...card} />
+          ))}
         </div>
+      </div>
 
-        {/* Upcoming events */}
-        <div className="rounded-xl border border-white/5 bg-[#0A0A0A]">
-          <div className="flex items-center justify-between border-b border-white/5 px-5 py-4">
-            <div className="flex items-center gap-3">
-              <div className="h-6 w-1 rounded-full bg-[#ff000c]" />
-              <h2 className="text-[10px] uppercase tracking-[0.2em] text-white/40">
-                Upcoming Events
-              </h2>
-            </div>
+      {/* 3. NCAA Timeline */}
+      <div className="mb-8" data-dash-animate>
+        <RecruitingTimeline />
+      </div>
+
+      {/* 4. Two-column: Signal Feed + Quick Actions */}
+      <div className="grid gap-6 md:grid-cols-[1fr_320px]" data-dash-animate>
+        <SignalFeed />
+
+        {/* Quick Actions */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-6 w-1 rounded-full bg-[#ff000c]" />
+            <h2 className="text-[10px] uppercase tracking-[0.2em] text-white/40">
+              Quick Actions
+            </h2>
+          </div>
+          {quickActions.map((link) => (
             <Link
-              href="/dashboard/calendar"
-              className="text-xs font-medium text-[#ff000c] hover:text-[#ff000c]"
+              key={link.href}
+              href={link.href}
+              className="group flex items-center gap-4 rounded-xl border border-white/5 bg-[#0A0A0A] p-4 transition-all duration-300 hover:border-[#ff000c]/20 hover:bg-[#111111] hover:shadow-[0_0_20px_rgba(255,0,12,0.06)]"
             >
-              View calendar
-            </Link>
-          </div>
-          <div className="divide-y divide-white/5">
-            {upcomingEvents.map((event) => (
-              <div key={event.id} className="flex items-center gap-4 px-5 py-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#111111]">
-                  <Calendar className="h-4 w-4 text-white/40" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-white">
-                    {event.title}
-                  </p>
-                  <p className="mt-0.5 text-xs text-white/40">{event.date}</p>
-                </div>
-                <span
-                  className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${typeColors[event.type]}`}
-                >
-                  {event.type}
-                </span>
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#ff000c]/10">
+                <link.icon className="h-5 w-5 text-[#ff000c]" />
               </div>
-            ))}
-          </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-[13px] font-semibold text-white">
+                  {link.label}
+                </p>
+                <p className="text-[11px] text-white/40">{link.desc}</p>
+              </div>
+              <ArrowRight className="h-4 w-4 text-white/20 transition-all group-hover:text-[#ff000c] group-hover:translate-x-0.5" />
+            </Link>
+          ))}
         </div>
-      </div>
-
-      {/* Quick links */}
-      <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
-        {[
-          { href: "/recruit", icon: TrendingUp, label: "Recruit Site", desc: "View public profile" },
-          { href: "/dashboard/content", icon: FileText, label: "Content", desc: "Review and publish" },
-          { href: "/dashboard/team", icon: MessageSquare, label: "Team", desc: "Chat with your team" },
-          { href: "/dashboard/coaches", icon: Mail, label: "Coach Pipeline", desc: "CRM and outreach" },
-        ].map((link, index) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className="animate-fade-in-up group rounded-xl border border-white/5 bg-[#0A0A0A] p-4 transition-all duration-300 hover:border-[#ff000c]/30 hover:bg-[#111111] hover:shadow-[0_0_15px_rgba(255,0,12,0.1)]"
-            style={{ animationDelay: `${index * 50}ms` }}
-          >
-            <link.icon className="h-5 w-5 text-[#ff000c]" />
-            <p className="mt-3 text-sm font-semibold text-white">{link.label}</p>
-            <p className="mt-0.5 text-xs text-white/40">{link.desc}</p>
-          </Link>
-        ))}
       </div>
     </div>
   );
