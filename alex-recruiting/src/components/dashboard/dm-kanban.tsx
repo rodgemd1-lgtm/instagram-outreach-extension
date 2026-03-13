@@ -1,8 +1,7 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { AnimatedNumber } from "@/components/dashboard/animated-number";
 import type { DMMessage } from "@/lib/types";
+import { getSchoolLogo } from "@/lib/data/school-branding";
 
 interface DMKanbanProps {
   dms: DMMessage[];
@@ -10,27 +9,12 @@ interface DMKanbanProps {
 }
 
 const COLUMNS = [
-  { status: "drafted", label: "Queued", color: "border-t-[#F59E0B]" },
-  { status: "sent", label: "Sent", color: "border-t-[#22C55E]" },
-  { status: "approved", label: "Approved", color: "border-t-[#ff000c]" },
-  { status: "responded", label: "Replied", color: "border-t-[#22C55E]" },
-  { status: "no_response", label: "No Response", color: "border-t-white/20" },
+  { status: "drafted", label: "Queued" },
+  { status: "approved", label: "Approved" },
+  { status: "sent", label: "Sent" },
+  { status: "responded", label: "Replied" },
+  { status: "no_response", label: "No Response" },
 ] as const;
-
-const ENGAGEMENT_PHRASES = [
-  "Viewed your profile 2 days ago",
-  "Liked your training video",
-  "Followed 3 similar recruits",
-  "Active on X in last 24h",
-];
-
-const SUGGESTED_ACTIONS: Record<string, string> = {
-  drafted: "Suggested: Review and send",
-  sent: "Suggested: Wait 3 days, then follow up",
-  approved: "Suggested: Send intro message",
-  responded: "Suggested: Continue conversation",
-  no_response: "Suggested: Try alternate channel",
-};
 
 function formatTimeSince(dateStr: string | null | undefined): string {
   if (!dateStr) return "";
@@ -44,66 +28,72 @@ function formatTimeSince(dateStr: string | null | undefined): string {
 
 export function DMKanban({ dms, onCardClick }: DMKanbanProps) {
   return (
-    <div className="flex gap-3 overflow-x-auto pb-4" style={{ WebkitOverflowScrolling: "touch" }}>
+    <div
+      className="flex gap-4 overflow-x-auto pb-4"
+      style={{ WebkitOverflowScrolling: "touch" }}
+    >
       {COLUMNS.map((col) => {
         const columnDMs = dms.filter((dm) => dm.status === col.status);
         return (
           <div key={col.status} className="min-w-[240px] flex-1">
             {/* Column header */}
-            <div className={cn("mb-3 rounded-t-xl border-t-2 bg-[#0A0A0A] border border-white/5 px-3 py-2", col.color)}>
+            <div className="mb-3 bg-[#FAFAFA] border border-[#E5E7EB] rounded-lg px-3 py-2">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">
+                <span className="text-xs font-semibold text-[#6B7280] uppercase tracking-wide">
                   {col.label}
                 </span>
-                <span className="rounded-full bg-white/5 px-2 py-0.5 text-[10px] font-bold text-white/40">
-                  <AnimatedNumber value={columnDMs.length} className="text-[10px] text-white/40" />
+                <span className="bg-[#F5F5F4] text-[#6B7280] rounded-full px-2 py-0.5 text-xs font-semibold">
+                  {columnDMs.length}
                 </span>
               </div>
             </div>
 
             {/* Cards */}
             <div className="space-y-2">
-              {columnDMs.map((dm, cardIndex) => {
-                const engagementPhrase = ENGAGEMENT_PHRASES[cardIndex % ENGAGEMENT_PHRASES.length];
-                const suggestedAction = SUGGESTED_ACTIONS[col.status] || "";
-                const contentLength = dm.content.length;
-
+              {columnDMs.map((dm) => {
+                const logoUrl = dm.coachId ? getSchoolLogo(dm.coachId) : null;
                 return (
                   <button
                     key={dm.id}
                     type="button"
                     onClick={() => onCardClick(dm)}
-                    className="w-full rounded-lg border border-white/5 bg-[#111111] p-3 text-left transition-all hover:border-[#ff000c]/30 hover:shadow-[0_0_15px_rgba(255,0,12,0.08)]"
+                    className="w-full rounded-lg border border-[#E5E7EB] bg-white p-3 text-left transition-all hover:border-[#9CA3AF] hover:shadow-sm"
                   >
-                    <p className="text-sm font-semibold text-white">{dm.coachName}</p>
-                    <p className="text-xs text-white/60">{dm.schoolName}</p>
-                    {/* Engagement context */}
-                    <p className="mt-1 text-[10px] italic text-[#D4A853]/70">
-                      {engagementPhrase}
+                    <div className="flex items-start gap-2">
+                      {logoUrl && (
+                        <img
+                          src={logoUrl}
+                          alt=""
+                          className="w-5 h-5 rounded-full mt-0.5 flex-shrink-0"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = "none";
+                          }}
+                        />
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-semibold text-[#0F1720] truncate">
+                          {dm.coachName}
+                        </p>
+                        <p className="text-xs text-[#9CA3AF] truncate">
+                          {dm.schoolName}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="mt-2 text-xs text-[#6B7280] line-clamp-2">
+                      {dm.content.slice(0, 100)}
+                      {dm.content.length > 100 ? "..." : ""}
                     </p>
-                    <p className="mt-2 line-clamp-2 text-xs text-white/40">
-                      {dm.content.slice(0, 80)}{dm.content.length > 80 ? "..." : ""}
-                    </p>
-                    {/* Character count */}
-                    <div className="mt-1 text-right">
-                      <span className="font-mono text-[9px] text-white/20">
-                        {contentLength}/280
+                    <div className="mt-2 flex items-center justify-between">
+                      <span className="text-[10px] text-[#9CA3AF]">
+                        {formatTimeSince(dm.sentAt || dm.createdAt)}
                       </span>
                     </div>
-                    <div className="mt-2 flex items-center justify-between">
-                      <span className="rounded border border-white/10 px-1.5 py-0.5 text-[10px] text-white/40">{dm.templateType}</span>
-                      <span className="text-[10px] text-white/40">{formatTimeSince(dm.sentAt || dm.createdAt)}</span>
-                    </div>
-                    {/* Suggested action */}
-                    <p className="mt-2 border-t border-white/5 pt-1.5 text-[9px] text-white/25">
-                      {suggestedAction}
-                    </p>
                   </button>
                 );
               })}
               {columnDMs.length === 0 && (
-                <div className="rounded-lg border border-dashed border-white/5 py-8 text-center text-xs text-white/30">
-                  Empty
+                <div className="rounded-lg border border-dashed border-[#E5E7EB] py-8 text-center text-xs text-[#9CA3AF]">
+                  No messages
                 </div>
               )}
             </div>

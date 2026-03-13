@@ -7,35 +7,29 @@ interface WaveProgressProps {
 }
 
 const WAVES = [
-  { label: "Follow", color: "#A1A1AA", description: "Days 1-14" },
-  { label: "Intro DM", color: "#D4A853", description: "Days 15-30" },
-  { label: "Follow-up", color: "#F59E0B", description: "Days 31-60" },
-  { label: "Direct Ask", color: "#ff000c", description: "Days 61-90" },
+  { label: "Follow", color: "#1E3A5F", description: "Days 1-14" },
+  { label: "Intro DM", color: "#3B82F6", description: "Days 15-30" },
+  { label: "Follow-up", color: "#D97706", description: "Days 31-60" },
+  { label: "Direct Ask", color: "#16A34A", description: "Days 61-90" },
 ];
 
-const COUNT_KEYS = ["followed", "introDM", "followUp", "directAsk"] as const;
-
-export function WaveProgress({
-  currentWave,
-  counts,
-  total,
-}: WaveProgressProps) {
+export function WaveProgress({ currentWave, counts, total }: WaveProgressProps) {
   const countValues = [counts.followed, counts.introDM, counts.followUp, counts.directAsk];
   const activeTotal = countValues.reduce((a, b) => a + b, 0);
 
   return (
-    <div className="rounded-xl border border-white/5 bg-[#0A0A0A] p-4">
+    <div className="rounded-lg border border-[#E5E7EB] bg-white p-4">
       <div className="mb-3 flex items-center justify-between">
-        <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">
+        <h3 className="text-xs font-semibold uppercase tracking-wide text-[#6B7280]">
           DM Campaign Waves
         </h3>
-        <span className="font-mono text-xs text-white/50">
+        <span className="font-mono text-xs text-[#9CA3AF]">
           {activeTotal}/{total} coaches in pipeline
         </span>
       </div>
 
       {/* Progress bar */}
-      <div className="flex h-3 w-full overflow-hidden rounded-full bg-white/5">
+      <div className="flex h-3 w-full overflow-hidden rounded-full bg-[#F5F5F4]">
         {WAVES.map((wave, i) => {
           const count = countValues[i];
           const widthPercent = total > 0 ? (count / total) * 100 : 0;
@@ -49,21 +43,9 @@ export function WaveProgress({
               style={{
                 width: `${widthPercent}%`,
                 backgroundColor: wave.color,
-                boxShadow: isCurrent
-                  ? `0 0 12px ${wave.color}80, inset 0 0 4px rgba(255,255,255,0.2)`
-                  : "none",
+                opacity: isCurrent ? 1 : 0.7,
               }}
-            >
-              {isCurrent && (
-                <div
-                  className="absolute inset-0 animate-pulse rounded-full"
-                  style={{
-                    border: `1px solid ${wave.color}`,
-                    boxShadow: `0 0 8px ${wave.color}60`,
-                  }}
-                />
-              )}
-            </div>
+            />
           );
         })}
       </div>
@@ -79,7 +61,7 @@ export function WaveProgress({
               key={wave.label}
               className={`rounded-lg border px-2 py-1.5 transition-colors ${
                 isCurrent
-                  ? "border-white/10 bg-white/5"
+                  ? "border-[#E5E7EB] bg-[#FAFAFA]"
                   : "border-transparent bg-transparent"
               }`}
             >
@@ -88,15 +70,15 @@ export function WaveProgress({
                   className="h-2 w-2 rounded-full"
                   style={{ backgroundColor: wave.color }}
                 />
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-white/60">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-[#6B7280]">
                   {wave.label}
                 </span>
               </div>
               <div className="mt-0.5 flex items-baseline justify-between">
-                <span className="font-mono text-sm font-bold text-white">
+                <span className="font-mono text-sm font-bold text-[#0F1720]">
                   {count}
                 </span>
-                <span className="text-[9px] text-white/30">{wave.description}</span>
+                <span className="text-[9px] text-[#9CA3AF]">{wave.description}</span>
               </div>
             </div>
           );
