@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { MessageSquare, Send, X } from "lucide-react";
-import { useDashboardAssembly } from "@/hooks/useDashboardAssembly";
 
 interface Message {
   role: "user" | "assistant";
@@ -20,23 +19,13 @@ const members = [
 ];
 
 const MEMBER_COLORS: Record<string, string> = {
-  devin: "#ff000c",
-  marcus: "#ff000c",
+  devin: "#0F1720",
+  marcus: "#0F1720",
   nina: "#D4A853",
   trey: "#22C55E",
   jordan: "#F59E0B",
   sophie: "#3B82F6",
   casey: "#22C55E",
-};
-
-const MEMBER_STATUS: Record<string, string> = {
-  devin: "System ready",
-  marcus: "2 camp deadlines approaching",
-  nina: "3 coaches need follow-up",
-  trey: "Tuesday post performing 2x avg",
-  jordan: "New highlight reel ready",
-  sophie: "Engagement up 15% this week",
-  casey: "5 new peer connections found",
 };
 
 const MEMBER_TAGS: Record<string, string[]> = {
@@ -66,7 +55,6 @@ export default function TeamPage() {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const scopeRef = useDashboardAssembly();
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -185,33 +173,15 @@ export default function TeamPage() {
   const selectedMemberData = members.find((m) => m.id === selectedMember);
 
   return (
-    <div ref={scopeRef}>
+    <div>
       {/* Header */}
-      <div className="mb-8" data-dash-animate>
-        <h1 className="text-2xl font-bold uppercase tracking-tight text-white">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold uppercase tracking-tight text-[#0F1720]">
           REC Team
         </h1>
-        <p className="mt-1 text-sm text-white/40">
+        <p className="mt-1 text-sm text-[#6B7280]">
           Your 7-person virtual recruiting agency
         </p>
-        {/* Team status bar */}
-        <div className="mt-3 flex items-center gap-2">
-          {members.map((member) => (
-            <div
-              key={member.id}
-              className="flex items-center gap-1.5"
-              title={`${member.name}: ${MEMBER_STATUS[member.id]}`}
-            >
-              <span
-                className="block h-2 w-2 rounded-full"
-                style={{ backgroundColor: MEMBER_COLORS[member.id] }}
-              />
-              <span className="hidden text-[10px] text-white/30 sm:inline">
-                {member.name.split(" ")[0]}
-              </span>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* Team Grid */}
@@ -223,11 +193,10 @@ export default function TeamPage() {
             <button
               key={member.id}
               onClick={() => handleSelectMember(member.id)}
-              data-dash-animate
-              className={`group rounded-xl border p-4 text-left transition-all ${
+              className={`group rounded-lg border p-4 text-left transition-all ${
                 isSelected
-                  ? "border-[#ff000c]/50 bg-[#111111]"
-                  : "border-white/5 bg-[#0A0A0A] hover:border-[#ff000c]/30 hover:bg-[#111111]"
+                  ? "ring-2 ring-[#0F1720] border-[#E5E7EB] bg-white"
+                  : "border-[#E5E7EB] bg-white hover:border-[#D1D5DB] hover:shadow-sm"
               }`}
             >
               <div className="flex items-center gap-3">
@@ -237,31 +206,20 @@ export default function TeamPage() {
                   style={{
                     boxShadow: `0 0 0 2px ${color}`,
                     color: color,
-                    backgroundColor: `${color}20`,
+                    backgroundColor: `${color}15`,
                   }}
                 >
                   {member.name[0]}
                 </div>
                 <div className="min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    <p className="truncate text-sm font-semibold text-white">
-                      {member.name}
-                    </p>
-                    {/* Green online pulse dot */}
-                    <span className="relative flex h-2 w-2 shrink-0">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-                      <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
-                    </span>
-                  </div>
-                  <p className="truncate text-xs text-white/40">{member.role}</p>
+                  <p className="truncate text-sm font-semibold text-[#0F1720]">
+                    {member.name}
+                  </p>
+                  <p className="truncate text-xs text-[#6B7280]">{member.role}</p>
                 </div>
               </div>
-              {/* Status insight */}
-              <p className="mt-2 truncate text-[11px] text-white/30">
-                {MEMBER_STATUS[member.id]}
-              </p>
               <div
-                className={`mt-2 flex items-center gap-1.5 text-xs font-medium text-[#ff000c] transition-opacity ${
+                className={`mt-3 flex items-center gap-1.5 text-xs font-medium text-[#0F1720] transition-opacity ${
                   isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                 }`}
               >
@@ -275,46 +233,33 @@ export default function TeamPage() {
 
       {/* Inline Chat Area */}
       {selectedMemberData && (
-        <div
-          className="mt-6 flex min-h-[500px] flex-col rounded-xl border border-white/5 bg-[#0A0A0A]"
-          data-dash-animate
-        >
+        <div className="mt-6 flex min-h-[500px] flex-col rounded-lg border border-[#E5E7EB] bg-white">
           {/* Chat Header */}
-          <div className="flex items-center justify-between border-b border-white/5 px-5 py-3">
+          <div className="flex items-center justify-between border-b border-[#E5E7EB] px-5 py-3">
             <div className="flex items-center gap-3">
               <div
                 className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold"
                 style={{
                   boxShadow: `0 0 0 2px ${MEMBER_COLORS[selectedMemberData.id]}`,
                   color: MEMBER_COLORS[selectedMemberData.id],
-                  backgroundColor: `${MEMBER_COLORS[selectedMemberData.id]}20`,
+                  backgroundColor: `${MEMBER_COLORS[selectedMemberData.id]}15`,
                 }}
               >
                 {selectedMemberData.name[0]}
               </div>
               <div>
-                <div className="flex items-center gap-2">
-                  <p className="text-sm font-semibold text-white">
-                    {selectedMemberData.name}
-                  </p>
-                  {/* Online indicator */}
-                  <span className="flex items-center gap-1">
-                    <span className="relative flex h-1.5 w-1.5">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500" />
-                    </span>
-                    <span className="text-[10px] text-green-400">Online</span>
-                  </span>
-                </div>
+                <p className="text-sm font-semibold text-[#0F1720]">
+                  {selectedMemberData.name}
+                </p>
                 <div className="flex items-center gap-1.5">
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-[#6B7280]">
                     {selectedMemberData.role}
                   </p>
-                  <span className="text-[10px] text-white/20">|</span>
+                  <span className="text-[10px] text-[#D1D5DB]">|</span>
                   {MEMBER_TAGS[selectedMemberData.id]?.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-full border border-white/5 bg-white/5 px-1.5 py-0.5 text-[9px] text-white/30"
+                      className="rounded-full bg-[#F5F5F4] px-1.5 py-0.5 text-[9px] text-[#6B7280]"
                     >
                       {tag}
                     </span>
@@ -324,7 +269,7 @@ export default function TeamPage() {
             </div>
             <button
               onClick={handleClose}
-              className="rounded-lg p-1.5 text-white/40 transition-colors hover:bg-white/5 hover:text-white"
+              className="rounded-lg p-1.5 text-[#6B7280] transition-colors hover:bg-[#F5F5F4] hover:text-[#0F1720]"
             >
               <X className="h-4 w-4" />
             </button>
@@ -334,7 +279,7 @@ export default function TeamPage() {
           <div className="flex-1 overflow-y-auto px-5 py-4">
             {messages.length === 0 && (
               <div className="flex h-full items-center justify-center">
-                <p className="text-sm text-white/30">
+                <p className="text-sm text-[#6B7280]">
                   Send a message to start chatting with {selectedMemberData.name}.
                 </p>
               </div>
@@ -348,8 +293,8 @@ export default function TeamPage() {
                   <div
                     className={`max-w-[80%] rounded-xl px-4 py-2.5 text-sm ${
                       message.role === "user"
-                        ? "bg-gradient-to-r from-[#ff000c]/15 to-[#ff000c]/5 border border-[#ff000c]/20 text-white"
-                        : "border border-white/10 bg-white/5 text-white/90"
+                        ? "bg-[#0F1720] text-white"
+                        : "bg-[#F5F5F4] text-[#0F1720]"
                     }`}
                   >
                     <p className="whitespace-pre-wrap">{message.content}</p>
@@ -358,8 +303,8 @@ export default function TeamPage() {
               ))}
               {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
                 <div className="flex justify-start">
-                  <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-                    <p className="animate-pulse text-xs text-white/50">
+                  <div className="rounded-xl bg-[#F5F5F4] px-4 py-3">
+                    <p className="animate-pulse text-xs text-[#6B7280]">
                       {selectedMemberData.name} is analyzing...
                     </p>
                   </div>
@@ -370,14 +315,14 @@ export default function TeamPage() {
           </div>
 
           {/* Input Area */}
-          <div className="border-t border-white/5 px-4 py-3">
+          <div className="border-t border-[#E5E7EB] px-4 py-3">
             {/* Quick prompts */}
             <div className="mb-2 flex flex-wrap gap-1.5">
               {MEMBER_PROMPTS[selectedMemberData.id]?.map((prompt) => (
                 <button
                   key={prompt}
                   onClick={() => setInputValue(prompt)}
-                  className="rounded-full border border-white/5 bg-white/5 px-2.5 py-1 text-[11px] text-white/40 transition-colors hover:border-white/10 hover:bg-white/10 hover:text-white/60"
+                  className="rounded-full border border-[#E5E7EB] px-2.5 py-1 text-[11px] text-[#6B7280] transition-colors hover:bg-[#F5F5F4] hover:text-[#0F1720]"
                 >
                   {prompt}
                 </button>
@@ -396,13 +341,13 @@ export default function TeamPage() {
                   }
                 }}
                 placeholder={`Message ${selectedMemberData.name}...`}
-                className="flex-1 rounded-lg border border-white/10 bg-[#111111] px-4 py-2.5 text-sm text-white placeholder:text-white/30 focus:border-[#ff000c]/30 focus:outline-none"
+                className="flex-1 rounded-lg border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm text-[#0F1720] placeholder:text-[#9CA3AF] focus:border-[#0F1720] focus:outline-none"
                 disabled={isLoading}
               />
               <button
                 onClick={handleSend}
                 disabled={!inputValue.trim() || isLoading}
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#ff000c] text-white transition-colors hover:bg-[#cc000a] disabled:opacity-40 disabled:hover:bg-[#ff000c]"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#0F1720] text-white transition-colors hover:bg-[#1F2937] disabled:opacity-40 disabled:hover:bg-[#0F1720]"
               >
                 <Send className="h-4 w-4" />
               </button>
