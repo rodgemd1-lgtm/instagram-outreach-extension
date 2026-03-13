@@ -32,20 +32,20 @@ export function SlideOver({ open, onClose, title, subtitle, children, wide }: Sl
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" onClick={onClose} />
       <div
         ref={panelRef}
-        className={`relative flex h-full flex-col bg-[#0A0A0A] border-l border-white/5 ${wide ? "w-full max-w-2xl" : "w-full max-w-md"}`}
+        className={`relative flex h-full flex-col bg-white border-l border-[#E5E7EB] ${wide ? "w-full max-w-2xl" : "w-full max-w-md"}`}
       >
-        <div className="flex items-center justify-between border-b border-white/5 px-5 py-4">
+        <div className="flex items-center justify-between border-b border-[#E5E7EB] px-5 py-4">
           <div>
-            <h2 className="text-base font-bold uppercase tracking-tight text-white">{title}</h2>
-            {subtitle && <p className="mt-0.5 text-xs text-white/40">{subtitle}</p>}
+            <h2 className="text-base font-bold uppercase tracking-tight text-[#0F1720]">{title}</h2>
+            {subtitle && <p className="mt-0.5 text-xs text-[#9CA3AF]">{subtitle}</p>}
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-white/40 hover:text-white"
+            className="rounded-lg p-1.5 text-[#9CA3AF] hover:text-[#0F1720]"
           >
             <X className="h-4 w-4" />
           </button>

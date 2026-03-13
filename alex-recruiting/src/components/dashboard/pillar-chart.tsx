@@ -16,13 +16,13 @@ import {
 } from "@/lib/dashboard/pillar-config";
 
 /* ------------------------------------------------------------------ */
-/*  Pillar color overrides for cinematic dark theme                     */
+/*  Pillar colors for light theme                                      */
 /* ------------------------------------------------------------------ */
 
-const DARK_PILLAR_COLORS: Record<CalendarPillar, string> = {
-  film: "#ff000c",
+const PILLAR_COLORS: Record<CalendarPillar, string> = {
+  film: "#0F1720",
   training: "#D4A853",
-  academic: "rgba(255,255,255,0.8)",
+  academic: "#6B7280",
   camp: "#F59E0B",
   lifestyle: "#D4A853",
 };
@@ -71,18 +71,18 @@ export function PillarChart({ posts }: PillarChartProps) {
       count: counts[k],
       pct,
       target,
-      color: DARK_PILLAR_COLORS[k],
+      color: PILLAR_COLORS[k],
     };
   });
 
   return (
-    <div className="rounded-xl border border-white/5 bg-transparent p-5">
+    <div className="rounded-xl border border-[#E5E7EB] bg-white p-5">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-[10px] uppercase tracking-[0.2em] text-white/40">
+        <h3 className="text-[10px] uppercase tracking-[0.2em] text-[#9CA3AF]">
           Posts by Pillar
         </h3>
         {total > 0 && (
-          <span className="text-xs text-white/40 font-mono">
+          <span className="text-xs text-[#9CA3AF] font-mono">
             {total} total
           </span>
         )}
@@ -92,7 +92,7 @@ export function PillarChart({ posts }: PillarChartProps) {
           <BarChart layout="vertical" data={data}>
             <XAxis
               type="number"
-              tick={{ fill: "rgba(255,255,255,0.4)", fontSize: 11, fontFamily: "JetBrains Mono, monospace" }}
+              tick={{ fill: "#9CA3AF", fontSize: 11, fontFamily: "JetBrains Mono, monospace" }}
               axisLine={false}
               tickLine={false}
               allowDecimals={false}
@@ -100,21 +100,21 @@ export function PillarChart({ posts }: PillarChartProps) {
             <YAxis
               type="category"
               dataKey="name"
-              tick={{ fill: "rgba(255,255,255,0.4)", fontSize: 11 }}
+              tick={{ fill: "#9CA3AF", fontSize: 11 }}
               axisLine={false}
               tickLine={false}
               width={70}
             />
             <Tooltip
               contentStyle={{
-                background: "#0A0A0A",
-                border: "1px solid rgba(255,255,255,0.05)",
+                background: "#FFFFFF",
+                border: "1px solid #E5E7EB",
                 borderRadius: 8,
                 fontSize: 12,
-                color: "#ffffff",
+                color: "#0F1720",
               }}
-              itemStyle={{ color: "#ffffff" }}
-              labelStyle={{ color: "rgba(255,255,255,0.6)" }}
+              itemStyle={{ color: "#0F1720" }}
+              labelStyle={{ color: "#6B7280" }}
               formatter={(value: number, _name: string, props: { payload: { pct: number; target: number } }) => {
                 const { pct, target } = props.payload;
                 const targetStr = target > 0 ? ` (target: ${target}%)` : "";
@@ -130,11 +130,11 @@ export function PillarChart({ posts }: PillarChartProps) {
         </ResponsiveContainer>
       </div>
       {/* Target distribution indicator */}
-      <div className="mt-3 flex items-center gap-4 text-[10px] uppercase tracking-[0.2em] text-white/30">
+      <div className="mt-3 flex items-center gap-4 text-[10px] uppercase tracking-[0.2em] text-[#9CA3AF]">
         <span>Target:</span>
-        <span className="text-[#ff000c]">Film 40%</span>
+        <span className="text-[#0F1720]">Film 40%</span>
         <span className="text-[#D4A853]">Training 40%</span>
-        <span className="text-white/60">Academic 20%</span>
+        <span className="text-[#6B7280]">Academic 20%</span>
       </div>
     </div>
   );

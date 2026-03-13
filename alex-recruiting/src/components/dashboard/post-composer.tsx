@@ -210,7 +210,7 @@ export function PostComposer({
 
         {/* ---- Content textarea ---- */}
         <div>
-          <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-white/40">
+          <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-[#9CA3AF]">
             Content
           </label>
           <textarea
@@ -218,7 +218,7 @@ export function PostComposer({
             onChange={(e) => setContent(e.target.value)}
             rows={4}
             placeholder="What's happening on the recruiting trail?"
-            className="w-full rounded-lg border border-white/10 bg-[#111111] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#ff000c] focus:outline-none focus:ring-1 focus:ring-[#ff000c]"
+            className="w-full rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-sm text-[#0F1720] placeholder:text-[#9CA3AF] focus:border-[#0F1720] focus:outline-none focus:ring-1 focus:ring-[#0F1720]"
           />
           <p
             className={cn(
@@ -227,7 +227,7 @@ export function PostComposer({
                 ? "text-[#EF4444] font-semibold"
                 : charWarning
                   ? "text-[#F59E0B]"
-                  : "text-white/40"
+                  : "text-[#9CA3AF]"
             )}
           >
             {charCount}/280
@@ -236,7 +236,7 @@ export function PostComposer({
 
         {/* ---- Pillar selector ---- */}
         <div>
-          <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-white/40">
+          <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-[#9CA3AF]">
             Pillar
           </label>
           <div className="flex flex-wrap gap-2">
@@ -251,8 +251,8 @@ export function PostComposer({
                   className={cn(
                     "rounded-lg px-3 py-2 text-xs font-medium transition-colors border",
                     selected
-                      ? "border-current bg-white/5"
-                      : "border-white/5 bg-[#0A0A0A] text-white/40 hover:text-white/60 hover:bg-[#111111]"
+                      ? "border-current bg-[#F5F5F4]"
+                      : "border-[#E5E7EB] bg-white text-[#9CA3AF] hover:text-[#6B7280] hover:bg-[#F5F5F4]"
                   )}
                   style={selected ? { color: cfg.color, borderColor: cfg.color } : undefined}
                 >
@@ -271,7 +271,7 @@ export function PostComposer({
 
         {/* ---- Hashtags ---- */}
         <div>
-          <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-white/40">
+          <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-[#9CA3AF]">
             Hashtags
           </label>
           <input
@@ -279,7 +279,7 @@ export function PostComposer({
             value={hashtags}
             onChange={(e) => setHashtags(e.target.value)}
             placeholder="#FilmDontLie, #OLPlay"
-            className="w-full rounded-lg border border-white/10 bg-[#111111] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#ff000c] focus:outline-none focus:ring-1 focus:ring-[#ff000c]"
+            className="w-full rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-sm text-[#0F1720] placeholder:text-[#9CA3AF] focus:border-[#0F1720] focus:outline-none focus:ring-1 focus:ring-[#0F1720]"
           />
           {/* Hashtag suggestion pills */}
           <div className="mt-2 flex flex-wrap gap-1.5">
@@ -293,7 +293,7 @@ export function PostComposer({
                     setHashtags(current.length ? `${hashtags}, ${tag}` : tag);
                   }
                 }}
-                className="rounded-full bg-white/5 px-2.5 py-1 text-[11px] text-white/60 hover:bg-white/10 hover:text-white transition-colors"
+                className="rounded-full bg-[#F5F5F4] px-2.5 py-1 text-[11px] text-[#6B7280] hover:bg-[#E5E7EB] hover:text-[#0F1720] transition-colors"
               >
                 {tag}
               </button>
@@ -303,46 +303,46 @@ export function PostComposer({
 
         {/* ---- Media URL ---- */}
         <div>
-          <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-white/40">
-            Media URL <span className="text-white/20">(optional)</span>
+          <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-[#9CA3AF]">
+            Media URL <span className="text-[#9CA3AF]">(optional)</span>
           </label>
           <input
             type="text"
             value={mediaUrl}
             onChange={(e) => setMediaUrl(e.target.value)}
             placeholder="/optimized-media/clip.mp4 or https://..."
-            className="w-full rounded-lg border border-white/10 bg-[#111111] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#ff000c] focus:outline-none focus:ring-1 focus:ring-[#ff000c]"
+            className="w-full rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-sm text-[#0F1720] placeholder:text-[#9CA3AF] focus:border-[#0F1720] focus:outline-none focus:ring-1 focus:ring-[#0F1720]"
           />
         </div>
 
         {/* ---- Date + Time ---- */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-white/40">
+            <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-[#9CA3AF]">
               Date
             </label>
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full rounded-lg border border-white/10 bg-[#111111] px-3 py-2 text-sm text-white focus:border-[#ff000c] focus:outline-none focus:ring-1 focus:ring-[#ff000c] [color-scheme:dark]"
+              className="w-full rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-sm text-[#0F1720] focus:border-[#0F1720] focus:outline-none focus:ring-1 focus:ring-[#0F1720]"
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-white/40">
+            <label className="mb-1.5 block text-[10px] uppercase tracking-[0.2em] text-[#9CA3AF]">
               Time
             </label>
             <input
               type="time"
               value={time}
               onChange={(e) => setTime(e.target.value)}
-              className="w-full rounded-lg border border-white/10 bg-[#111111] px-3 py-2 text-sm text-white focus:border-[#ff000c] focus:outline-none focus:ring-1 focus:ring-[#ff000c] [color-scheme:dark]"
+              className="w-full rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-sm text-[#0F1720] focus:border-[#0F1720] focus:outline-none focus:ring-1 focus:ring-[#0F1720]"
             />
           </div>
         </div>
 
         {/* ---- Tip ---- */}
-        <p className="rounded-lg bg-[#ff000c]/10 border border-[#ff000c]/20 px-3 py-2 text-xs text-[#ff000c]">
+        <p className="rounded-lg bg-[#0F1720]/5 border border-[#0F1720]/10 px-3 py-2 text-xs text-[#0F1720]">
           Coaches are most active 7-9am CT on Tue/Wed/Thu
         </p>
 
@@ -351,7 +351,7 @@ export function PostComposer({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg bg-white/5 px-4 py-2 text-sm font-medium text-white/60 transition-colors hover:bg-white/10"
+            className="rounded-lg bg-[#F5F5F4] px-4 py-2 text-sm font-medium text-[#6B7280] transition-colors hover:bg-[#E5E7EB]"
           >
             Cancel
           </button>
@@ -359,7 +359,7 @@ export function PostComposer({
             type="button"
             disabled={saving || !content.trim() || charOver}
             onClick={handleSaveDraft}
-            className="rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/5 disabled:opacity-50"
+            className="rounded-lg border border-[#E5E7EB] px-4 py-2 text-sm font-medium text-[#0F1720] transition-colors hover:bg-[#F5F5F4] disabled:opacity-50"
           >
             Save Draft
           </button>
@@ -367,7 +367,7 @@ export function PostComposer({
             type="button"
             disabled={saving || !content.trim() || charOver}
             onClick={handleSchedule}
-            className="rounded-lg bg-[#ff000c] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#cc000a] disabled:opacity-50"
+            className="rounded-lg bg-[#0F1720] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1F2937] disabled:opacity-50"
           >
             Schedule
           </button>
