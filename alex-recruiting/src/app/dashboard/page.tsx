@@ -2,242 +2,283 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  ArrowRight,
-  Eye,
-  FileText,
-  Mail,
-  MessageSquare,
-  TrendingUp,
-  Users,
-} from "lucide-react";
-import { useDashboardAssembly } from "@/hooks/useDashboardAssembly";
+import { Users, Mail, FileText, Eye, ArrowRight } from "lucide-react";
 import { StatCard } from "@/components/dashboard/stat-card";
-import { DailyBrief } from "@/components/dashboard/daily-brief";
-import { ReadinessScoreGauge } from "@/components/dashboard/readiness-score";
-import { RecruitingTimeline } from "@/components/dashboard/recruiting-timeline";
-import { SignalFeed } from "@/components/dashboard/signal-feed";
+import { targetSchools } from "@/lib/data/target-schools";
+import { getSchoolLogo, getSchoolColors } from "@/lib/data/school-branding";
 
 interface DashboardStats {
-  profileViews: number;
-  coachFollowers: number;
-  dmsSent: number;
-  postsThisWeek: number;
-  draftDMs: number;
-  draftPosts: number;
-  staleCoaches: number;
+  profileViews: number | null;
+  coachCount: number | null;
+  dmsSent: number | null;
+  postsThisWeek: number | null;
 }
 
 export default function DashboardPage() {
-  const scopeRef = useDashboardAssembly();
-
   const [stats, setStats] = useState<DashboardStats>({
-    profileViews: 0,
-    coachFollowers: 0,
-    dmsSent: 0,
-    postsThisWeek: 0,
-    draftDMs: 0,
-    draftPosts: 0,
-    staleCoaches: 0,
+    profileViews: null,
+    coachCount: null,
+    dmsSent: null,
+    postsThisWeek: null,
   });
+  const [recentActivity, setRecentActivity] = useState<
+    Array<{
+      id: string;
+      type: string;
+      description: string;
+      timestamp: string;
+      schoolId?: string;
+    }>
+  >([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadStats() {
+    async function fetchData() {
       try {
-        const [analyticsRes, coachesRes, postsRes, dmsRes] =
-          await Promise.allSettled([
-            fetch("/api/analytics"),
-            fetch("/api/coaches"),
-            fetch("/api/posts"),
-            fetch("/api/dms"),
-          ]);
+        const [analyticsRes, coachesRes, postsRes, dmsRes] = await Promise.all([
+          fetch("/api/analytics")
+            .then((r) => (r.ok ? r.json() : null))
+            .catch(() => null),
+          fetch("/api/coaches")
+            .then((r) => (r.ok ? r.json() : null))
+            .catch(() => null),
+          fetch("/api/posts")
+            .then((r) => (r.ok ? r.json() : null))
+            .catch(() => null),
+          fetch("/api/dms")
+            .then((r) => (r.ok ? r.json() : null))
+            .catch(() => null),
+        ]);
 
-        let profileViews = 0;
-        let coachFollowers = 0;
-        let postsThisWeek = 0;
-        let dmsSent = 0;
+        const coaches = Array.isArray(coachesRes)
+          ? coachesRes
+          : coachesRes?.coaches || [];
+        const posts = Array.isArray(postsRes)
+          ? postsRes
+          : postsRes?.posts || [];
+        const dms = Array.isArray(dmsRes) ? dmsRes : dmsRes?.messages || [];
 
-        if (analyticsRes.status === "fulfilled" && analyticsRes.value.ok) {
-          const data = await analyticsRes.value.json();
-          profileViews = data?.totalViews ?? 0;
-        }
-
-        let draftPosts = 0;
-        let draftDMs = 0;
-        let staleCoaches = 0;
-
-        if (coachesRes.status === "fulfilled" && coachesRes.value.ok) {
-          const data = await coachesRes.value.json();
-          const coaches: { lastEngaged: string | null }[] = Array.isArray(data)
-            ? data
-            : (data?.coaches ?? []);
-          coachFollowers = coaches.length;
-          const twoWeeksAgo = Date.now() - 14 * 24 * 60 * 60 * 1000;
-          staleCoaches = coaches.filter(
-            (c) =>
-              c.lastEngaged && new Date(c.lastEngaged).getTime() < twoWeeksAgo
-          ).length;
-        }
-
-        if (postsRes.status === "fulfilled" && postsRes.value.ok) {
-          const data = await postsRes.value.json();
-          const posts: { status: string; updatedAt: string }[] =
-            data?.posts ?? [];
-          const oneWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-          postsThisWeek = posts.filter(
-            (p) =>
-              p.status === "posted" &&
-              new Date(p.updatedAt).getTime() >= oneWeekAgo
-          ).length;
-          draftPosts = posts.filter((p) => p.status === "draft").length;
-        }
-
-        if (dmsRes.status === "fulfilled" && dmsRes.value.ok) {
-          const data = await dmsRes.value.json();
-          const dms: { status: string }[] = data?.dms ?? [];
-          dmsSent = dms.filter((d) => d.status === "sent").length;
-          draftDMs = dms.filter((d) => d.status === "drafted").length;
-        }
+        // Calculate posts this week
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        const postsThisWeek = posts.filter(
+          (p: any) => new Date(p.createdAt || p.date) > weekAgo
+        ).length;
 
         setStats({
-          profileViews,
-          coachFollowers,
-          dmsSent,
-          postsThisWeek,
-          draftDMs,
-          draftPosts,
-          staleCoaches,
+          profileViews: analyticsRes?.profileViews ?? null,
+          coachCount: coaches.length || null,
+          dmsSent:
+            dms.filter(
+              (d: any) => d.status === "sent" || d.status === "delivered"
+            ).length || null,
+          postsThisWeek: postsThisWeek || null,
         });
-      } catch {
-        // Use fallback zeros
+
+        // Build activity from real data
+        const activity: Array<{
+          id: string;
+          type: string;
+          description: string;
+          timestamp: string;
+          schoolId?: string;
+        }> = [];
+
+        // Recent DMs
+        dms.slice(0, 5).forEach((dm: any, i: number) => {
+          activity.push({
+            id: `dm-${i}`,
+            type: "dm",
+            description: `DM ${dm.status === "sent" ? "sent to" : "drafted for"} ${dm.coachName || "coach"}`,
+            timestamp:
+              dm.createdAt || dm.updatedAt || new Date().toISOString(),
+            schoolId: dm.schoolId,
+          });
+        });
+
+        // Recent posts
+        posts.slice(0, 5).forEach((post: any, i: number) => {
+          activity.push({
+            id: `post-${i}`,
+            type: "post",
+            description: `Posted: "${(post.content || post.caption || "").slice(0, 60)}..."`,
+            timestamp:
+              post.createdAt || post.date || new Date().toISOString(),
+          });
+        });
+
+        // Sort by timestamp descending
+        activity.sort(
+          (a, b) =>
+            new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+        );
+        setRecentActivity(activity.slice(0, 10));
+      } catch (e) {
+        console.error("Failed to fetch dashboard data:", e);
       } finally {
         setLoading(false);
       }
     }
-
-    void loadStats();
+    fetchData();
   }, []);
 
-  // Quick actions data
-  const quickActions = [
-    {
-      href: "/recruit",
-      icon: TrendingUp,
-      label: "Recruit Site",
-      desc: "View public profile",
+  // Group target schools by tier
+  const schoolsByTier = targetSchools.reduce(
+    (acc, school) => {
+      const tier = school.priorityTier;
+      if (!acc[tier]) acc[tier] = [];
+      acc[tier].push(school);
+      return acc;
     },
-    {
-      href: "/dashboard/content",
-      icon: FileText,
-      label: "Content",
-      desc: "Review and publish",
-    },
-    {
-      href: "/dashboard/team",
-      icon: MessageSquare,
-      label: "Team",
-      desc: "Chat with your team",
-    },
-    {
-      href: "/dashboard/coaches",
-      icon: Mail,
-      label: "Coach Pipeline",
-      desc: "CRM and outreach",
-    },
-  ];
+    {} as Record<string, typeof targetSchools>
+  );
+
+  function timeAgo(timestamp: string): string {
+    const diff = Date.now() - new Date(timestamp).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 60) return `${mins}m ago`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    return `${days}d ago`;
+  }
 
   return (
-    <div ref={scopeRef}>
-      {/* 1. Daily Brief — Hero with typewriter */}
-      <div data-dash-animate>
-        <DailyBrief />
+    <div className="space-y-8">
+      {/* Page Title */}
+      <h1 className="text-2xl font-bold text-[#0F1720]">Overview</h1>
+
+      {/* Stat Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard label="Coaches Tracked" value={stats.coachCount} icon={Users} />
+        <StatCard label="DMs Sent" value={stats.dmsSent} icon={Mail} />
+        <StatCard
+          label="Posts This Week"
+          value={stats.postsThisWeek}
+          icon={FileText}
+        />
+        <StatCard label="Profile Views" value={stats.profileViews} icon={Eye} />
       </div>
 
-      {/* 2. Readiness Score + Stat Cards row */}
-      <div
-        className="mb-8 grid gap-6 md:grid-cols-[320px_1fr]"
-        data-dash-animate
-      >
-        <ReadinessScoreGauge />
-
-        {/* Stat cards 2x2 grid */}
-        <div className="grid grid-cols-2 gap-3">
-          {[
-            {
-              label: "Profile Views",
-              value: loading ? 0 : stats.profileViews,
-              change: "+12 this week",
-              changeType: "up" as const,
-              icon: Eye,
-              sparkline: [3, 7, 5, 12, 9, 14, 18],
-            },
-            {
-              label: "Coaches in DB",
-              value: loading ? 0 : stats.coachFollowers,
-              change: "183 total",
-              changeType: "neutral" as const,
-              icon: Users,
-              sparkline: [150, 155, 160, 165, 170, 178, 183],
-            },
-            {
-              label: "DMs Sent",
-              value: loading ? 0 : stats.dmsSent,
-              change: "+3 this week",
-              changeType: "up" as const,
-              icon: Mail,
-              sparkline: [1, 2, 1, 3, 2, 4, 3],
-            },
-            {
-              label: "Posts This Week",
-              value: loading ? 0 : stats.postsThisWeek,
-              change: "Target: 5-7",
-              changeType: "neutral" as const,
-              icon: FileText,
-              sparkline: [2, 4, 3, 5, 4, 6, 3],
-            },
-          ].map((card) => (
-            <StatCard key={card.label} {...card} />
-          ))}
-        </div>
-      </div>
-
-      {/* 3. NCAA Timeline */}
-      <div className="mb-8" data-dash-animate>
-        <RecruitingTimeline />
-      </div>
-
-      {/* 4. Two-column: Signal Feed + Quick Actions */}
-      <div className="grid gap-6 md:grid-cols-[1fr_320px]" data-dash-animate>
-        <SignalFeed />
-
-        {/* Quick Actions */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="h-6 w-1 rounded-full bg-[#ff000c]" />
-            <h2 className="text-[10px] uppercase tracking-[0.2em] text-white/40">
-              Quick Actions
+      {/* Two Column Layout */}
+      <div className="grid lg:grid-cols-3 gap-6">
+        {/* Recent Activity */}
+        <div className="lg:col-span-2 bg-white border border-[#E5E7EB] rounded-lg">
+          <div className="px-5 py-4 border-b border-[#E5E7EB]">
+            <h2 className="text-lg font-semibold text-[#0F1720]">
+              Recent Activity
             </h2>
           </div>
-          {quickActions.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="group flex items-center gap-4 rounded-xl border border-white/5 bg-[#0A0A0A] p-4 transition-all duration-300 hover:border-[#ff000c]/20 hover:bg-[#111111] hover:shadow-[0_0_20px_rgba(255,0,12,0.06)]"
-            >
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#ff000c]/10">
-                <link.icon className="h-5 w-5 text-[#ff000c]" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-[13px] font-semibold text-white">
-                  {link.label}
+          <div className="divide-y divide-[#F3F4F6]">
+            {loading ? (
+              // Skeleton loading
+              Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="px-5 py-3 flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-[#F5F5F4] animate-pulse" />
+                  <div className="flex-1 space-y-1.5">
+                    <div className="h-3.5 w-3/4 bg-[#F5F5F4] rounded animate-pulse" />
+                    <div className="h-3 w-1/4 bg-[#F5F5F4] rounded animate-pulse" />
+                  </div>
+                </div>
+              ))
+            ) : recentActivity.length > 0 ? (
+              recentActivity.map((item) => (
+                <div key={item.id} className="px-5 py-3 flex items-center gap-3">
+                  {item.schoolId ? (
+                    <img
+                      src={getSchoolLogo(item.schoolId)}
+                      alt=""
+                      className="w-8 h-8 rounded-full"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-[#F5F5F4] flex items-center justify-center">
+                      {item.type === "dm" ? (
+                        <Mail className="w-4 h-4 text-[#9CA3AF]" />
+                      ) : (
+                        <FileText className="w-4 h-4 text-[#9CA3AF]" />
+                      )}
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-[#0F1720] truncate">
+                      {item.description}
+                    </p>
+                    <p className="text-xs text-[#9CA3AF]">
+                      {timeAgo(item.timestamp)}
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="px-5 py-12 text-center">
+                <Mail className="w-8 h-8 text-[#D1D5DB] mx-auto mb-2" />
+                <p className="text-sm text-[#9CA3AF]">No recent activity</p>
+                <p className="text-xs text-[#D1D5DB] mt-1">
+                  Start by following a coach or drafting a DM
                 </p>
-                <p className="text-[11px] text-white/40">{link.desc}</p>
               </div>
-              <ArrowRight className="h-4 w-4 text-white/20 transition-all group-hover:text-[#ff000c] group-hover:translate-x-0.5" />
-            </Link>
-          ))}
+            )}
+          </div>
         </div>
+
+        {/* Target Schools */}
+        <div className="bg-white border border-[#E5E7EB] rounded-lg">
+          <div className="px-5 py-4 border-b border-[#E5E7EB]">
+            <h2 className="text-lg font-semibold text-[#0F1720]">
+              Target Schools
+            </h2>
+          </div>
+          <div className="p-4 space-y-6">
+            {Object.entries(schoolsByTier).map(([tier, schools]) => (
+              <div key={tier}>
+                <p className="text-xs font-medium text-[#9CA3AF] uppercase tracking-wide mb-2">
+                  {tier}
+                </p>
+                <div className="space-y-1.5">
+                  {schools.map((school) => (
+                    <div
+                      key={school.id}
+                      className="flex items-center gap-2.5 py-1.5"
+                    >
+                      <img
+                        src={getSchoolLogo(school.id)}
+                        alt={school.name}
+                        className="w-7 h-7 rounded-full"
+                      />
+                      <span className="text-sm text-[#0F1720] flex-1 truncate">
+                        {school.name}
+                      </span>
+                      <span className="text-xs text-[#9CA3AF] bg-[#F5F5F4] px-2 py-0.5 rounded-full">
+                        {school.conference}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { label: "View Recruit Site", href: "/recruit", icon: ArrowRight },
+          { label: "Draft Content", href: "/dashboard/content", icon: FileText },
+          { label: "Coach Pipeline", href: "/dashboard/coaches", icon: Users },
+          { label: "Send DM", href: "/dashboard/outreach", icon: Mail },
+        ].map((action) => (
+          <Link
+            key={action.href}
+            href={action.href}
+            className="bg-white border border-[#E5E7EB] rounded-lg p-4 hover:shadow-sm hover:border-[#D1D5DB] transition-all group"
+          >
+            <action.icon className="w-5 h-5 text-[#9CA3AF] group-hover:text-[#0F1720] transition-colors mb-2" />
+            <p className="text-sm font-medium text-[#0F1720]">
+              {action.label}
+            </p>
+          </Link>
+        ))}
       </div>
     </div>
   );
