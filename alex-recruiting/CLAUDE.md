@@ -50,8 +50,8 @@ npm run test:e2e     # End-to-end tests
 - **Database**: Drizzle ORM with PostgreSQL. Schema in `src/lib/db/schema.ts`. Config in `drizzle.config.ts`.
 - **UI components**: Use shadcn/ui patterns from `src/components/ui/`. Radix primitives for dialogs, selects, tabs.
 - **API routes**: Next.js route handlers in `src/app/api/`. Return JSON responses.
-- **Styling**: Tailwind CSS utility classes. Dark theme with slate palette (`bg-slate-50` base).
-- **Layout**: Desktop sidebar + mobile bottom nav. Main content offset `md:ml-64`.
+- **Styling**: Tailwind CSS utility classes. Light theme with Apple HIG aesthetic. Dashboard uses `dash-*` design tokens.
+- **Layout**: Desktop sidebar (280px) + mobile bottom nav. Main content offset `md:ml-[280px]`.
 
 ## Environment Variables
 
@@ -131,3 +131,17 @@ src/lib/rec/
     competitor-intel.ts # Class of 2029 OL competitor profiles
     content-library.ts  # Video inventory summary from video store
 ```
+
+## Data Integrity Rule
+
+NO hardcoded fake data in any UI component. Every number, name, and stat displayed
+must come from a real API response or database query. If no data exists, show an
+empty state with a clear CTA. Never use placeholder values that could be mistaken
+for real data. Configuration data (school targets, NCAA calendar, team roster,
+pillar targets) is acceptable as these represent real strategic decisions, not fake metrics.
+
+## School Branding
+
+School logos stored in `public/logos/{school-id}.svg`. School colors and branding
+data in `src/lib/data/school-branding.ts`. Use `getSchoolLogo(id)` and
+`getSchoolColors(id)` when displaying school identity in coach-related components.
