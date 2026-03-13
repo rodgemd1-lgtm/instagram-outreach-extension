@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface AnimatedNumberProps {
   value: number;
@@ -80,7 +81,7 @@ export function AnimatedNumber({
   }, [value, reducedMotion]);
 
   return (
-    <span className={`font-mono ${className}`}>
+    <span className={cn("font-mono", className)}>
       {prefix}
       {formatValue(displayed, format)}
       {suffix}
