@@ -25,48 +25,48 @@ const config: Config = {
           deep: "#000000",
         },
         dash: {
-          bg: "#000000",
-          // New semantic surface scale
-          "surface-1": "#080808",
-          "surface-2": "#121212",
-          "surface-3": "#1A1A1A",
+          bg: "#FAFAFA",
+          // Semantic surface scale
+          "surface-1": "#FFFFFF",
+          "surface-2": "#FAFAFA",
+          "surface-3": "#F5F5F4",
           // Backward compat aliases
-          surface: "#080808",
-          "surface-raised": "#121212",
+          surface: "#FFFFFF",
+          "surface-raised": "#FFFFFF",
           // Border scale
           border: {
-            subtle: "#0A0A0A",
-            DEFAULT: "#1F1F1F",
-            strong: "#2A2A2A",
+            subtle: "#F3F4F6",
+            DEFAULT: "#E5E7EB",
+            strong: "#D1D5DB",
           },
-          "border-subtle": "#0A0A0A",
+          "border-subtle": "#F3F4F6",
           // Accent scale
           accent: {
-            DEFAULT: "#ff000c",
-            hover: "#e6000b",
-            subtle: "#1a0001",
+            DEFAULT: "#0F1720",
+            hover: "#1F2937",
+            subtle: "#F3F4F6",
           },
-          "accent-hover": "#e6000b",
+          "accent-hover": "#1F2937",
           // Gold scale
           gold: {
             DEFAULT: "#D4A853",
-            subtle: "#1a1508",
+            subtle: "#FEF9EF",
           },
           // Semantic status colors
-          success: "#22C55E",
+          success: "#16A34A",
           warning: "#F59E0B",
           danger: "#DC2626",
-          info: "#3B82F6",
+          info: "#2563EB",
           // Text scale
           text: {
-            primary: "#FFFFFF",
-            secondary: "#A1A1AA",
-            muted: "#71717A",
-            disabled: "#3F3F46",
+            primary: "#0F1720",
+            secondary: "#6B7280",
+            muted: "#9CA3AF",
+            disabled: "#D1D5DB",
           },
           // Backward compat aliases for text
-          "text-secondary": "#A1A1AA",
-          muted: "#71717A",
+          "text-secondary": "#6B7280",
+          muted: "#9CA3AF",
         },
       },
       fontSize: {

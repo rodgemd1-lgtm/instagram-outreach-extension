@@ -191,62 +191,42 @@ body {
 }
 
 /* ── Dashboard command-center tokens ── */
-/* Matches Jacob's recruit page: pure black base, #ff000c red accent */
 .dashboard-shell {
-  /* Surface scale */
-  --dash-bg: #000000;
-  --dash-surface: #080808;
-  --dash-surface-raised: #121212;
-  --dash-surface-3: #1A1A1A;
-  /* Border scale */
-  --dash-border: #1F1F1F;
-  --dash-border-subtle: #0A0A0A;
-  --dash-border-strong: #2A2A2A;
-  /* Text scale */
-  --dash-text: #FFFFFF;
-  --dash-text-secondary: #A1A1AA;
-  --dash-muted: #71717A;
-  --dash-text-muted: #71717A;
-  --dash-text-disabled: #3F3F46;
-  /* Accent */
-  --dash-accent: #ff000c;
-  --dash-accent-hover: #e6000b;
-  --dash-accent-subtle: #1a0001;
-  /* Status */
-  --dash-success: #22C55E;
+  --dash-bg: #FAFAFA;
+  --dash-card: #FFFFFF;
+  --dash-sidebar: #FFFFFF;
+  --dash-subtle: #F5F5F4;
+  --dash-surface: #FFFFFF;
+  --dash-surface-raised: #FAFAFA;
+
+  --dash-text: #0F1720;
+  --dash-text-secondary: #6B7280;
+  --dash-muted: #9CA3AF;
+  --dash-text-disabled: #D1D5DB;
+
+  --dash-border: #E5E7EB;
+  --dash-border-subtle: #F3F4F6;
+  --dash-border-strong: #D1D5DB;
+
+  --dash-accent: #0F1720;
+  --dash-accent-hover: #1F2937;
+  --dash-accent-subtle: #F3F4F6;
+
+  --dash-success: #16A34A;
   --dash-warning: #F59E0B;
   --dash-danger: #DC2626;
-  --dash-info: #3B82F6;
-  /* Brand */
-  --dash-gold: #D4A853;
-  --dash-gold-subtle: #1a1508;
-  /* Typography */
-  --dash-font-display: 'Playfair Display', Georgia, serif;
-  --dash-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-}
+  --dash-info: #2563EB;
 
-.dashboard-shell {
+  --dash-gold: #D4A853;
+  --dash-gold-subtle: #FEF9EF;
+
+  --dash-font-display: 'Inter', system-ui, sans-serif;
+  --dash-font-mono: 'JetBrains Mono', monospace;
+
   background: var(--dash-bg);
   color: var(--dash-text);
-  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
-}
-
-.dashboard-shell ::-webkit-scrollbar-thumb {
-  background: rgba(255, 0, 12, 0.15);
-}
-.dashboard-shell ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 0, 12, 0.30);
-}
-.dashboard-shell ::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.dashboard-shell ::selection {
-  background: rgba(255, 0, 12, 0.3);
-  color: #fff;
 }
 
 .font-dash-display {
@@ -341,13 +321,13 @@ body {
   @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-xs font-medium uppercase tracking-widest transition-all duration-200;
 }
 .dash-btn-primary {
-  @apply dash-btn bg-[#ff000c] text-white hover:bg-[#e6000b] active:scale-[0.98];
+  @apply dash-btn bg-[#0F1720] text-white hover:bg-[#1F2937] active:scale-[0.98];
 }
 .dash-btn-secondary {
-  @apply dash-btn border border-[#ff000c]/30 text-[#ff000c] hover:bg-[#ff000c]/10 active:scale-[0.98];
+  @apply dash-btn border border-[#0F1720]/30 text-[#0F1720] hover:bg-[#0F1720]/10 active:scale-[0.98];
 }
 .dash-btn-ghost {
-  @apply dash-btn text-white/50 hover:bg-white/5 hover:text-white/70;
+  @apply dash-btn text-[#6B7280] hover:bg-[#F5F5F4] hover:text-[#0F1720];
 }
 .dash-btn-danger {
   @apply dash-btn bg-[#DC2626] text-white hover:bg-[#B91C1C] active:scale-[0.98];
@@ -355,7 +335,7 @@ body {
 
 /* Dashboard Focus States */
 .dash-focus:focus-visible {
-  @apply outline-none ring-2 ring-[#ff000c]/50 ring-offset-2 ring-offset-black;
+  @apply outline-none ring-2 ring-[#0F1720]/50 ring-offset-2 ring-offset-white;
 }
 
 /* Dashboard Skeleton Loading */
@@ -365,23 +345,13 @@ body {
 }
 
 .dash-skeleton {
-  @apply rounded bg-white/5;
-  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+  @apply rounded bg-[#F5F5F4];
+  background: linear-gradient(90deg, #F5F5F4 25%, #E5E7EB 50%, #F5F5F4 75%);
   background-size: 200% 100%;
   animation: dash-shimmer 1.5s ease-in-out infinite;
 }
 
 /* Dashboard micro-interactions */
-@keyframes dash-pulse-ring {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 0, 12, 0.4); }
-  50% { box-shadow: 0 0 0 6px rgba(255, 0, 12, 0); }
-}
-
-@keyframes dash-breathe {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-}
-
 @keyframes dash-slide-up {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -392,30 +362,18 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.dash-pulse-ring {
-  animation: dash-pulse-ring 2s ease-in-out infinite;
-}
-
-.dash-breathe {
-  animation: dash-breathe 3s ease-in-out infinite;
-}
-
 .dash-slide-up {
   animation: dash-slide-up 0.4s ease-out;
 }
 
 /* Dashboard card hover */
 .dash-card {
-  @apply rounded-xl border border-white/5 bg-[#0A0A0A] transition-all duration-200;
+  @apply rounded-xl border border-[#E5E7EB] bg-white transition-all duration-200;
 }
 
 .dash-card:hover {
-  @apply border-white/10 bg-[#111111] shadow-[0_0_20px_rgba(255,0,12,0.05)];
+  @apply shadow-[0_4px_12px_rgba(0,0,0,0.08)];
   transform: translateY(-1px);
-}
-
-.dash-card-accent:hover {
-  @apply border-[#ff000c]/20;
 }
 
 /* Dashboard section header pattern */
@@ -425,5 +383,5 @@ body {
 
 .dash-section-header::before {
   content: '';
-  @apply block h-6 w-1 rounded-full bg-[#ff000c];
+  @apply block h-6 w-1 rounded-full bg-[#0F1720];
 }
