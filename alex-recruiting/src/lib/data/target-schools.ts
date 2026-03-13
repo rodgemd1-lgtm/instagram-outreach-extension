@@ -12,6 +12,9 @@ export interface TargetSchool {
   officialXHandle: string;
   rosterUrl: string;
   staffUrl: string;
+  logoPath?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
 }
 
 export const targetSchools: TargetSchool[] = [
