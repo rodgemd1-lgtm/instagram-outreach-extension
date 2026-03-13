@@ -1,191 +1,99 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Users, LayoutGrid, List } from "lucide-react";
+import { Users, LayoutGrid, List, Search } from "lucide-react";
 import type { Coach } from "@/lib/types";
-import { calculateEngagement } from "@/lib/dashboard/engagement-scoring";
-import { useDashboardAssembly } from "@/hooks/useDashboardAssembly";
-import { AnimatedNumber } from "@/components/dashboard/animated-number";
 import { CoachTable } from "@/components/dashboard/coach-table";
 import { CoachCard } from "@/components/dashboard/coach-card";
 import { CoachDetail } from "@/components/dashboard/coach-detail";
-import { EmptyState } from "@/components/dashboard/empty-state";
-
-type ViewMode = "table" | "cards";
-
-function getEngagementScore(coach: Coach): number {
-  const daysAgo = coach.lastEngaged
-    ? Math.floor((Date.now() - new Date(coach.lastEngaged).getTime()) / 86400000)
-    : null;
-  return calculateEngagement({
-    isFollowed: coach.followStatus !== "not_followed",
-    isFollowedBack: coach.followStatus === "followed_back",
-    dmSent: ["sent", "responded", "approved"].includes(coach.dmStatus),
-    dmReplied: coach.dmStatus === "responded",
-    lastInteractionDays: daysAgo,
-    interactionCount: coach.xActivityScore,
-  }).score;
-}
 
 export default function CoachesPage() {
-  const scopeRef = useDashboardAssembly();
   const [coaches, setCoaches] = useState<Coach[]>([]);
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<"list" | "card">("list");
   const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
-  const [viewMode, setViewMode] = useState<ViewMode>("table");
+  const [search, setSearch] = useState("");
+  const [tierFilter, setTierFilter] = useState("all");
 
-  const fetchCoaches = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/coaches");
-      if (res.ok) {
-        const data = await res.json();
-        setCoaches(data.coaches || []);
-      }
-    } catch { /* fallback empty */ }
-    finally { setLoading(false); }
+  useEffect(() => {
+    fetch("/api/coaches")
+      .then(r => r.json())
+      .then(data => {
+        setCoaches(Array.isArray(data) ? data : data?.coaches || []);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
-  useEffect(() => { void fetchCoaches(); }, [fetchCoaches]);
+  const filteredCoaches = useMemo(() => {
+    return coaches.filter(c => {
+      if (search && !c.name?.toLowerCase().includes(search.toLowerCase()) && !c.schoolName?.toLowerCase().includes(search.toLowerCase())) return false;
+      if (tierFilter !== "all" && c.priorityTier !== tierFilter) return false;
+      return true;
+    });
+  }, [coaches, search, tierFilter]);
 
-  const handleCoachClick = (coach: Coach) => {
+  const handleCoachClick = useCallback((coach: Coach) => {
     setSelectedCoach(coach);
     setDetailOpen(true);
-  };
-
-  const handleDM = (coach: Coach) => {
-    setDetailOpen(false);
-    window.location.href = `/dashboard/outreach?coach=${coach.id}`;
-  };
-
-  // Pipeline distribution
-  const pipeline = useMemo(() => {
-    if (coaches.length === 0) return { cold: 0, warming: 0, hot: 0 };
-    let cold = 0;
-    let warming = 0;
-    let hot = 0;
-    for (const coach of coaches) {
-      const score = getEngagementScore(coach);
-      if (score >= 65) hot++;
-      else if (score >= 25) warming++;
-      else cold++;
-    }
-    return { cold, warming, hot };
-  }, [coaches]);
-
-  const total = coaches.length || 1;
+  }, []);
 
   return (
-    <div ref={scopeRef}>
-      <div className="mb-6" data-dash-animate>
-        <h1 className="text-2xl font-bold uppercase tracking-tight text-white">Coach CRM</h1>
-        <p className="mt-1 text-sm text-white/40">
-          {coaches.length} coaches tracked. Filter, sort, and manage relationships.
-        </p>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-[#0F1720]">Coaches</h1>
+          <p className="text-sm text-[#9CA3AF] mt-1">{coaches.length} coaches tracked</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={() => setViewMode("list")} className={`p-2 rounded-lg ${viewMode === "list" ? "bg-[#0F1720] text-white" : "bg-[#F5F5F4] text-[#6B7280]"}`}><List className="w-4 h-4" /></button>
+          <button onClick={() => setViewMode("card")} className={`p-2 rounded-lg ${viewMode === "card" ? "bg-[#0F1720] text-white" : "bg-[#F5F5F4] text-[#6B7280]"}`}><LayoutGrid className="w-4 h-4" /></button>
+        </div>
       </div>
 
-      {/* Pipeline Summary Bar */}
-      {coaches.length > 0 && (
-        <div className="mb-6 rounded-xl border border-white/5 bg-[#0A0A0A] p-4" data-dash-animate>
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">
-              Engagement Pipeline
-            </p>
-            {/* View toggle */}
-            <div className="flex items-center gap-1 rounded-lg border border-white/10 bg-[#111111] p-0.5">
-              <button
-                type="button"
-                onClick={() => setViewMode("table")}
-                className={`rounded-md p-1.5 transition-colors ${viewMode === "table" ? "bg-white/10 text-white" : "text-white/40 hover:text-white"}`}
-                title="Table view"
-              >
-                <List className="h-3.5 w-3.5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewMode("cards")}
-                className={`rounded-md p-1.5 transition-colors ${viewMode === "cards" ? "bg-white/10 text-white" : "text-white/40 hover:text-white"}`}
-                title="Card view"
-              >
-                <LayoutGrid className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          </div>
-
-          {/* Pipeline segments */}
-          <div className="flex gap-1 h-2 rounded-full overflow-hidden bg-white/5">
-            <div
-              className="h-full rounded-full bg-[#3F3F46] transition-all duration-700"
-              style={{ width: `${(pipeline.cold / total) * 100}%` }}
-            />
-            <div
-              className="h-full rounded-full bg-[#D4A853] transition-all duration-700"
-              style={{ width: `${(pipeline.warming / total) * 100}%` }}
-            />
-            <div
-              className="h-full rounded-full bg-[#ff000c] transition-all duration-700"
-              style={{ width: `${(pipeline.hot / total) * 100}%` }}
-            />
-          </div>
-
-          {/* Labels */}
-          <div className="mt-2 flex gap-6">
-            <div className="flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-[#3F3F46]" />
-              <span className="text-[11px] text-white/40">Cold</span>
-              <AnimatedNumber value={pipeline.cold} className="text-[11px] text-white/60" />
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-[#D4A853]" />
-              <span className="text-[11px] text-white/40">Warming</span>
-              <AnimatedNumber value={pipeline.warming} className="text-[11px] text-white/60" />
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-[#ff000c]" />
-              <span className="text-[11px] text-white/40">Hot</span>
-              <AnimatedNumber value={pipeline.hot} className="text-[11px] text-white/60" />
-            </div>
-          </div>
+      {/* Filters */}
+      <div className="flex gap-3 flex-wrap">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+          <input type="text" placeholder="Search coaches or schools..." value={search} onChange={e => setSearch(e.target.value)} className="w-full pl-10 pr-4 py-2 text-sm border border-[#E5E7EB] rounded-lg bg-white text-[#0F1720] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#0F1720] focus:ring-offset-1" />
         </div>
-      )}
+        <select value={tierFilter} onChange={e => setTierFilter(e.target.value)} className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg bg-white text-[#0F1720] focus:outline-none focus:ring-2 focus:ring-[#0F1720]">
+          <option value="all">All Tiers</option>
+          <option value="Tier 1">Tier 1</option>
+          <option value="Tier 2">Tier 2</option>
+          <option value="Tier 3">Tier 3</option>
+        </select>
+      </div>
 
+      {/* Content */}
       {loading ? (
-        <div className="flex items-center justify-center py-24">
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#ff000c] border-t-transparent" />
-        </div>
-      ) : coaches.length === 0 ? (
-        <EmptyState
-          icon={Users}
-          title="No coaches yet"
-          description="Add coaches to start tracking relationships and outreach."
-        />
-      ) : (
-        <div data-dash-animate>
-          {viewMode === "table" ? (
-            <CoachTable coaches={coaches} onCoachClick={handleCoachClick} />
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {coaches.map((coach) => (
-                <CoachCard
-                  key={coach.id}
-                  coach={coach}
-                  engagementScore={getEngagementScore(coach)}
-                  onView={handleCoachClick}
-                  onDM={handleDM}
-                />
-              ))}
+        <div className="space-y-4">
+          {Array.from({length: 3}).map((_, i) => (
+            <div key={i} className="bg-white border border-[#E5E7EB] rounded-lg p-4 animate-pulse">
+              <div className="h-5 w-48 bg-[#F5F5F4] rounded mb-3" />
+              <div className="h-4 w-full bg-[#F5F5F4] rounded mb-2" />
+              <div className="h-4 w-2/3 bg-[#F5F5F4] rounded" />
             </div>
-          )}
+          ))}
+        </div>
+      ) : filteredCoaches.length === 0 ? (
+        <div className="text-center py-16">
+          <Users className="w-10 h-10 text-[#D1D5DB] mx-auto mb-3" />
+          <p className="text-[#6B7280] font-medium">No coaches found</p>
+          <p className="text-sm text-[#9CA3AF] mt-1">{search || tierFilter !== "all" ? "Try adjusting your filters" : "Add coaches to start tracking"}</p>
+        </div>
+      ) : viewMode === "list" ? (
+        <CoachTable coaches={filteredCoaches} onCoachClick={handleCoachClick} />
+      ) : (
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredCoaches.map(coach => (
+            <CoachCard key={coach.id} coach={coach} onClick={() => handleCoachClick(coach)} />
+          ))}
         </div>
       )}
 
-      <CoachDetail
-        open={detailOpen}
-        onClose={() => setDetailOpen(false)}
-        coach={selectedCoach}
-        onDraftDM={handleDM}
-      />
+      <CoachDetail open={detailOpen} onClose={() => setDetailOpen(false)} coach={selectedCoach} onDraftDM={() => {}} />
     </div>
   );
 }
