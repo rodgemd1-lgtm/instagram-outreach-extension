@@ -25,17 +25,17 @@ const iconMap: Record<ActivityType, typeof FileText> = {
 };
 
 const borderColorMap: Record<ActivityType, string> = {
-  post: "border-[#ff000c]",
-  dm: "border-[#D4A853]",
-  follow: "border-[#22C55E]",
-  engagement: "border-white/20",
+  post: "border-[#2563EB]",
+  dm: "border-[#F59E0B]",
+  follow: "border-[#16A34A]",
+  engagement: "border-[#D1D5DB]",
 };
 
 const dotColorMap: Record<ActivityType, string> = {
-  post: "bg-[#ff000c]",
-  dm: "bg-[#D4A853]",
-  follow: "bg-[#22C55E]",
-  engagement: "bg-white/20",
+  post: "bg-[#2563EB]",
+  dm: "bg-[#F59E0B]",
+  follow: "bg-[#16A34A]",
+  engagement: "bg-[#D1D5DB]",
 };
 
 type FilterTab = "all" | "coaches" | "content" | "milestones";
@@ -85,12 +85,9 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
     : activities;
 
   return (
-    <div className="rounded-xl border border-white/5 bg-[#0A0A0A]">
-      {/* Header with filter tabs */}
-      <div className="border-b border-white/5 px-6 py-4">
-        <h3 className="mb-3 text-[10px] font-medium uppercase tracking-[0.2em] text-white/40">
-          Recent Activity
-        </h3>
+    <div>
+      {/* Filter tabs */}
+      <div className="border-b border-[#E5E7EB] px-5 py-3">
         <div className="flex gap-4">
           {TABS.map((tab) => (
             <button
@@ -98,8 +95,8 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
               onClick={() => setActiveTab(tab.id)}
               className={`pb-1 text-xs font-medium transition-colors ${
                 activeTab === tab.id
-                  ? "border-b-2 border-[#ff000c] text-white"
-                  : "text-white/40 hover:text-white/60"
+                  ? "border-b-2 border-[#0F1720] text-[#0F1720]"
+                  : "text-[#9CA3AF] hover:text-[#6B7280]"
               }`}
             >
               {tab.label}
@@ -109,11 +106,11 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="px-6 py-8 text-center">
-          <p className="text-sm text-white/40">No activity in this category.</p>
+        <div className="px-5 py-8 text-center">
+          <p className="text-sm text-[#9CA3AF]">No activity in this category.</p>
         </div>
       ) : (
-        <div className="divide-y divide-white/5">
+        <div className="divide-y divide-[#E5E7EB]">
           {filtered.map((activity) => {
             const Icon = iconMap[activity.type];
             const isExpanded = expandedId === activity.id;
@@ -124,31 +121,31 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
                   onClick={() =>
                     setExpandedId(isExpanded ? null : activity.id)
                   }
-                  className={`flex w-full items-center gap-3 border-l-2 px-6 py-3 text-left transition-colors hover:bg-white/[0.02] ${borderColorMap[activity.type]}`}
+                  className={`flex w-full items-center gap-3 border-l-2 px-5 py-3 text-left transition-colors hover:bg-[#F9FAFB] ${borderColorMap[activity.type]}`}
                 >
                   <div
                     className={`h-2 w-2 shrink-0 rounded-full ${dotColorMap[activity.type]}`}
                   />
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white/[0.03]">
-                    <Icon className="h-3.5 w-3.5 text-white/40" />
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#F5F5F4]">
+                    <Icon className="h-3.5 w-3.5 text-[#6B7280]" />
                   </div>
-                  <p className="min-w-0 flex-1 truncate text-sm font-medium text-white">
+                  <p className="min-w-0 flex-1 truncate text-sm font-medium text-[#0F1720]">
                     {activity.description}
                   </p>
-                  <span className="shrink-0 font-mono text-xs text-white/30">
+                  <span className="shrink-0 font-mono text-xs text-[#9CA3AF]">
                     {timeAgo(activity.timestamp)}
                   </span>
                   {activity.detail && (
                     isExpanded ? (
-                      <ChevronUp className="h-3.5 w-3.5 shrink-0 text-white/20" />
+                      <ChevronUp className="h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
                     ) : (
-                      <ChevronDown className="h-3.5 w-3.5 shrink-0 text-white/20" />
+                      <ChevronDown className="h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
                     )
                   )}
                 </button>
                 {isExpanded && activity.detail && (
-                  <div className="border-l-2 border-white/5 bg-white/[0.02] px-6 py-3 pl-[72px]">
-                    <p className="text-xs leading-relaxed text-white/50">
+                  <div className="border-l-2 border-[#E5E7EB] bg-[#F9FAFB] px-5 py-3 pl-[72px]">
+                    <p className="text-xs leading-relaxed text-[#6B7280]">
                       {activity.detail}
                     </p>
                   </div>

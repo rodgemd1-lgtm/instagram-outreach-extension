@@ -1,246 +1,96 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Eye, TrendingUp, Users, Mail, Loader2 } from "lucide-react";
-import { useDashboardAssembly } from "@/hooks/useDashboardAssembly";
-import { AnimatedNumber } from "@/components/dashboard/animated-number";
+import { Eye, TrendingUp, Users, Mail } from "lucide-react";
+import { StatCard } from "@/components/dashboard/stat-card";
 import { PipelineFunnel } from "@/components/dashboard/pipeline-funnel";
 import { ActivityFeed } from "@/components/dashboard/activity-feed";
-import { RadarChart } from "@/components/dashboard/radar-chart";
-import { HeatCalendar } from "@/components/dashboard/heat-calendar";
-import { Sparkline } from "@/components/dashboard/sparkline";
-
-interface AnalyticsData {
-  totalFollowers: number;
-  avgEngagementRate: number;
-  profileVisits: number;
-  dmResponseRate: number;
-}
-
-interface PostItem {
-  pillar: string;
-  status: string;
-  updatedAt: string;
-  createdAt: string;
-  content?: string;
-}
-
-interface CoachItem {
-  dmStatus: string;
-  followStatus: string;
-}
-
-interface ActivityItem {
-  id: string;
-  type: "post" | "dm" | "follow" | "engagement";
-  description: string;
-  timestamp: string;
-  detail?: string;
-}
-
-// Deterministic sparkline data generator
-function sparkData(seed: number): number[] {
-  let s = seed;
-  const out: number[] = [];
-  for (let i = 0; i < 7; i++) {
-    s = (s * 16807 + 0) % 2147483647;
-    out.push(Math.floor((s / 2147483647) * 60) + 20);
-  }
-  return out;
-}
 
 export default function AnalyticsPage() {
-  const scopeRef = useDashboardAssembly({ stagger: 0.06 });
-  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
-  const [posts, setPosts] = useState<PostItem[]>([]);
-  const [coaches, setCoaches] = useState<CoachItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [analytics, setAnalytics] = useState<any>(null);
+  const [coaches, setCoaches] = useState<any[]>([]);
+  const [posts, setPosts] = useState<any[]>([]);
+  const [activities, setActivities] = useState<any[]>([]);
 
   useEffect(() => {
-    async function loadData() {
-      try {
-        const [analyticsRes, postsRes, coachesRes] = await Promise.allSettled([
-          fetch("/api/analytics"),
-          fetch("/api/posts"),
-          fetch("/api/coaches"),
-        ]);
+    Promise.all([
+      fetch("/api/analytics").then(r => r.ok ? r.json() : null).catch(() => null),
+      fetch("/api/coaches").then(r => r.ok ? r.json() : []).catch(() => []),
+      fetch("/api/posts").then(r => r.ok ? r.json() : []).catch(() => []),
+    ]).then(([analyticsData, coachData, postData]) => {
+      setAnalytics(analyticsData);
+      const c = Array.isArray(coachData) ? coachData : coachData?.coaches || [];
+      setCoaches(c);
+      const p = Array.isArray(postData) ? postData : postData?.posts || [];
+      setPosts(p);
 
-        if (analyticsRes.status === "fulfilled" && analyticsRes.value.ok) {
-          const data = await analyticsRes.value.json();
-          const c = data?.current;
-          if (c) {
-            setAnalytics({
-              totalFollowers: c.totalFollowers ?? 0,
-              avgEngagementRate: c.avgEngagementRate ?? 0,
-              profileVisits: c.profileVisits ?? 0,
-              dmResponseRate: c.dmResponseRate ?? 0,
-            });
-          }
+      // Build activities from real data
+      const acts: any[] = [];
+      c.slice(0, 5).forEach((coach: any, i: number) => {
+        if (coach.followStatus) {
+          acts.push({ id: `follow-${i}`, type: "follow", description: `Followed ${coach.name} at ${coach.schoolName}`, timestamp: coach.updatedAt || coach.createdAt || new Date().toISOString() });
         }
-
-        if (postsRes.status === "fulfilled" && postsRes.value.ok) {
-          const data = await postsRes.value.json();
-          setPosts(data?.posts ?? []);
-        }
-
-        if (coachesRes.status === "fulfilled" && coachesRes.value.ok) {
-          const data = await coachesRes.value.json();
-          setCoaches(data?.coaches ?? []);
-        }
-      } catch {
-        // Use fallback empty state
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    void loadData();
+      });
+      p.slice(0, 5).forEach((post: any, i: number) => {
+        acts.push({ id: `post-${i}`, type: "post", description: `Published: "${(post.content || post.caption || "").slice(0, 50)}..."`, timestamp: post.createdAt || post.date || new Date().toISOString() });
+      });
+      acts.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      setActivities(acts.slice(0, 10));
+    }).finally(() => setLoading(false));
   }, []);
 
-  // Build pipeline stages from coaches
+  // Pipeline stages from REAL data
   const totalCoaches = coaches.length;
-  const dmSentCount = coaches.filter((c) =>
-    ["sent", "responded", "approved"].includes(c.dmStatus)
-  ).length;
-  const repliedCount = coaches.filter((c) => c.dmStatus === "responded").length;
-  const mutualFollowCount = coaches.filter(
-    (c) => c.followStatus === "followed_back"
-  ).length;
+  const followed = coaches.filter((c: any) => c.followStatus === "following" || c.followStatus === "followed" || c.followStatus === "followed_back").length;
+  const dmd = coaches.filter((c: any) => c.dmStatus === "sent" || c.dmStatus === "responded" || c.dmStatus === "no_response").length;
+  const replied = coaches.filter((c: any) => c.dmStatus === "responded").length;
 
-  const pipelineStages = [
-    { label: "Total Coaches", count: totalCoaches, color: "#ff000c" },
-    { label: "DM Sent", count: dmSentCount, color: "#D4A853" },
-    { label: "Replied", count: repliedCount, color: "#22C55E" },
-    { label: "Mutual Follow", count: mutualFollowCount, color: "#22C55E" },
+  const funnelStages = [
+    { label: "Total Coaches", count: totalCoaches, color: "#0F1720" },
+    { label: "Followed", count: followed, color: "#2563EB" },
+    { label: "DM Sent", count: dmd, color: "#F59E0B" },
+    { label: "Replied", count: replied, color: "#16A34A" },
   ];
-
-  // Synthesize activities from posted posts
-  const activities: ActivityItem[] = posts
-    .filter((p) => p.status === "posted")
-    .slice(0, 10)
-    .map((p, i) => ({
-      id: `activity-${i}`,
-      type: "post" as const,
-      description: `Published ${p.pillar} post`,
-      timestamp: p.updatedAt || p.createdAt,
-      detail: p.content ? p.content.slice(0, 120) : undefined,
-    }));
-
-  // Stat cards with sparklines
-  const statCards = [
-    {
-      label: "Profile Views",
-      value: analytics?.profileVisits ?? 247,
-      icon: Eye,
-      change: "+12%",
-      changeType: "up" as const,
-      spark: sparkData(101),
-    },
-    {
-      label: "Engagement Rate",
-      value: analytics?.avgEngagementRate ?? 4.8,
-      icon: TrendingUp,
-      change: "+0.3%",
-      changeType: "up" as const,
-      spark: sparkData(202),
-      isPercent: true,
-    },
-    {
-      label: "Coach Response",
-      value: analytics?.dmResponseRate ?? 32,
-      icon: Mail,
-      change: "+5%",
-      changeType: "up" as const,
-      spark: sparkData(303),
-      isPercent: true,
-    },
-    {
-      label: "Network Growth",
-      value: analytics?.totalFollowers ?? 156,
-      icon: Users,
-      change: "+24",
-      changeType: "up" as const,
-      spark: sparkData(404),
-    },
-  ];
-
-  if (loading) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-white/40" />
-      </div>
-    );
-  }
 
   return (
-    <div ref={scopeRef}>
-      {/* Page header */}
-      <div className="mb-8" data-dash-animate>
-        <h1 className="text-2xl font-bold uppercase tracking-tight text-white">
-          ANALYTICS
-        </h1>
-        <p className="mt-1 text-sm text-white/40">
-          Intelligence dashboard — track recruiting progress and identify
-          what&apos;s working.
-        </p>
+    <div className="space-y-8">
+      <h1 className="text-2xl font-bold text-[#0F1720]">Analytics</h1>
+
+      {/* Stat Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard label="Profile Views" value={analytics?.profileViews ?? null} icon={Eye} />
+        <StatCard label="Engagement Rate" value={analytics?.engagementRate ? `${analytics.engagementRate}%` : null} icon={TrendingUp} />
+        <StatCard label="Coach Responses" value={replied || null} icon={Mail} />
+        <StatCard label="Total Coaches" value={totalCoaches || null} icon={Users} />
       </div>
 
-      {/* Two-column layout */}
-      <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
-        {/* Left column — primary visualizations */}
-        <div className="space-y-6">
-          <div data-dash-animate>
-            <PipelineFunnel stages={pipelineStages} />
+      {/* Pipeline Funnel */}
+      <div className="bg-white border border-[#E5E7EB] rounded-lg p-6">
+        <h2 className="text-lg font-semibold text-[#0F1720] mb-4">Recruiting Pipeline</h2>
+        {totalCoaches > 0 ? (
+          <PipelineFunnel stages={funnelStages} />
+        ) : (
+          <div className="text-center py-8">
+            <Users className="w-8 h-8 text-[#D1D5DB] mx-auto mb-2" />
+            <p className="text-sm text-[#9CA3AF]">Add coaches to see your pipeline</p>
           </div>
-          <div data-dash-animate>
-            <RadarChart />
-          </div>
-          <div data-dash-animate>
-            <HeatCalendar />
-          </div>
-        </div>
+        )}
+      </div>
 
-        {/* Right column — stat cards + activity feed */}
-        <div className="space-y-4">
-          {/* Stat cards with sparklines */}
-          {statCards.map((card) => {
-            const Icon = card.icon;
-            return (
-              <div
-                key={card.label}
-                data-dash-animate
-                className="rounded-xl border border-white/5 bg-[#0A0A0A] p-5 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#111111]"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-white/40">
-                      {card.label}
-                    </p>
-                    <div className="mt-2 flex items-end gap-3">
-                      <AnimatedNumber
-                        value={typeof card.value === "number" ? card.value : 0}
-                        format={card.isPercent ? "percent" : "number"}
-                        className="text-3xl font-bold tracking-tight text-white"
-                      />
-                      <Sparkline data={card.spark} className="mb-1" />
-                    </div>
-                    <p className="mt-1 font-mono text-xs font-medium text-[#22C55E]">
-                      {card.change} this week
-                    </p>
-                  </div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#ff000c]/10">
-                    <Icon className="h-5 w-5 text-[#ff000c]" />
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-
-          {/* Activity feed */}
-          <div data-dash-animate>
-            <ActivityFeed activities={activities} />
-          </div>
+      {/* Activity Feed */}
+      <div className="bg-white border border-[#E5E7EB] rounded-lg">
+        <div className="px-5 py-4 border-b border-[#E5E7EB]">
+          <h2 className="text-lg font-semibold text-[#0F1720]">Activity</h2>
         </div>
+        {activities.length > 0 ? (
+          <ActivityFeed activities={activities} />
+        ) : (
+          <div className="text-center py-8">
+            <TrendingUp className="w-8 h-8 text-[#D1D5DB] mx-auto mb-2" />
+            <p className="text-sm text-[#9CA3AF]">No activity yet</p>
+          </div>
+        )}
       </div>
     </div>
   );
