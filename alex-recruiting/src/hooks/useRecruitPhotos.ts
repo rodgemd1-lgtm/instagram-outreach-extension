@@ -22,6 +22,7 @@ const STATIC_PHOTOS: Record<string, string> = {
   origin: "/recruit/photos/origin-stance.jpg",
   character: "/recruit/photos/character-sideline.jpg",
   fit: "/recruit/photos/fit-blocking.jpg",
+  wingspan: "/recruit/photos/wingspan-spread.jpg",
 };
 
 /**

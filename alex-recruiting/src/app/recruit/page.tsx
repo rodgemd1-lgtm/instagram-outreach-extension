@@ -10,6 +10,7 @@ import { JacobVoice } from "@/components/recruit/jacob-voice";
 import { AcademicsSection } from "@/components/recruit/academics";
 import { TheFit } from "@/components/recruit/the-fit";
 import { ContactCTA } from "@/components/recruit/contact";
+import { Wingspan } from "@/components/recruit/wingspan";
 import { FilmGrainOverlay } from "@/components/recruit/film-grain";
 import { RecruitNav } from "@/components/recruit/nav";
 import { useRecruitPhotos } from "@/hooks/useRecruitPhotos";
@@ -30,6 +31,9 @@ export default function RecruitPage() {
 
       {/* Beat 2: Film + Stats (Jacob — right 2/3) */}
       <FilmReel backgroundUrl={photoMap["film-reel"]} />
+
+      {/* Beat 2.5: Wingspan — physical measurable (Jacob — full width) */}
+      <Wingspan photoUrl={photoMap.wingspan ?? ""} />
 
       {/* Beat 3: Coach evaluates (Coach — left 2/3) */}
       <CoachMonologue

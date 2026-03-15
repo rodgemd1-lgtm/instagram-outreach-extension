@@ -10,6 +10,7 @@ interface CounterAnimationProps {
   duration?: number;
   className?: string;
   trigger?: boolean;
+  decimals?: number;
 }
 
 export function CounterAnimation({
@@ -19,6 +20,7 @@ export function CounterAnimation({
   duration = 1.5,
   className = "",
   trigger = false,
+  decimals = 0,
 }: CounterAnimationProps) {
   const [value, setValue] = useState(0);
   const animated = useRef(false);
@@ -39,13 +41,18 @@ export function CounterAnimation({
       val: target,
       duration,
       ease: "power3.out",
-      onUpdate: () => setValue(Math.round(obj.val)),
+      onUpdate: () =>
+        setValue(
+          decimals > 0
+            ? parseFloat(obj.val.toFixed(decimals))
+            : Math.round(obj.val)
+        ),
     });
-  }, [trigger, target, duration, reducedMotion]);
+  }, [trigger, target, duration, decimals, reducedMotion]);
 
   return (
     <span className={className}>
-      {prefix}{value.toLocaleString()}{suffix}
+      {prefix}{decimals > 0 ? value.toFixed(decimals) : value.toLocaleString()}{suffix}
     </span>
   );
 }
