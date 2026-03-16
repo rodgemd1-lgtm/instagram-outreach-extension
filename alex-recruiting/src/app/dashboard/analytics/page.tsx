@@ -54,8 +54,19 @@ export default function AnalyticsPage() {
   ];
 
   return (
-    <div className="space-y-8">
-      <h1 className="text-2xl font-bold text-[#0F1720]">Analytics</h1>
+    <div className="space-y-6 animate-fade-in -m-6 p-6 min-h-screen bg-[#FAFAFA]">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold uppercase tracking-tight text-[#0F1720]">Analytics</h1>
+          <p className="text-sm text-[#9CA3AF] mt-1">
+            Real-time recruiting progression metrics
+          </p>
+        </div>
+      </div>
+
+      <p className="mb-6 -mt-4 text-sm text-[#6B7280] max-w-3xl">
+        Monitor pipeline conversion from views to offers. Drill down into specific engagement events, profile analytics, and daily activity.
+      </p>
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -66,29 +77,41 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Pipeline Funnel */}
-      <div className="bg-white border border-[#E5E7EB] rounded-lg p-6">
-        <h2 className="text-lg font-semibold text-[#0F1720] mb-4">Recruiting Pipeline</h2>
-        {totalCoaches > 0 ? (
-          <PipelineFunnel stages={funnelStages} />
-        ) : (
-          <div className="text-center py-8">
-            <Users className="w-8 h-8 text-[#D1D5DB] mx-auto mb-2" />
-            <p className="text-sm text-[#9CA3AF]">Add coaches to see your pipeline</p>
-          </div>
-        )}
+      <div className="bg-white border border-[rgba(15,40,75,0.08)] rounded-[24px] overflow-hidden">
+        <div className="px-5 py-5 border-b border-[rgba(15,40,75,0.08)] bg-[rgba(15,40,75,0.03)]">
+          <h2 className="text-lg font-semibold text-[var(--app-navy-strong)] flex items-center gap-2">
+            <Users className="w-5 h-5 text-[var(--app-navy-strong)] opacity-70" />
+            Recruiting Pipeline
+          </h2>
+        </div>
+        <div className="p-6">
+          {totalCoaches > 0 ? (
+            <PipelineFunnel stages={funnelStages} />
+          ) : (
+            <div className="text-center py-12">
+              <Users className="w-10 h-10 text-[var(--app-muted)] mx-auto mb-3 opacity-50" />
+              <p className="text-sm font-medium text-[var(--app-navy-strong)]">Empty pipeline</p>
+              <p className="text-xs text-[var(--app-muted)] mt-1">Add targets to view funnel metrics</p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Activity Feed */}
-      <div className="bg-white border border-[#E5E7EB] rounded-lg">
-        <div className="px-5 py-4 border-b border-[#E5E7EB]">
-          <h2 className="text-lg font-semibold text-[#0F1720]">Activity</h2>
+      <div className="bg-white border border-[rgba(15,40,75,0.08)] rounded-[24px] overflow-hidden">
+        <div className="px-5 py-5 border-b border-[rgba(15,40,75,0.08)] bg-[rgba(15,40,75,0.03)]">
+          <h2 className="text-lg font-semibold text-[var(--app-navy-strong)] flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-[var(--app-navy-strong)] opacity-70" />
+            Activity Log
+          </h2>
         </div>
         {activities.length > 0 ? (
           <ActivityFeed activities={activities} />
         ) : (
-          <div className="text-center py-8">
-            <TrendingUp className="w-8 h-8 text-[#D1D5DB] mx-auto mb-2" />
-            <p className="text-sm text-[#9CA3AF]">No activity yet</p>
+          <div className="text-center py-12">
+            <TrendingUp className="w-10 h-10 text-[var(--app-muted)] mx-auto mb-3 opacity-50" />
+            <p className="text-[var(--app-navy-strong)] font-medium text-sm">No activity recorded</p>
+            <p className="text-[var(--app-muted)] text-xs mt-1">System events will appear here</p>
           </div>
         )}
       </div>

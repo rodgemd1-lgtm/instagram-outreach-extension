@@ -6,6 +6,10 @@ import type { Coach, DMMessage } from "@/lib/types";
 import { DMKanban } from "@/components/dashboard/dm-kanban";
 import { DMComposer } from "@/components/dashboard/dm-composer";
 import { WaveProgress } from "@/components/dashboard/wave-progress";
+import { ArrowRight, MessageSquare } from "lucide-react";
+import { dispatchOperatorCommand } from "@/lib/os/operator-client";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 export default function OutreachPage() {
   const [dms, setDMs] = useState<DMMessage[]>([]);
@@ -76,37 +80,43 @@ export default function OutreachPage() {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 animate-fade-in -m-6 p-6 min-h-screen bg-[#FAFAFA]">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#0F1720]">Outreach</h1>
+          <h1 className="text-2xl font-bold uppercase tracking-tight text-[#0F1720]">
+            Outreach Pipeline
+          </h1>
           <p className="text-sm text-[#9CA3AF] mt-1">
-            {coaches.length} coaches targeted
+            {coaches.length} targets locked in the system
           </p>
         </div>
-        <button
+        <Button
           onClick={handleNewDm}
-          className="flex items-center gap-2 px-4 py-2 bg-[#0F1720] text-white text-sm font-medium rounded-lg hover:bg-[#1F2937] transition-colors"
+          className="bg-[#0F1720] text-white hover:bg-[#1a2533] px-4"
         >
-          <Plus className="w-4 h-4" /> New DM
-        </button>
+          <Plus className="w-4 h-4 mr-2" /> New DM
+        </Button>
       </div>
+
+      <p className="mb-6 -mt-4 text-sm text-[#6B7280] max-w-3xl">
+        Manage the end-to-end coach engagement lifecycle. Move prospects from initial tracking to intro DMs and direct asks. Use the Kanban to ensure no response slips through the cracks.
+      </p>
 
       {/* Stats from real data */}
       {dms.length > 0 && (
         <div className="flex gap-4 flex-wrap">
-          <div className="px-3 py-1.5 bg-white border border-[#E5E7EB] rounded-full text-sm">
-            <span className="text-[#6B7280]">Sent</span>{" "}
-            <span className="font-mono font-semibold text-[#0F1720]">{sentCount}</span>
+          <div className="px-4 py-2 bg-white border border-[rgba(15,40,75,0.08)] rounded-[20px] text-sm flex gap-3 shadow-sm">
+            <span className="text-[#9CA3AF] font-semibold uppercase tracking-wider text-[10px] mt-0.5">Sent</span>{" "}
+            <span className="font-mono text-lg font-bold text-[#0F1720]">{sentCount}</span>
           </div>
-          <div className="px-3 py-1.5 bg-white border border-[#E5E7EB] rounded-full text-sm">
-            <span className="text-[#6B7280]">Replied</span>{" "}
-            <span className="font-mono font-semibold text-[#16A34A]">{repliedCount}</span>
+          <div className="px-4 py-2 bg-white border border-[rgba(15,40,75,0.08)] rounded-[20px] text-sm flex gap-3 shadow-sm">
+            <span className="text-[#9CA3AF] font-semibold uppercase tracking-wider text-[10px] mt-0.5">Replied</span>{" "}
+            <span className="font-mono text-lg font-bold text-[#16A34A]">{repliedCount}</span>
           </div>
           {replyRate !== null && (
-            <div className="px-3 py-1.5 bg-white border border-[#E5E7EB] rounded-full text-sm">
-              <span className="text-[#6B7280]">Rate</span>{" "}
-              <span className="font-mono font-semibold text-[#0F1720]">{replyRate}%</span>
+            <div className="px-4 py-2 bg-white border border-[rgba(15,40,75,0.08)] rounded-[20px] text-sm flex gap-3 shadow-sm">
+              <span className="text-[#9CA3AF] font-semibold uppercase tracking-wider text-[10px] mt-0.5">Rate</span>{" "}
+              <span className="font-mono text-lg font-bold text-[#0F1720]">{replyRate}%</span>
             </div>
           )}
         </div>
@@ -136,24 +146,24 @@ export default function OutreachPage() {
               key={i}
               className="bg-white border border-[#E5E7EB] rounded-lg p-4 h-40 animate-pulse"
             >
-              <div className="h-4 w-24 bg-[#F5F5F4] rounded mb-4" />
-              <div className="h-16 bg-[#F5F5F4] rounded" />
+              <div className="h-4 w-24 bg-[#E5E7EB] rounded mb-4" />
+              <div className="h-16 bg-[#E5E7EB] rounded" />
             </div>
           ))}
         </div>
       ) : dms.length === 0 ? (
-        <div className="text-center py-16 bg-white border border-[#E5E7EB] rounded-lg">
-          <Mail className="w-10 h-10 text-[#D1D5DB] mx-auto mb-3" />
-          <p className="text-[#6B7280] font-medium">No messages sent yet</p>
-          <p className="text-sm text-[#9CA3AF] mt-1">
-            Draft your first DM to get started
+        <div className="text-center py-20 bg-white border border-[rgba(15,40,75,0.08)] rounded-[24px]">
+          <MessageSquare className="w-12 h-12 text-[#E5E7EB] mx-auto mb-4" />
+          <p className="text-[#0F1720] font-semibold text-lg">Empty Pipeline</p>
+          <p className="text-sm text-[#6B7280] mt-1 max-w-sm mx-auto">
+            Draft your first intro message to begin tracking outreach data.
           </p>
-          <button
+          <Button
             onClick={handleNewDm}
-            className="mt-4 px-4 py-2 bg-[#0F1720] text-white text-sm font-medium rounded-lg hover:bg-[#1F2937]"
+            className="mt-6 bg-[#0F1720] text-white hover:bg-[#1a2533]"
           >
             Draft First DM
-          </button>
+          </Button>
         </div>
       ) : (
         <DMKanban dms={dms} onCardClick={handleCardClick} />

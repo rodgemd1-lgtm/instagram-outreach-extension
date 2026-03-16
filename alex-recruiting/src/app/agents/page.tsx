@@ -54,29 +54,29 @@ interface AgentAction {
 
 /* ─── Agent Config ─── */
 const agentMeta: Record<string, { icon: typeof Bot; color: string; bgColor: string; schedule: string }> = {
-  "coach-intelligence": {
+  "target-scout": {
     icon: Eye,
     color: "text-purple-600",
     bgColor: "bg-purple-50",
     schedule: "Every 4 hours",
   },
-  "profile-optimizer": {
+  "deadline-guardian": {
     icon: Shield,
     color: "text-blue-600",
     bgColor: "bg-blue-50",
     schedule: "Daily 7 AM CT",
   },
-  "timing-optimizer": {
+  "content-engineer": {
     icon: Timer,
     color: "text-orange-600",
     bgColor: "bg-orange-50",
     schedule: "Every 6 hours",
   },
-  "placement-analyst": {
-    icon: GraduationCap,
-    color: "text-green-600",
-    bgColor: "bg-green-50",
-    schedule: "Daily 10 PM CT",
+  "x-growth-agent": {
+    icon: Zap,
+    color: "text-[#2DD4BF]",
+    bgColor: "bg-[rgba(45,212,191,0.1)]",
+    schedule: "Manual Run",
   },
 };
 
@@ -137,10 +137,10 @@ export default function AgentsPage() {
       setError("Could not connect to agent system. Make sure the database is configured.");
       // Set default agent data for display
       setAgents([
-        { id: "coach-intelligence", name: "Coach Intelligence", description: "Monitors coach activity and detects recruiting signals", cronSchedule: "0 */4 * * *", lastRunAt: null, consecutiveFailures: 0, lastRunStatus: null, lastRunSummary: null, pendingActions: 0 },
-        { id: "profile-optimizer", name: "Profile Optimizer", description: "Evaluates and improves Jake's X profile daily", cronSchedule: "0 12 * * *", lastRunAt: null, consecutiveFailures: 0, lastRunStatus: null, lastRunSummary: null, pendingActions: 0 },
-        { id: "timing-optimizer", name: "Timing Optimizer", description: "Finds optimal posting windows and coordinates schedule", cronSchedule: "0 0,6,12,18 * * *", lastRunAt: null, consecutiveFailures: 0, lastRunStatus: null, lastRunSummary: null, pendingActions: 0 },
-        { id: "placement-analyst", name: "Placement Analyst", description: "Analyzes school fit and projects offer likelihood", cronSchedule: "0 3 * * *", lastRunAt: null, consecutiveFailures: 0, lastRunStatus: null, lastRunSummary: null, pendingActions: 0 },
+        { id: "target-scout", name: "Target Scout", description: "Identifies offensive line talent gaps and monitors coach activity", cronSchedule: "0 */4 * * *", lastRunAt: null, consecutiveFailures: 0, lastRunStatus: null, lastRunSummary: null, pendingActions: 0 },
+        { id: "deadline-guardian", name: "Deadline Guardian", description: "Enforces NCAA recruiting calendar rules and boundaries", cronSchedule: "0 12 * * *", lastRunAt: null, consecutiveFailures: 0, lastRunStatus: null, lastRunSummary: null, pendingActions: 0 },
+        { id: "content-engineer", name: "Content Engineer", description: "Builds and queues high-impact media for targeted posting", cronSchedule: "0 0,6,12,18 * * *", lastRunAt: null, consecutiveFailures: 0, lastRunStatus: null, lastRunSummary: null, pendingActions: 0 },
+        { id: "x-growth-agent", name: "X Growth Scraper", description: "Crawls X timelines extracting engagement metrics and recruiting signals", cronSchedule: "Manual", lastRunAt: null, consecutiveFailures: 0, lastRunStatus: null, lastRunSummary: null, pendingActions: 0 },
       ]);
     } finally {
       setLoading(false);
@@ -156,11 +156,20 @@ export default function AgentsPage() {
   async function triggerAgent(agentId: string) {
     setRunningAgent(agentId);
     try {
-      const res = await fetch("/api/agents/run", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ agentId }),
-      });
+      let res;
+      if (agentId === "x-growth-agent") {
+        res = await fetch("/api/agents/x-growth", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ handle: "CoachFickell", maxTweets: 10 }), // Default demo target
+        });
+      } else {
+        res = await fetch("/api/agents/run", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ agentId }),
+        });
+      }
       if (!res.ok) {
         const data = await res.json();
         setError(data.error || "Failed to trigger agent");
@@ -528,10 +537,10 @@ export default function AgentsPage() {
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {[
-              { icon: Eye, color: "text-purple-600", bg: "bg-purple-50", title: "Coach Intelligence", desc: "Scans coach tweets, detects offers & signals, tracks follow changes every 4 hours" },
-              { icon: Shield, color: "text-blue-600", bg: "bg-blue-50", title: "Profile Optimizer", desc: "Daily 10-point audit, bio variants, AI media prompts for photos/headers/video" },
-              { icon: Timer, color: "text-orange-600", bg: "bg-orange-50", title: "Timing Optimizer", desc: "Scores 168 posting windows, builds weekly schedule, adapts to recruiting seasons" },
-              { icon: GraduationCap, color: "text-green-600", bg: "bg-green-50", title: "Placement Analyst", desc: "School fit scores, offer projections, roster gap analysis, commitment tracking" },
+              { icon: Eye, color: "text-purple-600", bg: "bg-purple-50", title: "Target Scout", desc: "Maps offensive line needs across programs and tracks coach engagement signals" },
+              { icon: Shield, color: "text-blue-600", bg: "bg-blue-50", title: "Deadline Guardian", desc: "Cross-references all communication tasks against NCAA contact period regulations" },
+              { icon: Timer, color: "text-orange-600", bg: "bg-orange-50", title: "Content Engineer", desc: "Constructs highly targeted media payloads derived from Media Lab snapshots" },
+              { icon: Zap, color: "text-[#2DD4BF]", bg: "bg-[rgba(45,212,191,0.1)]", title: "X Growth Scraper", desc: "Locally executes Playwright to bypass API limits, extracting real timeline data" },
             ].map((item) => (
               <div key={item.title} className="rounded-lg border border-slate-100 p-3">
                 <div className={cn("flex h-8 w-8 items-center justify-center rounded-lg mb-2", item.bg)}>

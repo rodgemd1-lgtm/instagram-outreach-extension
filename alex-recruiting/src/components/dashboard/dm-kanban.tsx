@@ -37,12 +37,12 @@ export function DMKanban({ dms, onCardClick }: DMKanbanProps) {
         return (
           <div key={col.status} className="min-w-[240px] flex-1">
             {/* Column header */}
-            <div className="mb-3 bg-[#FAFAFA] border border-[#E5E7EB] rounded-lg px-3 py-2">
+            <div className="mb-3 bg-white/70 border border-[rgba(15,40,75,0.08)] rounded-[16px] px-3 py-2 shadow-sm">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-[#6B7280] uppercase tracking-wide">
+                <span className="text-xs font-semibold text-[var(--app-muted)] uppercase tracking-wide">
                   {col.label}
                 </span>
-                <span className="bg-[#F5F5F4] text-[#6B7280] rounded-full px-2 py-0.5 text-xs font-semibold">
+                <span className="bg-[rgba(15,40,75,0.05)] text-[var(--app-navy-strong)] rounded-[10px] px-2 py-0.5 text-[10px] font-bold">
                   {columnDMs.length}
                 </span>
               </div>
@@ -57,7 +57,7 @@ export function DMKanban({ dms, onCardClick }: DMKanbanProps) {
                     key={dm.id}
                     type="button"
                     onClick={() => onCardClick(dm)}
-                    className="w-full rounded-lg border border-[#E5E7EB] bg-white p-3 text-left transition-all hover:border-[#9CA3AF] hover:shadow-sm"
+                    className="w-full rounded-[20px] border border-[rgba(15,40,75,0.08)] bg-white/80 p-3 text-left transition-all hover:border-[rgba(15,40,75,0.16)] hover:shadow-sm"
                   >
                     <div className="flex items-start gap-2">
                       {logoUrl && (
@@ -71,10 +71,10 @@ export function DMKanban({ dms, onCardClick }: DMKanbanProps) {
                         />
                       )}
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-semibold text-[#0F1720] truncate">
+                        <p className="text-sm font-semibold text-[var(--app-navy-strong)] truncate">
                           {dm.coachName}
                         </p>
-                        <p className="text-xs text-[#9CA3AF] truncate">
+                        <p className="text-xs text-[var(--app-muted)] truncate">
                           {dm.schoolName}
                         </p>
                       </div>
@@ -84,7 +84,7 @@ export function DMKanban({ dms, onCardClick }: DMKanbanProps) {
                       {dm.content.length > 100 ? "..." : ""}
                     </p>
                     <div className="mt-2 flex items-center justify-between">
-                      <span className="text-[10px] text-[#9CA3AF]">
+                      <span className="text-[10px] text-[var(--app-muted)] font-medium">
                         {formatTimeSince(dm.sentAt || dm.createdAt)}
                       </span>
                     </div>
@@ -92,7 +92,7 @@ export function DMKanban({ dms, onCardClick }: DMKanbanProps) {
                 );
               })}
               {columnDMs.length === 0 && (
-                <div className="rounded-lg border border-dashed border-[#E5E7EB] py-8 text-center text-xs text-[#9CA3AF]">
+                <div className="rounded-[20px] border border-dashed border-[rgba(15,40,75,0.1)] bg-white/40 py-8 text-center text-xs text-[var(--app-muted)] font-medium">
                   No messages
                 </div>
               )}
