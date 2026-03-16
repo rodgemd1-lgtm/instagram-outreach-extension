@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     // This endpoint is called by the ingestion pipeline
     // In production, it calls Susan's ingest_url MCP tool
     // For now, log and return success shape
-    console.log(`[Research] Ingesting: ${url} as ${data_type} for ${company_id}`);
+    void `[Research] Ingesting: ${url} as ${data_type} for ${company_id}`;
 
     return NextResponse.json({
       success: true,

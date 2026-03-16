@@ -83,9 +83,9 @@ async function sendNotificationEmail(inquiry: CoachInquiryRecord) {
     }
   } else {
     // No email service configured — log the inquiry for manual review
-    console.log("═══ NEW COACH INQUIRY (no email service configured) ═══");
-    console.log(body);
-    console.log("═══════════════════════════════════════════════════════");
+    console.warn("═══ NEW COACH INQUIRY (no email service configured) ═══");
+    console.warn(JSON.stringify(body, null, 2));
+    console.warn("═══════════════════════════════════════════════════════");
   }
 }
 

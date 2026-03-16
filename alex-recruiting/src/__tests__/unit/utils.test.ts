@@ -54,20 +54,20 @@ describe('getPillarLabel()', () => {
 });
 
 describe('getPillarColor()', () => {
-  it('returns blue for performance', () => {
-    expect(getPillarColor('performance')).toBe('bg-blue-500');
+  it('returns red-tinted class for performance', () => {
+    expect(getPillarColor('performance')).toContain('#ff000c');
   });
 
-  it('returns orange for work_ethic', () => {
-    expect(getPillarColor('work_ethic')).toBe('bg-orange-500');
+  it('returns gold-tinted class for work_ethic', () => {
+    expect(getPillarColor('work_ethic')).toContain('#D4A853');
   });
 
-  it('returns green for character', () => {
-    expect(getPillarColor('character')).toBe('bg-green-500');
+  it('returns white-tinted class for character', () => {
+    expect(getPillarColor('character')).toContain('white');
   });
 
-  it('returns gray for unknown pillar', () => {
-    expect(getPillarColor('something_else')).toBe('bg-gray-500');
+  it('returns muted class for unknown pillar', () => {
+    expect(getPillarColor('something_else')).toContain('white');
   });
 });
 
@@ -128,37 +128,37 @@ describe('getEngagementRate()', () => {
 });
 
 describe('getTierColor()', () => {
-  it('returns navy classes for Tier 1', () => {
-    expect(getTierColor('Tier 1')).toContain('app-navy');
+  it('returns red classes for Tier 1', () => {
+    expect(getTierColor('Tier 1')).toContain('#ff000c');
   });
 
-  it('returns blue classes for Tier 2', () => {
-    expect(getTierColor('Tier 2')).toContain('blue');
+  it('returns gold classes for Tier 2', () => {
+    expect(getTierColor('Tier 2')).toContain('#D4A853');
   });
 
-  it('returns green classes for Tier 3', () => {
-    expect(getTierColor('Tier 3')).toContain('green');
+  it('returns muted classes for Tier 3', () => {
+    expect(getTierColor('Tier 3')).toContain('white');
   });
 
-  it('returns gray classes for unknown tier', () => {
-    expect(getTierColor('Unknown')).toContain('gray');
+  it('returns muted classes for unknown tier', () => {
+    expect(getTierColor('Unknown')).toContain('white');
   });
 });
 
 describe('getStatusColor()', () => {
-  it('returns yellow for draft', () => {
-    expect(getStatusColor('draft')).toContain('yellow');
+  it('returns amber for draft', () => {
+    expect(getStatusColor('draft')).toContain('#F59E0B');
   });
 
   it('returns green for posted', () => {
-    expect(getStatusColor('posted')).toContain('green');
+    expect(getStatusColor('posted')).toContain('#22C55E');
   });
 
   it('returns red for rejected', () => {
-    expect(getStatusColor('rejected')).toContain('red');
+    expect(getStatusColor('rejected')).toContain('#EF4444');
   });
 
-  it('returns gray for unknown status', () => {
-    expect(getStatusColor('anything')).toContain('gray');
+  it('returns muted for unknown status', () => {
+    expect(getStatusColor('anything')).toContain('white');
   });
 });
