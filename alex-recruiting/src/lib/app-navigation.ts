@@ -12,9 +12,12 @@ import {
   FileText,
   Film,
   Flame,
+  Globe,
   Home,
+  Inbox,
   LayoutDashboard,
   Mail,
+  Map,
   MessageSquarePlus,
   Palette,
   PenSquare,
@@ -23,12 +26,15 @@ import {
   Search,
   Send,
   ShieldCheck,
+  Sparkles,
   Swords,
+  TrendingUp,
   Trophy,
   Upload,
   UserSearch,
   Users,
   UsersRound,
+  Wand2,
   Zap,
 } from "lucide-react";
 
@@ -80,6 +86,8 @@ export const navSections: AppNavSection[] = [
       { href: "/captions", label: "Captions Library", icon: BookOpen, blurb: "Draft bank and formulas" },
       { href: "/comments", label: "Comment Templates", icon: MessageSquarePlus, blurb: "Replies and engagement plays" },
       { href: "/viral", label: "Viral Content", icon: Flame, blurb: "Higher-reach content formats" },
+      { href: "/content-queue", label: "Content Queue", icon: Inbox, blurb: "30-day queue with approve/reject" },
+      { href: "/prompt-studio", label: "Prompt Studio", icon: Wand2, blurb: "AI prompt builder and templates" },
     ],
   },
   {
@@ -88,6 +96,7 @@ export const navSections: AppNavSection[] = [
     items: [
       { href: "/coaches", label: "Coach Pipeline", icon: Users, blurb: "Live CRM and priority stages" },
       { href: "/dms", label: "DM Campaigns", icon: Mail, blurb: "Draft and send coach outreach" },
+      { href: "/outreach", label: "Outreach Program", icon: Globe, blurb: "Full pipeline from follow to relationship" },
       { href: "/connections", label: "Follow Targets", icon: UserSearch, blurb: "Relationship map and likely follow-backs" },
       { href: "/cold-dms", label: "Cold DM Engine", icon: Send, blurb: "Sequences and first-contact plays" },
       { href: "/competitors", label: "Competitors", icon: Swords, blurb: "Benchmark against other recruits" },
@@ -104,6 +113,8 @@ export const navSections: AppNavSection[] = [
       { href: "/media-import", label: "Import Media", icon: Upload, blurb: "Pull in local and Photos assets" },
       { href: "/camps", label: "Camp Tracker", icon: CalendarDays, blurb: "Camps, dates, and measurables" },
       { href: "/accomplishments", label: "Accomplishments", icon: Trophy, blurb: "Performance proof and milestones" },
+      { href: "/brand-kit", label: "Brand Kit", icon: Sparkles, blurb: "Colors, fonts, and brand assets" },
+      { href: "/capture", label: "Capture", icon: Camera, blurb: "Quick photo and video capture" },
     ],
   },
   {
@@ -113,6 +124,8 @@ export const navSections: AppNavSection[] = [
       { href: "/intelligence", label: "Intelligence", icon: Brain, blurb: "Research, knowledge, and strategy" },
       { href: "/scrape", label: "Scraping Tools", icon: Search, blurb: "School and coach intelligence" },
       { href: "/agents", label: "Agent Command Center", icon: Bot, blurb: "Agent workflows and orchestration" },
+      { href: "/x-growth", label: "X Growth", icon: TrendingUp, blurb: "Follower growth and engagement analytics" },
+      { href: "/map", label: "School Map", icon: Map, blurb: "Geographic view of target schools" },
     ],
   },
 ];

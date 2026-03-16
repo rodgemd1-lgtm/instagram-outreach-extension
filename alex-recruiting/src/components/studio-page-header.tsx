@@ -8,6 +8,7 @@ import {
   Mail,
   ShieldCheck,
   Target,
+  TrendingUp,
   Users,
   UsersRound,
 } from "lucide-react";
@@ -28,6 +29,7 @@ const STUDIO_ICONS = {
   Mail,
   ShieldCheck,
   Target,
+  TrendingUp,
   Users,
   UsersRound,
 } as const;

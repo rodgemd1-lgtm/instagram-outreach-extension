@@ -18,6 +18,8 @@ import {
   RefreshCw,
   Users,
 } from "lucide-react";
+import { AIImageGenerator } from "@/components/ai-image-generator";
+import imagePrompts from "@/lib/recruit/image-prompts.json";
 
 function mediaAttachmentLabel(draft: DraftAnalysis): string {
   return draft.mediaType === "video" ? "Video attached" : "Photo attached";
@@ -512,6 +514,8 @@ export function MediaLabDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      <AIImageGenerator prompts={imagePrompts} />
     </div>
   );
 }

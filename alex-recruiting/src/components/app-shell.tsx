@@ -5,6 +5,7 @@ import { Sidebar } from "@/components/sidebar";
 import { Header } from "@/components/header";
 import { MobileBottomNav } from "@/components/mobile-nav";
 import { OperatorDock } from "@/components/operator-dock";
+import { PageTransition } from "@/components/motion/page-transition";
 
 // Routes that bypass the standard app shell (sidebar/header)
 const STANDALONE_ROUTES = ["/recruit", "/dashboard"];
@@ -31,7 +32,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="relative md:ml-[18rem] xl:mr-[24rem]">
         <Header />
         <main className="px-4 pb-24 pt-4 md:px-6 md:pb-8 md:pt-6">
-          <div className="mx-auto w-full max-w-[1600px]">{children}</div>
+          <div className="mx-auto w-full max-w-[1600px]">
+            <PageTransition>{children}</PageTransition>
+          </div>
         </main>
       </div>
 

@@ -6,6 +6,8 @@ import { Users, Mail, FileText, Eye, ArrowRight } from "lucide-react";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { targetSchools } from "@/lib/data/target-schools";
 import { getSchoolLogo, getSchoolColors } from "@/lib/data/school-branding";
+import { StaggerChildren, StaggerItem } from "@/components/motion/stagger-children";
+import { ScrollReveal } from "@/components/motion/scroll-reveal";
 
 interface DashboardStats {
   profileViews: number | null;
@@ -149,18 +151,27 @@ export default function DashboardPage() {
       <h1 className="text-2xl font-bold text-[#0F1720]">Overview</h1>
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Coaches Tracked" value={stats.coachCount} icon={Users} />
-        <StatCard label="DMs Sent" value={stats.dmsSent} icon={Mail} />
-        <StatCard
-          label="Posts This Week"
-          value={stats.postsThisWeek}
-          icon={FileText}
-        />
-        <StatCard label="Profile Views" value={stats.profileViews} icon={Eye} />
-      </div>
+      <StaggerChildren className="grid grid-cols-2 lg:grid-cols-4 gap-4" staggerDelay={0.08}>
+        <StaggerItem>
+          <StatCard label="Coaches Tracked" value={stats.coachCount} icon={Users} />
+        </StaggerItem>
+        <StaggerItem>
+          <StatCard label="DMs Sent" value={stats.dmsSent} icon={Mail} />
+        </StaggerItem>
+        <StaggerItem>
+          <StatCard
+            label="Posts This Week"
+            value={stats.postsThisWeek}
+            icon={FileText}
+          />
+        </StaggerItem>
+        <StaggerItem>
+          <StatCard label="Profile Views" value={stats.profileViews} icon={Eye} />
+        </StaggerItem>
+      </StaggerChildren>
 
       {/* Two Column Layout */}
+      <ScrollReveal variant="fadeUp" delay={0.15}>
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Recent Activity */}
         <div className="lg:col-span-2 bg-white border border-[#E5E7EB] rounded-lg">
@@ -259,8 +270,10 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+      </ScrollReveal>
 
       {/* Quick Actions */}
+      <ScrollReveal variant="fadeUp" delay={0.2}>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: "View Recruit Site", href: "/recruit", icon: ArrowRight },
@@ -280,6 +293,7 @@ export default function DashboardPage() {
           </Link>
         ))}
       </div>
+      </ScrollReveal>
     </div>
   );
 }

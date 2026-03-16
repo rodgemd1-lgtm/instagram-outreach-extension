@@ -679,3 +679,68 @@ export const researchFindings = pgTable("research_findings", {
   resultCount: integer("result_count"),
   searchedAt: timestamp("searched_at").defaultNow(),
 });
+
+// ============ COACH PERSONAS ============
+
+export const coachPersonas = pgTable("coach_personas", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  coachId: uuid("coach_id").references(() => coaches.id),
+  coachName: text("coach_name").notNull(),
+  schoolName: text("school_name").notNull(),
+  division: text("division"),
+  conference: text("conference"),
+  title: text("title"),
+  background: text("background"),
+  communicationStyle: text("communication_style"),
+  recruitingPriorities: jsonb("recruiting_priorities").$type<string[]>().default([]),
+  programPhilosophy: text("program_philosophy"),
+  bestApproach: text("best_approach"),
+  optimalDMStyle: text("optimal_dm_style"),
+  conversationTopics: jsonb("conversation_topics").$type<string[]>().default([]),
+  bestContactTiming: text("best_contact_timing"),
+  engagementStrategy: text("engagement_strategy"),
+  xBehavior: jsonb("x_behavior").$type<{
+    postingFrequency: string;
+    contentThemes: string[];
+    engagementRate: number;
+    respondsToRecruits: boolean;
+    peakHours: string;
+  }>(),
+  completeness: real("completeness").default(0),
+  lastResearchedAt: timestamp("last_researched_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// ============ OUTREACH PLANS ============
+
+export const outreachPlans = pgTable("outreach_plans", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  coachId: uuid("coach_id").references(() => coaches.id),
+  coachName: text("coach_name").notNull(),
+  schoolName: text("school_name").notNull(),
+  stage: text("stage").notNull().default("research"), // "research" | "follow" | "engage" | "dm" | "response" | "relationship"
+  priority: integer("priority").default(3),
+  nextAction: text("next_action"),
+  nextActionDate: timestamp("next_action_date"),
+  lastAction: text("last_action"),
+  lastActionDate: timestamp("last_action_date"),
+  daysSinceContact: integer("days_since_contact").default(0),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// ============ NCAA DEADLINES ============
+
+export const ncaaDeadlines = pgTable("ncaa_deadlines", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  deadlineDate: timestamp("deadline_date").notNull(),
+  periodType: text("period_type"), // "dead" | "quiet" | "evaluation" | "contact"
+  appliesToClass: text("applies_to_class").default("2029"),
+  division: text("division"),
+  importance: text("importance").default("medium"), // "low" | "medium" | "high" | "critical"
+  createdAt: timestamp("created_at").defaultNow(),
+});
