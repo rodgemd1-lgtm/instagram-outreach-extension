@@ -53,30 +53,42 @@ interface AgentAction {
 }
 
 /* ─── Agent Config ─── */
-const agentMeta: Record<string, { icon: typeof Bot; color: string; bgColor: string; schedule: string }> = {
-  "target-scout": {
+// Maps real backend agent IDs to display metadata
+const agentMeta: Record<string, { icon: typeof Bot; color: string; bgColor: string; schedule: string; displayName: string }> = {
+  "coach-intelligence": {
     icon: Eye,
     color: "text-purple-600",
     bgColor: "bg-purple-50",
     schedule: "Every 4 hours",
+    displayName: "Target Scout",
   },
-  "deadline-guardian": {
+  "profile-optimizer": {
     icon: Shield,
     color: "text-blue-600",
     bgColor: "bg-blue-50",
     schedule: "Daily 7 AM CT",
+    displayName: "Deadline Guardian",
   },
-  "content-engineer": {
+  "timing-optimizer": {
     icon: Timer,
     color: "text-orange-600",
     bgColor: "bg-orange-50",
     schedule: "Every 6 hours",
+    displayName: "Content Engineer",
+  },
+  "placement-analyst": {
+    icon: GraduationCap,
+    color: "text-emerald-600",
+    bgColor: "bg-emerald-50",
+    schedule: "Daily 10 PM CT",
+    displayName: "Placement Analyst",
   },
   "x-growth-agent": {
     icon: Zap,
     color: "text-[#2DD4BF]",
     bgColor: "bg-[rgba(45,212,191,0.1)]",
     schedule: "Manual Run",
+    displayName: "X Growth Scraper",
   },
 };
 
@@ -135,12 +147,13 @@ export default function AgentsPage() {
       setError(null);
     } catch {
       setError("Could not connect to agent system. Make sure the database is configured.");
-      // Set default agent data for display
+      // Set default agent data using real backend IDs + x-growth special agent
       setAgents([
-        { id: "target-scout", name: "Target Scout", description: "Identifies offensive line talent gaps and monitors coach activity", cronSchedule: "0 */4 * * *", lastRunAt: null, consecutiveFailures: 0, lastRunStatus: null, lastRunSummary: null, pendingActions: 0 },
-        { id: "deadline-guardian", name: "Deadline Guardian", description: "Enforces NCAA recruiting calendar rules and boundaries", cronSchedule: "0 12 * * *", lastRunAt: null, consecutiveFailures: 0, lastRunStatus: null, lastRunSummary: null, pendingActions: 0 },
-        { id: "content-engineer", name: "Content Engineer", description: "Builds and queues high-impact media for targeted posting", cronSchedule: "0 0,6,12,18 * * *", lastRunAt: null, consecutiveFailures: 0, lastRunStatus: null, lastRunSummary: null, pendingActions: 0 },
-        { id: "x-growth-agent", name: "X Growth Scraper", description: "Crawls X timelines extracting engagement metrics and recruiting signals", cronSchedule: "Manual", lastRunAt: null, consecutiveFailures: 0, lastRunStatus: null, lastRunSummary: null, pendingActions: 0 },
+        { id: "coach-intelligence", name: "Coach Intelligence", description: "Monitors coach activity and detects recruiting signals", cronSchedule: "0 */4 * * *", lastRunAt: null, consecutiveFailures: 0, lastRunStatus: null, lastRunSummary: null, pendingActions: 0 },
+        { id: "profile-optimizer", name: "Profile Optimizer", description: "Evaluates and improves Jake's X profile daily", cronSchedule: "0 12 * * *", lastRunAt: null, consecutiveFailures: 0, lastRunStatus: null, lastRunSummary: null, pendingActions: 0 },
+        { id: "timing-optimizer", name: "Timing Optimizer", description: "Finds optimal posting windows and coordinates schedule", cronSchedule: "0 0,6,12,18 * * *", lastRunAt: null, consecutiveFailures: 0, lastRunStatus: null, lastRunSummary: null, pendingActions: 0 },
+        { id: "placement-analyst", name: "Placement Analyst", description: "Analyzes school fit and projects offer likelihood", cronSchedule: "0 3 * * *", lastRunAt: null, consecutiveFailures: 0, lastRunStatus: null, lastRunSummary: null, pendingActions: 0 },
+        { id: "x-growth-agent", name: "X Growth Scraper", description: "Crawls X timelines extracting engagement metrics and recruiting signals via Playwright", cronSchedule: "Manual", lastRunAt: null, consecutiveFailures: 0, lastRunStatus: null, lastRunSummary: null, pendingActions: 0 },
       ]);
     } finally {
       setLoading(false);
@@ -249,7 +262,7 @@ export default function AgentsPage() {
             <Bot className="h-5 w-5 text-slate-700" />
             Agent Command Center
           </h1>
-          <p className="text-sm text-slate-500 mt-0.5">4 autonomous agents managing Jacob&apos;s recruiting machine</p>
+          <p className="text-sm text-slate-500 mt-0.5">5 autonomous agents managing Jacob&apos;s recruiting machine</p>
         </div>
         <Button
           variant="outline"
@@ -275,7 +288,7 @@ export default function AgentsPage() {
           <CardContent className="p-4">
             <p className="text-xs text-slate-500 font-medium">Active Agents</p>
             <div className="flex items-end justify-between mt-1">
-              <p className="text-2xl font-bold text-slate-900">{activeAgents}/4</p>
+              <p className="text-2xl font-bold text-slate-900">{activeAgents}/{agents.length}</p>
               <Activity className="h-5 w-5 text-green-500" />
             </div>
           </CardContent>
@@ -335,7 +348,7 @@ export default function AgentsPage() {
                       <Icon className={cn("h-5 w-5", meta.color)} />
                     </div>
                     <div>
-                      <CardTitle className="text-sm">{agent.name}</CardTitle>
+                      <CardTitle className="text-sm">{meta.displayName || agent.name}</CardTitle>
                       <p className="text-xs text-slate-500 mt-0.5">{meta.schedule}</p>
                     </div>
                   </div>
@@ -537,10 +550,11 @@ export default function AgentsPage() {
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {[
-              { icon: Eye, color: "text-purple-600", bg: "bg-purple-50", title: "Target Scout", desc: "Maps offensive line needs across programs and tracks coach engagement signals" },
-              { icon: Shield, color: "text-blue-600", bg: "bg-blue-50", title: "Deadline Guardian", desc: "Cross-references all communication tasks against NCAA contact period regulations" },
-              { icon: Timer, color: "text-orange-600", bg: "bg-orange-50", title: "Content Engineer", desc: "Constructs highly targeted media payloads derived from Media Lab snapshots" },
-              { icon: Zap, color: "text-[#2DD4BF]", bg: "bg-[rgba(45,212,191,0.1)]", title: "X Growth Scraper", desc: "Locally executes Playwright to bypass API limits, extracting real timeline data" },
+              { icon: Eye, color: "text-purple-600", bg: "bg-purple-50", title: "Target Scout", desc: "Monitors coach activity, detects recruiting signals, and maps engagement patterns" },
+              { icon: Shield, color: "text-blue-600", bg: "bg-blue-50", title: "Deadline Guardian", desc: "Audits profile quality, NCAA compliance, and recommends bio/photo improvements" },
+              { icon: Timer, color: "text-orange-600", bg: "bg-orange-50", title: "Content Engineer", desc: "Optimizes posting windows, coach activity timing, and weekly content schedules" },
+              { icon: GraduationCap, color: "text-emerald-600", bg: "bg-emerald-50", title: "Placement Analyst", desc: "Analyzes roster gaps, calculates fit scores, and projects offer likelihood" },
+              { icon: Zap, color: "text-[#2DD4BF]", bg: "bg-[rgba(45,212,191,0.1)]", title: "X Growth Scraper", desc: "Locally executes Playwright to extract real timeline data and engagement metrics" },
             ].map((item) => (
               <div key={item.title} className="rounded-lg border border-slate-100 p-3">
                 <div className={cn("flex h-8 w-8 items-center justify-center rounded-lg mb-2", item.bg)}>
