@@ -1,5 +1,5 @@
-import { TodayCommandCenter } from "@/components/today-command-center";
+import { redirect } from "next/navigation";
 
 export default function HomePage() {
-  return <TodayCommandCenter />;
+  redirect("/dashboard");
 }
