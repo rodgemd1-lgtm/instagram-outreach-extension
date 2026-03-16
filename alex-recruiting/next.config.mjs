@@ -2,17 +2,13 @@
 const nextConfig = {
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
-  experimental: {
-    serverComponentsExternalPackages: ["puppeteer-core"],
-    // Exclude large media from serverless function bundles (250 MB limit).
-    // Files still serve fine as static assets from Vercel's CDN.
-    outputFileTracingExcludes: {
-      "*": [
-        "./public/recruit/**/*",
-        "./public/optimized-media/**/*",
-        "./public/Media Clips For Mike to Add/**/*",
-      ],
-    },
+  serverExternalPackages: ["puppeteer-core"],
+  outputFileTracingExcludes: {
+    "*": [
+      "./public/recruit/**/*",
+      "./public/optimized-media/**/*",
+      "./public/Media Clips For Mike to Add/**/*",
+    ],
   },
   headers: async () => [
     {

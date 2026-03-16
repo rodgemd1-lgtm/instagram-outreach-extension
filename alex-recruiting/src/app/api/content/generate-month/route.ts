@@ -14,13 +14,26 @@
  * }
  */
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { db, isDbConfigured } from "@/lib/db";
 import * as schema from "@/lib/db/schema";
 import { weeklyCalendar } from "@/lib/data/weekly-calendar";
 import { hooksLibrary, type Hook } from "@/lib/data/hooks-library";
 import { getHashtagsForPost } from "@/lib/data/hashtags";
 import { type PostFormulaType } from "@/lib/data/content-psychology";
+
+// ---------------------------------------------------------------------------
+// Activity Context
+// ---------------------------------------------------------------------------
+
+interface ActivityContext {
+  currentActivities?: string[];
+  currentSport?: string;
+  trackEvents?: string[];
+  recentAchievements?: string[];
+  teamContext?: string;
+  mediaAssets?: { url: string; type: string }[];
+}
 
 // ---------------------------------------------------------------------------
 // Types
@@ -78,19 +91,144 @@ function getMediaSuggestion(pillar: string, contentType: string): string {
   return "High-quality photo or native video";
 }
 
+// Activity-aware content variants
+const ACTIVITY_VARIANTS: Record<string, Record<string, string[]>> = {
+  track_season: {
+    spotlight_shift: [
+      "Shot put PR today. The explosive power from throwing translates directly to the punch off the line.",
+      "Discus is teaching me hip rotation in ways football drills never did. The transfer is real.",
+      "Track coach says my explosiveness off the blocks is the best on the team. OL footwork pays off everywhere.",
+    ],
+    curious_student: [
+      "Any football coaches here who encourage their OL to throw in track? The power gains are noticeable.",
+      "Shot put and pass blocking have more in common than most people think. Coaches, what's your take?",
+    ],
+    honest_progress: [
+      "Track season update: shot put distance up 3 feet since January. The weight room work is showing.",
+      "Balancing track meets and football offseason. Discus on Tuesday, squats on Wednesday. Building the complete athlete.",
+    ],
+    ambient_update: [
+      "Track meet day. Shot put ring. Let's compete.",
+      "Discus + shot put today. Two-sport athletes work different.",
+    ],
+    narrative_loop: [
+      "Track season goal: hit 45 feet in shot put by conference. Starting at 40. Updates every meet.",
+      "Using track season to build explosive power for football. Measuring the crossover. Stay tuned.",
+    ],
+  },
+  weight_room: {
+    spotlight_shift: [
+      "Bench PR today. Couldn't have done it without the guys pushing me. The weight room culture at Pewaukee is elite.",
+      "Shoutout to our strength coaches for programming that actually translates to the field.",
+    ],
+    curious_student: [
+      "Coaches -- do you prefer OL prospects who prioritize bench press or squat? Trying to program my spring lifts.",
+      "Working on squat form this week. Any OL coaches have cues that helped their players?",
+    ],
+    honest_progress: [
+      "Spring lifting numbers: bench trending up consistently. Squat form clicking. The spring program is working.",
+      "Tracking every rep this spring. Bench, squat, clean -- the numbers don't lie. Consistent gains.",
+    ],
+    ambient_update: [
+      "5 AM lift. No shortcuts.",
+      "Spring lifts done. Bench day. Getting stronger.",
+    ],
+    narrative_loop: [
+      "30-day bench challenge starting now. Current max: [BENCH]. Goal: +15 lbs. I'll post the results.",
+      "Tracking my squat progression this spring. Week 1 in the books. Stay tuned for the gains.",
+    ],
+  },
+  pwac_football_offseason: {
+    spotlight_shift: [
+      "Film study session with the O-line. Breaking down every play from last season. We're going to be different.",
+      "PWAC offseason program is built different. Coach Henderson has us dialed in on technique this spring.",
+    ],
+    curious_student: [
+      "Studying pass protection schemes from college film this week. Always learning, always growing.",
+      "Working on combo blocks with our center. Any OL coaches have drills for communication on the move?",
+    ],
+    honest_progress: [
+      "Offseason progress: film study 3x/week, technique drills daily, spring lifts on schedule. Building the foundation.",
+      "Compared my Week 1 film to Week 12 last season. The improvement in hand placement alone is night and day.",
+    ],
+    ambient_update: [
+      "Film study. Technique drills. Building for fall.",
+      "PWAC offseason work. Every detail matters.",
+    ],
+    narrative_loop: [
+      "Setting 3 football technique goals for this offseason. Will track progress and report back before camp.",
+      "This offseason is about refining the details. Starting a weekly technique journal. Updates coming.",
+    ],
+  },
+  film_study: {
+    spotlight_shift: [
+      "Watched 2 hours of college OL film today. Studying how the best programs develop linemen.",
+      "Breaking down Iowa's OL technique -- the consistency of their footwork is what stands out.",
+    ],
+    curious_student: [
+      "Studying pull technique on film. What do coaches look for in a pulling guard at the next level?",
+      "Watching college OL film and noticed different hand placement styles. Which do coaches prefer?",
+    ],
+    honest_progress: [
+      "Film study habit update: 3 sessions this week. Starting to see plays develop before the snap.",
+      "Getting better at self-scouting. Found 3 technique fixes from last season's film this week.",
+    ],
+    ambient_update: [
+      "Film room. Learning never stops.",
+      "Breaking down game film. Students of the game win.",
+    ],
+    narrative_loop: [
+      "Committing to studying film from one target school each week this spring. Starting with NDSU.",
+      "Building a technique notebook from film study. Will share what I'm learning along the way.",
+    ],
+  },
+  meta_glasses: {
+    spotlight_shift: [
+      "POV training footage from today's session. Meta Glasses showing a different perspective on the work.",
+      "First-person view of the drill. This angle shows what coaches can't see from the sideline.",
+    ],
+    curious_student: [
+      "Using Meta Glasses to film training from first-person POV. Coaches -- is this kind of content useful for evaluation?",
+    ],
+    honest_progress: [
+      "Meta Glasses training footage is helping me see technique flaws I couldn't catch before. Game changer for self-improvement.",
+    ],
+    ambient_update: [
+      "POV training clip. See it from my perspective.",
+      "Meta Glasses on. Let's get to work.",
+    ],
+    narrative_loop: [
+      "Starting a POV training series with Meta Glasses. Week 1 footage drops this weekend.",
+    ],
+  },
+};
+
 /** Build post content from a hook, formula structure, and template elements */
 function buildPostContent(
   hook: Hook,
   formulaType: PostFormulaType,
   pillar: string,
-  hashtags: string[]
+  hashtags: string[],
+  activityContext?: ActivityContext
 ): string {
   const hashtagStr = hashtags.join(" ");
 
-  // Use different content patterns based on formula type
+  // If activity context is provided, try to use activity-specific content
+  if (activityContext?.currentActivities && activityContext.currentActivities.length > 0) {
+    // Pick a random activity from the current activities
+    const activity = activityContext.currentActivities[
+      Math.floor(Math.random() * activityContext.currentActivities.length)
+    ];
+    const variants = ACTIVITY_VARIANTS[activity]?.[formulaType];
+    if (variants && variants.length > 0) {
+      const variant = variants[Math.floor(Math.random() * variants.length)];
+      return `${hook.text}\n\n${variant}\n\n${hashtagStr}`;
+    }
+  }
+
+  // Fallback: Use default content patterns based on formula type
   switch (formulaType) {
     case "spotlight_shift": {
-      // Credit someone else
       const credits = [
         "Grateful for the coaching staff at Pewaukee pushing us every day.",
         "Our whole O-line group showed up today. Iron sharpens iron.",
@@ -102,7 +240,6 @@ function buildPostContent(
       return `${hook.text}\n\n${credit}\n\n${hashtagStr}`;
     }
     case "curious_student": {
-      // Ask a question
       const questions = [
         "Any OL coaches have thoughts on this technique? Always looking to learn.",
         "What do you work on first -- hand placement or footwork? Genuine question.",
@@ -114,7 +251,6 @@ function buildPostContent(
       return `${hook.text}\n\n${question}\n\n${hashtagStr}`;
     }
     case "honest_progress": {
-      // Where I was, where I am
       const updates = [
         "Honest progress report: bench is up 15 lbs this month. Squat form finally clicking. Still working on lateral agility.",
         "Six months ago I couldn't sustain a block past 3 seconds. Now averaging 5+. The work shows up in the numbers.",
@@ -126,11 +262,9 @@ function buildPostContent(
       return `${hook.text}\n\n${update}\n\n${hashtagStr}`;
     }
     case "ambient_update": {
-      // Short, in-the-moment
       return `${hook.text}\n\n${hashtagStr}`;
     }
     case "narrative_loop": {
-      // Open a loop
       const loops = [
         "Setting a goal for this month. I'll report back with the results.",
         "Challenge accepted. Check back in 30 days to see where this goes.",
@@ -162,8 +296,19 @@ function parseTimeToHour(timeStr: string): number {
 // POST handler
 // ---------------------------------------------------------------------------
 
-export async function POST() {
+export async function POST(req: NextRequest) {
   try {
+    // Parse optional activity context from request body
+    let activityContext: ActivityContext | undefined;
+    try {
+      const body = await req.json();
+      if (body?.activityContext) {
+        activityContext = body.activityContext;
+      }
+    } catch {
+      // Empty body is fine — generates generic content
+    }
+
     const now = new Date();
     const posts: GeneratedPost[] = [];
     const formulaTypes: PostFormulaType[] = [
@@ -242,8 +387,16 @@ export async function POST() {
         const formulaType = formulaTypes[(dayOffset * 4 + i) % formulaTypes.length];
         const hashtags = getHashtagsForPost(pillar);
 
-        const content = buildPostContent(hook, formulaType, pillar, hashtags);
-        const mediaSuggestion = getMediaSuggestion(pillar, calendarEntry.contentType);
+        const content = buildPostContent(hook, formulaType, pillar, hashtags, activityContext);
+
+        // Use real media URLs if provided
+        let mediaSuggestion: string;
+        if (activityContext?.mediaAssets && activityContext.mediaAssets.length > 0) {
+          const asset = activityContext.mediaAssets[i % activityContext.mediaAssets.length];
+          mediaSuggestion = asset.url;
+        } else {
+          mediaSuggestion = getMediaSuggestion(pillar, calendarEntry.contentType);
+        }
 
         // Space posts across the day: base hour + i * 2-3 hours
         const postHour = Math.min(baseHour + i * 3, 21); // don't go past 9 PM

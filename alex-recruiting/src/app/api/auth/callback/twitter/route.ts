@@ -21,7 +21,7 @@ export async function GET(request: Request) {
   const state = searchParams.get("state");
   const error = searchParams.get("error");
   const errorDescription = searchParams.get("error_description");
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const storedState = cookieStore.get(X_OAUTH_STATE_COOKIE)?.value;
   const codeVerifier = cookieStore.get(X_OAUTH_VERIFIER_COOKIE)?.value;
   const returnTo = sanitizeReturnToPath(

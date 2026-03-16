@@ -13,6 +13,7 @@ import { ContactCTA } from "@/components/recruit/contact";
 import { Wingspan } from "@/components/recruit/wingspan";
 import { FilmGrainOverlay } from "@/components/recruit/film-grain";
 import { RecruitNav } from "@/components/recruit/nav";
+import { LiveTelemetry } from "@/components/recruit/live-telemetry";
 import { useRecruitPhotos } from "@/hooks/useRecruitPhotos";
 import { useAnalytics } from "@/components/recruit/hooks/use-analytics";
 
@@ -25,6 +26,7 @@ export default function RecruitPage() {
     <div ref={pageRef} className="bg-black pb-16 md:pb-0">
       <RecruitNav />
       <FilmGrainOverlay />
+      <LiveTelemetry />
 
       {/* Beat 1: Introduction (Jacob — right 2/3) */}
       <RecruitHero backgroundUrl={photoMap.hero} />

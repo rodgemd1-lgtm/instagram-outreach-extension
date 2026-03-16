@@ -16,21 +16,19 @@ export function StatCard({ label, value, change, changeType, icon: Icon }: StatC
   const isNumeric = hasValue && typeof value === "number";
 
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-lg p-5 hover:shadow-sm transition-shadow">
+    <div className="bg-white border-2 border-gray-200 rounded-xl p-6 hover:-translate-y-1 hover:shadow-[4px_4px_0px_#0F1720] transition-all duration-200 group">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm font-medium text-[#6B7280]">{label}</p>
-          <div className="mt-1">
+          <p className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wider">{label}</p>
+          <div className="mt-2 text-3xl font-bold font-mono text-[#0F1720]">
             {hasValue ? (
-              <span className="font-mono text-2xl font-bold text-[#0F1720]">
-                {isNumeric ? <AnimatedNumber value={value as number} /> : value}
-              </span>
+              isNumeric ? <AnimatedNumber value={value as number} /> : value
             ) : (
-              <span className="font-mono text-2xl font-bold text-[#D1D5DB]">&mdash;</span>
+              <span className="text-[#D1D5DB]">&mdash;</span>
             )}
           </div>
           {change && (
-            <p className={`text-xs mt-1 ${
+            <p className={`text-xs mt-2 font-semibold ${
               changeType === "up" ? "text-[#16A34A]" :
               changeType === "down" ? "text-[#DC2626]" :
               "text-[#9CA3AF]"
@@ -41,8 +39,8 @@ export function StatCard({ label, value, change, changeType, icon: Icon }: StatC
             </p>
           )}
         </div>
-        <div className="p-2 rounded-lg bg-[#F5F5F4]">
-          <Icon className="w-5 h-5 text-[#6B7280]" />
+        <div className="p-3 rounded-xl bg-gradient-to-br from-[#2DD4BF] to-[#0ea5e9] shadow-[0_0_15px_rgba(45,212,191,0.3)] group-hover:shadow-[0_0_20px_rgba(45,212,191,0.5)] transition-shadow">
+          <Icon className="w-5 h-5 text-white" />
         </div>
       </div>
     </div>

@@ -112,13 +112,16 @@ const initialChecklist: ChecklistItem[] = [
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-const categoryIcon: Record<string, React.ReactNode> = {
-  highlights: <Star className="h-4 w-4 text-yellow-500" />,
-  training: <Dumbbell className="h-4 w-4 text-blue-500" />,
-  game_film: <Film className="h-4 w-4 text-purple-500" />,
-  camps_combines: <Trophy className="h-4 w-4 text-orange-500" />,
-  shorts: <Smartphone className="h-4 w-4 text-red-500" />,
-};
+function getCategoryIcon(id: string): React.ReactNode {
+  switch (id) {
+    case "highlights": return <Star className="h-4 w-4 text-yellow-500" />;
+    case "training": return <Dumbbell className="h-4 w-4 text-blue-500" />;
+    case "game_film": return <Film className="h-4 w-4 text-purple-500" />;
+    case "camps_combines": return <Trophy className="h-4 w-4 text-orange-500" />;
+    case "shorts": return <Smartphone className="h-4 w-4 text-red-500" />;
+    default: return <Film className="h-4 w-4 text-slate-400" />;
+  }
+}
 
 const categoryLabel: Record<string, string> = {
   highlights: "Highlights",
@@ -395,7 +398,7 @@ export default function YouTubeStudioPage() {
               <Card key={cat.id} className="flex flex-col">
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2">
-                    {categoryIcon[cat.id]}
+                    {getCategoryIcon(cat.id)}
                     <CardTitle className="text-base">{cat.name}</CardTitle>
                   </div>
                   <CardDescription className="text-xs">{cat.description}</CardDescription>
@@ -490,7 +493,7 @@ export default function YouTubeStudioPage() {
                 .map(([cat, videos]) => (
                   <div key={cat} className="mb-6 last:mb-0">
                     <div className="flex items-center gap-2 mb-3">
-                      {categoryIcon[cat]}
+                      {getCategoryIcon(cat)}
                       <h3 className="text-sm font-semibold text-slate-900">
                         {categoryLabel[cat] || cat}
                       </h3>

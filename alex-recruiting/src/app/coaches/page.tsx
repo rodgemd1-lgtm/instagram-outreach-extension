@@ -1,259 +1,271 @@
 "use client";
 
-import { useState } from "react";
-import { CoachCRM } from "@/components/coach-crm";
-import { CoachPipeline } from "@/components/coach-pipeline";
-import { SchoolCard } from "@/components/school-card";
-import { StudioPageHeader } from "@/components/studio-page-header";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getSchoolsByTier } from "@/lib/data/target-schools";
-import type { TargetSchool } from "@/lib/data/target-schools";
-import { Loader2, Search } from "lucide-react";
-import Link from "next/link";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Download, Plus } from "lucide-react";
+import {
+  StitchPageHeader,
+  StatCard,
+  FlashTicker,
+  FilterBar,
+  GlassCard,
+  StitchBadge,
+  StitchButton,
+  OLNeedMeter,
+  EngagementDot,
+} from "@/components/stitch";
+import {
+  StitchTable,
+  StitchTableHeader,
+  StitchTableHead,
+  StitchTableBody,
+  StitchTableRow,
+  StitchTableCell,
+} from "@/components/stitch/stitch-table";
+import Image from "next/image";
+import { getSchoolLogo } from "@/lib/data/school-branding";
 
-// Persona completeness: 0% = no data, 33% = basic info, 66% = X data, 100% = full persona
-function PersonaCompletenessIndicator({
-  school,
-  personaStatus,
-}: {
-  school: TargetSchool;
-  personaStatus: Record<string, number>;
-}) {
-  const completeness = personaStatus[school.id] ?? 0;
+interface Coach {
+  id: string;
+  name: string;
+  title: string;
+  schoolName: string;
+  schoolId?: string;
+  division: string;
+  conference: string;
+  xHandle: string;
+  dmOpen: boolean;
+  followStatus: string;
+  dmStatus: string;
+  priorityTier: string;
+  olNeedScore: number;
+  xActivityScore: number;
+  notes: string;
+}
 
-  const label =
-    completeness === 0
-      ? "No data"
-      : completeness <= 33
-        ? "Basic"
-        : completeness <= 66
-          ? "X Data"
-          : "Full Persona";
-
-  const colorClass =
-    completeness === 0
-      ? "bg-slate-200"
-      : completeness <= 33
-        ? "bg-amber-400"
-        : completeness <= 66
-          ? "bg-blue-400"
-          : "bg-emerald-500";
-
-  return (
-    <div className="flex items-center gap-2 mt-2">
-      <div className="flex-1 h-1.5 rounded-full bg-slate-100 overflow-hidden">
-        <div
-          className={`h-full rounded-full transition-all ${colorClass}`}
-          style={{ width: `${completeness}%` }}
-        />
-      </div>
-      <span className="text-[10px] text-slate-400 whitespace-nowrap">
-        {label}
-      </span>
-    </div>
-  );
+function mapStatus(status: string): "replied" | "sent" | "unsent" | "none" {
+  if (status === "replied" || status === "responded") return "replied";
+  if (status === "sent" || status === "following") return "sent";
+  if (status === "not_following" || status === "unsent") return "unsent";
+  return "none";
 }
 
 export default function CoachesPage() {
-  const [researchLoading, setResearchLoading] = useState(false);
-  const [researchResult, setResearchResult] = useState<{
-    schoolsResearched: number;
-    totalCoachesFound: number;
-    totalArticlesFound: number;
-  } | null>(null);
-  const [personaStatus, setPersonaStatus] = useState<Record<string, number>>(
-    {}
+  const router = useRouter();
+  const [coaches, setCoaches] = useState<Coach[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [tierFilter, setTierFilter] = useState("all");
+  const [divisionFilter, setDivisionFilter] = useState("all");
+
+  const fetchCoaches = useCallback(async () => {
+    try {
+      const res = await fetch("/api/coaches");
+      const data = await res.json();
+      setCoaches(data.coaches ?? []);
+    } catch (error) {
+      console.error("Failed to fetch coaches:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void fetchCoaches();
+  }, [fetchCoaches]);
+
+  const filtered = useMemo(
+    () =>
+      coaches
+        .filter((c) => {
+          const matchesSearch =
+            c.name.toLowerCase().includes(search.toLowerCase()) ||
+            c.schoolName.toLowerCase().includes(search.toLowerCase());
+          const matchesTier = tierFilter === "all" || c.priorityTier === tierFilter;
+          const matchesDivision = divisionFilter === "all" || c.division === divisionFilter;
+          return matchesSearch && matchesTier && matchesDivision;
+        })
+        .sort((a, b) => {
+          const tierRank: Record<string, number> = { "Tier 1": 0, "Tier 2": 1, "Tier 3": 2 };
+          const t = (tierRank[a.priorityTier] ?? 3) - (tierRank[b.priorityTier] ?? 3);
+          if (t !== 0) return t;
+          return b.olNeedScore + b.xActivityScore - (a.olNeedScore + a.xActivityScore);
+        }),
+    [coaches, search, tierFilter, divisionFilter]
   );
 
-  async function handleResearchAll() {
-    setResearchLoading(true);
-    setResearchResult(null);
-    try {
-      // Step 1: Research all schools
-      const researchRes = await fetch("/api/coaches/research", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
-      });
-      const researchData = await researchRes.json();
+  // Stats
+  const totalCoaches = coaches.length;
+  const intelReports = coaches.filter((c) => c.xActivityScore > 0).length;
+  const withFollows = coaches.filter((c) => c.followStatus === "following").length;
+  const withDMs = coaches.filter((c) => c.dmStatus === "sent" || c.dmStatus === "responded").length;
+  const engagementRate = totalCoaches > 0 ? Math.round((withFollows / totalCoaches) * 100) : 0;
+  const responseRate = withDMs > 0 ? Math.round((coaches.filter((c) => c.dmStatus === "responded").length / withDMs) * 100) : 0;
 
-      if (researchData.success) {
-        setResearchResult(researchData.summary);
-
-        // Update persona status based on research results
-        const newStatus: Record<string, number> = { ...personaStatus };
-        for (const result of researchData.results || []) {
-          // Basic info gathered = 33%
-          newStatus[result.schoolId] = Math.max(
-            newStatus[result.schoolId] || 0,
-            33
-          );
-        }
-        setPersonaStatus(newStatus);
-      }
-
-      // Step 2: Generate personas
-      try {
-        const personaRes = await fetch("/api/coaches/personas", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({}),
-        });
-        const personaData = await personaRes.json();
-
-        if (personaData.success && personaData.personas) {
-          const updatedStatus: Record<string, number> = { ...personaStatus };
-          for (const persona of personaData.personas) {
-            // Full persona = 100%
-            updatedStatus[persona.schoolId] = 100;
-          }
-          setPersonaStatus(updatedStatus);
-        }
-      } catch (personaErr) {
-        console.error("Persona generation failed:", personaErr);
-      }
-    } catch (err) {
-      console.error("Research failed:", err);
-    } finally {
-      setResearchLoading(false);
-    }
-  }
+  // Ticker alerts
+  const tickerItems = [
+    `${totalCoaches} coaches in database`,
+    `${intelReports} with intel reports`,
+    coaches.filter((c) => c.priorityTier === "Tier 1").length + " Tier 1 targets",
+  ];
 
   return (
     <div className="space-y-6">
-      <StudioPageHeader
-        icon="Users"
-        kicker="Dashboard Studio + Susan"
-        title="Run the coach pipeline with clear stages, not scattered names and loose notes."
-        description="This is the relationship map for target programs. Prioritize the right schools, enrich the right coaches, and keep the next action obvious."
-        council={["Susan", "Dashboard", "Marcus"]}
-      >
-        <p className="font-semibold">Recruiting ops rule:</p>
-        <p className="mt-2 leading-6 text-[var(--app-muted)]">
-          Pipeline quality beats raw volume. A smaller list with real signals, X handles, and next actions is worth more than a bloated list of dead rows.
-        </p>
-      </StudioPageHeader>
+      {/* Flash Ticker */}
+      <FlashTicker items={tickerItems} />
 
-      {/* Research All Action Bar */}
-      <div className="flex items-center gap-4">
-        <Button
-          onClick={handleResearchAll}
-          disabled={researchLoading}
-          variant="default"
-          size="sm"
-        >
-          {researchLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Researching...
-            </>
-          ) : (
-            <>
-              <Search className="mr-2 h-4 w-4" />
-              Research All Schools
-            </>
-          )}
-        </Button>
-        {researchResult && (
-          <div className="flex items-center gap-3 text-xs text-slate-500">
-            <Badge variant="approved">
-              {researchResult.schoolsResearched} schools
-            </Badge>
-            <span>
-              {researchResult.totalCoachesFound} coaches found
-            </span>
-            <span>
-              {researchResult.totalArticlesFound} articles found
-            </span>
-          </div>
-        )}
+      {/* Page Header */}
+      <StitchPageHeader
+        title="War Room"
+        subtitle="Coach intelligence and targeting operations"
+        actions={
+          <>
+            <StitchButton variant="outline" size="sm">
+              <Download className="mr-2 h-4 w-4" />
+              Export DB
+            </StitchButton>
+            <StitchButton variant="pirate" size="sm">
+              <Plus className="mr-2 h-4 w-4" />
+              New Target
+            </StitchButton>
+          </>
+        }
+      />
+
+      {/* Stat Cards */}
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <StatCard label="Active Targets" value={totalCoaches} />
+        <StatCard label="Intel Reports" value={intelReports} />
+        <StatCard label="Engagement Rate" value={`${engagementRate}%`} />
+        <StatCard label="Response Rate" value={`${responseRate}%`} />
       </div>
 
-      <Tabs defaultValue="crm">
-        <TabsList>
-          <TabsTrigger value="crm">CRM Table</TabsTrigger>
-          <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
-          <TabsTrigger value="schools">Target Schools</TabsTrigger>
-        </TabsList>
+      {/* Filters */}
+      <FilterBar
+        searchValue={search}
+        onSearchChange={setSearch}
+        filters={[
+          {
+            label: "Tier",
+            value: tierFilter,
+            onChange: setTierFilter,
+            options: [
+              { value: "all", label: "All Tiers" },
+              { value: "Tier 1", label: "Tier 1 (Reach)" },
+              { value: "Tier 2", label: "Tier 2 (Target)" },
+              { value: "Tier 3", label: "Tier 3 (Safety)" },
+            ],
+          },
+          {
+            label: "Division",
+            value: divisionFilter,
+            onChange: setDivisionFilter,
+            options: [
+              { value: "all", label: "All Divisions" },
+              { value: "D1 FBS", label: "D1 FBS" },
+              { value: "D1 FCS", label: "D1 FCS" },
+              { value: "D2", label: "D2" },
+            ],
+          },
+        ]}
+      />
 
-        <TabsContent value="crm">
-          <CoachCRM />
-        </TabsContent>
+      {/* Coach Table */}
+      {loading ? (
+        <GlassCard className="flex items-center justify-center py-20">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#C5050C] border-t-transparent" />
+          <span className="ml-3 text-sm text-white/40">Loading targets...</span>
+        </GlassCard>
+      ) : filtered.length === 0 ? (
+        <GlassCard className="py-16 text-center">
+          <p className="text-sm text-white/40">No coaches found. Adjust filters or add new targets.</p>
+        </GlassCard>
+      ) : (
+        <GlassCard className="overflow-hidden">
+          <StitchTable>
+            <StitchTableHeader>
+              <tr>
+                <StitchTableHead>School / Coach</StitchTableHead>
+                <StitchTableHead>Division</StitchTableHead>
+                <StitchTableHead>Tier</StitchTableHead>
+                <StitchTableHead>OL Need</StitchTableHead>
+                <StitchTableHead>Follow</StitchTableHead>
+                <StitchTableHead>DM</StitchTableHead>
+                <StitchTableHead>X Activity</StitchTableHead>
+              </tr>
+            </StitchTableHeader>
+            <StitchTableBody>
+              {filtered.map((coach) => {
+                const schoolId = coach.schoolId || coach.schoolName.toLowerCase().replace(/\s+/g, "-");
+                const logoPath = getSchoolLogo(schoolId);
 
-        <TabsContent value="pipeline">
-          <CoachPipeline />
-        </TabsContent>
-
-        <TabsContent value="schools">
-          <div className="space-y-6">
-            {(["Tier 1", "Tier 2", "Tier 3"] as const).map((tier) => (
-              <div key={tier}>
-                <h2 className="text-lg font-semibold mb-3">
-                  {tier} — {tier === "Tier 1" ? "Reach Programs" : tier === "Tier 2" ? "Target Programs" : "Safety Programs"}
-                </h2>
-                <div className="grid grid-cols-3 gap-4">
-                  {getSchoolsByTier(tier).map((school) => (
-                    <Link
-                      key={school.id}
-                      href={`/coaches/${school.id}`}
-                      className="block"
-                    >
-                      <Card className="hover:shadow-md transition-shadow">
-                        <CardContent className="p-4">
-                          <div className="flex items-start justify-between mb-2">
-                            <div>
-                              <h3 className="font-semibold text-sm">
-                                {school.name}
-                              </h3>
-                              <p className="text-xs text-slate-500">
-                                {school.division} — {school.conference}
-                              </p>
-                            </div>
-                            <Badge
-                              variant={
-                                school.priorityTier === "Tier 1"
-                                  ? "tier1"
-                                  : school.priorityTier === "Tier 2"
-                                    ? "tier2"
-                                    : "tier3"
-                              }
-                            >
-                              {school.priorityTier}
-                            </Badge>
-                          </div>
-                          <p className="text-xs text-slate-600 mb-2">
-                            {school.whyJacob}
-                          </p>
-                          <p className="text-xs text-slate-500 italic">
-                            {school.olNeedSignal}
-                          </p>
-                          <div className="flex items-center justify-between mt-3 pt-2 border-t">
-                            <span className="text-[10px] text-slate-400">
-                              DM: {school.dmTimeline}
-                            </span>
-                            {school.officialXHandle && (
-                              <span className="text-[10px] text-blue-600">
-                                {school.officialXHandle}
-                              </span>
-                            )}
-                          </div>
-                          <PersonaCompletenessIndicator
-                            school={school}
-                            personaStatus={personaStatus}
+                return (
+                  <StitchTableRow
+                    key={coach.id}
+                    onClick={() => router.push(`/coaches/${schoolId}`)}
+                  >
+                    <StitchTableCell>
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white/5">
+                          <Image
+                            src={logoPath}
+                            alt={coach.schoolName}
+                            width={24}
+                            height={24}
+                            className="opacity-70"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = "none";
+                            }}
                           />
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </TabsContent>
-      </Tabs>
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-white">{coach.schoolName}</p>
+                          <p className="text-[11px] text-white/40">{coach.name}</p>
+                        </div>
+                      </div>
+                    </StitchTableCell>
+                    <StitchTableCell>
+                      <span className="text-xs text-white/50">{coach.division}</span>
+                      <br />
+                      <span className="text-[10px] text-white/30">{coach.conference}</span>
+                    </StitchTableCell>
+                    <StitchTableCell>
+                      <StitchBadge
+                        variant={
+                          coach.priorityTier === "Tier 1" ? "tier1" :
+                          coach.priorityTier === "Tier 2" ? "tier2" : "tier3"
+                        }
+                      >
+                        {coach.priorityTier}
+                      </StitchBadge>
+                    </StitchTableCell>
+                    <StitchTableCell>
+                      <OLNeedMeter level={Math.min(5, Math.max(1, Math.round(coach.olNeedScore / 2)))} />
+                    </StitchTableCell>
+                    <StitchTableCell>
+                      <EngagementDot status={mapStatus(coach.followStatus)} />
+                    </StitchTableCell>
+                    <StitchTableCell>
+                      <EngagementDot status={mapStatus(coach.dmStatus)} />
+                    </StitchTableCell>
+                    <StitchTableCell>
+                      <div className="flex items-center gap-2">
+                        <div className="h-1.5 w-16 rounded-full bg-white/5">
+                          <div
+                            className="h-1.5 rounded-full bg-[#00f2ff]"
+                            style={{ width: `${Math.min(100, coach.xActivityScore * 10)}%` }}
+                          />
+                        </div>
+                        <span className="text-[10px] text-white/30">{coach.xActivityScore}</span>
+                      </div>
+                    </StitchTableCell>
+                  </StitchTableRow>
+                );
+              })}
+            </StitchTableBody>
+          </StitchTable>
+        </GlassCard>
+      )}
     </div>
   );
 }

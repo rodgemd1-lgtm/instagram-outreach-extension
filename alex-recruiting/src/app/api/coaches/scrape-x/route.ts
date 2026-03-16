@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { targetSchools } from "@/lib/data/target-schools";
 import { db, isDbConfigured } from "@/lib/db";
 import { coachBehaviorProfiles } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 interface XAnalysis {
   schoolId: string;
@@ -216,28 +217,56 @@ export async function POST(req: NextRequest) {
         analysis = generateMockAnalysis(school);
       }
 
-      // Store results in coachBehaviorProfiles if DB is configured
+      // Store results in coachBehaviorProfiles if DB is configured (upsert to prevent duplicates)
       if (isDbConfigured()) {
         try {
-          await db.insert(coachBehaviorProfiles).values({
-            coachName: `Staff — ${school.name}`,
-            schoolName: school.name,
-            division: school.division,
-            conference: school.conference,
-            tweetFrequency: analysis.tweetFrequency,
-            peakActivityHours: analysis.peakActivityHours,
-            commonHashtags: analysis.commonHashtags,
-            interactsWithRecruits: analysis.interactsWithRecruits,
-            engagementStyle:
-              analysis.interactsWithRecruits ? "active_recruiter" : "broadcast",
-            estimatedResponseRate:
-              school.priorityTier === "Tier 3"
-                ? 0.7
-                : school.priorityTier === "Tier 2"
-                  ? 0.4
-                  : 0.15,
-            lastUpdated: new Date(),
-          });
+          // Check if a profile already exists for this school
+          const existing = await db.select({ id: coachBehaviorProfiles.id })
+            .from(coachBehaviorProfiles)
+            .where(eq(coachBehaviorProfiles.schoolName, school.name))
+            .limit(1);
+
+          if (existing.length > 0) {
+            // Update existing
+            await db.update(coachBehaviorProfiles)
+              .set({
+                tweetFrequency: analysis.tweetFrequency,
+                peakActivityHours: analysis.peakActivityHours,
+                commonHashtags: analysis.commonHashtags,
+                interactsWithRecruits: analysis.interactsWithRecruits,
+                engagementStyle:
+                  analysis.interactsWithRecruits ? "active_recruiter" : "broadcast",
+                estimatedResponseRate:
+                  school.priorityTier === "Tier 3"
+                    ? 0.7
+                    : school.priorityTier === "Tier 2"
+                      ? 0.4
+                      : 0.15,
+                lastUpdated: new Date(),
+              })
+              .where(eq(coachBehaviorProfiles.id, existing[0].id));
+          } else {
+            // Insert new
+            await db.insert(coachBehaviorProfiles).values({
+              coachName: `Staff — ${school.name}`,
+              schoolName: school.name,
+              division: school.division,
+              conference: school.conference,
+              tweetFrequency: analysis.tweetFrequency,
+              peakActivityHours: analysis.peakActivityHours,
+              commonHashtags: analysis.commonHashtags,
+              interactsWithRecruits: analysis.interactsWithRecruits,
+              engagementStyle:
+                analysis.interactsWithRecruits ? "active_recruiter" : "broadcast",
+              estimatedResponseRate:
+                school.priorityTier === "Tier 3"
+                  ? 0.7
+                  : school.priorityTier === "Tier 2"
+                    ? 0.4
+                    : 0.15,
+              lastUpdated: new Date(),
+            });
+          }
         } catch (dbErr) {
           console.error(
             `[scrape-x] Failed to store behavior profile for ${school.name}:`,

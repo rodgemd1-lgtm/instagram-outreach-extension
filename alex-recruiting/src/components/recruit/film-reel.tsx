@@ -158,15 +158,15 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
         )}
 
         {/* ── ambient glow ── */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#ff000c]/20 to-transparent" />
-        <div className="absolute right-[8%] top-[10%] h-72 w-72 rounded-full bg-[#ff000c]/[0.08] blur-[120px]" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#C5050C]/20 to-transparent" />
+        <div className="absolute right-[8%] top-[10%] h-72 w-72 rounded-full bg-[#C5050C]/[0.08] blur-[120px]" />
 
         {/* ── dialogue layout ── */}
         <div className="relative z-10 mx-auto flex max-w-7xl flex-col md:flex-row md:items-start md:gap-0">
           {/* LEFT — typewriter margin (1/3) */}
           <div className="mb-6 md:mb-0 md:w-1/3 md:sticky md:top-32">
             {/* section label removed per feedback */}
-            <h2 className="text-3xl font-black tracking-tight leading-[0.95] text-white md:text-5xl lg:text-6xl">
+            <h2 className="text-3xl font-black italic uppercase tracking-tighter leading-[0.95] text-white md:text-5xl lg:text-6xl">
               <TypewriterText
                 text="Can he play?"
                 trigger={inView}
@@ -192,16 +192,20 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <div>
                     <div className="flex items-center gap-3">
-                      <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#ff000c]/90">
-                        Featured Film
+                      <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#C5050C]/90">
+                        Broadcast Replay
                       </p>
-                      {/* NCSA credibility badge */}
+                      {/* Featured badge */}
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-[#C5050C]/20 bg-[#C5050C]/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#C5050C]">
+                        Featured
+                      </span>
+                      {/* Ultra 4K badge */}
                       <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white/60">
                         <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-400/80" />
-                        Featured on NCSA
+                        Ultra 4K
                       </span>
                     </div>
-                    <h3 className="mt-1 text-xl font-semibold tracking-tight text-white md:text-2xl">
+                    <h3 className="mt-1 text-xl font-black italic tracking-tight text-white md:text-2xl">
                       {FEATURED_RECRUIT_REEL.title}
                     </h3>
                   </div>
@@ -210,7 +214,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                     onClick={() =>
                       openFullscreen(FEATURED_RECRUIT_REEL.src, FEATURED_RECRUIT_REEL.poster)
                     }
-                    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white/70 transition hover:border-[#ff000c]/30 hover:text-white"
+                    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white/70 transition hover:border-[#C5050C]/30 hover:text-white"
                   >
                     Fullscreen
                   </button>
@@ -238,7 +242,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                 className="mt-5"
               >
                 <div className="mb-3 flex items-center justify-between">
-                  <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#ff000c]/90">
+                  <p className="font-jetbrains text-xs uppercase tracking-[0.2em] text-[#C5050C]/90">
                     Full Film Library
                   </p>
                   <span className="font-jetbrains text-[10px] uppercase tracking-wider text-white/30 md:hidden">
@@ -254,7 +258,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                       key={reel.id}
                       type="button"
                       onClick={() => openFullscreen(reel.src, reel.poster)}
-                      className="group/splash relative aspect-video w-40 shrink-0 overflow-hidden rounded-xl border border-white/[0.08] bg-black focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff000c]/50 md:w-56"
+                      className="group/splash relative aspect-video w-40 shrink-0 overflow-hidden rounded-xl border border-white/[0.08] bg-black focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C5050C]/50 md:w-56"
                     >
                       {/* poster */}
                       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -269,7 +273,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
 
                       {/* play button — CSS triangle */}
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ff000c]/90 shadow-lg transition-transform group-hover/splash:scale-110">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#C5050C]/90 shadow-lg transition-transform group-hover/splash:scale-110">
                           <div
                             className="ml-0.5 h-0 w-0"
                             style={{
@@ -318,7 +322,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                       duration={1.8}
                       className="text-2xl font-black tabular-nums text-white md:text-3xl"
                     />
-                    <span className="mt-1 font-jetbrains text-sm uppercase tracking-[0.15em] text-[#ff000c]/80 md:text-base md:tracking-[0.2em]">
+                    <span className="mt-1 font-jetbrains text-sm uppercase tracking-[0.15em] text-[#C5050C]/80 md:text-base md:tracking-[0.2em]">
                       {stat.label}
                     </span>
                   </div>
@@ -347,7 +351,7 @@ export function FilmReel({ backgroundUrl }: FilmReelProps) {
                 </Link>
                 <Link
                   href="#contact"
-                  className="inline-flex items-center gap-2 rounded-full bg-[#ff000c] px-5 py-2.5 text-sm font-bold uppercase tracking-widest text-white transition hover:opacity-90"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#C5050C] px-5 py-2.5 text-sm font-bold uppercase tracking-widest text-white transition hover:opacity-90"
                 >
                   Reach Out
                 </Link>

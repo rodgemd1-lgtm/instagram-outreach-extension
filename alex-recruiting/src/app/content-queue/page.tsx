@@ -477,13 +477,13 @@ function ListView({
                     >
                       <Check className="h-4 w-4" />
                     </button>
-                    <button
-                      onClick={() => {}}
+                    <a
+                      href={`/create?editPostId=${post.id}`}
                       className="rounded-lg p-1.5 text-[var(--app-muted)] transition-colors hover:bg-[rgba(15,40,75,0.04)]"
                       title="Edit"
                     >
                       <Pencil className="h-4 w-4" />
-                    </button>
+                    </a>
                     <button
                       onClick={() => onReject([post.id])}
                       className="rounded-lg p-1.5 text-red-500 transition-colors hover:bg-red-50"

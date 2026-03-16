@@ -115,6 +115,11 @@ describe("Page smoke tests - Outreach", () => {
     expect(mod.default).toBeDefined();
   });
 
+  it("should import /connections/[id] page", async () => {
+    const mod = await import("@/app/connections/[id]/page");
+    expect(mod.default).toBeDefined();
+  });
+
   it("should import /cold-dms page", async () => {
     const mod = await import("@/app/cold-dms/page");
     expect(mod.default).toBeDefined();
@@ -145,10 +150,13 @@ describe("Page smoke tests - Media", () => {
     expect(mod.default).toBeDefined();
   });
 
-  // Skipped: youtube-studio page has a pre-existing React import issue
-  // (uses JSX in a module-level const without importing React).
-  it.skip("should import /youtube-studio page", async () => {
+  it("should import /youtube-studio page", async () => {
     const mod = await import("@/app/youtube-studio/page");
+    expect(mod.default).toBeDefined();
+  });
+
+  it("should import /media-upload page", async () => {
+    const mod = await import("@/app/media-upload/page");
     expect(mod.default).toBeDefined();
   });
 

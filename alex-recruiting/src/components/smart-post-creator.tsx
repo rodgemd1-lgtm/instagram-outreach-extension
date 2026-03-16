@@ -166,38 +166,7 @@ const NEGATIVE_WORDS = [
   "cope",
 ];
 
-const INITIAL_DRAFT = `Back to work this Monday. Film review session done, now hitting footwork drills.
-
-Every rep counts. Getting better every day.
-
-#2029Recruit #FootballRecruiting #OL #PutInTheWork #WisconsinFootball`;
-
-const INITIAL_QUEUE: QueuedPost[] = [
-  {
-    id: "q1",
-    content:
-      "Film study Thursday. Watching last season\u2019s playoff game back and realizing how much our whole line improved from Week 1 to Week 12.\n\nOur center Ryan went from hesitating on combo calls to reading the linebacker before the snap. That\u2019s 12 weeks of Coach Henderson pushing us.\n\nThe O-line doesn\u2019t get highlights. We\u2019ll make our own.",
-    pillar: "performance",
-    scheduledFor: "Today, 7:00 PM CST",
-    status: "draft",
-  },
-  {
-    id: "q2",
-    content:
-      "Question for any OL coaches on here.\n\nWhen you\u2019re teaching a young lineman to anchor against a bull rush, do you start with the hips or the hands?\n\nI\u2019ve been taught hands first \u2014 strike, then sink the hips. But I watched some college film this week where guys were dropping hips before the punch even landed.\n\nTrying to figure out which approach works better for a bigger body type. Any input is welcome. I\u2019m a student of this position.\n\n#OffensiveLine #OLTechnique",
-    pillar: "work_ethic",
-    scheduledFor: "Today, 8:30 PM CST",
-    status: "draft",
-  },
-  {
-    id: "q3",
-    content:
-      "Honest check-in. 6 months into the recruiting journey.\n\nWhat\u2019s working:\n- Training is the best it\u2019s ever been\n- Film study is becoming a habit, not a chore\n- Met some great people in the Class of 2029\n\nWhat I\u2019m still figuring out:\n- How to balance school, training, and rest\n- How to put myself out there without it feeling like bragging\n- How to be patient when the process feels slow\n\nNot where I want to be yet. But not where I started either.\n\nGrateful for everyone following along. The best is still ahead.",
-    pillar: "character",
-    scheduledFor: "Today, 9:30 PM CST",
-    status: "draft",
-  },
-];
+// No hardcoded initial data — all content comes from the API (Data Integrity Rule)
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -383,29 +352,29 @@ function XPostPreview({ content, media }: { content: string; media?: SelectedMed
               year: "numeric",
             })}{" "}
             &middot;{" "}
-            <span className="text-white font-semibold">12.4K</span> Views
+            <span className="text-slate-400 text-xs italic">Preview</span>
           </div>
 
           {/* Divider */}
           <div className="mt-3 border-t border-slate-700" />
 
-          {/* Engagement */}
+          {/* Engagement — preview placeholders, no fake numbers */}
           <div className="mt-3 flex justify-between text-slate-500">
             <button className="flex items-center gap-1.5 hover:text-blue-400 transition-colors" type="button">
               <MessageCircle className="h-4 w-4" />
-              <span className="text-[13px]">24</span>
+              <span className="text-[13px]">--</span>
             </button>
             <button className="flex items-center gap-1.5 hover:text-green-400 transition-colors" type="button">
               <Repeat2 className="h-4 w-4" />
-              <span className="text-[13px]">89</span>
+              <span className="text-[13px]">--</span>
             </button>
             <button className="flex items-center gap-1.5 hover:text-pink-400 transition-colors" type="button">
               <Heart className="h-4 w-4" />
-              <span className="text-[13px]">342</span>
+              <span className="text-[13px]">--</span>
             </button>
             <button className="flex items-center gap-1.5 hover:text-blue-400 transition-colors" type="button">
               <BarChart3 className="h-4 w-4" />
-              <span className="text-[13px]">12.4K</span>
+              <span className="text-[13px]">--</span>
             </button>
           </div>
         </div>
@@ -798,10 +767,10 @@ export function SmartPostCreator() {
   const todayEntry = getTodayEntry();
   const initialPillar = todayEntry.pillar as ContentPillar;
 
-  const [content, setContent] = useState(INITIAL_DRAFT);
+  const [content, setContent] = useState("");
   const [pillar, setPillar] = useState<ContentPillar>(initialPillar);
   const [scheduleOption, setScheduleOption] = useState<ScheduleOption>("best_time");
-  const [queue, setQueue] = useState<QueuedPost[]>(INITIAL_QUEUE);
+  const [queue, setQueue] = useState<QueuedPost[]>([]);
   const [selectedMedia, setSelectedMedia] = useState<SelectedMediaInfo | null>(null);
   const [postingId, setPostingId] = useState<string | null>(null);
   const [postResult, setPostResult] = useState<{ id: string; tweetUrl?: string; error?: string } | null>(null);
@@ -829,22 +798,43 @@ export function SmartPostCreator() {
     []
   );
 
-  const handleAddToQueue = useCallback(() => {
-    const newPost: QueuedPost = {
-      id: `q${Date.now()}`,
-      content,
-      pillar,
-      scheduledFor:
-        scheduleOption === "now"
-          ? "Posting now"
-          : scheduleOption === "best_time"
-            ? `Today, ${todayEntry.bestTime}`
-            : scheduleOption === "tomorrow_am"
-              ? "Tomorrow, 7:00 AM CST"
-              : "Custom time",
-      status: scheduleOption === "now" ? "scheduled" : "draft",
-    };
-    setQueue((prev) => [newPost, ...prev].slice(0, 5));
+  const handleAddToQueue = useCallback(async () => {
+    const scheduledFor =
+      scheduleOption === "now"
+        ? "Posting now"
+        : scheduleOption === "best_time"
+          ? `Today, ${todayEntry.bestTime}`
+          : scheduleOption === "tomorrow_am"
+            ? "Tomorrow, 7:00 AM CST"
+            : "Custom time";
+
+    // Persist to API
+    try {
+      const res = await fetch("/api/posts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content, pillar, status: scheduleOption === "now" ? "scheduled" : "draft" }),
+      });
+      const data = await res.json();
+      const newPost: QueuedPost = {
+        id: data.id || `q${Date.now()}`,
+        content,
+        pillar,
+        scheduledFor,
+        status: scheduleOption === "now" ? "scheduled" : "draft",
+      };
+      setQueue((prev) => [newPost, ...prev].slice(0, 5));
+    } catch {
+      // Fallback to local-only if API fails
+      const newPost: QueuedPost = {
+        id: `q${Date.now()}`,
+        content,
+        pillar,
+        scheduledFor,
+        status: scheduleOption === "now" ? "scheduled" : "draft",
+      };
+      setQueue((prev) => [newPost, ...prev].slice(0, 5));
+    }
     setContent("");
     setSelectedMedia(null);
   }, [content, pillar, scheduleOption, todayEntry.bestTime]);

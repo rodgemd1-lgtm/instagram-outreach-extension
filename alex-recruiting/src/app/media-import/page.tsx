@@ -160,7 +160,7 @@ export default function MediaImportPage() {
     for (const file of pending) {
       setFiles((prev) =>
         prev.map((f) =>
-          f.id === file.id ? { ...f, status: "uploading", progress: 50 } : f
+          f.id === file.id ? { ...f, status: "uploading", progress: 0 } : f
         )
       );
 

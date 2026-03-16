@@ -74,15 +74,15 @@ export function RecruitHero({ backgroundUrl }: HeroProps) {
       {/* Content — right 2/3 */}
       <div className="relative z-10 ml-auto w-full px-6 md:w-2/3 md:px-12">
         <div data-gsap="hero-kicker" className="mb-4 opacity-0">
-          <span className="text-sm font-medium uppercase tracking-[0.3em] text-[#ff000c]">
+          <span className="text-sm font-medium uppercase tracking-[0.3em] text-[#C5050C]">
             Class of 2029
           </span>
         </div>
 
         <div data-gsap="hero-name" className="mb-8 opacity-0">
           <h1
-            className="font-bold uppercase leading-none tracking-tight text-white"
-            style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}
+            className="font-black italic uppercase leading-none tracking-tighter text-white"
+            style={{ fontSize: "clamp(3.5rem, 9vw, 7.5rem)" }}
           >
             Jacob
             <br />
@@ -93,21 +93,21 @@ export function RecruitHero({ backgroundUrl }: HeroProps) {
         <div data-gsap="hero-measurables" className="mb-12 opacity-0">
           <p className="text-lg text-white/80 md:text-xl">
             <span className="text-white">#79</span>
-            <span className="mx-2 text-[#ff000c]">&middot;</span>
+            <span className="mx-2 text-[#C5050C]">&middot;</span>
             DT / OG
-            <span className="mx-2 text-[#ff000c]">&middot;</span>
+            <span className="mx-2 text-[#C5050C]">&middot;</span>
             6&apos;4&quot;
-            <span className="mx-2 text-[#ff000c]">&middot;</span>
+            <span className="mx-2 text-[#C5050C]">&middot;</span>
             285
           </p>
           <p className="mt-2 text-base text-white/60">
             Pewaukee HS
-            <span className="mx-2 text-[#ff000c]">&middot;</span>
+            <span className="mx-2 text-[#C5050C]">&middot;</span>
             Wisconsin
           </p>
           <p className="mt-1 text-base text-white/60">
             Varsity Starter
-            <span className="mx-2 text-[#ff000c]">&middot;</span>
+            <span className="mx-2 text-[#C5050C]">&middot;</span>
             Two-Way Lineman
           </p>
         </div>
@@ -121,7 +121,7 @@ export function RecruitHero({ backgroundUrl }: HeroProps) {
             }}
             className="group flex items-center gap-2 text-sm uppercase tracking-widest text-white/50 transition-colors hover:text-white"
           >
-            <span className="inline-block h-5 w-px bg-[#ff000c] transition-all group-hover:h-8" />
+            <span className="inline-block h-5 w-px bg-[#C5050C] transition-all group-hover:h-8" />
             Watch the film
           </button>
         </div>

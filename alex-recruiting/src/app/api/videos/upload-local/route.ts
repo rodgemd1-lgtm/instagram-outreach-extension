@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
     const mimeType = mimeMap[ext] || "video/mp4";
 
     // Upload to Supabase Storage
-    const supabase = createServerSupabaseClient();
+    const supabase = await createServerSupabaseClient();
     const { error: uploadError } = await supabase.storage
       .from("football-videos")
       .upload(storagePath, fileBuffer, {

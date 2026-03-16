@@ -6,13 +6,22 @@ import { Header } from "@/components/header";
 import { MobileBottomNav } from "@/components/mobile-nav";
 import { OperatorDock } from "@/components/operator-dock";
 import { PageTransition } from "@/components/motion/page-transition";
+import { StitchShell } from "@/components/stitch/stitch-shell";
 
 // Routes that bypass the standard app shell (sidebar/header)
 const STANDALONE_ROUTES = ["/recruit", "/dashboard"];
 
+// Routes that use the Stitch dark command-center shell
+const STITCH_ROUTES = ["/coaches", "/outreach", "/agency", "/capture", "/media-upload", "/connections"];
+
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isStandalone = STANDALONE_ROUTES.some((r) => pathname.startsWith(r));
+  const isStitch = STITCH_ROUTES.some((r) => pathname === r || pathname.startsWith(r + "/"));
+
+  if (isStitch) {
+    return <StitchShell>{children}</StitchShell>;
+  }
 
   if (isStandalone) {
     return <>{children}</>;

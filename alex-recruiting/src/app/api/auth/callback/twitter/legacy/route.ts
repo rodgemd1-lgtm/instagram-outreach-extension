@@ -19,7 +19,7 @@ export async function GET(request: Request) {
   const oauthToken = searchParams.get("oauth_token");
   const oauthVerifier = searchParams.get("oauth_verifier");
   const denied = searchParams.get("denied");
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const storedRequestToken = cookieStore.get(X_OAUTH1_REQUEST_TOKEN_COOKIE)?.value;
   const storedRequestSecret = cookieStore.get(X_OAUTH1_REQUEST_SECRET_COOKIE)?.value;
   const returnTo = sanitizeReturnToPath(

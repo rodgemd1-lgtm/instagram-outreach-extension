@@ -148,7 +148,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       {/* Page Title */}
-      <h1 className="text-2xl font-bold text-[#0F1720]">Overview</h1>
+      <h1 className="text-3xl font-black text-[#0F1720] tracking-tight mb-2">Overview</h1>
 
       {/* Stat Cards */}
       <StaggerChildren className="grid grid-cols-2 lg:grid-cols-4 gap-4" staggerDelay={0.08}>
@@ -174,9 +174,9 @@ export default function DashboardPage() {
       <ScrollReveal variant="fadeUp" delay={0.15}>
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Recent Activity */}
-        <div className="lg:col-span-2 bg-white border border-[#E5E7EB] rounded-lg">
-          <div className="px-5 py-4 border-b border-[#E5E7EB]">
-            <h2 className="text-lg font-semibold text-[#0F1720]">
+        <div className="lg:col-span-2 bg-white border-2 border-gray-200 rounded-xl shadow-[4px_4px_0_#E5E7EB] hover:shadow-[4px_4px_0_#0F1720] transition-shadow duration-200">
+          <div className="px-6 py-5 border-b-2 border-gray-200 flex items-center justify-between">
+            <h2 className="text-xl font-bold text-[#0F1720] tracking-tight">
               Recent Activity
             </h2>
           </div>
@@ -233,9 +233,9 @@ export default function DashboardPage() {
         </div>
 
         {/* Target Schools */}
-        <div className="bg-white border border-[#E5E7EB] rounded-lg">
-          <div className="px-5 py-4 border-b border-[#E5E7EB]">
-            <h2 className="text-lg font-semibold text-[#0F1720]">
+        <div className="bg-white border-2 border-gray-200 rounded-xl shadow-[4px_4px_0_#E5E7EB] hover:shadow-[4px_4px_0_#0F1720] transition-shadow duration-200">
+          <div className="px-6 py-5 border-b-2 border-gray-200 flex items-center justify-between">
+            <h2 className="text-xl font-bold text-[#0F1720] tracking-tight">
               Target Schools
             </h2>
           </div>
@@ -284,10 +284,12 @@ export default function DashboardPage() {
           <Link
             key={action.href}
             href={action.href}
-            className="bg-white border border-[#E5E7EB] rounded-lg p-4 hover:shadow-sm hover:border-[#D1D5DB] transition-all group"
+            className="bg-white border-2 border-gray-200 rounded-xl p-5 hover:-translate-y-1 hover:shadow-[4px_4px_0_#0F1720] transition-all duration-200 group flex flex-col items-center justify-center text-center"
           >
-            <action.icon className="w-5 h-5 text-[#9CA3AF] group-hover:text-[#0F1720] transition-colors mb-2" />
-            <p className="text-sm font-medium text-[#0F1720]">
+            <div className="mb-3 p-3 rounded-xl bg-[#F8FAFC] group-hover:bg-[#0F1720] transition-colors duration-200">
+              <action.icon className="w-6 h-6 text-[#6B7280] group-hover:text-white transition-colors" />
+            </div>
+            <p className="text-sm font-bold text-[#0F1720]">
               {action.label}
             </p>
           </Link>
