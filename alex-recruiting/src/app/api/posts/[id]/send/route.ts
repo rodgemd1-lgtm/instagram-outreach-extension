@@ -4,6 +4,8 @@ import { postTweet, uploadMediaFromFile } from "@/lib/integrations/x-api";
 import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { getPostById, updatePost } from "@/lib/posts/store";
 
+export const dynamic = "force-dynamic";
+
 function resolveLocalMediaPath(mediaUrl: string | null): string | null {
   if (!mediaUrl) return null;
 

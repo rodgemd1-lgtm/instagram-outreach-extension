@@ -8,6 +8,8 @@ import { getUserTweets, verifyHandle } from "@/lib/integrations/x-api";
 import { getAllPosts } from "@/lib/posts/store";
 import type { Coach, DMMessage, Post } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+
 interface PostRow {
   id: string;
   content: string;

@@ -18,6 +18,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { db, isDbConfigured } from "@/lib/db";
 import * as schema from "@/lib/db/schema";
 
+export const dynamic = "force-dynamic";
+
 interface NewsArticle {
   url: string;
   title: string;

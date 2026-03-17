@@ -14,7 +14,9 @@ export async function GET() {
       fileSize: stat.size,
       lastModified: stat.mtime.toISOString(),
     });
-  } catch {
+  } catch (err) {
+    // File not found is expected — not an error worth logging
+    void err;
     return NextResponse.json({
       exists: false,
       path: null,
@@ -38,7 +40,8 @@ export async function POST() {
       clipCount: result.clipCount,
     });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    return NextResponse.json({ error: message }, { status: 500 });
+    const details = err instanceof Error ? err.message : "Unknown error";
+    console.error("[recruit/reel] Reel generation failed:", err);
+    return NextResponse.json({ error: "Reel generation failed", details }, { status: 500 });
   }
 }

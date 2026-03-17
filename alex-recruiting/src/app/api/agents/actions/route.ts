@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getPendingActions, bulkUpdateActions } from "@/lib/agents/orchestrator";
 import { AgentId } from "@/lib/agents/types";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     const agentId = request.nextUrl.searchParams.get("agentId") as AgentId | null;

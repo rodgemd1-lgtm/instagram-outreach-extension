@@ -4,6 +4,8 @@ import { videoAssets } from "@/lib/db/schema";
 import { desc } from "drizzle-orm";
 import { getAllAssets } from "@/lib/video/store";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     if (isDbConfigured()) {

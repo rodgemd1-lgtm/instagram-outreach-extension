@@ -27,6 +27,8 @@ import {
 } from "@/lib/content-engine/post-pipeline";
 import { autoScheduleToday } from "@/lib/content-engine/auto-scheduler";
 
+export const dynamic = "force-dynamic";
+
 const MAX_TWEET_LENGTH = 280;
 const VALID_PILLARS = ["performance", "work_ethic", "character"];
 

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { seedCoachesAndSchools } from "@/lib/db/seed-coaches";
 import { isSupabaseConfigured } from "@/lib/supabase/admin";
 
+export const dynamic = "force-dynamic";
+
 // ---------------------------------------------------------------------------
 // POST /api/recruit/seed
 //

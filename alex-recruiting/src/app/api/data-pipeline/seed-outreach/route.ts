@@ -13,6 +13,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { outreachSchedule60d } from "@/lib/data/outreach-schedule-60d";
 
+export const dynamic = "force-dynamic";
+
 // ---------- Helpers ----------
 
 function validateAuth(request: NextRequest): boolean {

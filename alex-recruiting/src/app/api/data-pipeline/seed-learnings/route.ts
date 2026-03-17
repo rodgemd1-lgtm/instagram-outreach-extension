@@ -13,6 +13,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { learningHistoryMock } from "@/lib/data/learning-history-mock";
 
+export const dynamic = "force-dynamic";
+
 // ---------- Helpers ----------
 
 function validateAuth(request: NextRequest): boolean {

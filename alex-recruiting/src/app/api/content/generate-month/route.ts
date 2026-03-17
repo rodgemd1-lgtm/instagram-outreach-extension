@@ -22,6 +22,8 @@ import { hooksLibrary, type Hook } from "@/lib/data/hooks-library";
 import { getHashtagsForPost } from "@/lib/data/hashtags";
 import { type PostFormulaType } from "@/lib/data/content-psychology";
 
+export const dynamic = "force-dynamic";
+
 // ---------------------------------------------------------------------------
 // Activity Context
 // ---------------------------------------------------------------------------

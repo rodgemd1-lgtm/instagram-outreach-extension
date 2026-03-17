@@ -6,6 +6,8 @@ import {
 } from "@/lib/accomplishments/store";
 import { postTweet } from "@/lib/integrations/x-api";
 
+export const dynamic = "force-dynamic";
+
 // GET — List all accomplishments
 export async function GET() {
   const accomplishments = await getAccomplishments();

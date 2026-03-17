@@ -5,6 +5,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { processSequences } from "@/lib/outreach/dm-sequences";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   // Validate the cron secret to prevent unauthorized triggers
   const authHeader = req.headers.get("authorization");

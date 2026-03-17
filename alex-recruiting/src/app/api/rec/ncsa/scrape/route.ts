@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { addLead } from "@/lib/rec/knowledge/ncsa-leads";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   const { html } = await req.json();
 
@@ -94,7 +96,8 @@ export async function POST(req: NextRequest) {
           leads.push(lead);
         }
       }
-    } catch {
+    } catch (jsonErr) {
+      console.error("[rec/ncsa/scrape] JSON block parse failed:", jsonErr);
       // JSON parse failed, continue with HTML parsing results
     }
   }

@@ -9,6 +9,8 @@ import { ncaaRules } from "@/lib/rec/knowledge/ncaa-rules";
 import { isDbConfigured, db } from "@/lib/db";
 import { dmSequences, dmMessages } from "@/lib/db/schema";
 
+export const dynamic = "force-dynamic";
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------

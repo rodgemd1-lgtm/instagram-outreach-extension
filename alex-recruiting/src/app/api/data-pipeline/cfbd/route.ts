@@ -24,6 +24,8 @@ import {
   type NormalizedCoach,
 } from "@/lib/integrations/cfbd";
 
+export const dynamic = "force-dynamic";
+
 // ─── Auth guard ──────────────────────────────────────────────────────────────
 
 function validateAuth(request: NextRequest): boolean {

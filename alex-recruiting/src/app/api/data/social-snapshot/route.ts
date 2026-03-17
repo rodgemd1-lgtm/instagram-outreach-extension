@@ -19,6 +19,8 @@ import * as schema from "@/lib/db/schema";
 import { desc } from "drizzle-orm";
 import { targetSchools } from "@/lib/data/target-schools";
 
+export const dynamic = "force-dynamic";
+
 interface GrowthSnapshotData {
   followerCount: number;
   coachFollowers: number;

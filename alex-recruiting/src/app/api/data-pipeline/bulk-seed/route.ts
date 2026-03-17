@@ -13,6 +13,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 
+export const dynamic = "force-dynamic";
+
 // ---------- Types ----------
 
 interface SchoolInput {

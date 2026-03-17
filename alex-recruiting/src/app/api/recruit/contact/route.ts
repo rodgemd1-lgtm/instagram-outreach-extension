@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isSupabaseConfigured, createAdminClient } from "@/lib/supabase/admin";
 
+export const dynamic = "force-dynamic";
+
 /* ─── Types ──────────────────────────────────────────────────── */
 
 interface CoachInquiryRecord {

@@ -4,6 +4,8 @@ import { buildChatSystemPrompt, detectTeamMember } from "@/lib/rec/team/personas
 import { getHistory, saveMessage } from "@/lib/rec/conversation-store";
 import type { TeamMemberId } from "@/lib/rec/types";
 
+export const dynamic = "force-dynamic";
+
 export const runtime = "nodejs";
 export const maxDuration = 60;
 

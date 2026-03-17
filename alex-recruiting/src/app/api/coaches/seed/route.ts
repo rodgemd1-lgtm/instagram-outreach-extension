@@ -4,6 +4,8 @@ import {
   isSupabaseConfigured,
 } from "@/lib/supabase/admin";
 
+export const dynamic = "force-dynamic";
+
 /**
  * POST /api/coaches/seed
  *

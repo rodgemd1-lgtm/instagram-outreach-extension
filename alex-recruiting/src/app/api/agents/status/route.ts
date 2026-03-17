@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getAgentStatus } from "@/lib/agents/orchestrator";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const status = await getAgentStatus();

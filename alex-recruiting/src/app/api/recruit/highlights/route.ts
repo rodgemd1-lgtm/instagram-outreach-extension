@@ -53,9 +53,11 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(highlight, { status: 201 });
-  } catch {
+  } catch (err) {
+    const details = err instanceof Error ? err.message : String(err);
+    console.error("[recruit/highlights] POST failed:", err);
     return NextResponse.json(
-      { error: "Invalid request body" },
+      { error: "Invalid request body", details },
       { status: 400 }
     );
   }
@@ -83,9 +85,11 @@ export async function PUT(req: NextRequest) {
     }
 
     return NextResponse.json(updated);
-  } catch {
+  } catch (err) {
+    const details = err instanceof Error ? err.message : String(err);
+    console.error("[recruit/highlights] PUT failed:", err);
     return NextResponse.json(
-      { error: "Invalid request body" },
+      { error: "Invalid request body", details },
       { status: 400 }
     );
   }

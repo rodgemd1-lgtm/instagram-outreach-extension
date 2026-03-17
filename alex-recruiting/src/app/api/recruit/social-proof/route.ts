@@ -51,7 +51,7 @@ async function fetchSocialProofData(): Promise<SocialProofData> {
       .select("*", { count: "exact", head: true })
       .eq("follow_status", "following_back");
     data.coachFollowers = count ?? 0;
-  } catch { /* table may not exist */ }
+  } catch (err) { console.error("[recruit/social-proof] coaches query failed:", err); }
 
   // Count NCSA follows as a fallback when X follower syncing lags behind
   try {
@@ -60,7 +60,7 @@ async function fetchSocialProofData(): Promise<SocialProofData> {
       .select("*", { count: "exact", head: true })
       .ilike("source_detail", "NCSA follow:%");
     data.coachFollowers = Math.max(data.coachFollowers, count ?? 0);
-  } catch { /* table may not exist */ }
+  } catch (err) { console.error("[recruit/social-proof] ncsa_leads follow count failed:", err); }
 
   // Count NCSA profile views from ncsa_leads
   try {
@@ -69,7 +69,7 @@ async function fetchSocialProofData(): Promise<SocialProofData> {
       .select("*", { count: "exact", head: true })
       .eq("source", "profile_view");
     data.ncsaProfileViews = profileViews ?? 0;
-  } catch { /* table may not exist */ }
+  } catch (err) { console.error("[recruit/social-proof] profile views query failed:", err); }
 
   // Count camp invites
   try {
@@ -78,7 +78,7 @@ async function fetchSocialProofData(): Promise<SocialProofData> {
       .select("*", { count: "exact", head: true })
       .eq("source", "camp_invite");
     data.campInvites = count ?? 0;
-  } catch { /* table may not exist */ }
+  } catch (err) { console.error("[recruit/social-proof] camp invites query failed:", err); }
 
   // Count contact form submissions
   try {
@@ -86,7 +86,7 @@ async function fetchSocialProofData(): Promise<SocialProofData> {
       .from("coach_inquiries")
       .select("*", { count: "exact", head: true });
     data.contactFormSubmissions = count ?? 0;
-  } catch { /* table may not exist */ }
+  } catch (err) { console.error("[recruit/social-proof] coach_inquiries query failed:", err); }
 
   // Count unique schools that have engaged
   try {
@@ -99,7 +99,7 @@ async function fetchSocialProofData(): Promise<SocialProofData> {
         .filter(Boolean)
     );
     data.schoolsEngaged = uniqueSchools.size;
-  } catch { /* table may not exist */ }
+  } catch (err) { console.error("[recruit/social-proof] schools engaged query failed:", err); }
 
   // Recent schools (last 30 days)
   try {
@@ -119,7 +119,7 @@ async function fetchSocialProofData(): Promise<SocialProofData> {
     ];
     data.recentSchools = recentUniqueSchools;
     data.recentSchoolCount = recentUniqueSchools.length;
-  } catch { /* table may not exist */ }
+  } catch (err) { console.error("[recruit/social-proof] recent schools query failed:", err); }
 
   // All school names for ticker
   try {
@@ -136,7 +136,7 @@ async function fetchSocialProofData(): Promise<SocialProofData> {
       ),
     ];
     data.schoolNames = allUniqueSchools;
-  } catch { /* table may not exist */ }
+  } catch (err) { console.error("[recruit/social-proof] school names query failed:", err); }
 
   return data;
 }

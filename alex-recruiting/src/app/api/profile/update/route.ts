@@ -3,6 +3,8 @@ import {
   updateProfileWithFeedback,
 } from "@/lib/integrations/x-api";
 
+export const dynamic = "force-dynamic";
+
 interface ProfileUpdatePayload {
   displayName?: unknown;
   bio?: unknown;

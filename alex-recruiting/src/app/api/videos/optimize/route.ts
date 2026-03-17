@@ -5,6 +5,8 @@ import { eq } from "drizzle-orm";
 import { optimizeForX } from "@/lib/video/optimize";
 import { getAssetById, updateAsset } from "@/lib/video/store";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const { assetId } = (await req.json()) as { assetId: string };

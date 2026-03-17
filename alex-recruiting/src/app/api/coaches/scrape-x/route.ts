@@ -4,6 +4,8 @@ import { db, isDbConfigured } from "@/lib/db";
 import { coachBehaviorProfiles } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
+export const dynamic = "force-dynamic";
+
 interface XAnalysis {
   schoolId: string;
   schoolName: string;

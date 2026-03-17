@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateVideo } from "@/lib/integrations/fal";
 
+export const dynamic = "force-dynamic";
+
 export const maxDuration = 300; // 5 min for video generation
 
 export async function POST(req: NextRequest) {

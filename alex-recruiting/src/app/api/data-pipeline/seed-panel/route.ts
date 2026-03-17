@@ -14,6 +14,8 @@ import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { panelCoachesData } from "@/lib/data/panel-coaches";
 import { panelSurveysSeed } from "@/lib/data/panel-surveys-seed";
 
+export const dynamic = "force-dynamic";
+
 // ---------- Helpers ----------
 
 function validateAuth(request: NextRequest): boolean {

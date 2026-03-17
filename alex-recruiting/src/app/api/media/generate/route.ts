@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateImage } from "@/lib/integrations/fal";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const { prompt, promptId, section, aspectRatio } = await req.json();

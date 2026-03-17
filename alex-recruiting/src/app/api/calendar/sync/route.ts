@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { createEvent, listEvents } from "@/lib/integrations/google-calendar";
 
+export const dynamic = "force-dynamic";
+
 /**
  * POST /api/calendar/sync
  *

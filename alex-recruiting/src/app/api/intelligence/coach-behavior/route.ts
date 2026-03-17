@@ -7,6 +7,8 @@ import {
 import { getUserTweets, verifyHandle } from "@/lib/integrations/x-api";
 import type { Coach } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+
 interface CoachAnalysisRequest {
   coaches: Partial<Coach>[];
   recruitHandle?: string;

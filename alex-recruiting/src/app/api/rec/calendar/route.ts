@@ -97,7 +97,8 @@ export async function GET(req: NextRequest) {
       }
     }
   } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    return NextResponse.json({ error: message }, { status: 500 });
+    const details = err instanceof Error ? err.message : String(err);
+    console.error("[rec/calendar] Unhandled error:", err);
+    return NextResponse.json({ error: "Failed to load recruiting calendar", details }, { status: 500 });
   }
 }

@@ -3,6 +3,8 @@ import { db, isDbConfigured } from "@/lib/db";
 import { coaches } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const { id } = params;
 

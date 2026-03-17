@@ -6,6 +6,8 @@ import { generateThumbnail } from "@/lib/video/thumbnail";
 import { insertAsset, type VideoAssetRecord } from "@/lib/video/store";
 import type { ScannedVideoFileWithMeta } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+
 const THUMBNAIL_DIR = path.join(process.cwd(), "public", "thumbnails");
 
 export async function POST(req: NextRequest) {

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { triggerAgent } from "@/lib/agents/orchestrator";
 import { AgentId, AGENT_CONFIGS } from "@/lib/agents/types";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   // Verify cron secret
   const authHeader = request.headers.get("authorization");

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -31,8 +33,8 @@ export async function POST(request: Request) {
           })
           .returning();
         id = row.id;
-      } catch {
-        // DB insert failed
+      } catch (dbErr) {
+        console.error("[analytics/film] DB insert failed, using generated ID:", dbErr);
         id = randomUUID();
       }
     } else {
@@ -42,6 +44,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ id });
   } catch (error) {
-    return NextResponse.json({ error: String(error) }, { status: 500 });
+    const details = error instanceof Error ? error.message : String(error);
+    console.error("[analytics/film] Unhandled error:", error);
+    return NextResponse.json({ error: "Failed to record film view", details }, { status: 500 });
   }
 }

@@ -10,6 +10,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { seedAll, type SeedPhaseResult } from "@/lib/data-pipeline/seed-orchestrator";
 
+export const dynamic = "force-dynamic";
+
 // ---------- Helpers ----------
 
 function validateAuth(request: NextRequest): boolean {

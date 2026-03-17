@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -25,8 +27,10 @@ export async function POST(request: Request) {
       chunks_created: 0, // populated by Susan MCP
     });
   } catch (error) {
+    const details = error instanceof Error ? error.message : String(error);
+    console.error("[research/ingest] Ingestion failed:", error);
     return NextResponse.json(
-      { error: "Ingestion failed", details: String(error) },
+      { error: "Ingestion failed", details },
       { status: 500 }
     );
   }

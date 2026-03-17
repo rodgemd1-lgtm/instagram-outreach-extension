@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { triggerAgent } from "@/lib/agents/orchestrator";
 import { AgentId, AGENT_CONFIGS } from "@/lib/agents/types";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

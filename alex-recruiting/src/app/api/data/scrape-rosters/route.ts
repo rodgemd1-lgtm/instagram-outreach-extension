@@ -18,6 +18,8 @@ import { db, isDbConfigured } from "@/lib/db";
 import * as schema from "@/lib/db/schema";
 import { targetSchools, type TargetSchool } from "@/lib/data/target-schools";
 
+export const dynamic = "force-dynamic";
+
 interface EnrichedSchoolData {
   schoolId: string;
   name: string;

@@ -3,6 +3,8 @@ import path from "path";
 import { NextRequest, NextResponse } from "next/server";
 import { getPhotoById } from "@/lib/photos/store";
 
+export const dynamic = "force-dynamic";
+
 const ALLOWED_DIRS = [
   `${process.env.HOME}/Downloads/iCloud Photos from Michael Rodgers`,
   `${process.env.HOME}/Desktop/Images`,

@@ -7,6 +7,8 @@ import {
 } from "@/lib/integrations/youtube";
 import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 
+export const dynamic = "force-dynamic";
+
 // ── POST  /api/youtube/sync ────────────────────────────────────────────
 // Syncs a YouTube channel's stats + videos, optionally persisting to Supabase.
 

@@ -3,6 +3,8 @@ import { targetSchools, getSchoolById } from "@/lib/data/target-schools";
 import { db, isDbConfigured } from "@/lib/db";
 import { scrapeJobs } from "@/lib/db/schema";
 
+export const dynamic = "force-dynamic";
+
 // POST /api/coaches/research
 // Accepts { schoolId?: string } to research one or all target schools
 export async function POST(req: NextRequest) {

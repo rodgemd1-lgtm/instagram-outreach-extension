@@ -13,6 +13,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { expandedTargetSchools } from "@/lib/data/target-schools-expanded";
 
+export const dynamic = "force-dynamic";
+
 // ---------- Helpers ----------
 
 function validateAuth(request: NextRequest): boolean {

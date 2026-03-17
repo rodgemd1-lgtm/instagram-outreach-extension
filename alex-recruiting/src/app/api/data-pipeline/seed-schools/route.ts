@@ -14,6 +14,8 @@ import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { d2Schools } from "@/lib/data/d2-schools";
 import { d3Schools } from "@/lib/data/d3-schools";
 
+export const dynamic = "force-dynamic";
+
 // ---------- Helpers ----------
 
 function validateAuth(request: NextRequest): boolean {

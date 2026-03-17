@@ -5,6 +5,8 @@ import { db } from "@/lib/db";
 import { videoAssets } from "@/lib/db/schema";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();

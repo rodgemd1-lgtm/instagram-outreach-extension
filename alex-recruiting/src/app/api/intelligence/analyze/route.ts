@@ -9,6 +9,8 @@ import {
 import type { XTweet } from "@/lib/integrations/x-api";
 import type { HudlProfile } from "@/lib/types/recruiting-intelligence";
 
+export const dynamic = "force-dynamic";
+
 interface AnalyzeRequest {
   athleteId: string;
   athleteName: string;

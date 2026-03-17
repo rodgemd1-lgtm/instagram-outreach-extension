@@ -35,6 +35,8 @@ import {
 import { d2Schools, type D2School } from "@/lib/data/d2-schools";
 import { d3Schools, type D3School } from "@/lib/data/d3-schools";
 
+export const dynamic = "force-dynamic";
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type Division = "D1 FBS" | "D1 FCS" | "D2" | "D3";

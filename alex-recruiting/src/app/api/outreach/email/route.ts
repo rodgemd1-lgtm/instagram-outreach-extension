@@ -50,8 +50,9 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ emails, total: emails.length });
   } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    return NextResponse.json({ error: message }, { status: 500 });
+    const details = err instanceof Error ? err.message : String(err);
+    console.error("[outreach/email] GET failed:", err);
+    return NextResponse.json({ error: "Failed to retrieve email outreach data", details }, { status: 500 });
   }
 }
 
@@ -147,7 +148,8 @@ export async function POST(req: NextRequest) {
         );
     }
   } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    return NextResponse.json({ error: message }, { status: 500 });
+    const details = err instanceof Error ? err.message : String(err);
+    console.error("[outreach/email] POST failed:", err);
+    return NextResponse.json({ error: "Failed to process email outreach request", details }, { status: 500 });
   }
 }

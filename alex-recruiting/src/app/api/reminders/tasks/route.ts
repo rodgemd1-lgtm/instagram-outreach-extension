@@ -16,6 +16,8 @@ import {
   type ReminderTask,
 } from "@/lib/reminders/task-reminders";
 
+export const dynamic = "force-dynamic";
+
 function isAuthorized(req: NextRequest): boolean {
   const cronSecret = process.env.CRON_SECRET;
   if (!cronSecret) return true;

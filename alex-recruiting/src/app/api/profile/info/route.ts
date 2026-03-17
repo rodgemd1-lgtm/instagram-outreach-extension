@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { verifyHandle } from "@/lib/integrations/x-api";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const user = await verifyHandle("JacobRodge52987");
@@ -20,8 +22,8 @@ export async function GET() {
       public_metrics: user.public_metrics,
     });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Unknown error";
-    return NextResponse.json({ error: message }, { status: 500 });
+    const details = error instanceof Error ? error.message : "Unknown error";
+    console.error("[profile/info] Failed to fetch X profile:", error);
+    return NextResponse.json({ error: "Failed to fetch profile", details }, { status: 500 });
   }
 }

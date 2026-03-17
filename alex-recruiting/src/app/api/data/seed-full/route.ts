@@ -18,6 +18,8 @@ import * as schema from "@/lib/db/schema";
 import { targetSchools } from "@/lib/data/target-schools";
 import { sql } from "drizzle-orm";
 
+export const dynamic = "force-dynamic";
+
 // Attempt to import competitor profiles; fall back to built-in data on failure.
 let competitorProfiles: {
   name: string;

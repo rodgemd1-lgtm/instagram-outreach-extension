@@ -5,6 +5,8 @@ import {
   updateProfileBanner,
 } from "@/lib/integrations/x-api";
 
+export const dynamic = "force-dynamic";
+
 async function loadHeaderFromPublicDir(): Promise<string | null> {
   try {
     const filePath = path.join(process.cwd(), "public", "header-image.png");

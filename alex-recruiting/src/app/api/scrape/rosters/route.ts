@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { scrapeRoster } from "@/lib/integrations/firecrawl";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const { rosterUrl, schoolName } = await req.json();
@@ -29,8 +31,10 @@ export async function POST(req: NextRequest) {
       rawContentLength: result.content.length,
     });
   } catch (error) {
+    const details = error instanceof Error ? error.message : "Unknown error";
+    console.error("[scrape/rosters] Roster scrape failed:", error);
     return NextResponse.json(
-      { error: `Roster scrape failed: ${error instanceof Error ? error.message : "Unknown error"}` },
+      { error: "Roster scrape failed", details },
       { status: 500 }
     );
   }

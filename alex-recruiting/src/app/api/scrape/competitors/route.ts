@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { searchCompetitorRecruits } from "@/lib/integrations/exa";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     await req.json(); // consume body
@@ -17,8 +19,10 @@ export async function POST(req: NextRequest) {
       total: results.length,
     });
   } catch (error) {
+    const details = error instanceof Error ? error.message : "Unknown error";
+    console.error("[scrape/competitors] Competitor search failed:", error);
     return NextResponse.json(
-      { error: `Competitor search failed: ${error instanceof Error ? error.message : "Unknown error"}` },
+      { error: "Competitor search failed", details },
       { status: 500 }
     );
   }
