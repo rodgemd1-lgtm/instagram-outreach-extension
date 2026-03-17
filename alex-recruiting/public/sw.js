@@ -1,11 +1,13 @@
-const CACHE_NAME = 'alex-recruiting-v1';
+const CACHE_NAME = 'jacobs-command-v2';
 const STATIC_ASSETS = [
   '/',
   '/dashboard',
   '/manifest.json',
+  '/images/image-1773714384388-1.png',
+  '/images/image-1773714390904-1.png',
 ];
 
-// Install: pre-cache critical assets
+// Install: pre-cache critical assets + splash screen
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -28,7 +30,7 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-// Fetch: cache-first for static, network-first for API
+// Fetch: cache-first for static, stale-while-revalidate for API, network-first for HTML
 self.addEventListener('fetch', (e) => {
   const { request } = e;
   const url = new URL(request.url);
@@ -39,29 +41,34 @@ self.addEventListener('fetch', (e) => {
   // Skip Chrome extensions and other origins
   if (url.origin !== self.location.origin) return;
 
-  // API routes: network-first with offline fallback
+  // API routes: stale-while-revalidate (return cached immediately, update in background)
   if (url.pathname.startsWith('/api/')) {
     e.respondWith(
-      fetch(request)
-        .then((response) => {
-          // Clone and cache successful API responses
-          if (response.ok) {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, clone);
-            });
-          }
-          return response;
-        })
-        .catch(() => {
-          // Return cached version if offline
-          return caches.match(request).then((cached) => {
-            return cached || new Response(
-              JSON.stringify({ error: 'Offline', offline: true }),
-              { headers: { 'Content-Type': 'application/json' } }
-            );
+      caches.match(request).then((cached) => {
+        const fetchPromise = fetch(request)
+          .then((response) => {
+            if (response.ok) {
+              const clone = response.clone();
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(request, clone);
+              });
+            }
+            return response;
+          })
+          .catch(() => {
+            // If network fails and no cache, return offline JSON
+            if (!cached) {
+              return new Response(
+                JSON.stringify({ error: 'Offline', offline: true }),
+                { headers: { 'Content-Type': 'application/json' } }
+              );
+            }
+            return cached;
           });
-        })
+
+        // Return cached response immediately if available, otherwise wait for network
+        return cached || fetchPromise;
+      })
     );
     return;
   }
@@ -70,6 +77,7 @@ self.addEventListener('fetch', (e) => {
   if (
     url.pathname.startsWith('/logos/') ||
     url.pathname.startsWith('/icons/') ||
+    url.pathname.startsWith('/images/') ||
     url.pathname.endsWith('.svg') ||
     url.pathname.endsWith('.png') ||
     url.pathname.endsWith('.jpg') ||
@@ -90,7 +98,7 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // HTML pages: network-first with cache fallback
+  // HTML pages: network-first with offline fallback returning cached dashboard + X-Offline header
   e.respondWith(
     fetch(request)
       .then((response) => {
@@ -102,7 +110,19 @@ self.addEventListener('fetch', (e) => {
       })
       .catch(() => {
         return caches.match(request).then((cached) => {
-          return cached || caches.match('/dashboard');
+          if (cached) return cached;
+          // Offline: return cached dashboard with X-Offline header
+          return caches.match('/dashboard').then((dashboardResponse) => {
+            if (!dashboardResponse) return dashboardResponse;
+            // Clone and add offline header
+            const headers = new Headers(dashboardResponse.headers);
+            headers.set('X-Offline', 'true');
+            return new Response(dashboardResponse.body, {
+              status: dashboardResponse.status,
+              statusText: dashboardResponse.statusText,
+              headers,
+            });
+          });
         });
       })
   );
