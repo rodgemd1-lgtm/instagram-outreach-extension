@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
-import { targetSchools } from "@/lib/data/target-schools";
-import { getActiveCompetitors } from "@/lib/rec/knowledge/competitor-intel";
-import { xPlaybook } from "@/lib/rec/knowledge/x-playbook";
+import {
+  peerFollowTargets,
+  getTargetsForWeek,
+  getScheduledTargets,
+  followScheduleSummary,
+  type PeerFollowTarget,
+} from "@/lib/data/peer-follow-targets";
 import { isDbConfigured, db } from "@/lib/db";
 import { engagementActions } from "@/lib/db/schema";
 
@@ -9,16 +13,18 @@ import { engagementActions } from "@/lib/db/schema";
 // Types
 // ---------------------------------------------------------------------------
 
-interface DailyFollow {
-  day: number; // day number from start
-  date: string;
-  accounts: {
+interface WeeklyFollowBatch {
+  week: number;
+  startDate: string;
+  endDate: string;
+  targets: {
     handle: string;
     name: string;
-    category: "school" | "coach" | "peer_recruit" | "media";
-    schoolId?: string;
-    tier?: string;
+    category: string;
+    priority: number;
+    engagement: string;
   }[];
+  dailyBreakdown: { day: string; follows: number }[];
 }
 
 interface EngagementTask {
@@ -29,130 +35,69 @@ interface EngagementTask {
   notes: string;
 }
 
-interface TimelineEntry {
-  week: number;
-  phase: string;
-  actions: string[];
-}
-
 interface FollowPlan {
-  dailyFollows: DailyFollow[];
+  weeklyBatches: WeeklyFollowBatch[];
   engagementTasks: EngagementTask[];
-  timeline: TimelineEntry[];
   summary: {
-    totalAccounts: number;
-    schoolAccounts: number;
-    coachAccounts: number;
-    peerRecruitAccounts: number;
-    daysToComplete: number;
-    dailyFollowTarget: string;
+    totalTargets: number;
+    scheduledTargets: number;
+    followsPerWeek: string;
+    weeksInPlan: number;
+    categoryCounts: Record<string, number>;
+    phaseBreakdown: typeof followScheduleSummary.phases;
   };
   strategy: string[];
 }
 
 // ---------------------------------------------------------------------------
 // POST /api/outreach/follow-plan
-// Generates a systematic follow plan with daily targets and engagement tasks.
+// Generates a 26-week systematic follow plan with 7-8 follows per week.
 // ---------------------------------------------------------------------------
 
 export async function POST() {
-  const dailyFollows: DailyFollow[] = [];
-  const allAccounts: DailyFollow["accounts"][0][] = [];
+  const scheduled = getScheduledTargets();
+  const weeklyBatches: WeeklyFollowBatch[] = [];
 
-  // 1. Build account list from target schools (official + coaching staff)
-  for (const school of targetSchools) {
-    allAccounts.push({
-      handle: school.officialXHandle,
-      name: `${school.name} Football`,
-      category: "school",
-      schoolId: school.id,
-      tier: school.priorityTier,
-    });
+  // Build weekly batches for 26 weeks
+  const planStart = new Date();
+  const FOLLOWS_PER_WEEK = 8; // target 7-8 per week
 
-    // Add coaching staff placeholders per school
-    const coachRoles = [
-      "OL Coach",
-      "Recruiting Coordinator",
-      "Head Coach",
-    ];
-    for (const role of coachRoles) {
-      allAccounts.push({
-        handle: `${school.officialXHandle}_${role.replace(/\s/g, "").toLowerCase()}`,
-        name: `${role} - ${school.name}`,
-        category: "coach",
-        schoolId: school.id,
-        tier: school.priorityTier,
-      });
+  for (let week = 1; week <= 26; week++) {
+    const weekTargets = getTargetsForWeek(week);
+
+    // Limit to FOLLOWS_PER_WEEK per week; overflow gets pushed to later weeks
+    const batch = weekTargets.slice(0, FOLLOWS_PER_WEEK);
+
+    const weekStart = new Date(planStart.getTime() + (week - 1) * 7 * 86400000);
+    const weekEnd = new Date(weekStart.getTime() + 6 * 86400000);
+
+    // Distribute follows across the week (Mon-Sat, skip Sunday)
+    const dailyBreakdown: { day: string; follows: number }[] = [];
+    const daysInWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    let remaining = batch.length;
+    for (const day of daysInWeek) {
+      const today = Math.min(Math.ceil(remaining / (daysInWeek.length - dailyBreakdown.length)), 2);
+      dailyBreakdown.push({ day, follows: Math.min(today, remaining) });
+      remaining -= Math.min(today, remaining);
+      if (remaining <= 0) break;
     }
-  }
 
-  // 2. Add peer recruit follows from competitor intel
-  const activeCompetitors = getActiveCompetitors();
-  for (const comp of activeCompetitors) {
-    if (comp.xHandle) {
-      allAccounts.push({
-        handle: comp.xHandle,
-        name: `${comp.name} (${comp.position}, ${comp.school})`,
-        category: "peer_recruit",
-      });
-    }
-  }
-
-  // 3. Add recruiting media accounts
-  const mediaAccounts = [
-    { handle: "@Rivals", name: "Rivals" },
-    { handle: "@247Sports", name: "247Sports" },
-    { handle: "@On3Recruits", name: "On3 Recruits" },
-    { handle: "@WiscoFBRecruiting", name: "Wisconsin FB Recruiting" },
-    { handle: "@NCSASports", name: "NCSA Sports" },
-  ];
-  for (const media of mediaAccounts) {
-    allAccounts.push({
-      handle: media.handle,
-      name: media.name,
-      category: "media",
+    weeklyBatches.push({
+      week,
+      startDate: weekStart.toISOString().split("T")[0],
+      endDate: weekEnd.toISOString().split("T")[0],
+      targets: batch.map((t) => ({
+        handle: t.handle,
+        name: t.name,
+        category: t.category,
+        priority: t.follow_priority,
+        engagement: t.engagement_strategy,
+      })),
+      dailyBreakdown,
     });
   }
 
-  // 4. Sort: Tier 3 schools first (immediate DMs), then Tier 2, then Tier 1, then peers/media
-  const tierOrder: Record<string, number> = {
-    "Tier 3": 0,
-    "Tier 2": 1,
-    "Tier 1": 2,
-  };
-  const categoryOrder: Record<string, number> = {
-    school: 0,
-    coach: 1,
-    peer_recruit: 2,
-    media: 3,
-  };
-
-  allAccounts.sort((a, b) => {
-    const tierA = tierOrder[a.tier ?? ""] ?? 3;
-    const tierB = tierOrder[b.tier ?? ""] ?? 3;
-    if (tierA !== tierB) return tierA - tierB;
-    return (categoryOrder[a.category] ?? 9) - (categoryOrder[b.category] ?? 9);
-  });
-
-  // 5. Distribute into daily follow targets (3-5 per day)
-  const DAILY_TARGET = 4;
-  const startDate = new Date();
-  let dayIndex = 0;
-
-  for (let i = 0; i < allAccounts.length; i += DAILY_TARGET) {
-    const batch = allAccounts.slice(i, i + DAILY_TARGET);
-    const date = new Date(startDate.getTime() + dayIndex * 86400000);
-
-    dailyFollows.push({
-      day: dayIndex + 1,
-      date: date.toISOString().split("T")[0],
-      accounts: batch,
-    });
-
-    dayIndex++;
-  }
-
-  // 6. Build engagement tasks
+  // Engagement tasks — daily cadence alongside follows
   const engagementTasks: EngagementTask[] = [
     {
       type: "like",
@@ -160,7 +105,7 @@ export async function POST() {
       targetName: "Target school coaching staff posts",
       frequency: "5 per day",
       notes:
-        "Like coach posts about recruiting, team wins, and OL content. Each like is a recruiting signal under the Click Don't Type rule.",
+        "Like coach posts about recruiting, team wins, and OL content. Each like is a recruiting signal under the Click Dont Type rule.",
     },
     {
       type: "reply",
@@ -168,7 +113,7 @@ export async function POST() {
       targetName: "Target school coach tweets about OL or recruiting",
       frequency: "2 per day",
       notes:
-        "Reply with thoughtful, brief comments. Example: 'Great win Coach! The OL play was impressive.' Keep it professional.",
+        "Reply with thoughtful, brief comments. Keep it professional and genuine.",
     },
     {
       type: "retweet",
@@ -188,64 +133,9 @@ export async function POST() {
     },
   ];
 
-  // 7. Build weekly timeline
-  const timeline: TimelineEntry[] = [
-    {
-      week: 1,
-      phase: "Foundation Follows",
-      actions: [
-        "Follow all 17 target school official accounts",
-        "Follow Tier 3 (D2) coaching staff handles",
-        "Like 5 coach posts per day from Tier 3 schools",
-        "Send first DMs to Tier 3 coaches (they expect freshman outreach)",
-      ],
-    },
-    {
-      week: 2,
-      phase: "Tier 2 FCS Follows",
-      actions: [
-        "Follow Tier 2 FCS school coaching staff (MVFC programs)",
-        "Engage with SDSU, NDSU, Illinois State, Youngstown State coach content",
-        "Reply to 2 coach posts per day",
-        "Retweet 1 program post per day",
-      ],
-    },
-    {
-      week: 3,
-      phase: "Tier 2 MAC Follows",
-      actions: [
-        "Follow Tier 2 MAC school coaching staff",
-        "Engage with NIU, WMU, Ball State, CMU coach content",
-        "Continue daily engagement cadence (5 likes, 2 replies, 1 retweet)",
-        "Follow peer Class of 2029 OL recruits",
-      ],
-    },
-    {
-      week: 4,
-      phase: "Tier 1 Follows + Media",
-      actions: [
-        "Follow Tier 1 school coaching staff (Wisconsin, Iowa, Northwestern, Iowa State)",
-        "Follow recruiting media accounts (Rivals, 247, On3)",
-        "Monitor follow-backs from coaches (strong signal)",
-        "Begin planning DM sequences for Tier 2 coaches",
-      ],
-    },
-    {
-      week: 5,
-      phase: "Sustained Engagement",
-      actions: [
-        "Maintain daily engagement: 5 likes, 2 replies, 1 retweet",
-        "Track which coaches have followed back",
-        "Send trigger DMs to coaches who followed back",
-        "Continue posting original content (3-5x/week minimum)",
-      ],
-    },
-  ];
-
-  // 8. Try to store plan in DB
+  // Store plan actions in DB if configured
   if (isDbConfigured()) {
     try {
-      // Store a sample of engagement actions
       const sampleActions = engagementTasks.map((task) => ({
         targetHandle: task.target,
         targetCategory: task.type,
@@ -264,21 +154,33 @@ export async function POST() {
     }
   }
 
+  // Category counts
+  const categoryCounts: Record<string, number> = {};
+  for (const t of peerFollowTargets) {
+    categoryCounts[t.category] = (categoryCounts[t.category] ?? 0) + 1;
+  }
+
   const plan: FollowPlan = {
-    dailyFollows,
+    weeklyBatches,
     engagementTasks,
-    timeline,
     summary: {
-      totalAccounts: allAccounts.length,
-      schoolAccounts: allAccounts.filter((a) => a.category === "school").length,
-      coachAccounts: allAccounts.filter((a) => a.category === "coach").length,
-      peerRecruitAccounts: allAccounts.filter(
-        (a) => a.category === "peer_recruit"
-      ).length,
-      daysToComplete: dailyFollows.length,
-      dailyFollowTarget: `${DAILY_TARGET} accounts/day`,
+      totalTargets: peerFollowTargets.length,
+      scheduledTargets: scheduled.length,
+      followsPerWeek: "7-8",
+      weeksInPlan: 26,
+      categoryCounts,
+      phaseBreakdown: followScheduleSummary.phases,
     },
-    strategy: xPlaybook.followStrategy.orderOfOperations,
+    strategy: [
+      "Follow D2/D3 coaches first — they have the highest follow-back and DM-open rates",
+      "FCS coaches next — MVFC and Pioneer programs actively recruit Wisconsin OL",
+      "FBS follows are aspirational signals — coaches see the follow even if they dont follow back",
+      "Media follows build visibility in recruiting circles when you engage with their content",
+      "HS community follows show youre embedded in Wisconsin football — coaches check this",
+      "Strength/training follows signal dedication to development — coaches value this",
+      "7-8 follows per week avoids spam flags while building steady network growth",
+      "Pair each follow with engagement (likes, replies) within 24 hours for maximum signal",
+    ],
   };
 
   return NextResponse.json({ success: true, plan });

@@ -114,34 +114,34 @@ describe("POST /api/outreach/follow-plan", () => {
     expect(data).toHaveProperty("plan");
   });
 
-  it("plan has dailyFollows, engagementTasks, and timeline", async () => {
+  it("plan has weeklyBatches, engagementTasks, and strategy", async () => {
     const { POST } = await import("@/app/api/outreach/follow-plan/route");
     const response = await POST();
     const data = await response.json();
 
-    expect(data.plan).toHaveProperty("dailyFollows");
+    expect(data.plan).toHaveProperty("weeklyBatches");
     expect(data.plan).toHaveProperty("engagementTasks");
-    expect(data.plan).toHaveProperty("timeline");
+    expect(data.plan).toHaveProperty("strategy");
 
-    expect(Array.isArray(data.plan.dailyFollows)).toBe(true);
+    expect(Array.isArray(data.plan.weeklyBatches)).toBe(true);
     expect(Array.isArray(data.plan.engagementTasks)).toBe(true);
-    expect(Array.isArray(data.plan.timeline)).toBe(true);
+    expect(Array.isArray(data.plan.strategy)).toBe(true);
   });
 
-  it("dailyFollows entries have day, date, and accounts", async () => {
+  it("weeklyBatches entries have week, startDate, and targets", async () => {
     const { POST } = await import("@/app/api/outreach/follow-plan/route");
     const response = await POST();
     const data = await response.json();
 
-    expect(data.plan.dailyFollows.length).toBeGreaterThan(0);
+    expect(data.plan.weeklyBatches.length).toBe(26);
 
-    const firstDay = data.plan.dailyFollows[0];
-    expect(firstDay).toHaveProperty("day");
-    expect(firstDay).toHaveProperty("date");
-    expect(firstDay).toHaveProperty("accounts");
-    expect(typeof firstDay.day).toBe("number");
-    expect(typeof firstDay.date).toBe("string");
-    expect(Array.isArray(firstDay.accounts)).toBe(true);
+    const firstWeek = data.plan.weeklyBatches[0];
+    expect(firstWeek).toHaveProperty("week");
+    expect(firstWeek).toHaveProperty("startDate");
+    expect(firstWeek).toHaveProperty("targets");
+    expect(typeof firstWeek.week).toBe("number");
+    expect(typeof firstWeek.startDate).toBe("string");
+    expect(Array.isArray(firstWeek.targets)).toBe(true);
   });
 
   it("engagementTasks have correct structure", async () => {
@@ -159,37 +159,35 @@ describe("POST /api/outreach/follow-plan", () => {
     }
   });
 
-  it("plan includes a summary with account counts", async () => {
+  it("plan includes a summary with category counts", async () => {
     const { POST } = await import("@/app/api/outreach/follow-plan/route");
     const response = await POST();
     const data = await response.json();
 
     expect(data.plan).toHaveProperty("summary");
-    expect(data.plan.summary).toHaveProperty("totalAccounts");
-    expect(data.plan.summary).toHaveProperty("schoolAccounts");
-    expect(data.plan.summary).toHaveProperty("coachAccounts");
-    expect(data.plan.summary).toHaveProperty("peerRecruitAccounts");
-    expect(data.plan.summary).toHaveProperty("daysToComplete");
-    expect(data.plan.summary).toHaveProperty("dailyFollowTarget");
+    expect(data.plan.summary).toHaveProperty("totalTargets");
+    expect(data.plan.summary).toHaveProperty("scheduledTargets");
+    expect(data.plan.summary).toHaveProperty("followsPerWeek");
+    expect(data.plan.summary).toHaveProperty("weeksInPlan");
+    expect(data.plan.summary).toHaveProperty("categoryCounts");
 
-    expect(data.plan.summary.totalAccounts).toBeGreaterThan(0);
-    expect(data.plan.summary.schoolAccounts).toBe(17); // one per target school
+    expect(data.plan.summary.totalTargets).toBeGreaterThan(100);
+    expect(data.plan.summary.weeksInPlan).toBe(26);
   });
 
-  it("timeline includes weekly phases", async () => {
+  it("phase breakdown has 7 phases covering 26 weeks", async () => {
     const { POST } = await import("@/app/api/outreach/follow-plan/route");
     const response = await POST();
     const data = await response.json();
 
-    expect(data.plan.timeline.length).toBeGreaterThanOrEqual(4);
+    expect(data.plan.summary.phaseBreakdown.length).toBe(7);
 
-    for (const entry of data.plan.timeline) {
-      expect(entry).toHaveProperty("week");
-      expect(entry).toHaveProperty("phase");
-      expect(entry).toHaveProperty("actions");
-      expect(typeof entry.week).toBe("number");
-      expect(typeof entry.phase).toBe("string");
-      expect(Array.isArray(entry.actions)).toBe(true);
+    for (const phase of data.plan.summary.phaseBreakdown) {
+      expect(phase).toHaveProperty("weeks");
+      expect(phase).toHaveProperty("focus");
+      expect(phase).toHaveProperty("targetCount");
+      expect(typeof phase.weeks).toBe("string");
+      expect(typeof phase.focus).toBe("string");
     }
   });
 });

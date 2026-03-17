@@ -25,8 +25,8 @@ describe('all pages have backing data', () => {
   it('outreach page: has outreach actions', () => {
     expect(outreachSchedule60d.length).toBeGreaterThan(0);
   });
-  it('connections page: 60 peer targets', () => {
-    expect(peerFollowTargets.length).toBe(60);
+  it('connections page: 200+ peer targets', () => {
+    expect(peerFollowTargets.length).toBeGreaterThanOrEqual(200);
   });
   it('calendar page: 30 days of tasks', () => {
     const uniqueDates = new Set(taskSchedule30d.map(t => t.date));

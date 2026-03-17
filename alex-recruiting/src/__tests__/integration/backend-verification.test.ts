@@ -83,7 +83,7 @@ describe("Outreach Pipeline APIs", () => {
     expect(res.status).toBeLessThan(500);
     const data = await res.json();
     expect(data.success).toBe(true);
-    expect(data.plan).toHaveProperty("dailyFollows");
+    expect(data.plan).toHaveProperty("weeklyBatches");
     expect(data.plan).toHaveProperty("engagementTasks");
   });
 
