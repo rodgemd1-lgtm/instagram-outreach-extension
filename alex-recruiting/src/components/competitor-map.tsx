@@ -43,9 +43,9 @@ export function CompetitorMap() {
         if (dashRes.ok) {
           const data = await dashRes.json();
           setJacobStats({
-            followers: data.followers ?? 0,
-            postsPerWeek: data.postsPerWeek ?? 0,
-            engagementRate: data.engagementRate ?? 0,
+            followers: data.followers?.count ?? 0,
+            postsPerWeek: data.posts?.thisWeek ?? 0,
+            engagementRate: data.engagement?.rate ?? 0,
           });
         }
       } catch {
