@@ -121,7 +121,7 @@ export function createPostRecord(draft: PostDraft, scheduledFor: string): Omit<P
     mediaUrl: null,
     scheduledFor,
     bestTime: draft.bestTime,
-    status: "draft",
+    status: "pending_panel",
     xPostId: null,
     impressions: 0,
     engagements: 0,

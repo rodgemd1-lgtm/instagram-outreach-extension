@@ -19,6 +19,7 @@ export async function seedAll(baseUrl: string, cronSecret: string): Promise<Seed
     { name: 'coaches', endpoint: '/api/data-pipeline/seed-coaches-expanded' },
     { name: 'intelligence', endpoint: '/api/data-pipeline/seed-intelligence' },
     { name: 'content', endpoint: '/api/data-pipeline/seed-content' },
+    { name: 'panel', endpoint: '/api/data-pipeline/seed-panel' },
     { name: 'outreach', endpoint: '/api/data-pipeline/seed-outreach' },
     { name: 'peers', endpoint: '/api/data-pipeline/seed-peers' },
     { name: 'tasks', endpoint: '/api/data-pipeline/seed-tasks' },

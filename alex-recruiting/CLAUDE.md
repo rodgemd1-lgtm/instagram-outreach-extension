@@ -140,6 +140,30 @@ empty state with a clear CTA. Never use placeholder values that could be mistake
 for real data. Configuration data (school targets, NCAA calendar, team roster,
 pillar targets) is acceptable as these represent real strategic decisions, not fake metrics.
 
+## Coach Panel Doctrine
+
+ALL content published on Jacob's behalf MUST be vetted by the Coach Panel before posting.
+The Coach Panel is a group of college coaches (stored in `panel_coaches` table) who review
+and help shape content to ensure it resonates with the coaching community.
+
+**Content Pipeline:**
+1. Trey (Content Strategist) drafts content using post formulas and psychology mechanisms
+2. Draft is submitted to Coach Panel for review via `panel_surveys` table
+3. Panel coaches provide feedback: would they recruit based on this content? What convinced them? What almost made them leave?
+4. Content is revised based on panel feedback
+5. Only panel-approved content moves to `approved` status and gets scheduled
+
+**Coach Panel Rules:**
+- No content reaches `approved` status without panel review
+- Panel feedback informs future content strategy (what coaches actually want to see)
+- Minimum 2 panel coach reviews required before approval
+- Panel coaches are real college coaches from target schools across divisions
+- Survey responses feed back into Trey's content formulas and Sophie's analytics
+
+**Database Tables:**
+- `panel_coaches` — Panel member profiles (name, school, division, position coached, status)
+- `panel_surveys` — Individual reviews with recruiting signals and feedback
+
 ## School Branding
 
 School logos stored in `public/logos/{school-id}.svg`. School colors and branding
