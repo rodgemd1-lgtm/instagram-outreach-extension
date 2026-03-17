@@ -32,6 +32,8 @@ import { db, isDbConfigured } from "@/lib/db";
 import * as schema from "@/lib/db/schema";
 import { eq, inArray, or, asc, sql } from "drizzle-orm";
 
+export const dynamic = "force-dynamic";
+
 // ---------------------------------------------------------------------------
 // GET — Retrieve content queue
 // ---------------------------------------------------------------------------

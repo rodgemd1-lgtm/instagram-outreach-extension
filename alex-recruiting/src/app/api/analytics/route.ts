@@ -3,6 +3,10 @@ import type { AnalyticsSnapshot } from "@/lib/types";
 import { getDashboardSnapshot } from "@/lib/dashboard/live-data";
 import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 
+// Force dynamic rendering — never cache this route at build time
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 interface PostRow {
   engagement_rate: number | null;
 }

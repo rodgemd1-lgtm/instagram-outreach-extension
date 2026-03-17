@@ -7,6 +7,8 @@ import {
 } from "@/lib/supabase/admin";
 import type { Coach } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+
 // ---------------------------------------------------------------------------
 // In-memory fallback (used when Supabase env vars are missing)
 // ---------------------------------------------------------------------------

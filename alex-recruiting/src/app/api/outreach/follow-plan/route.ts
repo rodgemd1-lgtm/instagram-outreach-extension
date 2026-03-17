@@ -9,6 +9,8 @@ import {
 import { isDbConfigured, db } from "@/lib/db";
 import { engagementActions } from "@/lib/db/schema";
 
+export const dynamic = "force-dynamic";
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------

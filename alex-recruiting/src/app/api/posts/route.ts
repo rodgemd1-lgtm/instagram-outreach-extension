@@ -3,6 +3,8 @@ import type { Post, ContentPillar } from "@/lib/types";
 import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { getAllPosts, insertPost } from "@/lib/posts/store";
 
+export const dynamic = "force-dynamic";
+
 // ---------------------------------------------------------------------------
 // Helpers — map Supabase row to Post type
 // ---------------------------------------------------------------------------

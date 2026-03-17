@@ -3,6 +3,8 @@ import type { DMMessage } from "@/lib/types";
 import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { sendDM, verifyHandle } from "@/lib/integrations/x-api";
 
+export const dynamic = "force-dynamic";
+
 const dmStore: DMMessage[] = [];
 
 interface DMMessageRow {

@@ -4,6 +4,10 @@ import { coaches } from "@/lib/db/schema";
 import { targetSchools } from "@/lib/data/target-schools";
 import { ncaaRules } from "@/lib/rec/knowledge/ncaa-rules";
 import { eq } from "drizzle-orm";
+import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 // ---------------------------------------------------------------------------
 // Types
@@ -219,7 +223,75 @@ export async function GET() {
 
       return NextResponse.json(plan);
     } catch (error) {
-      console.error("[GET /api/outreach/plan] DB error:", error);
+      console.error("[GET /api/outreach/plan] Drizzle error:", error);
+      // Fall through to Supabase fallback
+    }
+  }
+
+  // ── Supabase fallback (if Drizzle fails but Supabase is configured) ──
+  if (isSupabaseConfigured()) {
+    try {
+      const supabase = createAdminClient();
+      const { data, error } = await supabase.from("coaches").select("*");
+
+      if (!error && data && data.length > 0) {
+        const plan = emptyPlan();
+        let dmsDrafted = 0;
+        let dmsSent = 0;
+        let responses = 0;
+        let followed = 0;
+
+        for (const c of data) {
+          const followStatus = c.follow_status ?? "not_followed";
+          const dmStatus = c.dm_status ?? "not_sent";
+          const priorityTier = c.priority_tier ?? "Tier 1";
+          const division = c.division ?? "";
+          const stage = mapFollowStatusToStage(followStatus, dmStatus);
+
+          if (dmStatus === "drafted") dmsDrafted++;
+          if (dmStatus === "sent") dmsSent++;
+          if (dmStatus === "responded") responses++;
+          if (followStatus === "followed" || followStatus === "followed_back") followed++;
+
+          const school = targetSchools.find((s) => s.id === c.school_id);
+
+          const outreachCoach: OutreachCoach = {
+            id: c.id,
+            name: c.name ?? "",
+            schoolId: c.school_id ?? "",
+            schoolName: c.school_name ?? "",
+            division,
+            conference: c.conference ?? "",
+            priorityTier,
+            xHandle: c.x_handle ?? "",
+            stage,
+            nextAction: getNextAction(stage, priorityTier),
+            nextActionDate: getNextActionDate(stage, priorityTier),
+            priorityScore: getPriorityScore(priorityTier, division),
+            lastActionDate: c.last_engaged
+              ? new Date(c.last_engaged).toISOString().split("T")[0]
+              : null,
+            dmTimeline: school?.dmTimeline ?? "",
+          };
+
+          plan.stages[stage].push(outreachCoach);
+        }
+
+        plan.stats = {
+          total: data.length,
+          dmsDrafted,
+          dmsSent,
+          responses,
+          followRate:
+            data.length > 0
+              ? `${Math.round((followed / data.length) * 100)}%`
+              : "0%",
+        };
+
+        return NextResponse.json(plan);
+      }
+    } catch (supaError) {
+      console.error("[GET /api/outreach/plan] Supabase fallback error:", supaError);
     }
   }
 
