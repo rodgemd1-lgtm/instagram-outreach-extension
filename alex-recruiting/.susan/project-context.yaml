@@ -1,0 +1,24 @@
+company_id: alex-recruiting
+project_label: Alex Recruiting
+central_backend: /Users/mikerodgers/Startup-Intelligence-OS/susan-team-architect/backend
+mcp_server_id: susan-intelligence
+default_commands:
+- susan-query
+- susan-fast
+- susan-think
+- susan-design
+- susan-foundry
+- susan-plan
+- susan-status
+- susan-team
+- susan-assets
+- susan-refresh
+- susan-route
+- susan-bootstrap
+core_agents:
+- susan
+- recruiting-strategy-studio
+- highlight-reel-studio
+- coach-outreach-studio
+- x-growth-studio
+- recruiting-dashboard-studio

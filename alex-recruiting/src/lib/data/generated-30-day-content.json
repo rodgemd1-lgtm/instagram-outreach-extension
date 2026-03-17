@@ -1,0 +1,614 @@
+{
+  "meta": {
+    "generatedAt": "2026-03-15T00:00:00Z",
+    "startDate": "2026-03-15",
+    "endDate": "2026-04-13",
+    "totalDays": 30,
+    "totalPosts": 30,
+    "athlete": {
+      "name": "Jacob Rodgers",
+      "handle": "@JacobRodge52987",
+      "position": "OL/DL",
+      "classYear": 2029,
+      "school": "Pewaukee HS",
+      "state": "Wisconsin",
+      "height": "6'4\"",
+      "weight": "285 lbs"
+    },
+    "pillarDistribution": {
+      "performance": 12,
+      "work_ethic": 11,
+      "character": 7
+    },
+    "formulaDistribution": {
+      "spotlight_shift": 8,
+      "curious_student": 6,
+      "honest_progress": 5,
+      "ambient_update": 6,
+      "narrative_loop": 5
+    }
+  },
+  "calendar": [
+    {
+      "day": 1,
+      "date": "2026-03-15",
+      "dayOfWeek": "Sunday",
+      "post": {
+        "formula": "curious_student",
+        "pillar": "performance",
+        "mechanism": "curiosity_gap",
+        "content": "Watching Big Ten OL tape today. Noticed something — the best pass protectors don't lunge at the rusher. They wait.\n\nPatient hands. Let the DE come to them. Then strike.\n\nIs that something you can teach a young lineman, or does it come from experience? Genuinely curious.\n\n#OffensiveLine #BigTen #ClassOf2029",
+        "hashtags": ["#OffensiveLine", "#BigTen", "#ClassOf2029"],
+        "bestTime": "7:00 PM CST",
+        "mediaType": "text_only",
+        "mediaNote": "Text only — the question format drives coach engagement. Big Ten tag reaches the right eyes."
+      },
+      "recruitingAction": {
+        "type": "follow_campaign",
+        "description": "Follow Tier 2 school coaching staff — FCS and MAC programs. These coaches are the most active on X and most likely to engage.",
+        "targets": ["Northern Iowa", "Illinois State", "South Dakota State", "Western Michigan"]
+      }
+    },
+    {
+      "day": 2,
+      "date": "2026-03-16",
+      "dayOfWeek": "Monday",
+      "post": {
+        "formula": "spotlight_shift",
+        "pillar": "work_ethic",
+        "mechanism": "reciprocity",
+        "content": "Monday morning speed work with the line group.\n\nOur coach brought in a new lateral agility drill today — mirror drill with a partner. My training partner Noah pushed the pace hard. He's gotten way faster this offseason.\n\nCompetition in practice makes everyone better.",
+        "hashtags": ["#2029Recruit", "#OL", "#PutInTheWork", "#WisconsinFootball"],
+        "bestTime": "6:30 AM CST",
+        "mediaType": "video_clip",
+        "mediaNote": "15-20 second agility drill clip. Show footwork. Lateral movement clips stand out for OL recruits."
+      },
+      "recruitingAction": {
+        "type": "coach_engage",
+        "description": "Engage with 5 Tier 2 coach posts. Like + substantive reply. Goal: get on their radar before any DM outreach.",
+        "targets": ["Northern Iowa OL", "Western Michigan OL", "Illinois State OL", "South Dakota State OL"]
+      }
+    },
+    {
+      "day": 3,
+      "date": "2026-03-17",
+      "dayOfWeek": "Tuesday",
+      "post": {
+        "formula": "narrative_loop",
+        "pillar": "performance",
+        "mechanism": "commitment_consistency",
+        "content": "Spring ball starts soon. Setting my goals now.\n\n1. Zero sacks allowed in 7-on-7\n2. Win the combo block drill every day\n3. Get one compliment from a defensive lineman about my technique\n\nNumber 3 sounds weird but think about it — when the guy across from you acknowledges your improvement, that's real.\n\nUpdates coming.",
+        "hashtags": ["#OffensiveLine", "#2029Recruit"],
+        "bestTime": "4:00 PM CST",
+        "mediaType": "text_only",
+        "mediaNote": "Text only. Opens a story arc followers will track across future posts."
+      },
+      "recruitingAction": {
+        "type": "film_share",
+        "description": "Upload 3 new training clips to Hudl. Focus on pass protection reps — anchor against bull rush, kick slide technique."
+      }
+    },
+    {
+      "day": 4,
+      "date": "2026-03-18",
+      "dayOfWeek": "Wednesday",
+      "post": {
+        "formula": "spotlight_shift",
+        "pillar": "character",
+        "mechanism": "reciprocity",
+        "content": "Parent-teacher conferences today. 3.25 GPA and climbing.\n\nMy English teacher Mrs. Rodriguez told my parents I'm one of the most improved writers in her class this year.\n\nDidn't expect that to mean as much as it did. Turns out the film study habit of writing down what I see is making me a better writer too.\n\nRecruiting is more than football.",
+        "hashtags": ["#StudentAthlete", "#2029Recruit", "#OL"],
+        "bestTime": "8:00 PM CST",
+        "mediaType": "text_only",
+        "mediaNote": "Text only. Academic character post. Coaches notice GPA mentions — it signals coachability and eligibility."
+      },
+      "recruitingAction": {
+        "type": "ncsa",
+        "description": "Update NCSA academic section with current GPA. Check for any new coach profile views. Log all new activity to warm list."
+      }
+    },
+    {
+      "day": 5,
+      "date": "2026-03-19",
+      "dayOfWeek": "Thursday",
+      "post": {
+        "formula": "curious_student",
+        "pillar": "performance",
+        "mechanism": "autonomy_bias",
+        "content": "Film question for the coaches and OL guys.\n\nOn a reach block to the backside, should the lineman's first step be a lateral bucket step or a 45-degree angle step?\n\nI've been taught bucket step to gain width, but I keep seeing college guys take a sharper angle and get there faster.\n\nIs it a body type thing? A scheme thing? Both?\n\n#OffensiveLine #OLTechnique #FilmStudy",
+        "hashtags": ["#OffensiveLine", "#OLTechnique", "#FilmStudy"],
+        "bestTime": "4:00 PM CST",
+        "mediaType": "video_clip",
+        "mediaNote": "Attach a reach block drill clip. The technique question paired with film is irresistible to OL coaches."
+      },
+      "recruitingAction": {
+        "type": "dm_draft",
+        "description": "Draft personalized DMs for 3 Tier 3 coaches who followed back. Reference something specific from their recent tweets.",
+        "targets": ["Tier 3 coaches who followed back"]
+      }
+    },
+    {
+      "day": 6,
+      "date": "2026-03-20",
+      "dayOfWeek": "Friday",
+      "post": {
+        "formula": "honest_progress",
+        "pillar": "work_ethic",
+        "mechanism": "commitment_consistency",
+        "content": "End of week honest check-in.\n\nThis week I:\n- Hit a new squat PR (working toward 375)\n- Watched 4 hours of college OL film\n- Got a reply from a coach on my technique question\n- Read 2 chapters of \"Relentless\"\n\nWhat I need to improve:\n- Sleep. I'm averaging 6 hours. Need 8.\n- Film study consistency — some days I skip when I'm tired\n- Being more patient with the process\n\nGrateful for this journey.",
+        "hashtags": ["#2029Recruit", "#OL", "#PutInTheWork"],
+        "bestTime": "6:30 AM CST",
+        "mediaType": "micro_clip",
+        "mediaNote": "Short training montage micro clip (3-5 sec). End-of-week energy."
+      },
+      "recruitingAction": {
+        "type": "profile_update",
+        "description": "Weekly profile audit: check bio, pinned post, header image, Hudl link. Update any metrics that changed."
+      }
+    },
+    {
+      "day": 7,
+      "date": "2026-03-21",
+      "dayOfWeek": "Saturday",
+      "post": {
+        "formula": "ambient_update",
+        "pillar": "work_ethic",
+        "mechanism": "scarcity",
+        "content": "Saturday morning. Film session with our line group.\n\nWatching last year's playoff tape together. Our center Ryan called out a blitz pickup adjustment none of us noticed live.\n\nFilm reveals everything.",
+        "hashtags": [],
+        "bestTime": "10:00 AM CST",
+        "mediaType": "micro_clip",
+        "mediaNote": "2-3 second micro clip of film on an iPad screen. Low-key, authentic."
+      },
+      "recruitingAction": {
+        "type": "ncsa",
+        "description": "Update NCSA profile with latest measurables and winter training stats. Add new film clips."
+      }
+    },
+    {
+      "day": 8,
+      "date": "2026-03-22",
+      "dayOfWeek": "Sunday",
+      "post": {
+        "formula": "ambient_update",
+        "pillar": "work_ethic",
+        "mechanism": "narrative_transportation",
+        "content": "Sunday film study. Just me, the iPad, and last week's practice tape.\n\nPausing every other play. Writing down what I see before the snap vs what actually happened.\n\nGetting better at reading defenses. Slowly.",
+        "hashtags": [],
+        "bestTime": "7:00 PM CST",
+        "mediaType": "text_only",
+        "mediaNote": "No media. Coaches plan their week Sunday night — a thoughtful post lands well."
+      },
+      "recruitingAction": {
+        "type": "coach_engage",
+        "description": "Like and reply to 5 target school coaches' weekend posts. Substantive replies only — reference their content specifically.",
+        "targets": ["Wisconsin OL staff", "Iowa OL staff", "Minnesota OL staff"]
+      }
+    },
+    {
+      "day": 9,
+      "date": "2026-03-23",
+      "dayOfWeek": "Monday",
+      "post": {
+        "formula": "spotlight_shift",
+        "pillar": "work_ethic",
+        "mechanism": "reciprocity",
+        "content": "Back to work. Monday morning sled pushes to start the week.\n\nOur strength coach Coach Davis upped the weight by 45 lbs this week. He says if we're not uncomfortable, we're not growing.\n\nHe's right. The first two reps felt impossible. The last two felt earned.",
+        "hashtags": ["#2029Recruit", "#OL", "#PutInTheWork", "#FootballTraining"],
+        "bestTime": "6:30 AM CST",
+        "mediaType": "video_clip",
+        "mediaNote": "15 second sled push clip. Early morning workout footage shows work ethic."
+      },
+      "recruitingAction": {
+        "type": "follow_campaign",
+        "description": "Follow remaining Tier 3 school coaching staff. D2/GLIAC/NSIC coaches follow back at highest rate.",
+        "targets": ["Michigan Tech", "Northern Michigan", "Ferris State", "UW-Oshkosh"]
+      }
+    },
+    {
+      "day": 10,
+      "date": "2026-03-24",
+      "dayOfWeek": "Tuesday",
+      "post": {
+        "formula": "spotlight_shift",
+        "pillar": "performance",
+        "mechanism": "identity_resonance",
+        "content": "Combo block drill from today's session. My job is to get movement on the down lineman, then release to the linebacker.\n\nOur DT made it tough — he's gotten so much stronger this offseason. Iron sharpens iron.\n\nCoach Henderson tells us every rep matters, even in March.",
+        "hashtags": ["#OffensiveLine", "#2029Recruit", "#FootballRecruiting"],
+        "bestTime": "4:00 PM CST",
+        "mediaType": "video_clip",
+        "mediaNote": "20-30 second combo block drill clip. Label the play. Coaches watch Tuesday film."
+      },
+      "recruitingAction": {
+        "type": "film_share",
+        "description": "Upload 3 new training clips to Hudl profile. Tag with technique labels: combo blocks, pass protection sets, pull blocks."
+      }
+    },
+    {
+      "day": 11,
+      "date": "2026-03-25",
+      "dayOfWeek": "Wednesday",
+      "post": {
+        "formula": "narrative_loop",
+        "pillar": "character",
+        "mechanism": "curiosity_gap",
+        "content": "Started a challenge with our O-line group — 30 days of reading at least 20 minutes before bed. No phones.\n\nDay 10 update: 4 of the 5 guys are still going. Our guard Tyler is reading \"Atomic Habits\" and keeps quoting it in the huddle.\n\nI'll report back at day 30.",
+        "hashtags": ["#StudentAthlete", "#2029Recruit"],
+        "bestTime": "8:00 PM CST",
+        "mediaType": "text_only",
+        "mediaNote": "Text only. Character posts don't need media — the vulnerability IS the content."
+      },
+      "recruitingAction": {
+        "type": "ncsa",
+        "description": "Check NCSA activity feed — log which coaches viewed Jacob's profile this week. Add new viewers to warm list."
+      }
+    },
+    {
+      "day": 12,
+      "date": "2026-03-26",
+      "dayOfWeek": "Thursday",
+      "post": {
+        "formula": "spotlight_shift",
+        "pillar": "performance",
+        "mechanism": "reciprocity",
+        "content": "Thursday film breakdown. Watched our playoff game second half.\n\nPlay that stood out: 3rd and short, our guard pulled left and kicked out the end while I sealed the backside. The timing was the best it's been all year.\n\nThat's what reps in practice build. Our whole line group deserves credit for that drive.\n\n#OffensiveLine #FilmStudy",
+        "hashtags": ["#OffensiveLine", "#FilmStudy", "#2029Recruit"],
+        "bestTime": "4:00 PM CST",
+        "mediaType": "video_clip",
+        "mediaNote": "Game film clip of the pull block play. 15-25 seconds. Coaches review film on Thursdays."
+      },
+      "recruitingAction": {
+        "type": "dm_draft",
+        "description": "Draft personalized DMs for 3 Tier 2 coaches. Reference their spring practice posts or recent recruits.",
+        "targets": ["Northern Iowa OL coach", "South Dakota State OL coach", "Illinois State OL coach"]
+      }
+    },
+    {
+      "day": 13,
+      "date": "2026-03-27",
+      "dayOfWeek": "Friday",
+      "post": {
+        "formula": "ambient_update",
+        "pillar": "work_ethic",
+        "mechanism": "scarcity",
+        "content": "Friday morning. Last lift of the week.\n\nBench went up 10 lbs this month. Small wins add up.\n\nHave a great weekend everyone.",
+        "hashtags": [],
+        "bestTime": "6:30 AM CST",
+        "mediaType": "micro_clip",
+        "mediaNote": "2-3 second micro clip from the weight room. Early morning light. Authentic and understated."
+      },
+      "recruitingAction": {
+        "type": "coach_engage",
+        "description": "Reply to any coach or recruiting analyst posts about spring practice or camp schedules."
+      }
+    },
+    {
+      "day": 14,
+      "date": "2026-03-28",
+      "dayOfWeek": "Saturday",
+      "post": {
+        "formula": "honest_progress",
+        "pillar": "character",
+        "mechanism": "narrative_transportation",
+        "content": "Two week update since setting my spring ball goals.\n\nGoal 1 (zero sacks in 7-on-7): Spring ball hasn't started yet — but I've been visualizing every day.\nGoal 2 (win combo drill daily): Changed my hand placement this week. Already feeling faster.\nGoal 3 (earn respect from the DL): Our nose tackle told me my anchor is better. That counts.\n\nHonest progress. Not perfect. Not done.",
+        "hashtags": ["#2029Recruit", "#OL"],
+        "bestTime": "10:00 AM CST",
+        "mediaType": "text_only",
+        "mediaNote": "Text only. Callback to the narrative loop from Day 3. Story arcs build invested followers."
+      },
+      "recruitingAction": {
+        "type": "profile_update",
+        "description": "Bi-weekly profile audit. Update pinned post with latest stats. Refresh header image if new action shots are available."
+      }
+    },
+    {
+      "day": 15,
+      "date": "2026-03-29",
+      "dayOfWeek": "Sunday",
+      "post": {
+        "formula": "curious_student",
+        "pillar": "performance",
+        "mechanism": "curiosity_gap",
+        "content": "Film study question for the OL coaches on here.\n\nWhen running inside zone, should the center-guard double team stay on the nose tackle until the LB commits, or should the guard release early to get to the second level?\n\nI've seen both. Trying to understand when each one is right.\n\n#OffensiveLine #InsideZone #ClassOf2029",
+        "hashtags": ["#OffensiveLine", "#InsideZone", "#ClassOf2029"],
+        "bestTime": "7:00 PM CST",
+        "mediaType": "text_only",
+        "mediaNote": "Technique question drives coach engagement. Sunday evening is when coaches plan their week."
+      },
+      "recruitingAction": {
+        "type": "coach_engage",
+        "description": "Like and reply to 5 Tier 1 and Tier 2 school coaches' weekend posts. Build consistent engagement patterns.",
+        "targets": ["Wisconsin OL staff", "Iowa OL staff", "Northern Illinois staff"]
+      }
+    },
+    {
+      "day": 16,
+      "date": "2026-03-30",
+      "dayOfWeek": "Monday",
+      "post": {
+        "formula": "spotlight_shift",
+        "pillar": "work_ethic",
+        "mechanism": "reciprocity",
+        "content": "Monday morning power cleans to start the week.\n\nWorking with our line coach on explosion out of the stance. He keeps saying \"hips before hands\" and it finally clicked today.\n\nOne cue can change everything when you're ready to hear it.",
+        "hashtags": ["#2029Recruit", "#OL", "#PutInTheWork", "#FootballTraining"],
+        "bestTime": "6:30 AM CST",
+        "mediaType": "video_clip",
+        "mediaNote": "15-20 second power clean clip. Morning workout signals discipline to coaches."
+      },
+      "recruitingAction": {
+        "type": "follow_campaign",
+        "description": "Follow Tier 1 school coaching staff and recruiting coordinators. Longer-term targets — build engagement before outreach.",
+        "targets": ["Wisconsin", "Iowa", "Minnesota", "Michigan State"]
+      }
+    },
+    {
+      "day": 17,
+      "date": "2026-03-31",
+      "dayOfWeek": "Tuesday",
+      "post": {
+        "formula": "spotlight_shift",
+        "pillar": "performance",
+        "mechanism": "identity_resonance",
+        "content": "Drive block from last week's scrimmage. Watch the leg drive through contact — finished this block 5 yards past the line of scrimmage.\n\nOur RB had a clean lane because our left guard and I were on the same page. That's the power of O-line chemistry.\n\nFilm on my NCSA profile. Link in bio.\n\n#OffensiveLine #2029Recruit #FootballRecruiting",
+        "hashtags": ["#OffensiveLine", "#2029Recruit", "#FootballRecruiting", "#WisconsinFootball"],
+        "bestTime": "4:00 PM CST",
+        "mediaType": "video_clip",
+        "mediaNote": "20-30 second drive block clip. Coaches watch film Tuesday afternoons."
+      },
+      "recruitingAction": {
+        "type": "film_share",
+        "description": "Upload 4 new spring scrimmage clips to Hudl. Tag techniques: drive block, pass set, pull, combo block."
+      }
+    },
+    {
+      "day": 18,
+      "date": "2026-04-01",
+      "dayOfWeek": "Wednesday",
+      "post": {
+        "formula": "spotlight_shift",
+        "pillar": "character",
+        "mechanism": "reciprocity",
+        "content": "Volunteered at the Pewaukee youth football clinic this morning. Taught the 5th graders proper 3-point stance.\n\nOne kid asked me how to get bigger. I told him to eat breakfast every day, drink water, and never skip a rep. The basics.\n\nThis game gave me everything. Time to give some back.",
+        "hashtags": ["#GivingBack", "#Community", "#2029Recruit", "#Pewaukee"],
+        "bestTime": "7:00 PM CST",
+        "mediaType": "photo",
+        "mediaNote": "Photo with younger players at the clinic. Shows leadership and community investment."
+      },
+      "recruitingAction": {
+        "type": "ncsa",
+        "description": "Check NCSA activity feed. Log new coach profile views. Cross-reference with follow campaign targets."
+      }
+    },
+    {
+      "day": 19,
+      "date": "2026-04-02",
+      "dayOfWeek": "Thursday",
+      "post": {
+        "formula": "curious_student",
+        "pillar": "performance",
+        "mechanism": "autonomy_bias",
+        "content": "Question for any college OL coaches on here.\n\nWhen you're evaluating a Class of 2029 OL prospect, what do you want to see most in spring film?\n\nTechnique? Athleticism? Football IQ? Effort through the whistle?\n\nI'm about to have a lot of spring practice film to send. Want to make sure I'm showcasing the right things.\n\n#OffensiveLine #2029Recruit #FootballRecruiting",
+        "hashtags": ["#OffensiveLine", "#2029Recruit", "#FootballRecruiting"],
+        "bestTime": "4:00 PM CST",
+        "mediaType": "text_only",
+        "mediaNote": "Text only. The question invites coaches to engage — they can't resist sharing evaluation criteria."
+      },
+      "recruitingAction": {
+        "type": "dm_draft",
+        "description": "Draft personalized DMs for 3 Tier 2 FCS coaches who have engaged with Jacob's posts. Attach Hudl link.",
+        "targets": ["Engaged Tier 2 coaches"]
+      }
+    },
+    {
+      "day": 20,
+      "date": "2026-04-03",
+      "dayOfWeek": "Friday",
+      "post": {
+        "formula": "ambient_update",
+        "pillar": "performance",
+        "mechanism": "scarcity",
+        "content": "Spring ball. Day 1.\n\nFirst team reps at left tackle. Our defense came out fast.\n\nTime to compete.",
+        "hashtags": ["#2029Recruit", "#OL", "#SpringBall"],
+        "bestTime": "2:00 PM CST",
+        "mediaType": "photo",
+        "mediaNote": "Pre-practice photo on the field. Short and punchy — the energy carries the post."
+      },
+      "recruitingAction": {
+        "type": "coach_engage",
+        "description": "Tag local media and analysts in pre-spring ball post. Reply to any coach engagement."
+      }
+    },
+    {
+      "day": 21,
+      "date": "2026-04-04",
+      "dayOfWeek": "Saturday",
+      "post": {
+        "formula": "honest_progress",
+        "pillar": "work_ethic",
+        "mechanism": "commitment_consistency",
+        "content": "Spring ball day 1 recap. Honest assessment.\n\nWhat went well:\n- Pass pro was solid. Didn't give up a clean rush all day.\n- Communication with our guard was the best it's been.\n\nWhat I need to fix:\n- Got too high on my first 2 run blocks. Pad level matters.\n- Need to be more decisive on combo block releases.\n\nOne day down. Twenty-one practices to go.\n\nThe film doesn't lie. Neither will I.",
+        "hashtags": ["#2029Recruit", "#OL", "#SpringBall"],
+        "bestTime": "10:00 AM CST",
+        "mediaType": "text_only",
+        "mediaNote": "Text only. The self-scout format shows coaches football IQ and coachability."
+      },
+      "recruitingAction": {
+        "type": "film_share",
+        "description": "Edit and upload Day 1 spring ball clips. Prioritize pass protection reps for coach evaluation."
+      }
+    },
+    {
+      "day": 22,
+      "date": "2026-04-05",
+      "dayOfWeek": "Sunday",
+      "post": {
+        "formula": "narrative_loop",
+        "pillar": "work_ethic",
+        "mechanism": "loss_aversion",
+        "content": "Spring ball goal tracker update.\n\nGoal 1 (zero sacks in 7-on-7): Day 1 — clean sheet. One down.\nGoal 2 (win combo drill daily): Won 3 out of 4 reps. Close.\nGoal 3 (earn DL respect): Haven't earned it yet. That's the hardest one.\n\n21 practices left. I'll keep you posted.",
+        "hashtags": [],
+        "bestTime": "7:00 PM CST",
+        "mediaType": "text_only",
+        "mediaNote": "Callbacks the narrative loop. Followers who saw the goals post are now invested in the outcome."
+      },
+      "recruitingAction": {
+        "type": "profile_update",
+        "description": "Sunday audit: review follower growth, coach engagement rates, and upcoming week's content plan."
+      }
+    },
+    {
+      "day": 23,
+      "date": "2026-04-06",
+      "dayOfWeek": "Monday",
+      "post": {
+        "formula": "spotlight_shift",
+        "pillar": "work_ethic",
+        "mechanism": "reciprocity",
+        "content": "Monday after spring ball. Extra work before school.\n\nOur left guard and I stayed after to work on our combo block timing. Coach Baxter watched and gave us two adjustments that changed everything.\n\nWhen you have coaches who invest time before 7 AM, you don't waste it.",
+        "hashtags": ["#2029Recruit", "#OL", "#PutInTheWork"],
+        "bestTime": "6:30 AM CST",
+        "mediaType": "video_clip",
+        "mediaNote": "15-20 second drill clip from extra work. Early morning footage shows commitment."
+      },
+      "recruitingAction": {
+        "type": "coach_engage",
+        "description": "Engage with 5 target school coaches' spring practice content. Show awareness of their programs.",
+        "targets": ["Wisconsin", "Iowa", "Northern Iowa", "Western Michigan", "Central Michigan"]
+      }
+    },
+    {
+      "day": 24,
+      "date": "2026-04-07",
+      "dayOfWeek": "Tuesday",
+      "post": {
+        "formula": "spotlight_shift",
+        "pillar": "performance",
+        "mechanism": "identity_resonance",
+        "content": "Spring ball Day 3 film. Pull block from a counter play — getting to the edge and sealing the linebacker.\n\nOur running back hit the hole for 15 yards on this play. That's the OL's job — make their stats possible.\n\nFeedback welcome. I'm a student of this position.\n\n#OffensiveLine #FilmDontLie #2029Recruit",
+        "hashtags": ["#OffensiveLine", "#FilmDontLie", "#2029Recruit", "#FootballRecruiting"],
+        "bestTime": "4:00 PM CST",
+        "mediaType": "video_clip",
+        "mediaNote": "Pull block clip from spring practice. 15-25 seconds. Shows athleticism and technique."
+      },
+      "recruitingAction": {
+        "type": "film_share",
+        "description": "Upload Day 2-3 spring ball clips to Hudl. Update NCSA with fresh spring film link."
+      }
+    },
+    {
+      "day": 25,
+      "date": "2026-04-08",
+      "dayOfWeek": "Wednesday",
+      "post": {
+        "formula": "honest_progress",
+        "pillar": "character",
+        "mechanism": "narrative_transportation",
+        "content": "Halfway through the reading challenge with our O-line group.\n\n4 out of 5 guys still going. Our tackle Marcus finished \"Can't Hurt Me\" and said it changed how he thinks about conditioning.\n\nI just started \"The Hard Thing About Hard Things.\" A business book. Our center Ryan recommended it — said leadership lessons apply to the huddle.\n\nBuilding minds while we build bodies.",
+        "hashtags": ["#StudentAthlete", "#2029Recruit", "#Brotherhood"],
+        "bestTime": "8:00 PM CST",
+        "mediaType": "text_only",
+        "mediaNote": "Text only. Callbacks the reading challenge narrative loop. Shows character and team leadership."
+      },
+      "recruitingAction": {
+        "type": "ncsa",
+        "description": "Midweek NCSA check — review activity feed, log new coach views, update academic info."
+      }
+    },
+    {
+      "day": 26,
+      "date": "2026-04-09",
+      "dayOfWeek": "Thursday",
+      "post": {
+        "formula": "curious_student",
+        "pillar": "performance",
+        "mechanism": "curiosity_gap",
+        "content": "Something I noticed watching our spring film back.\n\nOn pass sets, the reps where I initiate contact first (punch then absorb) are way cleaner than the reps where I sit and react.\n\nCoaches — is being the aggressor in pass pro something you teach? Or do you want your OL to be patient and redirect?\n\nGenuine question. Trying to learn.\n\n#OffensiveLine #PassProtection #ClassOf2029",
+        "hashtags": ["#OffensiveLine", "#PassProtection", "#ClassOf2029"],
+        "bestTime": "4:00 PM CST",
+        "mediaType": "video_clip",
+        "mediaNote": "Side-by-side clips of both approaches if available. OL technique questions get high coach engagement."
+      },
+      "recruitingAction": {
+        "type": "dm_draft",
+        "description": "Send approved DMs to Tier 2 coaches who've engaged in the last 2 weeks. Personalize each message.",
+        "targets": ["Coaches with recent engagement"]
+      }
+    },
+    {
+      "day": 27,
+      "date": "2026-04-10",
+      "dayOfWeek": "Friday",
+      "post": {
+        "formula": "ambient_update",
+        "pillar": "performance",
+        "mechanism": "scarcity",
+        "content": "Spring ball scrimmage today. Full pads. Full speed.\n\nOur defense is the best I've ever seen them. This is going to be a war.\n\nExactly how it should be.",
+        "hashtags": ["#2029Recruit", "#OL", "#SpringBall", "#PewaukeeFootball"],
+        "bestTime": "2:00 PM CST",
+        "mediaType": "photo",
+        "mediaNote": "Pre-scrimmage photo. Short, confident, no hype. Let the content speak."
+      },
+      "recruitingAction": {
+        "type": "coach_engage",
+        "description": "Reply to any coach engagement from this week. Tag analysts in spring ball content for features."
+      }
+    },
+    {
+      "day": 28,
+      "date": "2026-04-11",
+      "dayOfWeek": "Saturday",
+      "post": {
+        "formula": "spotlight_shift",
+        "pillar": "performance",
+        "mechanism": "reciprocity",
+        "content": "Spring scrimmage film is in.\n\nProud of our O-line group. We held their defense — one of the best in our conference — to zero sacks in 45 snaps.\n\nOur center made every call. Our guards executed every combo. I finished every block.\n\nThis unit is building something special.\n\n#OffensiveLine #2029Recruit #SpringBall",
+        "hashtags": ["#OffensiveLine", "#2029Recruit", "#SpringBall", "#PewaukeeFootball"],
+        "bestTime": "10:00 AM CST",
+        "mediaType": "highlight_reel",
+        "mediaNote": "30-45 second highlight reel from the spring scrimmage. Best blocks only. Include NCSA link."
+      },
+      "recruitingAction": {
+        "type": "film_share",
+        "description": "Edit spring scrimmage highlights. Upload to Hudl immediately. Update NCSA with spring film link."
+      }
+    },
+    {
+      "day": 29,
+      "date": "2026-04-12",
+      "dayOfWeek": "Sunday",
+      "post": {
+        "formula": "narrative_loop",
+        "pillar": "character",
+        "mechanism": "commitment_consistency",
+        "content": "Spring ball goal final tracker.\n\nGoal 1 (zero sacks in 7-on-7): Mission accomplished. Clean sheet through spring.\nGoal 2 (win combo drill daily): Won most days. Lost a few. Learned from every one.\nGoal 3 (earn DL respect): Our nose tackle told me after the scrimmage that I'm the hardest guy to move on the team.\n\nThree goals. Three lessons. The work continues.\n\nCamp season is next.",
+        "hashtags": ["#2029Recruit", "#OL", "#Goals"],
+        "bestTime": "7:00 PM CST",
+        "mediaType": "text_only",
+        "mediaNote": "Closes the narrative loop from Day 3. Followers who tracked the goals get the payoff. Teases camp season."
+      },
+      "recruitingAction": {
+        "type": "profile_update",
+        "description": "Month-end profile audit. Update all stats, refresh pinned post with spring ball results. Plan camp schedule content."
+      }
+    },
+    {
+      "day": 30,
+      "date": "2026-04-13",
+      "dayOfWeek": "Monday",
+      "post": {
+        "formula": "honest_progress",
+        "pillar": "work_ethic",
+        "mechanism": "commitment_consistency",
+        "content": "30 days of consistent posting. Here's what I've learned about building a recruiting presence.\n\nWhat worked:\n- Asking genuine questions got more coach replies than any highlight clip\n- Crediting teammates and coaches in every post made people want to share it\n- Being honest about weaknesses built more trust than listing accomplishments\n\nWhat I'll do differently next month:\n- More film, less text\n- Engage with 5 coaches per day, not just 5 per week\n- Start the camp outreach process\n\n30 days down. This is just the beginning.\n\nGrateful for everyone following along.\n\n#2029Recruit #OL #FootballRecruiting #ClassOf2029",
+        "hashtags": ["#2029Recruit", "#OL", "#FootballRecruiting", "#ClassOf2029", "#WisconsinFootball"],
+        "bestTime": "6:30 AM CST",
+        "mediaType": "text_only",
+        "mediaNote": "Milestone reflection post. Authentic gratitude. Reaffirm commitment. Set up the next 30 days."
+      },
+      "recruitingAction": {
+        "type": "ncsa",
+        "description": "Complete 30-day review: total coach views, follower growth, engagement rate, DM response rate. Plan next month's strategy."
+      }
+    }
+  ]
+}
