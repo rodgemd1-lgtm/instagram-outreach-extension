@@ -122,22 +122,17 @@ export async function getLiveFollowerCount(): Promise<FollowerMetric> {
 
   try {
     const user = await getJacobUser();
-    const count = user?.public_metrics?.followers_count ?? 47;
-
-    // weekChange is derived later in getDashboardSnapshot by comparing to
-    // a stored snapshot. Here we return a conservative estimate based on
-    // the account being relatively new.
-    const weekChange = Math.max(0, Math.round(count * 0.05)); // ~5% weekly growth estimate
+    const count = user?.public_metrics?.followers_count ?? 0;
 
     return {
       count,
-      weekChange,
+      weekChange: 0,
       target: FOLLOWER_TARGET,
       fetchedAt: now,
     };
   } catch {
     return {
-      count: 47,
+      count: 0,
       weekChange: 0,
       target: FOLLOWER_TARGET,
       fetchedAt: now,
@@ -156,7 +151,7 @@ export async function getLiveCoachFollows(): Promise<CoachFollowMetric> {
   try {
     const jacobUser = await getJacobUser();
     if (!jacobUser) {
-      return { count: 3, target: COACH_FOLLOW_TARGET, recentFollows: [], fetchedAt: now };
+      return { count: 0, target: COACH_FOLLOW_TARGET, recentFollows: [], fetchedAt: now };
     }
 
     // Fetch Jacob's followers (up to 1000 to catch all coaches)
@@ -213,7 +208,7 @@ export async function getLiveCoachFollows(): Promise<CoachFollowMetric> {
       fetchedAt: now,
     };
   } catch {
-    return { count: 3, target: COACH_FOLLOW_TARGET, recentFollows: [], fetchedAt: now };
+    return { count: 0, target: COACH_FOLLOW_TARGET, recentFollows: [], fetchedAt: now };
   }
 }
 
@@ -228,12 +223,12 @@ export async function getLiveEngagementRate(): Promise<EngagementMetric> {
   try {
     const jacobUser = await getJacobUser();
     if (!jacobUser) {
-      return { rate: 6.2, weekChange: 0, totalImpressions: 0, totalEngagements: 0, fetchedAt: now };
+      return { rate: 0, weekChange: 0, totalImpressions: 0, totalEngagements: 0, fetchedAt: now };
     }
 
     const tweets: XTweet[] = await getUserTweets(jacobUser.id, 20);
     if (!tweets || tweets.length === 0) {
-      return { rate: 6.2, weekChange: 0, totalImpressions: 0, totalEngagements: 0, fetchedAt: now };
+      return { rate: 0, weekChange: 0, totalImpressions: 0, totalEngagements: 0, fetchedAt: now };
     }
 
     let totalImpressions = 0;
@@ -249,7 +244,7 @@ export async function getLiveEngagementRate(): Promise<EngagementMetric> {
     const rate =
       totalImpressions > 0
         ? Math.round((totalEngagements / totalImpressions) * 10000) / 100
-        : 6.2;
+        : 0;
 
     // weekChange: compare recent 10 tweets vs older 10 tweets
     const recentTweets = tweets.slice(0, 10);
@@ -325,7 +320,7 @@ export async function getLiveWeeklyStats(): Promise<WeeklyStats> {
       dmsResponded = rows.filter((row) => row.responded_at && new Date(row.responded_at) >= weekStart).length;
     }
 
-    const followerCount = jacobUser.public_metrics?.followers_count ?? 47;
+    const followerCount = jacobUser.public_metrics?.followers_count ?? 0;
     const estimatedProfileVisits = Math.round(followerCount * 3.5);
 
     return {
@@ -387,9 +382,9 @@ export async function getDashboardSnapshot(): Promise<DashboardSnapshot> {
   } catch {
     dataSource = "fallback";
     return {
-      followers: { count: 47, weekChange: 12, target: FOLLOWER_TARGET, fetchedAt: now },
-      coachFollows: { count: 3, target: COACH_FOLLOW_TARGET, recentFollows: [], fetchedAt: now },
-      engagement: { rate: 6.2, weekChange: 0.8, totalImpressions: 0, totalEngagements: 0, fetchedAt: now },
+      followers: { count: 0, weekChange: 0, target: FOLLOWER_TARGET, fetchedAt: now },
+      coachFollows: { count: 0, target: COACH_FOLLOW_TARGET, recentFollows: [], fetchedAt: now },
+      engagement: { rate: 0, weekChange: 0, totalImpressions: 0, totalEngagements: 0, fetchedAt: now },
       weeklyStats: { postsThisWeek: 0, weeklyTarget: WEEKLY_POST_TARGET, dmsSent: 0, dmsResponded: 0, responseRate: 0, profileVisits: 0, fetchedAt: now },
       jacobUserId: null,
       fetchedAt: now,
