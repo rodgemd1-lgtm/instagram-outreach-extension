@@ -1,13 +1,26 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { SCSidebar } from "./sc-sidebar";
 import { SCHeader } from "./sc-header";
 import { SCFooter } from "./sc-footer";
 import { SCMobileNav } from "./sc-mobile-nav";
+
+/** Routes that render without the app shell (sidebar, header, footer). */
+const STANDALONE_ROUTES = ["/recruit"];
 
 interface SCShellProps {
   children: React.ReactNode;
 }
 
 export function SCShell({ children }: SCShellProps) {
+  const pathname = usePathname();
+  const isStandalone = STANDALONE_ROUTES.some((r) => pathname.startsWith(r));
+
+  if (isStandalone) {
+    return <>{children}</>;
+  }
+
   return (
     <div className="flex h-screen overflow-hidden bg-sc-bg">
       {/* Sidebar - desktop only */}

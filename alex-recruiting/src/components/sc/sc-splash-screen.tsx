@@ -1,16 +1,24 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
+/** Routes that skip the splash screen entirely. */
+const SKIP_SPLASH_ROUTES = ["/recruit"];
+
 export function SCSplashScreen() {
-  const [visible, setVisible] = useState(true);
+  const pathname = usePathname();
+  const [visible, setVisible] = useState(
+    !SKIP_SPLASH_ROUTES.some((r) => pathname.startsWith(r)),
+  );
 
   useEffect(() => {
+    if (!visible) return;
     const timer = setTimeout(() => setVisible(false), 2400);
     return () => clearTimeout(timer);
-  }, []);
+  }, [visible]);
 
   return (
     <AnimatePresence>
