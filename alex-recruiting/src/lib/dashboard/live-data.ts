@@ -320,8 +320,8 @@ export async function getLiveWeeklyStats(): Promise<WeeklyStats> {
       dmsResponded = rows.filter((row) => row.responded_at && new Date(row.responded_at) >= weekStart).length;
     }
 
-    const followerCount = jacobUser.public_metrics?.followers_count ?? 0;
-    const estimatedProfileVisits = Math.round(followerCount * 3.5);
+    // X API free tier does not provide profile visit data — show 0, not an estimate
+    const estimatedProfileVisits = 0;
 
     return {
       postsThisWeek,

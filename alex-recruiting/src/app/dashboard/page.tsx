@@ -63,10 +63,14 @@ export default function DashboardPage() {
           : postsRes?.posts || [];
         const dms = Array.isArray(dmsRes) ? dmsRes : dmsRes?.messages || [];
 
+        // Only count posts actually published to X (have xPostId/x_post_id),
+        // NOT all DB drafts which inflate the number
         const weekAgo = new Date();
         weekAgo.setDate(weekAgo.getDate() - 7);
         const postsThisWeek = posts.filter(
-          (p: any) => new Date(p.createdAt || p.date) > weekAgo
+          (p: any) =>
+            (p.xPostId || p.x_post_id) &&
+            new Date(p.createdAt || p.date) > weekAgo
         ).length;
 
         setStats({
@@ -92,15 +96,20 @@ export default function DashboardPage() {
           });
         });
 
-        posts.slice(0, 5).forEach((post: any, i: number) => {
-          activity.push({
-            id: `post-${i}`,
-            type: "post",
-            description: `Posted: "${(post.content || post.caption || "").slice(0, 60)}..."`,
-            timestamp:
-              post.createdAt || post.date || new Date().toISOString(),
+        // Only show posts actually published to X (have xPostId),
+        // NOT seeded drafts which would appear as fake activity
+        posts
+          .filter((p: any) => p.xPostId || p.x_post_id)
+          .slice(0, 5)
+          .forEach((post: any, i: number) => {
+            activity.push({
+              id: `post-${i}`,
+              type: "post",
+              description: `Posted: "${(post.content || post.caption || "").slice(0, 60)}..."`,
+              timestamp:
+                post.createdAt || post.date || new Date().toISOString(),
+            });
           });
-        });
 
         activity.sort(
           (a, b) =>
