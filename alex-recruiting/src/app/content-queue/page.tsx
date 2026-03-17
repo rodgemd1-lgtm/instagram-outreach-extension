@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { SCPageHeader, SCGlassCard, SCButton, SCBadge, SCTabs } from "@/components/sc";
+import { SCPageHeader, SCGlassCard, SCButton, SCBadge, SCTabs, SCHeroBanner, SCPageTransition } from "@/components/sc";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
@@ -698,6 +698,7 @@ export default function ContentQueuePage() {
   ];
 
   return (
+    <SCPageTransition>
     <div className="space-y-8">
       <SCPageHeader
         title="SOCIAL SENTIMENT ENGINE"
@@ -712,6 +713,8 @@ export default function ContentQueuePage() {
           </SCButton>
         }
       />
+
+      <SCHeroBanner screen="command" className="mb-2" />
 
       {/* Status Bar */}
       <SCGlassCard className="flex flex-wrap items-center gap-4 p-4">
@@ -783,5 +786,6 @@ export default function ContentQueuePage() {
         </>
       )}
     </div>
+    </SCPageTransition>
   );
 }

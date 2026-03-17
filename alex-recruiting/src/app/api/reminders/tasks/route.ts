@@ -5,9 +5,9 @@ import { db, isDbConfigured } from "@/lib/db";
 import { camps } from "@/lib/db/schema";
 import {
   getDefaultReminderRecipients,
-  isTwilioConfigured,
+  isSmsConfigured,
   sendSmsBatch,
-} from "@/lib/integrations/twilio";
+} from "@/lib/integrations/vonage";
 import { getAllTasks } from "@/lib/rec/tasks";
 import {
   buildTaskReminderMessage,
@@ -116,10 +116,10 @@ async function handleReminder(req: NextRequest, previewOnly: boolean) {
     return NextResponse.json({ preview: true, ...payload });
   }
 
-  if (!isTwilioConfigured()) {
+  if (!isSmsConfigured()) {
     return NextResponse.json(
       {
-        error: "Twilio is not configured",
+        error: "Vonage SMS is not configured",
         ...payload,
       },
       { status: 503 }

@@ -9,6 +9,8 @@ import {
   SCTabs,
   SCStatCard,
   SCInput,
+  SCHeroBanner,
+  SCPageTransition,
 } from "@/components/sc";
 import { SUSAN_INNOVATION_STUDIO } from "@/lib/media-lab/team";
 import { FIVE_YEAR_FUTURE_BACK } from "@/lib/strategy/future-back";
@@ -143,6 +145,7 @@ export default function IntelligencePage() {
   ];
 
   return (
+    <SCPageTransition>
     <div className="space-y-8">
       <SCPageHeader
         title="REGIONAL PIPELINE"
@@ -157,6 +160,8 @@ export default function IntelligencePage() {
           </SCButton>
         }
       />
+
+      <SCHeroBanner screen="analytics" className="mb-2" />
 
       <SCTabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
@@ -178,6 +183,7 @@ export default function IntelligencePage() {
       {activeTab === "timeline" && <TimelineTab timeline={timeline} />}
       {activeTab === "future_back" && <FutureBackTab />}
     </div>
+    </SCPageTransition>
   );
 }
 

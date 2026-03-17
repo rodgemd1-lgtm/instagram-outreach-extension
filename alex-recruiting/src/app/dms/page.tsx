@@ -8,6 +8,9 @@ import {
   SCGlassCard,
   SCBadge,
   SCButton,
+  SCHeroBanner,
+  SCPageTransition,
+  SCAnimatedNumber,
 } from "@/components/sc";
 import { dmTemplates, fillTemplate } from "@/lib/data/templates";
 import { jacobProfile } from "@/lib/data/jacob-profile";
@@ -144,6 +147,7 @@ export default function DMsPage() {
   }, [recentDMs, filterStatus]);
 
   return (
+    <SCPageTransition>
     <div className="space-y-6">
       <SCPageHeader
         kicker="Secure Comms"
@@ -172,13 +176,15 @@ export default function DMsPage() {
         }
       />
 
+      <SCHeroBanner screen="outreach" className="mb-6" />
+
       {/* Wave Summary Metrics */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         {waveSummary.map((wave) => (
           <SCStatCard
             key={wave.label}
             label={wave.label}
-            value={String(wave.count)}
+            value={<SCAnimatedNumber value={wave.count} />}
             icon={wave.icon}
           />
         ))}
@@ -419,5 +425,6 @@ export default function DMsPage() {
         )}
       </div>
     </div>
+    </SCPageTransition>
   );
 }
