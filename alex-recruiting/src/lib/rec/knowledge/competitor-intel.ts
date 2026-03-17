@@ -1,5 +1,5 @@
 // Competitor intelligence knowledge base
-// Class of 2029 OL recruits in Wisconsin and the Midwest
+// Class of 2029 OL/DL recruits in Wisconsin and the Midwest
 
 export interface CompetitorProfile {
   name: string;
@@ -129,6 +129,106 @@ export const competitorIntel: CompetitorProfile[] = [
     strengths: ["Elite height", "Private school connections", "Father is a booster at UW", "Academic profile"],
     jacobAdvantage: "Brandon has family connections but Jacob has a more systematic recruiting strategy. Connections fade; consistent visibility compounds.",
   },
+  // --- DL competitors (Jacob plays both OL and DL) ---
+  {
+    name: "Caleb Njoku",
+    position: "DT",
+    classYear: 2029,
+    school: "Lakeville South HS",
+    state: "Minnesota",
+    height: "6'2\"",
+    weight: "285",
+    xHandle: "@CalebNjoku_DL",
+    estimatedFollowers: 175,
+    postingFrequency: "2-3 posts/week",
+    strengths: ["Explosive first step", "Minnesota all-state candidate", "Attends national camps"],
+    jacobAdvantage: "Caleb posts often but lacks film breakdowns. Jacob's dual OL/DL film library shows versatility that Caleb can't match.",
+  },
+  {
+    name: "Mason Trueblood",
+    position: "DE",
+    classYear: 2029,
+    school: "Ankeny Centennial HS",
+    state: "Iowa",
+    height: "6'4\"",
+    weight: "235",
+    xHandle: "@MasonTrue_DE29",
+    estimatedFollowers: 130,
+    postingFrequency: "1-2 posts/week",
+    strengths: ["Length and motor", "Iowa all-state program", "Strong 40 time for size"],
+    jacobAdvantage: "Mason only showcases pass rush. Jacob's two-way film at OL and DL gives coaches a more complete picture of football IQ.",
+  },
+  {
+    name: "Xavier Watkins",
+    position: "DT",
+    classYear: 2029,
+    school: "East Lansing HS",
+    state: "Michigan",
+    height: "6'1\"",
+    weight: "295",
+    xHandle: null,
+    estimatedFollowers: 0,
+    postingFrequency: "None — no X presence",
+    strengths: ["Anchor strength", "Michigan camp standout", "Wrestling state qualifier"],
+    jacobAdvantage: "Xavier is a talented nose tackle with zero digital footprint. Jacob's active X profile ensures coaches discover him first.",
+  },
+  {
+    name: "Dominic Bianchi",
+    position: "DE",
+    classYear: 2029,
+    school: "Rosemount HS",
+    state: "Minnesota",
+    height: "6'3\"",
+    weight: "240",
+    xHandle: "@Dom_Bianchi55",
+    estimatedFollowers: 95,
+    postingFrequency: "Sporadic — mostly game day",
+    strengths: ["Quick off the edge", "Multi-sport athlete", "Rosemount is perennial contender"],
+    jacobAdvantage: "Dominic only posts on game days. Jacob's year-round content cadence keeps him visible during dead periods when coaches are evaluating.",
+  },
+  // --- OL from neighboring states ---
+  {
+    name: "Gavin Sorensen",
+    position: "OG",
+    classYear: 2029,
+    school: "Eden Prairie HS",
+    state: "Minnesota",
+    height: "6'3\"",
+    weight: "290",
+    xHandle: "@GavSorensen_OL",
+    estimatedFollowers: 200,
+    postingFrequency: "3-4 posts/week",
+    strengths: ["Elite program pedigree", "Multiple Big Ten camp invites", "Strong pulling technique"],
+    jacobAdvantage: "Gavin has volume but his content is generic. Jacob's coach-specific engagement and film tagging strategy drives higher quality interactions.",
+  },
+  {
+    name: "Liam Fitzgerald",
+    position: "OT",
+    classYear: 2029,
+    school: "Iowa City West HS",
+    state: "Iowa",
+    height: "6'5\"",
+    weight: "275",
+    xHandle: null,
+    estimatedFollowers: 0,
+    postingFrequency: "None",
+    strengths: ["Ideal tackle frame", "Father coached college ball", "Academic All-State"],
+    jacobAdvantage: "Liam relies entirely on camp circuits and family connections. Jacob's digital-first strategy reaches coaches Liam's network can't.",
+  },
+  {
+    name: "Jaylen Carter",
+    position: "OG",
+    classYear: 2029,
+    school: "Warren De La Salle HS",
+    state: "Michigan",
+    height: "6'2\"",
+    weight: "300",
+    xHandle: "@JaylenCarter_OL",
+    estimatedFollowers: 160,
+    postingFrequency: "1-2 posts/week",
+    strengths: ["Powerful run blocker", "Detroit-area exposure", "Private school coaching resources"],
+    jacobAdvantage: "Jaylen benefits from Detroit media market but Jacob's Midwest-wide engagement strategy and consistent coach DMs create broader visibility.",
+  },
 ];
 
 export function getCompetitorByName(name: string): CompetitorProfile | undefined {
@@ -142,7 +242,7 @@ export function getActiveCompetitors(): CompetitorProfile[] {
 export function getKnowledgeContext(): string {
   const lines: string[] = [];
 
-  lines.push("=== COMPETITOR INTELLIGENCE (Class of 2029 OL — Wisconsin/Midwest) ===\n");
+  lines.push("=== COMPETITOR INTELLIGENCE (Class of 2029 OL/DL — Wisconsin/Midwest) ===\n");
   lines.push(`Tracked competitors: ${competitorIntel.length}\n`);
 
   const withX = competitorIntel.filter((c) => c.xHandle !== null);
