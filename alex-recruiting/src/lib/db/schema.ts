@@ -1,5 +1,7 @@
 import { pgTable, text, integer, boolean, timestamp, real, jsonb, uuid } from "drizzle-orm/pg-core";
 
+// ============ LEGACY SCHOOLS (17 target schools) ============
+
 export const schools = pgTable("schools", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -16,11 +18,39 @@ export const schools = pgTable("schools", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// ============ ALL NCAA SCHOOLS (~680+ programs) ============
+
+export const schoolsV2 = pgTable("schools_v2", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  slug: text("slug").unique().notNull(),
+  name: text("name").notNull(),
+  mascot: text("mascot"),
+  division: text("division").notNull(),
+  conference: text("conference"),
+  city: text("city"),
+  state: text("state"),
+  logoUrl: text("logo_url"),
+  athleticsUrl: text("athletics_url"),
+  staffUrl: text("staff_url"),
+  rosterUrl: text("roster_url"),
+  primaryColor: text("primary_color"),
+  secondaryColor: text("secondary_color"),
+  olRosterCount: integer("ol_roster_count").default(0),
+  dlRosterCount: integer("dl_roster_count").default(0),
+  olGraduating: integer("ol_graduating").default(0),
+  dlGraduating: integer("dl_graduating").default(0),
+  olNeedScore: integer("ol_need_score").default(0),
+  dlNeedScore: integer("dl_need_score").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const coaches = pgTable("coaches", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
   title: text("title"),
   schoolId: text("school_id").references(() => schools.id),
+  schoolSlug: text("school_slug").references(() => schoolsV2.slug),
   schoolName: text("school_name").notNull(),
   division: text("division").notNull(),
   conference: text("conference"),
@@ -30,6 +60,8 @@ export const coaches = pgTable("coaches", {
   dmStatus: text("dm_status").default("not_sent"),
   priorityTier: text("priority_tier").notNull(),
   olNeedScore: integer("ol_need_score").default(0),
+  dlNeedScore: integer("dl_need_score").default(0),
+  positionType: text("position_type").default("OL"), // 'OL' | 'DL' | 'both'
   xActivityScore: integer("x_activity_score").default(0),
   lastEngaged: timestamp("last_engaged"),
   notes: text("notes"),
