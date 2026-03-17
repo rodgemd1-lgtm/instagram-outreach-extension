@@ -1,83 +1,104 @@
-# Jacob Handoff — March 17, 2026
+# Alex Recruiting — Session Handoff (March 17, 2026 — Evening)
 
-## What's Ready
+## Start Here
 
-Alex Recruiting is fully populated with real data and ready for daily use. Everything below is seeded and tested.
+Copy the prompt at the bottom of this file into a new Claude Code session to continue.
 
-### Data Pipeline (all populated)
-- **40 target schools** across 4 tiers: WIAC (Wave 0), Midwest D3, D2, FCS
-- **80 coaches** with contact info, X handles, and recruiting profiles
-- **17 posts** scheduled March 18 – April 15, all Coach Panel approved
-- **60-day outreach schedule** with 8-step cadence for each school
-- **60 peer targets** to follow/engage with (fellow recruits, media, analysts)
-- **30-day task schedule** with daily recruiting actions
-- **8 Coach Panel members** with 22 survey responses shaping content
-- **15 competitors** tracked with 30 analytics snapshots
-- **8 weeks of learning history** for strategy improvement
+## What Was Accomplished This Session
 
-### Content Calendar (Coach Panel Vetted)
-All 17 posts use Trey's 5 Post Formulas and pass the Spotlight Shift Check:
-- **Performance (7 posts)**: Film study, measurables, game analysis
-- **Work Ethic (7 posts)**: Training clips, practice recaps, self-improvement
-- **Character (3 posts)**: Leadership, mentorship, community
+1. **349 verified X/Twitter follow targets** built from 5 parallel research agents — real handles confirmed via web search across college coaches (D3/D2/FCS/FBS), recruiting media, WI HS community, strength training, and peer recruits
+2. **26-week follow schedule** at 7-8 follows/week, phased by priority (D2/D3 first → FCS → FBS → media → community)
+3. **Fake fallback data removed** from `src/lib/dashboard/live-data.ts` — no more fake 47 followers, 3 coach follows, 6.2% engagement
+4. **Database connected** — `JIB_DATABASE_URL` added to `.env.local` and Vercel, missing tables created (`engagement_actions`, `growth_snapshots`, `rec_tasks`, `outreach_learnings`, `dm_sequences`, `camps`, etc.)
+5. **Database seeded** — 424 coaches, 687 schools, 17 posts, 17 DMs, 110 tasks, 8 panel coaches, 15 competitors
+6. **Deployed to Vercel** — https://alex-recruiting.vercel.app — build succeeds, env vars set (bearer token fixed from %3D encoding issue)
+7. **X API confirmed working on Vercel** — `/api/analytics` returns real data: `totalFollowers: 3, coachFollows: 0, postsPublished: 17, avgEngagementRate: 4.51`
 
-Every post was reviewed by the Coach Panel. None of the old motivational poster content remains.
+## What Is Broken — Must Fix
 
-### How to Seed the Database
-Run this once to populate everything:
-```bash
-curl -X POST http://localhost:3000/api/data-pipeline/seed-all \
-  -H "Authorization: Bearer YOUR_CRON_SECRET" \
-  -H "Content-Type: application/json"
-```
+### Critical: Analytics page shows 0 despite API returning 3
+- `/api/analytics` returns correct data (verified via curl on Vercel)
+- But the analytics page component renders 0 — likely a client-side fetch issue or the page is reading from `getDashboardSnapshot()` server function which may be caching/erroring
+- File: `src/app/analytics/page.tsx` fetches from `/api/analytics` on client side
+- The dashboard snapshot in `src/lib/dashboard/live-data.ts` calls X API — verify it works on Vercel serverless
 
-Or seed individually:
-- `/api/data-pipeline/seed-coaches-expanded` — Schools + coaches
-- `/api/data-pipeline/seed-content` — 17 scheduled posts
-- `/api/data-pipeline/seed-outreach` — 60-day outreach plan
-- `/api/data-pipeline/seed-peers` — Peer targets + growth milestones
-- `/api/data-pipeline/seed-tasks` — 30-day task schedule
-- `/api/data-pipeline/seed-intelligence` — Competitors + analytics
-- `/api/data-pipeline/seed-learnings` — Weekly retrospectives
-- `/api/data-pipeline/seed-panel` — Coach Panel members + surveys
+### Critical: OAuth 1.0a write operations not tested
+- Bearer token (read) works on Vercel ✅
+- OAuth 1.0a (write — follow, DM, post) needs testing on Vercel
+- Keys set: `X_API_CONSUMER_KEY`, `X_API_CONSUMER_SECRET`, `X_API_ACCESS_TOKEN`, `X_API_ACCESS_TOKEN_SECRET`
+- `X_API_CLIENT_SECRET` is EMPTY in `.env.local` — may need to be set for OAuth 2.0
+- Write functions: `followUser()`, `sendDM()`, `postTweet()` in `src/lib/integrations/x-api.ts`
 
-### Key Pages
-- `/` — Dashboard with today's tasks, upcoming posts, and metrics
-- `/posts` — Content calendar with all 17 scheduled posts
-- `/outreach` — Coach outreach pipeline and DM management
-- `/dms` — Direct message drafts and templates
-- `/intelligence` — Recruiting intelligence and competitor tracking
-- `/agency` — REC team dashboard (chat with Trey, Nina, Marcus, etc.)
-- `/recruit` — Full recruit profile page
+### Critical: Multiple pages show empty/zero data
+- **Outreach page** — "Total Coaches: 0" even though 424 coaches in DB (queries different table/view)
+- **Content Queue** — "No content queued yet" because it reads `scheduled_posts` table, not `posts` table
+- **Analytics** — follower count shows 0 on page despite API returning 3
+- **Connections page** — may not be pulling from peer-follow-targets correctly
 
-### REC Team (Chat with them at /agency/[name])
-- **Trey** — Content strategy, post drafting, hashtags
-- **Nina** — Coach outreach, DMs, NCSA leads
-- **Marcus** — Recruiting strategy, school targeting, NCAA rules
-- **Jordan** — Film/video, highlight reels
-- **Sophie** — Analytics, competitor intel, scoring
-- **Casey** — Social growth, peer connections
+### High: Database schema mismatches
+- Seed endpoints use Supabase `.upsert()` with `onConflict` that requires unique constraints
+- Many constraints missing — coaches, posts, competitor_recruits, dm_messages all fail on upsert
+- Some tables have columns named differently than Drizzle schema expects (e.g., `school_name` vs `school`, `content` vs `title`)
+- Tables created via Supabase dashboard don't match Drizzle schema in `src/lib/db/schema.ts`
 
-## Coach Panel Doctrine
-ALL content goes through the Coach Panel before posting. This is permanent — it's built into:
-- CLAUDE.md (project rules)
-- Alex's system prompt (AI behavior)
-- Trey's persona (content generation)
-- Content engine (default status = `pending_panel`)
+### High: No "What to do today" section for Jacob
+- Jacob needs a daily action plan: what to post, who to follow, who to DM
+- Currently no onboarding flow or task list for the user
+- The AI Recommendation Engine on Command page gives generic advice
 
-## Test Results
-- **626 tests passing** across 72 test files
-- **1 pre-existing failure** (console.log in cfbd route — not blocking)
-- **Build passes** clean with all pages compiling
+### Medium: Remaining fake/fallback data in codebase
+- `Scout Velocity: 73/wk` on Command page — likely hardcoded
+- Various `?? <number>` fallbacks across API routes and components
+- 4 audit agents were launched — check their output files for results
 
-## Deployment
-- Vercel config is ready (`vercel.json` with cron jobs)
-- Vercel CLI authenticated as `rodgemd1-9353`
-- Project not yet linked — run `vercel` in the `alex-recruiting/` directory to deploy
+## Audit Agents Launched (check output files)
+- Fake data hunter: completed or in-progress
+- Database audit: completed or in-progress
+- Backend API audit: completed or in-progress
+- Frontend page audit: completed or in-progress
 
-## What's Next
-1. Run `vercel` to deploy to production
-2. Set environment variables in Vercel dashboard (Supabase, Anthropic, X API keys)
-3. Run seed-all endpoint on production to populate database
-4. Start using the content calendar — first post scheduled for March 18
-5. Review posts with Jacob before approving (all start as `pending`)
+## Architecture Quick Reference
+
+- **Framework**: Next.js 15.5 App Router + React 18 + TypeScript
+- **Database**: Supabase PostgreSQL via Drizzle ORM (`JIB_DATABASE_URL`)
+- **AI**: Anthropic Claude SDK
+- **X/Twitter**: OAuth 1.0a + Bearer token, functions in `src/lib/integrations/x-api.ts`
+- **Deployment**: Vercel (https://alex-recruiting.vercel.app)
+- **Testing**: Vitest — 657 passing, 1 pre-existing failure
+- **Git root**: `/Users/mikerodgers/Desktop/alex-recruiting-project/alex-recruiting`
+- **Next.js root**: `alex-recruiting/` subdirectory (rootDirectory set in Vercel)
+
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| `src/lib/dashboard/live-data.ts` | X API calls for real-time metrics (followers, engagement, coach follows) |
+| `src/lib/integrations/x-api.ts` | All X API functions: follow, DM, post, verify handle |
+| `src/lib/data/peer-follow-targets.ts` | 349 follow targets with 26-week schedule |
+| `src/lib/data/content-calendar-30d.ts` | 17 Coach Panel approved posts |
+| `src/lib/data/cold-dms.ts` | DM templates by tier |
+| `src/lib/db/schema.ts` | Drizzle database schema |
+| `src/app/api/analytics/route.ts` | Analytics API endpoint |
+| `src/app/api/outreach/follow-plan/route.ts` | Follow plan with weekly batches |
+| `src/app/api/data-pipeline/seed-all/route.ts` | Seed orchestrator |
+| `.env.local` | All API keys (21+ services) |
+
+## Jacob's Real X Account
+
+- Handle: `@JacobRodge52987`
+- User ID: `2029703725091328001`
+- Real followers: 3
+- Real following: 9
+- Real tweets: 8
+- Bio: "OL/DL | 6'4\" 285 | Pewaukee HS '29"
+
+## Vercel Environment
+
+- Project: `alex-recruiting` on `michael-rodgers-projects-e4209a00`
+- URL: https://alex-recruiting.vercel.app
+- Node: 20.x
+- 26 env vars configured for production
+
+## Git Commits This Session
+- `a9f9725` feat(outreach): expand follow targets to 349 verified handles with 26-week schedule
+- `512a345` fix(data): remove all fake fallback values — show 0 when no real data
