@@ -3,19 +3,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
-  MessageSquare,
-  ArrowRight,
-  CheckCircle2,
-  Clock,
-} from "lucide-react";
-import {
-  StitchPageHeader,
-  StatCard,
-  GlassCard,
-  StitchButton,
-  StitchBadge,
-  FlashDot,
-} from "@/components/stitch";
+  SCPageHeader,
+  SCStatCard,
+  SCGlassCard,
+  SCBadge,
+} from "@/components/sc";
 import { TEAM_MEMBERS } from "@/lib/rec/types";
 import type { RecTask, NCSALead } from "@/lib/rec/types";
 
@@ -44,22 +36,28 @@ export default function AgencyPage() {
 
   return (
     <div className="space-y-6">
-      <StitchPageHeader
-        title="Agency"
+      <SCPageHeader
+        kicker="Virtual Agency"
+        title="TEAM COMMAND"
         subtitle="Virtual recruiting team coordination center"
       />
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <StatCard label="Team Members" value={TEAM_MEMBERS.length} />
-        <StatCard label="Active Tasks" value={pendingTasks.length} />
-        <StatCard label="Completed" value={completedTasks.length} />
-        <StatCard label="Active Leads" value={activeLeads.length} />
+        <SCStatCard label="Team Members" value={String(TEAM_MEMBERS.length)} icon="groups" />
+        <SCStatCard label="Active Tasks" value={String(pendingTasks.length)} icon="task" />
+        <SCStatCard label="Completed" value={String(completedTasks.length)} icon="task_alt" />
+        <SCStatCard label="Active Leads" value={String(activeLeads.length)} icon="trending_up" />
       </div>
 
       {/* Team Grid */}
       <div>
-        <h2 className="stitch-label mb-4">Team Roster</h2>
+        <div className="flex items-center gap-2 mb-4">
+          <span className="material-symbols-outlined text-[18px] text-sc-primary">badge</span>
+          <h2 className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+            Team Roster
+          </h2>
+        </div>
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {TEAM_MEMBERS.map((member) => {
             const memberTasks = tasks.filter(t => t.assignedTo === member.id);
@@ -67,61 +65,72 @@ export default function AgencyPage() {
 
             return (
               <Link key={member.id} href={`/agency/${member.id}`}>
-                <GlassCard className="p-4 transition-all hover:border-white/10 cursor-pointer">
+                <SCGlassCard className="p-4 transition-all hover:border-sc-primary/30 cursor-pointer">
                   <div className="flex items-start gap-3">
                     <div
                       className={`flex h-10 w-10 items-center justify-center rounded-xl ${MEMBER_COLORS[member.color] || "bg-white/10"}`}
                     >
-                      <span className="text-sm font-bold text-white">
-                        {member.name.charAt(0)}
+                      <span className="text-sm font-black text-white">
+                        {member.iconInitials}
                       </span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <p className="text-sm font-semibold text-white">{member.name}</p>
-                        {activeTasks.length > 0 && <FlashDot color="green" />}
+                        <p className="text-sm font-bold text-white">{member.name}</p>
+                        {activeTasks.length > 0 && (
+                          <span className="relative flex h-2 w-2">
+                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                          </span>
+                        )}
                       </div>
-                      <p className="text-[11px] text-white/40 truncate">{member.role}</p>
+                      <p className="text-[11px] text-slate-500 truncate">{member.title}</p>
                     </div>
-                    <ArrowRight className="h-4 w-4 text-white/20" />
+                    <span className="material-symbols-outlined text-[18px] text-white/20">
+                      arrow_forward
+                    </span>
                   </div>
-                  <div className="mt-3 flex items-center gap-3 text-[10px] text-white/30">
+                  <div className="mt-3 flex items-center gap-3 text-[10px] text-slate-600">
                     <span className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
+                      <span className="material-symbols-outlined text-[12px]">schedule</span>
                       {memberTasks.filter(t => t.status === "pending").length} pending
                     </span>
                     <span className="flex items-center gap-1">
-                      <CheckCircle2 className="h-3 w-3" />
+                      <span className="material-symbols-outlined text-[12px]">check_circle</span>
                       {memberTasks.filter(t => t.status === "completed").length} done
                     </span>
                   </div>
-                </GlassCard>
+                </SCGlassCard>
               </Link>
             );
           })}
         </div>
       </div>
 
-      {/* Active Tasks */}
+      {/* Task Queue */}
       {pendingTasks.length > 0 && (
         <div>
-          <h2 className="stitch-label mb-4">Active Tasks</h2>
+          <div className="flex items-center gap-2 mb-4">
+            <span className="material-symbols-outlined text-[18px] text-slate-400">checklist</span>
+            <h2 className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+              Task Queue
+            </h2>
+          </div>
           <div className="space-y-2">
             {pendingTasks.slice(0, 8).map((task) => (
-              <GlassCard key={task.id} className="flex items-center gap-4 px-4 py-3">
-                <StitchBadge
-                  variant={task.status === "in_progress" ? "green" : "default"}
-                  dot
+              <SCGlassCard key={task.id} className="flex items-center gap-4 px-4 py-3">
+                <SCBadge
+                  variant={task.status === "in_progress" ? "success" : "default"}
                 >
                   {task.status === "in_progress" ? "Active" : "Pending"}
-                </StitchBadge>
+                </SCBadge>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-white/70 truncate">{task.title}</p>
+                  <p className="text-sm text-slate-300 truncate">{task.title}</p>
                 </div>
-                <span className="text-[10px] text-white/25 shrink-0">
+                <span className="text-[10px] text-slate-600 shrink-0">
                   {task.assignedTo}
                 </span>
-              </GlassCard>
+              </SCGlassCard>
             ))}
           </div>
         </div>
@@ -130,22 +139,27 @@ export default function AgencyPage() {
       {/* Lead Pipeline Summary */}
       {leads.length > 0 && (
         <div>
-          <h2 className="stitch-label mb-4">Lead Pipeline</h2>
-          <GlassCard className="p-4">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="material-symbols-outlined text-[18px] text-slate-400">funnel</span>
+            <h2 className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+              Lead Pipeline
+            </h2>
+          </div>
+          <SCGlassCard className="p-4">
             <div className="grid grid-cols-3 gap-3 md:grid-cols-6">
               {["new", "researched", "followed", "dm_drafted", "dm_sent", "responded"].map((status) => {
                 const count = leads.filter(l => l.outreachStatus === status).length;
                 return (
                   <div key={status} className="text-center">
                     <p className="text-2xl font-black text-white">{count}</p>
-                    <p className="text-[10px] uppercase tracking-widest text-white/30">
+                    <p className="text-[10px] uppercase tracking-widest text-slate-600">
                       {status.replace(/_/g, " ")}
                     </p>
                   </div>
                 );
               })}
             </div>
-          </GlassCard>
+          </SCGlassCard>
         </div>
       )}
     </div>

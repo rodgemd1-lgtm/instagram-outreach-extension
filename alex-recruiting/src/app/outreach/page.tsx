@@ -2,17 +2,14 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Loader2 } from "lucide-react";
 import {
-  StitchPageHeader,
-  StatCard,
-  GlassCard,
-  StitchButton,
-  StitchBadge,
-  FilterBar,
-  TalentTopography,
-} from "@/components/stitch";
-import { StitchTabs } from "@/components/stitch/stitch-tabs";
+  SCPageHeader,
+  SCStatCard,
+  SCGlassCard,
+  SCBadge,
+  SCButton,
+  SCInput,
+} from "@/components/sc";
 
 type OutreachStage = "research" | "follow" | "engage" | "dm" | "response" | "relationship";
 
@@ -46,22 +43,22 @@ interface OutreachPlan {
   generatedAt: string;
 }
 
-const STAGES: { key: OutreachStage; label: string }[] = [
-  { key: "research", label: "Research" },
-  { key: "follow", label: "Follow" },
-  { key: "engage", label: "Engage" },
-  { key: "dm", label: "DM" },
-  { key: "response", label: "Response" },
-  { key: "relationship", label: "Relationship" },
+const STAGES: { key: OutreachStage; label: string; icon: string }[] = [
+  { key: "research", label: "Research", icon: "search" },
+  { key: "follow", label: "Follow", icon: "person_add" },
+  { key: "engage", label: "Engage", icon: "thumb_up" },
+  { key: "dm", label: "DM", icon: "mail" },
+  { key: "response", label: "Response", icon: "reply" },
+  { key: "relationship", label: "Relationship", icon: "handshake" },
 ];
 
 const STAGE_COLORS: Record<OutreachStage, string> = {
   research: "bg-white/10 text-white/50",
-  follow: "bg-[#00f2ff]/15 text-[#00f2ff]",
-  engage: "bg-amber-400/15 text-amber-400",
+  follow: "bg-blue-400/15 text-blue-400",
+  engage: "bg-yellow-500/15 text-yellow-500",
   dm: "bg-purple-400/15 text-purple-400",
-  response: "bg-[#0bda7d]/15 text-[#0bda7d]",
-  relationship: "bg-[#C5050C]/15 text-[#C5050C]",
+  response: "bg-emerald-400/15 text-emerald-400",
+  relationship: "bg-sc-primary/15 text-sc-primary",
 };
 
 export default function OutreachPage() {
@@ -114,86 +111,133 @@ export default function OutreachPage() {
 
   const hasCoaches = plan && plan.stats.total > 0;
 
+  const signingRate =
+    plan && plan.stats.total > 0
+      ? `${Math.round((plan.stats.responses / plan.stats.total) * 100)}%`
+      : "0%";
+
   return (
     <div className="space-y-6">
-      <StitchPageHeader
-        title="Campaign HQ"
-        subtitle="Full outreach pipeline from research to relationship"
+      <SCPageHeader
+        kicker="Campaign HQ"
+        title="OUTREACH COMMAND"
+        subtitle="Full recruitment campaign pipeline from research to relationship"
         actions={
-          <StitchButton
-            variant="pirate"
+          <SCButton
+            variant="primary"
             size="sm"
             onClick={handleGeneratePlan}
             disabled={generating}
           >
-            {generating ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating...
-              </>
-            ) : (
-              "Generate Plan"
+            {generating && (
+              <span className="material-symbols-outlined animate-spin text-[16px]">
+                progress_activity
+              </span>
             )}
-          </StitchButton>
+            {generating ? "Generating..." : "Generate Plan"}
+          </SCButton>
         }
       />
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
-        <StatCard label="Total Coaches" value={plan?.stats.total ?? 0} />
-        <StatCard label="DMs Drafted" value={plan?.stats.dmsDrafted ?? 0} />
-        <StatCard label="DMs Sent" value={plan?.stats.dmsSent ?? 0} />
-        <StatCard label="Responses" value={plan?.stats.responses ?? 0} />
-        <StatCard label="Follow Rate" value={plan?.stats.followRate ?? "0%"} />
+      {/* Metrics Row */}
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
+        <SCStatCard
+          label="Total Coaches"
+          value={String(plan?.stats.total ?? 0)}
+          icon="groups"
+        />
+        <SCStatCard
+          label="Signing Success Rate"
+          value={signingRate}
+          icon="verified"
+        />
+        <SCStatCard
+          label="Confirmed Prospects"
+          value={String(plan?.stats.responses ?? 0)}
+          icon="how_to_reg"
+        />
+        <SCStatCard
+          label="DMs Drafted"
+          value={String(plan?.stats.dmsDrafted ?? 0)}
+          icon="edit_note"
+        />
+        <SCStatCard
+          label="Outreach Velocity"
+          value={plan?.stats.followRate ?? "0%"}
+          icon="speed"
+        />
       </div>
 
       {/* Filters */}
-      <FilterBar
-        searchValue={search}
-        onSearchChange={setSearch}
-        filters={[
-          {
-            label: "Tier",
-            value: tierFilter,
-            onChange: setTierFilter,
-            options: [
-              { value: "all", label: "All Tiers" },
-              { value: "Tier 1", label: "Tier 1" },
-              { value: "Tier 2", label: "Tier 2" },
-              { value: "Tier 3", label: "Tier 3" },
-            ],
-          },
-        ]}
-      />
+      <SCGlassCard className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center">
+        <div className="flex-1">
+          <SCInput
+            icon="search"
+            placeholder="Search coaches or schools..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <select
+          className="rounded-lg border border-sc-border bg-white/5 px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-sc-primary/50"
+          value={tierFilter}
+          onChange={(e) => setTierFilter(e.target.value)}
+        >
+          <option value="all" className="bg-sc-surface text-white">All Tiers</option>
+          <option value="Tier 1" className="bg-sc-surface text-white">Tier 1</option>
+          <option value="Tier 2" className="bg-sc-surface text-white">Tier 2</option>
+          <option value="Tier 3" className="bg-sc-surface text-white">Tier 3</option>
+        </select>
+      </SCGlassCard>
 
-      {/* Talent Network Map */}
-      <TalentTopography onSchoolClick={(id) => router.push(`/coaches/${id}`)} />
+      {/* Network Visualization Placeholder */}
+      <SCGlassCard className="relative overflow-hidden p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="material-symbols-outlined text-sc-primary text-[20px]">hub</span>
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+            Talent Network Map
+          </p>
+        </div>
+        <div className="flex h-40 items-center justify-center rounded-lg border border-dashed border-sc-border">
+          <div className="text-center">
+            <span className="material-symbols-outlined text-[40px] text-white/10">
+              scatter_plot
+            </span>
+            <p className="mt-2 text-xs text-slate-500">
+              Network visualization loads with pipeline data
+            </p>
+          </div>
+        </div>
+      </SCGlassCard>
 
       {/* Loading */}
       {loading && (
-        <GlassCard className="flex items-center justify-center py-20">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#C5050C] border-t-transparent" />
-          <span className="ml-3 text-sm text-white/40">Loading pipeline...</span>
-        </GlassCard>
+        <SCGlassCard className="flex items-center justify-center py-20">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-sc-primary border-t-transparent" />
+          <span className="ml-3 text-sm text-slate-400">Loading pipeline...</span>
+        </SCGlassCard>
       )}
 
       {/* Empty State */}
       {!loading && !hasCoaches && (
-        <GlassCard className="py-16 text-center">
-          <p className="text-lg font-semibold text-white/50">No outreach plan yet</p>
-          <p className="mt-2 text-sm text-white/30">
+        <SCGlassCard className="py-16 text-center">
+          <span className="material-symbols-outlined text-[48px] text-white/10">
+            campaign
+          </span>
+          <p className="mt-4 text-lg font-bold text-white/50">No outreach plan yet</p>
+          <p className="mt-2 text-sm text-slate-500">
             Click &quot;Generate Plan&quot; to build your pipeline with all target schools.
           </p>
-          <StitchButton
-            variant="pirate"
+          <SCButton
+            variant="primary"
             size="sm"
             className="mt-6"
             onClick={handleGeneratePlan}
             disabled={generating}
           >
             {generating ? "Generating..." : "Generate Outreach Plan"}
-          </StitchButton>
-        </GlassCard>
+          </SCButton>
+        </SCGlassCard>
       )}
 
       {/* Pipeline Kanban */}
@@ -207,10 +251,13 @@ export default function OutreachPage() {
                 <div key={stage.key} className="flex flex-col">
                   {/* Column header */}
                   <div className="mb-3 flex items-center gap-2">
-                    <h3 className="text-xs font-bold uppercase tracking-widest text-white/40">
+                    <span className="material-symbols-outlined text-[16px] text-slate-500">
+                      {stage.icon}
+                    </span>
+                    <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400">
                       {stage.label}
                     </h3>
-                    <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-white/5 px-1.5 text-[10px] font-bold text-white/30">
+                    <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-white/5 px-1.5 text-[10px] font-bold text-slate-500">
                       {stageCoaches.length}
                     </span>
                   </div>
@@ -218,59 +265,70 @@ export default function OutreachPage() {
                   {/* Coach cards */}
                   <div className="flex flex-col gap-2">
                     {stageCoaches.length === 0 && (
-                      <div className="rounded-lg border border-white/5 py-8 text-center">
+                      <div className="rounded-xl border border-dashed border-sc-border py-8 text-center">
                         <p className="text-[10px] text-white/15">Empty</p>
                       </div>
                     )}
                     {stageCoaches
                       .sort((a, b) => b.priorityScore - a.priorityScore)
                       .map((coach) => (
-                        <GlassCard
+                        <div
                           key={coach.id}
-                          className="p-3 cursor-pointer hover:border-white/10 transition-all"
+                          className="cursor-pointer"
                           onClick={() => router.push(`/coaches/${coach.schoolId}`)}
+                        >
+                        <SCGlassCard
+                          className="p-3 transition-all hover:border-sc-primary/30"
                         >
                           <div className="flex items-start justify-between gap-2">
                             <div className="min-w-0">
-                              <p className="truncate text-sm font-semibold text-white">
+                              <p className="truncate text-sm font-bold text-white">
                                 {coach.name}
                               </p>
-                              <p className="truncate text-[11px] text-white/40">
+                              <p className="truncate text-[11px] text-slate-500">
                                 {coach.schoolName}
                               </p>
                             </div>
-                            <StitchBadge
+                            <SCBadge
                               variant={
-                                coach.priorityTier === "Tier 1" ? "tier1" :
-                                coach.priorityTier === "Tier 2" ? "tier2" : "tier3"
+                                coach.priorityTier === "Tier 1"
+                                  ? "danger"
+                                  : coach.priorityTier === "Tier 2"
+                                  ? "warning"
+                                  : "default"
                               }
                             >
                               {coach.priorityTier.replace("Tier ", "T")}
-                            </StitchBadge>
+                            </SCBadge>
                           </div>
-                          <p className="mt-2 text-[11px] font-medium text-white/50">
+                          <p className="mt-2 text-[11px] font-medium text-slate-400">
                             Next: {coach.nextAction}
                           </p>
                           {coach.nextActionDate && (
-                            <p className="text-[10px] text-white/25">
+                            <p className="text-[10px] text-slate-600">
                               Due: {coach.nextActionDate}
                             </p>
                           )}
                           <div className="mt-2 flex gap-1">
                             <button
-                              className={`rounded px-1.5 py-0.5 text-[9px] font-semibold transition-all ${STAGE_COLORS.dm}`}
-                              onClick={(e) => { e.stopPropagation(); }}
+                              className={`rounded px-1.5 py-0.5 text-[9px] font-bold transition-all ${STAGE_COLORS.dm}`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                              }}
                             >
                               DM
                             </button>
                             <button
-                              className={`rounded px-1.5 py-0.5 text-[9px] font-semibold transition-all ${STAGE_COLORS.engage}`}
-                              onClick={(e) => { e.stopPropagation(); }}
+                              className={`rounded px-1.5 py-0.5 text-[9px] font-bold transition-all ${STAGE_COLORS.engage}`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                              }}
                             >
                               Engage
                             </button>
                           </div>
-                        </GlassCard>
+                        </SCGlassCard>
+                        </div>
                       ))}
                   </div>
                 </div>
@@ -282,10 +340,17 @@ export default function OutreachPage() {
 
       {/* NCAA Compliance Note */}
       {plan?.ncaaNote && (
-        <GlassCard className="border-amber-400/20 p-4">
-          <p className="stitch-label text-amber-400/60">NCAA Compliance</p>
-          <p className="mt-1 text-sm text-amber-400/70">{plan.ncaaNote}</p>
-        </GlassCard>
+        <SCGlassCard variant="broadcast" className="p-4">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="material-symbols-outlined text-[16px] text-yellow-500">
+              gavel
+            </span>
+            <p className="text-[10px] font-black uppercase tracking-widest text-yellow-500/60">
+              NCAA Compliance
+            </p>
+          </div>
+          <p className="text-sm text-yellow-500/70">{plan.ncaaNote}</p>
+        </SCGlassCard>
       )}
     </div>
   );

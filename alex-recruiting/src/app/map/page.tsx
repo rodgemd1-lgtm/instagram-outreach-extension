@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { SCPageHeader, SCGlassCard } from "@/components/sc";
 
 const SchoolMap = dynamic(
   () => import("@/components/school-map").then((m) => m.SchoolMap),
@@ -8,7 +9,9 @@ const SchoolMap = dynamic(
     ssr: false,
     loading: () => (
       <div className="flex min-h-[600px] items-center justify-center">
-        <p className="text-sm text-[var(--app-muted)]">Loading map...</p>
+        <span className="material-symbols-outlined animate-spin text-[32px] text-slate-500">
+          progress_activity
+        </span>
       </div>
     ),
   }
@@ -16,14 +19,17 @@ const SchoolMap = dynamic(
 
 export default function MapPage() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-[var(--app-navy-strong)]">Target School Map</h1>
-        <p className="mt-1 text-sm text-[var(--app-muted)]">
-          17 target schools plotted by tier. Click a pin for coach details and school fit data.
-        </p>
-      </div>
-      <SchoolMap />
+    <div className="space-y-8">
+      <SCPageHeader
+        title="NATIONAL TALENT NETWORK"
+        kicker="Heat Map"
+        subtitle="17 target schools plotted by tier. Click a pin for coach details and school fit data."
+      />
+
+      {/* Map Container */}
+      <SCGlassCard className="overflow-hidden p-0">
+        <SchoolMap />
+      </SCGlassCard>
     </div>
   );
 }

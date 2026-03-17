@@ -2,28 +2,16 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Download, Plus } from "lucide-react";
-import {
-  StitchPageHeader,
-  StatCard,
-  FlashTicker,
-  FilterBar,
-  GlassCard,
-  StitchBadge,
-  StitchButton,
-  OLNeedMeter,
-  EngagementDot,
-} from "@/components/stitch";
-import {
-  StitchTable,
-  StitchTableHeader,
-  StitchTableHead,
-  StitchTableBody,
-  StitchTableRow,
-  StitchTableCell,
-} from "@/components/stitch/stitch-table";
 import Image from "next/image";
 import { getSchoolLogo } from "@/lib/data/school-branding";
+import {
+  SCPageHeader,
+  SCStatCard,
+  SCGlassCard,
+  SCBadge,
+  SCButton,
+  SCInput,
+} from "@/components/sc";
 
 interface Coach {
   id: string;
@@ -41,13 +29,6 @@ interface Coach {
   olNeedScore: number;
   xActivityScore: number;
   notes: string;
-}
-
-function mapStatus(status: string): "replied" | "sent" | "unsent" | "none" {
-  if (status === "replied" || status === "responded") return "replied";
-  if (status === "sent" || status === "following") return "sent";
-  if (status === "not_following" || status === "unsent") return "unsent";
-  return "none";
 }
 
 export default function CoachesPage() {
@@ -96,115 +77,140 @@ export default function CoachesPage() {
 
   // Stats
   const totalCoaches = coaches.length;
-  const intelReports = coaches.filter((c) => c.xActivityScore > 0).length;
   const withFollows = coaches.filter((c) => c.followStatus === "following").length;
   const withDMs = coaches.filter((c) => c.dmStatus === "sent" || c.dmStatus === "responded").length;
+  const responded = coaches.filter((c) => c.dmStatus === "responded").length;
   const engagementRate = totalCoaches > 0 ? Math.round((withFollows / totalCoaches) * 100) : 0;
-  const responseRate = withDMs > 0 ? Math.round((coaches.filter((c) => c.dmStatus === "responded").length / withDMs) * 100) : 0;
+  const avgProbability =
+    totalCoaches > 0
+      ? Math.round(coaches.reduce((sum, c) => sum + c.olNeedScore, 0) / totalCoaches)
+      : 0;
 
-  // Ticker alerts
-  const tickerItems = [
-    `${totalCoaches} coaches in database`,
-    `${intelReports} with intel reports`,
-    coaches.filter((c) => c.priorityTier === "Tier 1").length + " Tier 1 targets",
-  ];
+  const TABLE_HEADERS = ["School / Coach", "Division", "Tier", "OL Need", "Follow", "DM", "X Activity"];
 
   return (
     <div className="space-y-6">
-      {/* Flash Ticker */}
-      <FlashTicker items={tickerItems} />
-
-      {/* Page Header */}
-      <StitchPageHeader
-        title="War Room"
+      <SCPageHeader
+        kicker="Offer Management"
+        title="ACTIVE OFFER PIPELINE"
         subtitle="Coach intelligence and targeting operations"
         actions={
-          <>
-            <StitchButton variant="outline" size="sm">
-              <Download className="mr-2 h-4 w-4" />
+          <div className="flex gap-3">
+            <SCButton variant="secondary" size="sm">
+              <span className="material-symbols-outlined text-[16px]">download</span>
               Export DB
-            </StitchButton>
-            <StitchButton variant="pirate" size="sm">
-              <Plus className="mr-2 h-4 w-4" />
+            </SCButton>
+            <SCButton variant="primary" size="sm">
+              <span className="material-symbols-outlined text-[16px]">add</span>
               New Target
-            </StitchButton>
-          </>
+            </SCButton>
+          </div>
         }
       />
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <StatCard label="Active Targets" value={totalCoaches} />
-        <StatCard label="Intel Reports" value={intelReports} />
-        <StatCard label="Engagement Rate" value={`${engagementRate}%`} />
-        <StatCard label="Response Rate" value={`${responseRate}%`} />
+        <SCStatCard label="Total Offers" value={String(totalCoaches)} icon="groups" />
+        <SCStatCard
+          label="Under Review"
+          value={String(withFollows)}
+          icon="pending"
+        />
+        <SCStatCard
+          label="Signed"
+          value={String(responded)}
+          icon="task_alt"
+        />
+        <SCStatCard
+          label="Avg Probability"
+          value={`${avgProbability}/10`}
+          icon="analytics"
+          progress={avgProbability * 10}
+        />
       </div>
 
       {/* Filters */}
-      <FilterBar
-        searchValue={search}
-        onSearchChange={setSearch}
-        filters={[
-          {
-            label: "Tier",
-            value: tierFilter,
-            onChange: setTierFilter,
-            options: [
-              { value: "all", label: "All Tiers" },
-              { value: "Tier 1", label: "Tier 1 (Reach)" },
-              { value: "Tier 2", label: "Tier 2 (Target)" },
-              { value: "Tier 3", label: "Tier 3 (Safety)" },
-            ],
-          },
-          {
-            label: "Division",
-            value: divisionFilter,
-            onChange: setDivisionFilter,
-            options: [
-              { value: "all", label: "All Divisions" },
-              { value: "D1 FBS", label: "D1 FBS" },
-              { value: "D1 FCS", label: "D1 FCS" },
-              { value: "D2", label: "D2" },
-            ],
-          },
-        ]}
-      />
+      <SCGlassCard className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center">
+        <div className="flex-1">
+          <SCInput
+            icon="search"
+            placeholder="Search coaches or schools..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <select
+          className="rounded-lg border border-sc-border bg-white/5 px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-sc-primary/50"
+          value={tierFilter}
+          onChange={(e) => setTierFilter(e.target.value)}
+        >
+          <option value="all" className="bg-sc-surface text-white">All Tiers</option>
+          <option value="Tier 1" className="bg-sc-surface text-white">Tier 1 (Reach)</option>
+          <option value="Tier 2" className="bg-sc-surface text-white">Tier 2 (Target)</option>
+          <option value="Tier 3" className="bg-sc-surface text-white">Tier 3 (Safety)</option>
+        </select>
+        <select
+          className="rounded-lg border border-sc-border bg-white/5 px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-sc-primary/50"
+          value={divisionFilter}
+          onChange={(e) => setDivisionFilter(e.target.value)}
+        >
+          <option value="all" className="bg-sc-surface text-white">All Divisions</option>
+          <option value="D1 FBS" className="bg-sc-surface text-white">D1 FBS</option>
+          <option value="D1 FCS" className="bg-sc-surface text-white">D1 FCS</option>
+          <option value="D2" className="bg-sc-surface text-white">D2</option>
+        </select>
+      </SCGlassCard>
 
       {/* Coach Table */}
       {loading ? (
-        <GlassCard className="flex items-center justify-center py-20">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#C5050C] border-t-transparent" />
-          <span className="ml-3 text-sm text-white/40">Loading targets...</span>
-        </GlassCard>
+        <SCGlassCard className="flex items-center justify-center py-20">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-sc-primary border-t-transparent" />
+          <span className="ml-3 text-sm text-slate-400">Loading targets...</span>
+        </SCGlassCard>
       ) : filtered.length === 0 ? (
-        <GlassCard className="py-16 text-center">
-          <p className="text-sm text-white/40">No coaches found. Adjust filters or add new targets.</p>
-        </GlassCard>
+        <SCGlassCard className="py-16 text-center">
+          <span className="material-symbols-outlined text-[48px] text-white/10">person_search</span>
+          <p className="mt-4 text-sm text-slate-500">
+            No coaches found. Adjust filters or add new targets.
+          </p>
+        </SCGlassCard>
       ) : (
-        <GlassCard className="overflow-hidden">
-          <StitchTable>
-            <StitchTableHeader>
-              <tr>
-                <StitchTableHead>School / Coach</StitchTableHead>
-                <StitchTableHead>Division</StitchTableHead>
-                <StitchTableHead>Tier</StitchTableHead>
-                <StitchTableHead>OL Need</StitchTableHead>
-                <StitchTableHead>Follow</StitchTableHead>
-                <StitchTableHead>DM</StitchTableHead>
-                <StitchTableHead>X Activity</StitchTableHead>
+        <SCGlassCard className="overflow-hidden rounded-xl">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-sc-surface/50">
+                {TABLE_HEADERS.map((h) => (
+                  <th key={h} className="px-4 py-3 text-left text-[10px] uppercase tracking-widest text-slate-400 font-black">
+                    {h}
+                  </th>
+                ))}
               </tr>
-            </StitchTableHeader>
-            <StitchTableBody>
+            </thead>
+            <tbody className="divide-y divide-sc-border">
               {filtered.map((coach) => {
                 const schoolId = coach.schoolId || coach.schoolName.toLowerCase().replace(/\s+/g, "-");
                 const logoPath = getSchoolLogo(schoolId);
+                const olLevel = Math.min(5, Math.max(1, Math.round(coach.olNeedScore / 2)));
+                const followColor =
+                  coach.followStatus === "following"
+                    ? "bg-emerald-500"
+                    : coach.followStatus === "not_following"
+                    ? "bg-white/20"
+                    : "bg-yellow-500";
+                const dmColor =
+                  coach.dmStatus === "responded"
+                    ? "bg-emerald-500"
+                    : coach.dmStatus === "sent"
+                    ? "bg-blue-500"
+                    : "bg-white/20";
 
                 return (
-                  <StitchTableRow
+                  <tr
                     key={coach.id}
+                    className="hover:bg-sc-primary/5 transition-colors cursor-pointer"
                     onClick={() => router.push(`/coaches/${schoolId}`)}
                   >
-                    <StitchTableCell>
+                    <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white/5">
                           <Image
@@ -219,52 +225,74 @@ export default function CoachesPage() {
                           />
                         </div>
                         <div>
-                          <p className="text-sm font-semibold text-white">{coach.schoolName}</p>
-                          <p className="text-[11px] text-white/40">{coach.name}</p>
+                          <p className="text-sm font-bold text-white">{coach.schoolName}</p>
+                          <p className="text-[11px] text-slate-500">{coach.name}</p>
                         </div>
                       </div>
-                    </StitchTableCell>
-                    <StitchTableCell>
-                      <span className="text-xs text-white/50">{coach.division}</span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className="text-xs text-slate-400">{coach.division}</span>
                       <br />
-                      <span className="text-[10px] text-white/30">{coach.conference}</span>
-                    </StitchTableCell>
-                    <StitchTableCell>
-                      <StitchBadge
+                      <span className="text-[10px] text-slate-600">{coach.conference}</span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <SCBadge
                         variant={
-                          coach.priorityTier === "Tier 1" ? "tier1" :
-                          coach.priorityTier === "Tier 2" ? "tier2" : "tier3"
+                          coach.priorityTier === "Tier 1"
+                            ? "danger"
+                            : coach.priorityTier === "Tier 2"
+                            ? "warning"
+                            : "default"
                         }
                       >
                         {coach.priorityTier}
-                      </StitchBadge>
-                    </StitchTableCell>
-                    <StitchTableCell>
-                      <OLNeedMeter level={Math.min(5, Math.max(1, Math.round(coach.olNeedScore / 2)))} />
-                    </StitchTableCell>
-                    <StitchTableCell>
-                      <EngagementDot status={mapStatus(coach.followStatus)} />
-                    </StitchTableCell>
-                    <StitchTableCell>
-                      <EngagementDot status={mapStatus(coach.dmStatus)} />
-                    </StitchTableCell>
-                    <StitchTableCell>
+                      </SCBadge>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <div
+                            key={i}
+                            className={`h-2 w-2 rounded-full ${
+                              i < olLevel ? "bg-sc-primary shadow-[0_0_4px_rgba(197,5,12,0.4)]" : "bg-white/10"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <div className={`h-2.5 w-2.5 rounded-full ${followColor}`} />
+                        <span className="text-[10px] text-slate-500 capitalize">
+                          {coach.followStatus?.replace(/_/g, " ") ?? "unknown"}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <div className={`h-2.5 w-2.5 rounded-full ${dmColor}`} />
+                        <span className="text-[10px] text-slate-500 capitalize">
+                          {coach.dmStatus?.replace(/_/g, " ") ?? "none"}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <div className="h-1.5 w-16 rounded-full bg-white/5">
                           <div
-                            className="h-1.5 rounded-full bg-[#00f2ff]"
+                            className="h-1.5 rounded-full bg-blue-400"
                             style={{ width: `${Math.min(100, coach.xActivityScore * 10)}%` }}
                           />
                         </div>
-                        <span className="text-[10px] text-white/30">{coach.xActivityScore}</span>
+                        <span className="text-[10px] text-slate-600">{coach.xActivityScore}</span>
                       </div>
-                    </StitchTableCell>
-                  </StitchTableRow>
+                    </td>
+                  </tr>
                 );
               })}
-            </StitchTableBody>
-          </StitchTable>
-        </GlassCard>
+            </tbody>
+          </table>
+        </SCGlassCard>
       )}
     </div>
   );

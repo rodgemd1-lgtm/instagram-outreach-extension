@@ -1,9 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
-import { Inter } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { AppShell } from "@/components/app-shell";
-import { PWARegister } from "@/components/pwa-register";
+import { SCShell } from "@/components/sc/sc-shell";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -11,19 +9,12 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-jetbrains",
 });
 
-// Use the canonical production URL so OG/Twitter cards resolve correctly.
-// VERCEL_URL returns a deployment-specific hash URL that is 401 to crawlers.
 const metadataBaseUrl =
   process.env.NEXT_PUBLIC_APP_URL ??
   "https://alex-recruiting.vercel.app";
@@ -45,7 +36,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#000000",
+  themeColor: "#0a0a0a",
 };
 
 export default function RootLayout({
@@ -54,14 +45,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
         <meta name="mobile-web-app-capable" content="yes" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+          rel="stylesheet"
+        />
       </head>
-      <body className={`${inter.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <PWARegister />
-        <AppShell>{children}</AppShell>
+      <body className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}>
+        <SCShell>{children}</SCShell>
       </body>
     </html>
   );

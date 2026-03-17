@@ -2,18 +2,27 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Users, Mail, FileText, Eye, ArrowRight } from "lucide-react";
-import { StatCard } from "@/components/dashboard/stat-card";
+import { SCPageHeader } from "@/components/sc/sc-page-header";
+import { SCStatCard } from "@/components/sc/sc-stat-card";
+import { SCGlassCard } from "@/components/sc/sc-glass-card";
+import { SCButton } from "@/components/sc/sc-button";
+import { SCBadge } from "@/components/sc/sc-badge";
 import { targetSchools } from "@/lib/data/target-schools";
-import { getSchoolLogo, getSchoolColors } from "@/lib/data/school-branding";
-import { StaggerChildren, StaggerItem } from "@/components/motion/stagger-children";
-import { ScrollReveal } from "@/components/motion/scroll-reveal";
+import { getSchoolLogo } from "@/lib/data/school-branding";
 
 interface DashboardStats {
   profileViews: number | null;
   coachCount: number | null;
   dmsSent: number | null;
   postsThisWeek: number | null;
+}
+
+interface ActivityItem {
+  id: string;
+  type: string;
+  description: string;
+  timestamp: string;
+  schoolId?: string;
 }
 
 export default function DashboardPage() {
@@ -23,15 +32,7 @@ export default function DashboardPage() {
     dmsSent: null,
     postsThisWeek: null,
   });
-  const [recentActivity, setRecentActivity] = useState<
-    Array<{
-      id: string;
-      type: string;
-      description: string;
-      timestamp: string;
-      schoolId?: string;
-    }>
-  >([]);
+  const [recentActivity, setRecentActivity] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -60,7 +61,6 @@ export default function DashboardPage() {
           : postsRes?.posts || [];
         const dms = Array.isArray(dmsRes) ? dmsRes : dmsRes?.messages || [];
 
-        // Calculate posts this week
         const weekAgo = new Date();
         weekAgo.setDate(weekAgo.getDate() - 7);
         const postsThisWeek = posts.filter(
@@ -68,7 +68,7 @@ export default function DashboardPage() {
         ).length;
 
         setStats({
-          profileViews: analyticsRes?.profileViews ?? null,
+          profileViews: analyticsRes?.current?.profileVisits ?? analyticsRes?.profileViews ?? null,
           coachCount: coaches.length || null,
           dmsSent:
             dms.filter(
@@ -77,16 +77,8 @@ export default function DashboardPage() {
           postsThisWeek: postsThisWeek || null,
         });
 
-        // Build activity from real data
-        const activity: Array<{
-          id: string;
-          type: string;
-          description: string;
-          timestamp: string;
-          schoolId?: string;
-        }> = [];
+        const activity: ActivityItem[] = [];
 
-        // Recent DMs
         dms.slice(0, 5).forEach((dm: any, i: number) => {
           activity.push({
             id: `dm-${i}`,
@@ -98,7 +90,6 @@ export default function DashboardPage() {
           });
         });
 
-        // Recent posts
         posts.slice(0, 5).forEach((post: any, i: number) => {
           activity.push({
             id: `post-${i}`,
@@ -109,7 +100,6 @@ export default function DashboardPage() {
           });
         });
 
-        // Sort by timestamp descending
         activity.sort(
           (a, b) =>
             new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
@@ -124,7 +114,6 @@ export default function DashboardPage() {
     fetchData();
   }, []);
 
-  // Group target schools by tier
   const schoolsByTier = targetSchools.reduce(
     (acc, school) => {
       const tier = school.priorityTier;
@@ -147,54 +136,96 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      {/* Page Title */}
-      <h1 className="text-3xl font-black text-[#0F1720] tracking-tight mb-2">Overview</h1>
+      {/* Page Header */}
+      <SCPageHeader
+        title="JACOB'S COMMAND"
+        subtitle="Pewaukee Pirates Elite Scouting Pipeline"
+      />
 
-      {/* Stat Cards */}
-      <StaggerChildren className="grid grid-cols-2 lg:grid-cols-4 gap-4" staggerDelay={0.08}>
-        <StaggerItem>
-          <StatCard label="Coaches Tracked" value={stats.coachCount} icon={Users} />
-        </StaggerItem>
-        <StaggerItem>
-          <StatCard label="DMs Sent" value={stats.dmsSent} icon={Mail} />
-        </StaggerItem>
-        <StaggerItem>
-          <StatCard
-            label="Posts This Week"
-            value={stats.postsThisWeek}
-            icon={FileText}
-          />
-        </StaggerItem>
-        <StaggerItem>
-          <StatCard label="Profile Views" value={stats.profileViews} icon={Eye} />
-        </StaggerItem>
-      </StaggerChildren>
+      {/* Stat Cards — 3-col grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <SCStatCard
+          label="Coaches Tracked"
+          value={stats.coachCount != null ? String(stats.coachCount) : "--"}
+          icon="target"
+          trend={stats.coachCount != null ? { value: "tracking", direction: "up" } : undefined}
+        />
+        <SCStatCard
+          label="DMs Sent"
+          value={stats.dmsSent != null ? String(stats.dmsSent) : "--"}
+          icon="monitoring"
+          trend={stats.dmsSent != null ? { value: "outreach active", direction: "up" } : undefined}
+        />
+        <SCStatCard
+          label="Scout Velocity"
+          value={stats.postsThisWeek != null ? `${stats.postsThisWeek}/wk` : "--"}
+          icon="bolt"
+        />
+      </div>
 
-      {/* Two Column Layout */}
-      <ScrollReveal variant="fadeUp" delay={0.15}>
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* Recent Activity */}
-        <div className="lg:col-span-2 bg-white border-2 border-gray-200 rounded-xl shadow-[4px_4px_0_#E5E7EB] hover:shadow-[4px_4px_0_#0F1720] transition-shadow duration-200">
-          <div className="px-6 py-5 border-b-2 border-gray-200 flex items-center justify-between">
-            <h2 className="text-xl font-bold text-[#0F1720] tracking-tight">
-              Recent Activity
-            </h2>
+      {/* AI Recommendation Engine */}
+      <SCGlassCard className="overflow-hidden">
+        <div className="flex items-center justify-between bg-sc-primary/5 border-b border-sc-border px-6 py-3">
+          <div className="flex items-center gap-3">
+            <span className="material-symbols-outlined text-sc-primary text-xl">auto_awesome</span>
+            <span className="text-xs font-black uppercase tracking-widest text-white">
+              AI Recommendation Engine
+            </span>
           </div>
-          <div className="divide-y divide-[#F3F4F6]">
+          <SCBadge variant="success">System Active</SCBadge>
+        </div>
+        <div className="p-6 flex flex-col md:flex-row items-start gap-6">
+          <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-sc-primary/10 border border-sc-primary/20 flex items-center justify-center">
+            <span className="material-symbols-outlined text-sc-primary text-4xl">psychology</span>
+          </div>
+          <div className="flex-1 space-y-3">
+            <p className="text-sm text-slate-300 leading-relaxed">
+              {stats.coachCount != null && stats.coachCount > 0
+                ? `You are tracking ${stats.coachCount} coaches. Continue engaging with top-tier programs and keep your DM pipeline warm.`
+                : "Start building your recruiting pipeline. Add target coaches and begin outreach to get personalized recommendations."}
+            </p>
+            <div className="flex gap-3 flex-wrap">
+              <Link href="/dashboard/coaches">
+                <SCButton variant="primary" size="sm">
+                  <span className="material-symbols-outlined text-[16px]">group</span>
+                  Coach Pipeline
+                </SCButton>
+              </Link>
+              <Link href="/dashboard/outreach">
+                <SCButton variant="secondary" size="sm">
+                  <span className="material-symbols-outlined text-[16px]">send</span>
+                  Send DM
+                </SCButton>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </SCGlassCard>
+
+      {/* Two Column: Pipeline / Activity + Target Schools sidebar */}
+      <div className="grid lg:grid-cols-3 gap-6">
+        {/* Recent Activity — Pipeline */}
+        <SCGlassCard className="lg:col-span-2 overflow-hidden">
+          <div className="px-6 py-4 border-b border-sc-border flex items-center justify-between">
+            <h2 className="text-sm font-black uppercase tracking-widest text-white">
+              Pipeline Activity
+            </h2>
+            <SCBadge variant="info">Live</SCBadge>
+          </div>
+          <div className="divide-y divide-sc-border">
             {loading ? (
-              // Skeleton loading
               Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="px-5 py-3 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[#F5F5F4] animate-pulse" />
+                <div key={i} className="px-6 py-3 flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-white/5 animate-pulse" />
                   <div className="flex-1 space-y-1.5">
-                    <div className="h-3.5 w-3/4 bg-[#F5F5F4] rounded animate-pulse" />
-                    <div className="h-3 w-1/4 bg-[#F5F5F4] rounded animate-pulse" />
+                    <div className="h-3.5 w-3/4 bg-white/5 rounded animate-pulse" />
+                    <div className="h-3 w-1/4 bg-white/5 rounded animate-pulse" />
                   </div>
                 </div>
               ))
             ) : recentActivity.length > 0 ? (
               recentActivity.map((item) => (
-                <div key={item.id} className="px-5 py-3 flex items-center gap-3">
+                <div key={item.id} className="px-6 py-3 flex items-center gap-3 hover:bg-sc-primary/5 transition-colors">
                   {item.schoolId ? (
                     <img
                       src={getSchoolLogo(item.schoolId)}
@@ -202,100 +233,94 @@ export default function DashboardPage() {
                       className="w-8 h-8 rounded-full"
                     />
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-[#F5F5F4] flex items-center justify-center">
-                      {item.type === "dm" ? (
-                        <Mail className="w-4 h-4 text-[#9CA3AF]" />
-                      ) : (
-                        <FileText className="w-4 h-4 text-[#9CA3AF]" />
-                      )}
+                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
+                      <span className="material-symbols-outlined text-[16px] text-slate-500">
+                        {item.type === "dm" ? "mail" : "article"}
+                      </span>
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-[#0F1720] truncate">
+                    <p className="text-sm text-white truncate">
                       {item.description}
                     </p>
-                    <p className="text-xs text-[#9CA3AF]">
+                    <p className="text-xs text-slate-500">
                       {timeAgo(item.timestamp)}
                     </p>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="px-5 py-12 text-center">
-                <Mail className="w-8 h-8 text-[#D1D5DB] mx-auto mb-2" />
-                <p className="text-sm text-[#9CA3AF]">No recent activity</p>
-                <p className="text-xs text-[#D1D5DB] mt-1">
+              <div className="px-6 py-12 text-center">
+                <span className="material-symbols-outlined text-[32px] text-slate-600 mb-2 block">inbox</span>
+                <p className="text-sm text-slate-400">No recent activity</p>
+                <p className="text-xs text-slate-600 mt-1">
                   Start by following a coach or drafting a DM
                 </p>
               </div>
             )}
           </div>
-        </div>
+        </SCGlassCard>
 
-        {/* Target Schools */}
-        <div className="bg-white border-2 border-gray-200 rounded-xl shadow-[4px_4px_0_#E5E7EB] hover:shadow-[4px_4px_0_#0F1720] transition-shadow duration-200">
-          <div className="px-6 py-5 border-b-2 border-gray-200 flex items-center justify-between">
-            <h2 className="text-xl font-bold text-[#0F1720] tracking-tight">
-              Target Schools
+        {/* Target Schools sidebar */}
+        <SCGlassCard className="overflow-hidden">
+          <div className="px-6 py-4 border-b border-sc-border flex items-center justify-between">
+            <h2 className="text-sm font-black uppercase tracking-widest text-white">
+              Active Scouts
             </h2>
+            <SCBadge variant="primary">{targetSchools.length} Schools</SCBadge>
           </div>
-          <div className="p-4 space-y-6">
+          <div className="p-4 space-y-5 max-h-[480px] overflow-y-auto">
             {Object.entries(schoolsByTier).map(([tier, schools]) => (
               <div key={tier}>
-                <p className="text-xs font-medium text-[#9CA3AF] uppercase tracking-wide mb-2">
+                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">
                   {tier}
                 </p>
-                <div className="space-y-1.5">
+                <div className="space-y-1">
                   {schools.map((school) => (
                     <div
                       key={school.id}
-                      className="flex items-center gap-2.5 py-1.5"
+                      className="flex items-center gap-2.5 py-1.5 px-2 rounded-lg hover:bg-white/5 transition-colors"
                     >
                       <img
                         src={getSchoolLogo(school.id)}
                         alt={school.name}
                         className="w-7 h-7 rounded-full"
                       />
-                      <span className="text-sm text-[#0F1720] flex-1 truncate">
+                      <span className="text-sm text-white flex-1 truncate">
                         {school.name}
                       </span>
-                      <span className="text-xs text-[#9CA3AF] bg-[#F5F5F4] px-2 py-0.5 rounded-full">
-                        {school.conference}
-                      </span>
+                      <SCBadge variant="default">{school.conference}</SCBadge>
                     </div>
                   ))}
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </SCGlassCard>
       </div>
-      </ScrollReveal>
 
       {/* Quick Actions */}
-      <ScrollReveal variant="fadeUp" delay={0.2}>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "View Recruit Site", href: "/recruit", icon: ArrowRight },
-          { label: "Draft Content", href: "/dashboard/content", icon: FileText },
-          { label: "Coach Pipeline", href: "/dashboard/coaches", icon: Users },
-          { label: "Send DM", href: "/dashboard/outreach", icon: Mail },
+          { label: "View Recruit Site", href: "/recruit", icon: "open_in_new" },
+          { label: "Draft Content", href: "/dashboard/content", icon: "edit_note" },
+          { label: "Coach Pipeline", href: "/dashboard/coaches", icon: "group" },
+          { label: "Send DM", href: "/dashboard/outreach", icon: "send" },
         ].map((action) => (
-          <Link
-            key={action.href}
-            href={action.href}
-            className="bg-white border-2 border-gray-200 rounded-xl p-5 hover:-translate-y-1 hover:shadow-[4px_4px_0_#0F1720] transition-all duration-200 group flex flex-col items-center justify-center text-center"
-          >
-            <div className="mb-3 p-3 rounded-xl bg-[#F8FAFC] group-hover:bg-[#0F1720] transition-colors duration-200">
-              <action.icon className="w-6 h-6 text-[#6B7280] group-hover:text-white transition-colors" />
-            </div>
-            <p className="text-sm font-bold text-[#0F1720]">
-              {action.label}
-            </p>
+          <Link key={action.href} href={action.href}>
+            <SCGlassCard className="p-5 hover:bg-sc-primary/5 transition-all cursor-pointer group text-center">
+              <div className="mb-3 mx-auto w-12 h-12 rounded-xl bg-white/5 group-hover:bg-sc-primary/10 flex items-center justify-center transition-colors">
+                <span className="material-symbols-outlined text-2xl text-slate-400 group-hover:text-sc-primary transition-colors">
+                  {action.icon}
+                </span>
+              </div>
+              <p className="text-sm font-bold text-white">
+                {action.label}
+              </p>
+            </SCGlassCard>
           </Link>
         ))}
       </div>
-      </ScrollReveal>
     </div>
   );
 }
