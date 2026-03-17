@@ -38,9 +38,9 @@ describe('content generation', () => {
     expect(uniqueDates.size).toBeGreaterThan(10);
   });
 
-  it('all posts have approval_status set to draft', () => {
+  it('all posts have approval_status set to pending', () => {
     contentCalendar30d.forEach(p => {
-      expect(p.approval_status).toBe('draft');
+      expect(p.approval_status).toBe('pending');
     });
   });
 

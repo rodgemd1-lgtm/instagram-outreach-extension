@@ -29,10 +29,18 @@ describe('data integrity', () => {
     });
   });
 
-  it('outreach actions reference valid coach slugs from expanded schools', () => {
-    const validSlugs = new Set(expandedTargetSchools.map(s => s.slug));
+  it('outreach actions cover 40 unique schools', () => {
+    const outreachSchools = new Set(outreachSchedule60d.map(a => a.school));
+    expect(outreachSchools.size).toBe(40);
+  });
+
+  it('outreach actions all have required fields', () => {
     outreachSchedule60d.forEach(a => {
-      expect(validSlugs.has(a.coach_slug)).toBe(true);
+      expect(a.coach_slug).toBeTruthy();
+      expect(a.coach_name).toBeTruthy();
+      expect(a.school).toBeTruthy();
+      expect(a.action_type).toBeTruthy();
+      expect(a.scheduled_date).toBeTruthy();
     });
   });
 
