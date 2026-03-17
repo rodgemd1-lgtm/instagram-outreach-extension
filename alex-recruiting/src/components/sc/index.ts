@@ -15,3 +15,8 @@ export { SCInput } from "./sc-input";
 export { SCPageHeader } from "./sc-page-header";
 export { SCTabs } from "./sc-tabs";
 export { SCSplashScreen } from "./sc-splash-screen";
+
+// Animation & UI
+export { SCHeroBanner } from "./sc-hero-banner";
+export { SCAnimatedNumber } from "./sc-animated-number";
+export { SCPageTransition } from "./sc-page-transition";
