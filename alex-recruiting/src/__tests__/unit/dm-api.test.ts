@@ -15,7 +15,7 @@ describe("DM API POST", () => {
 
   it("should create a drafted DM successfully", async () => {
     const payload = {
-      coachId: "test-123",
+      coachId: "00000000-0000-0000-0000-000000000123",
       coachName: "Coach Smith",
       schoolName: "Test U",
       templateType: "intro",
@@ -39,7 +39,7 @@ describe("DM API POST", () => {
 
   it("should set status to sent when sendNow is true in memory fallback", async () => {
     const payload = {
-      coachId: "test-456",
+      coachId: "00000000-0000-0000-0000-000000000456",
       coachName: "Coach Johnson",
       schoolName: "Test State",
       templateType: "follow_up",

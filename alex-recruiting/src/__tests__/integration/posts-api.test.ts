@@ -133,7 +133,7 @@ describe("POST /api/posts", () => {
     expect(data.post.status).toBe("draft");
   });
 
-  it("created post defaults pillar to performance when not provided", async () => {
+  it("rejects post without required pillar field", async () => {
     const { POST } = await import("@/app/api/posts/route");
     const req = new NextRequest("http://localhost:3000/api/posts", {
       method: "POST",
@@ -142,13 +142,11 @@ describe("POST /api/posts", () => {
       }),
     });
     const response = await POST(req);
-    const data = await response.json();
 
-    // The route falls through to the in-memory store which uses body.pillar as ContentPillar
-    // but the Supabase path defaults to "performance". In-memory store may pass undefined.
-    // Either way, the post should be created successfully.
-    expect(response.status).toBe(201);
-    expect(data.post).toHaveProperty("content");
+    // Zod validation now requires pillar — posts without it are rejected
+    expect(response.status).toBe(400);
+    const data = await response.json();
+    expect(data.error).toBeDefined();
   });
 
   it("created post has zero engagement metrics initially", async () => {
