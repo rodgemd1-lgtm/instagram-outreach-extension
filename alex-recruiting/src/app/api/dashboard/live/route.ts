@@ -103,13 +103,13 @@ export async function GET(): Promise<NextResponse> {
   } catch (error) {
     console.error("[/api/dashboard/live] Unhandled error:", error);
 
-    // Return a safe fallback so the UI never shows an error state
+    // Return zeros — never show fake data
     const fallback: LiveDashboardResponse = {
-      followers: { count: 47, weekChange: 12, target: 20000 },
-      coachFollows: { count: 3, target: 15, recentFollows: [] },
-      engagement: { rate: 6.2, weekChange: 0.8 },
-      posts: { thisWeek: 4, target: 5 },
-      dms: { sent: 12, responses: 3, responseRate: 25 },
+      followers: { count: 0, weekChange: 0, target: 20000 },
+      coachFollows: { count: 0, target: 15, recentFollows: [] },
+      engagement: { rate: 0, weekChange: 0 },
+      posts: { thisWeek: 0, target: 5 },
+      dms: { sent: 0, responses: 0, responseRate: 0 },
       alerts: [],
       competitorUpdates: [],
       meta: {

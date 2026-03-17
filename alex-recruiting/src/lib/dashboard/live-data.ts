@@ -215,7 +215,7 @@ export async function getLiveCoachFollows(): Promise<CoachFollowMetric> {
 /**
  * Calculates Jacob's engagement rate from his most recent 20 tweets.
  * Engagement rate = (likes + retweets + replies) / impressions * 100.
- * Falls back to 6.2% if the API is unreachable or returns no data.
+ * Falls back to 0 if the API is unreachable or returns no data.
  */
 export async function getLiveEngagementRate(): Promise<EngagementMetric> {
   const now = new Date().toISOString();
@@ -273,7 +273,7 @@ export async function getLiveEngagementRate(): Promise<EngagementMetric> {
       fetchedAt: now,
     };
   } catch {
-    return { rate: 6.2, weekChange: 0, totalImpressions: 0, totalEngagements: 0, fetchedAt: now };
+    return { rate: 0, weekChange: 0, totalImpressions: 0, totalEngagements: 0, fetchedAt: now };
   }
 }
 
@@ -366,7 +366,7 @@ export async function getDashboardSnapshot(): Promise<DashboardSnapshot> {
     const jacobUser = await getJacobUser();
 
     // If all counts match the fallback values exactly, flag as fallback
-    if (followers.count === 47 && coachFollows.count === 3 && engagement.rate === 6.2) {
+    if (followers.count === 0 && coachFollows.count === 0 && engagement.rate === 0) {
       dataSource = "fallback";
     }
 

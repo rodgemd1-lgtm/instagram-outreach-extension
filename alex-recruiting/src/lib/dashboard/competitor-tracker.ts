@@ -162,9 +162,9 @@ export async function getCompetitorUpdates(): Promise<CompetitorUpdate[]> {
  * Attempts live lookups; falls back to static baseline data.
  */
 export async function getCompetitorComparison(
-  jacobCurrentFollowers: number = 47,
-  jacobPostsPerWeek: number = 4,
-  jacobEngagementRate: number = 6.2
+  jacobCurrentFollowers: number = 0,
+  jacobPostsPerWeek: number = 0,
+  jacobEngagementRate: number = 0
 ): Promise<CompetitorComparison> {
   const comparisonDate = new Date().toISOString();
   const rows: CompetitorComparisonRow[] = [];

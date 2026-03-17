@@ -24,16 +24,16 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const { searchParams } = new URL(request.url);
 
-    const jacobFollowers = parseInt(searchParams.get("followers") ?? "47", 10);
-    const jacobPosts = parseInt(searchParams.get("posts") ?? "4", 10);
-    const jacobEngagement = parseFloat(searchParams.get("engagement") ?? "6.2");
+    const jacobFollowers = parseInt(searchParams.get("followers") ?? "0", 10);
+    const jacobPosts = parseInt(searchParams.get("posts") ?? "0", 10);
+    const jacobEngagement = parseFloat(searchParams.get("engagement") ?? "0");
 
     const [updates, comparison] = await Promise.all([
       getCompetitorUpdates(),
       getCompetitorComparison(
-        isNaN(jacobFollowers) ? 47 : jacobFollowers,
-        isNaN(jacobPosts) ? 4 : jacobPosts,
-        isNaN(jacobEngagement) ? 6.2 : jacobEngagement
+        isNaN(jacobFollowers) ? 0 : jacobFollowers,
+        isNaN(jacobPosts) ? 0 : jacobPosts,
+        isNaN(jacobEngagement) ? 0 : jacobEngagement
       ),
     ]);
 
@@ -54,9 +54,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       {
         updates: [],
         comparison: {
-          jacobFollowers: 47,
-          jacobPostsPerWeek: 4,
-          jacobEngagementRate: 6.2,
+          jacobFollowers: 0,
+          jacobPostsPerWeek: 0,
+          jacobEngagementRate: 0,
           competitors: [],
           jacobRank: 1,
           jacobAdvantages: [],

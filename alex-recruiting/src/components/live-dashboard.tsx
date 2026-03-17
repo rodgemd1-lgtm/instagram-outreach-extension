@@ -303,9 +303,9 @@ export function LiveDashboard() {
       setCompetitorLoading(true);
       try {
         const params = new URLSearchParams({
-          followers: String(liveData?.followers.count ?? 47),
-          posts: String(liveData?.posts.thisWeek ?? 4),
-          engagement: String(liveData?.engagement.rate ?? 6.2),
+          followers: String(liveData?.followers.count ?? 0),
+          posts: String(liveData?.posts.thisWeek ?? 0),
+          engagement: String(liveData?.engagement.rate ?? 0),
         });
         const res = await fetch(`/api/dashboard/competitors?${params}`, { cache: "no-store" });
         if (!res.ok) return;
