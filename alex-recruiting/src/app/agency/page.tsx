@@ -7,7 +7,10 @@ import {
   SCStatCard,
   SCGlassCard,
   SCBadge,
+  SCHeroBanner,
+  SCPageTransition,
 } from "@/components/sc";
+import { motion } from "framer-motion";
 import { TEAM_MEMBERS } from "@/lib/rec/types";
 import type { RecTask, NCSALead } from "@/lib/rec/types";
 
@@ -35,12 +38,15 @@ export default function AgencyPage() {
   const activeLeads = leads.filter(l => l.outreachStatus !== "responded");
 
   return (
+    <SCPageTransition>
     <div className="space-y-6">
       <SCPageHeader
         kicker="Virtual Agency"
         title="TEAM COMMAND"
         subtitle="Virtual recruiting team coordination center"
       />
+
+      <SCHeroBanner screen="agency" className="mb-6" />
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -59,12 +65,18 @@ export default function AgencyPage() {
           </h2>
         </div>
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-          {TEAM_MEMBERS.map((member) => {
+          {TEAM_MEMBERS.map((member, index) => {
             const memberTasks = tasks.filter(t => t.assignedTo === member.id);
             const activeTasks = memberTasks.filter(t => t.status === "in_progress");
 
             return (
-              <Link key={member.id} href={`/agency/${member.id}`}>
+              <motion.div
+                key={member.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.06, ease: "easeOut" }}
+              >
+              <Link href={`/agency/${member.id}`}>
                 <SCGlassCard className="p-4 transition-all hover:border-sc-primary/30 cursor-pointer">
                   <div className="flex items-start gap-3">
                     <div
@@ -102,6 +114,7 @@ export default function AgencyPage() {
                   </div>
                 </SCGlassCard>
               </Link>
+              </motion.div>
             );
           })}
         </div>
@@ -163,5 +176,6 @@ export default function AgencyPage() {
         </div>
       )}
     </div>
+    </SCPageTransition>
   );
 }
