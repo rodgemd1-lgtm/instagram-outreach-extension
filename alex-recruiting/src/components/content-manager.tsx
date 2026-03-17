@@ -103,15 +103,11 @@ function formatDateDisplay(dateStr: string): string {
   });
 }
 
-// ─── Mock Performance Data ──────────────────────────────────────────────────
+// ─── Performance Data ───────────────────────────────────────────────────────
+// Real performance data comes from the X API via published posts.
+// Empty until posts are published to X and engagement data is collected.
 
-const MOCK_PERFORMANCE = [
-  { id: "post-001", likes: 12, retweets: 3, replies: 2, impressions: 450 },
-  { id: "post-002", likes: 28, retweets: 8, replies: 5, impressions: 1120 },
-  { id: "post-003", likes: 9, retweets: 1, replies: 3, impressions: 310 },
-  { id: "post-004", likes: 34, retweets: 12, replies: 7, impressions: 1580 },
-  { id: "post-005", likes: 18, retweets: 5, replies: 1, impressions: 720 },
-];
+const MOCK_PERFORMANCE: { id: string; likes: number; retweets: number; replies: number; impressions: number }[] = [];
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
@@ -860,11 +856,11 @@ export function ContentManager() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="text-2xl font-bold">
-                    {(
-                      (MOCK_PERFORMANCE.reduce((a, p) => a + p.likes + p.retweets + p.replies, 0) /
-                        MOCK_PERFORMANCE.reduce((a, p) => a + p.impressions, 0)) *
-                      100
-                    ).toFixed(1)}
+                    {(() => {
+                      const totalImp = MOCK_PERFORMANCE.reduce((a, p) => a + p.impressions, 0);
+                      const totalEng = MOCK_PERFORMANCE.reduce((a, p) => a + p.likes + p.retweets + p.replies, 0);
+                      return totalImp > 0 ? ((totalEng / totalImp) * 100).toFixed(1) : "0.0";
+                    })()}
                     %
                   </div>
                   <p className="text-xs text-slate-500 mt-1">Avg Engagement Rate</p>
