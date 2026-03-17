@@ -15,7 +15,7 @@
     "test": "vitest run",
     "test:contact": "vitest run src/__tests__/unit/recruit-contact-route.test.ts",
     "test:watch": "vitest",
-    "test:smoke": "vitest run src/__tests__/smoke",
+    "test:smoke": "vitest run --config vitest.smoke.config.ts",
     "test:unit": "vitest run src/__tests__/unit",
     "test:integration": "vitest run src/__tests__/integration",
     "test:qa": "vitest run src/__tests__/qa",
