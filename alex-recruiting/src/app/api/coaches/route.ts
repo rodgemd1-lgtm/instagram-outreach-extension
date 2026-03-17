@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { targetSchools } from "@/lib/data/target-schools";
 import { getTierForDivision, scoreCoach } from "@/lib/alex/coach-ranker";
 import {
@@ -6,6 +7,29 @@ import {
   isSupabaseConfigured,
 } from "@/lib/supabase/admin";
 import type { Coach } from "@/lib/types";
+
+// ---------------------------------------------------------------------------
+// Input validation schema — POST /api/coaches
+// ---------------------------------------------------------------------------
+const createCoachSchema = z.object({
+  name: z.string().min(1, "name is required").max(200),
+  title: z.string().max(200).optional(),
+  schoolId: z.string().max(100).optional().nullable(),
+  schoolSlug: z.string().max(100).optional().nullable(),
+  schoolName: z.string().min(1, "schoolName is required").max(200),
+  division: z.enum(["FBS", "FCS", "D2", "D3", "NAIA", "JUCO"], {
+    errorMap: () => ({ message: "division must be FBS, FCS, D2, D3, NAIA, or JUCO" }),
+  }),
+  conference: z.string().max(100).optional(),
+  xHandle: z.string().max(100).optional(),
+  dmOpen: z.boolean().optional(),
+  priorityTier: z.string().max(50).optional(),
+  olNeedScore: z.number().int().min(0).max(10).optional(),
+  dlNeedScore: z.number().int().min(0).max(10).optional(),
+  xActivityScore: z.number().int().min(0).max(10).optional(),
+  positionType: z.enum(["OL", "DL", "both"]).optional(),
+  notes: z.string().max(5000).optional(),
+});
 
 export const dynamic = "force-dynamic";
 
@@ -150,7 +174,21 @@ export async function GET(req: NextRequest) {
 // POST /api/coaches  — create a new coach record
 // ---------------------------------------------------------------------------
 export async function POST(req: NextRequest) {
-  const body = await req.json();
+  let rawBody: unknown;
+  try {
+    rawBody = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  const parsed = createCoachSchema.safeParse(rawBody);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid input", details: parsed.error.flatten().fieldErrors },
+      { status: 400 },
+    );
+  }
+  const body = parsed.data;
 
   const now = new Date().toISOString();
   const priorityTier =
