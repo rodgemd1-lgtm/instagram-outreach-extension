@@ -7,6 +7,8 @@ import { SCStatCard } from "@/components/sc/sc-stat-card";
 import { SCGlassCard } from "@/components/sc/sc-glass-card";
 import { SCButton } from "@/components/sc/sc-button";
 import { SCBadge } from "@/components/sc/sc-badge";
+import { SCHeroBanner, SCAnimatedNumber, SCPageTransition } from "@/components/sc";
+import { motion } from "framer-motion";
 import { targetSchools } from "@/lib/data/target-schools";
 import { getSchoolLogo } from "@/lib/data/school-branding";
 
@@ -134,33 +136,56 @@ export default function DashboardPage() {
     return `${days}d ago`;
   }
 
+  const statCards = [
+    {
+      label: "Coaches Tracked",
+      value: stats.coachCount != null ? <SCAnimatedNumber value={stats.coachCount} /> : "--",
+      icon: "target",
+      trend: stats.coachCount != null ? { value: "tracking" as const, direction: "up" as const } : undefined,
+    },
+    {
+      label: "DMs Sent",
+      value: stats.dmsSent != null ? <SCAnimatedNumber value={stats.dmsSent} /> : "--",
+      icon: "monitoring",
+      trend: stats.dmsSent != null ? { value: "outreach active" as const, direction: "up" as const } : undefined,
+    },
+    {
+      label: "Scout Velocity",
+      value: stats.postsThisWeek != null ? <SCAnimatedNumber value={stats.postsThisWeek} suffix="/wk" /> : "--",
+      icon: "bolt",
+      trend: undefined,
+    },
+  ];
+
   return (
-    <div className="space-y-8">
+    <SCPageTransition>
+      <div className="space-y-8">
       {/* Page Header */}
       <SCPageHeader
         title="JACOB'S COMMAND"
         subtitle="Pewaukee Pirates Elite Scouting Pipeline"
       />
 
+      {/* Hero Banner */}
+      <SCHeroBanner screen="command" className="mb-6" />
+
       {/* Stat Cards — 3-col grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <SCStatCard
-          label="Coaches Tracked"
-          value={stats.coachCount != null ? String(stats.coachCount) : "--"}
-          icon="target"
-          trend={stats.coachCount != null ? { value: "tracking", direction: "up" } : undefined}
-        />
-        <SCStatCard
-          label="DMs Sent"
-          value={stats.dmsSent != null ? String(stats.dmsSent) : "--"}
-          icon="monitoring"
-          trend={stats.dmsSent != null ? { value: "outreach active", direction: "up" } : undefined}
-        />
-        <SCStatCard
-          label="Scout Velocity"
-          value={stats.postsThisWeek != null ? `${stats.postsThisWeek}/wk` : "--"}
-          icon="bolt"
-        />
+        {statCards.map((card, i) => (
+          <motion.div
+            key={card.label}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.05 }}
+          >
+            <SCStatCard
+              label={card.label}
+              value={card.value}
+              icon={card.icon}
+              trend={card.trend}
+            />
+          </motion.div>
+        ))}
       </div>
 
       {/* AI Recommendation Engine */}
@@ -321,6 +346,7 @@ export default function DashboardPage() {
           </Link>
         ))}
       </div>
-    </div>
+      </div>
+    </SCPageTransition>
   );
 }

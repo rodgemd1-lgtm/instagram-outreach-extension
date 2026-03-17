@@ -3,7 +3,7 @@ import { SCGlassCard } from "./sc-glass-card";
 
 interface SCStatCardProps {
   label: string;
-  value: string;
+  value: React.ReactNode;
   trend?: { value: string; direction: "up" | "down" | "neutral" };
   icon?: string;
   progress?: number;
