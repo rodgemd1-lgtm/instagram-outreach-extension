@@ -65,6 +65,7 @@ interface CoachRow {
   name: string;
   title: string | null;
   school_id: string | null;
+  school_slug: string | null;
   school_name: string;
   division: string;
   conference: string | null;
@@ -74,6 +75,8 @@ interface CoachRow {
   dm_status: string | null;
   priority_tier: string;
   ol_need_score: number | null;
+  dl_need_score: number | null;
+  position_type: string | null;
   x_activity_score: number | null;
   last_engaged: string | null;
   notes: string | null;
