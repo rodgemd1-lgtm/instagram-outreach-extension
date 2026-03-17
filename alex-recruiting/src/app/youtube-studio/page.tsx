@@ -71,6 +71,7 @@ export default function YouTubeStudioPage() {
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [videoStore, setVideoStore] = useState<VideoStoreEntry[]>([]);
   const [activeTab, setActiveTab] = useState("setup");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let active = true;
@@ -83,6 +84,8 @@ export default function YouTubeStudioPage() {
       } catch (error) {
         console.error("Failed to load video store:", error);
         if (active) setVideoStore([]);
+      } finally {
+        if (active) setLoading(false);
       }
     }
     loadVideoStore();
@@ -124,11 +127,11 @@ export default function YouTubeStudioPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <SCStatCard label="Videos in Library" value={String(totalVideos)} icon="movie" />
-        <SCStatCard label="Total Size" value={formatFileSize(totalSize)} icon="cloud_upload" />
-        <SCStatCard label="Total Duration" value={formatDuration(totalDuration)} icon="schedule" />
-        <SCStatCard label="Vertical (Shorts)" value={String(verticalCount)} icon="smartphone" />
-        <SCStatCard label="4K Videos" value={String(fourKCount)} icon="star" />
+        <SCStatCard label="Videos in Library" value={loading ? "..." : String(totalVideos)} icon="movie" />
+        <SCStatCard label="Total Size" value={loading ? "..." : formatFileSize(totalSize)} icon="cloud_upload" />
+        <SCStatCard label="Total Duration" value={loading ? "..." : formatDuration(totalDuration)} icon="schedule" />
+        <SCStatCard label="Vertical (Shorts)" value={loading ? "..." : String(verticalCount)} icon="smartphone" />
+        <SCStatCard label="4K Videos" value={loading ? "..." : String(fourKCount)} icon="star" />
       </div>
 
       {/* Tabs */}

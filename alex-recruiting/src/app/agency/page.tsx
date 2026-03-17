@@ -27,10 +27,13 @@ const MEMBER_COLORS: Record<string, string> = {
 export default function AgencyPage() {
   const [tasks, setTasks] = useState<RecTask[]>([]);
   const [leads, setLeads] = useState<NCSALead[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/rec/tasks").then(r => r.json()).then(d => setTasks(d.tasks || [])).catch(() => {});
-    fetch("/api/rec/ncsa/leads").then(r => r.json()).then(d => setLeads(d.leads || [])).catch(() => {});
+    Promise.all([
+      fetch("/api/rec/tasks").then(r => r.json()).then(d => setTasks(d.tasks || [])).catch(() => {}),
+      fetch("/api/rec/ncsa/leads").then(r => r.json()).then(d => setLeads(d.leads || [])).catch(() => {}),
+    ]).finally(() => setLoading(false));
   }, []);
 
   const pendingTasks = tasks.filter(t => t.status === "pending" || t.status === "in_progress");
@@ -56,7 +59,17 @@ export default function AgencyPage() {
         <SCStatCard label="Active Leads" value={String(activeLeads.length)} icon="trending_up" />
       </div>
 
+      {/* Loading State */}
+      {loading && (
+        <SCGlassCard className="flex items-center justify-center py-16">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-sc-primary border-t-transparent" />
+          <span className="ml-3 text-sm text-slate-400">Loading team data...</span>
+        </SCGlassCard>
+      )}
+
       {/* Team Grid */}
+      {!loading && (
+      <>
       <div>
         <div className="flex items-center gap-2 mb-4">
           <span className="material-symbols-outlined text-[18px] text-sc-primary">badge</span>
@@ -174,6 +187,8 @@ export default function AgencyPage() {
             </div>
           </SCGlassCard>
         </div>
+      )}
+      </>
       )}
     </div>
     </SCPageTransition>

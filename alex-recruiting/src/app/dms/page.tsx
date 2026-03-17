@@ -285,11 +285,18 @@ export default function DMsPage() {
             <span className="ml-3 text-sm text-slate-400">Loading outreach queue...</span>
           </SCGlassCard>
         ) : queue.length === 0 ? (
-          <SCGlassCard className="py-12 text-center">
-            <span className="material-symbols-outlined text-[40px] text-white/10">inbox</span>
-            <p className="mt-3 text-sm text-slate-500">
-              No coaches with X handles are ready for outreach yet.
+          <SCGlassCard className="flex flex-col items-center justify-center py-16 text-center">
+            <span className="material-symbols-outlined text-[48px] text-white/10">mail</span>
+            <p className="mt-4 text-lg font-bold text-white/50">No DMs ready to send</p>
+            <p className="mt-2 max-w-sm text-sm text-slate-500">
+              No coaches with X handles are ready for outreach yet. Add coach handles in the Coach Pipeline, then return here to draft and send DMs.
             </p>
+            <Link href="/coaches">
+              <SCButton variant="primary" size="sm" className="mt-6">
+                <span className="material-symbols-outlined text-[16px]">groups</span>
+                Open Coach Pipeline
+              </SCButton>
+            </Link>
           </SCGlassCard>
         ) : (
           <div className="space-y-3">
@@ -391,8 +398,12 @@ export default function DMsPage() {
         </div>
 
         {filteredDMs.length === 0 ? (
-          <SCGlassCard className="py-8 text-center">
-            <p className="text-sm text-slate-500">No DMs logged yet.</p>
+          <SCGlassCard className="flex flex-col items-center justify-center py-12 text-center">
+            <span className="material-symbols-outlined text-[40px] text-white/10">history</span>
+            <p className="mt-3 text-sm font-bold text-white/50">No outreach logged yet</p>
+            <p className="mt-1 text-xs text-slate-500">
+              Sent DMs will appear here for tracking and follow-up.
+            </p>
           </SCGlassCard>
         ) : (
           <div className="space-y-2">

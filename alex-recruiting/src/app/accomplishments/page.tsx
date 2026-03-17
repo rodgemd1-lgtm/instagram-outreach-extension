@@ -358,10 +358,11 @@ export default function AccomplishmentsPage() {
             <span className="material-symbols-outlined text-[24px] text-slate-500 animate-spin">progress_activity</span>
           </div>
         ) : accomplishments.length === 0 ? (
-          <SCGlassCard className="text-center py-16">
-            <span className="material-symbols-outlined text-[40px] text-white/10 mx-auto block">emoji_events</span>
-            <p className="text-slate-500 text-sm mt-3">
-              No accomplishments yet. Log your first one above!
+          <SCGlassCard className="flex flex-col items-center justify-center text-center py-16">
+            <span className="material-symbols-outlined text-[48px] text-white/10">emoji_events</span>
+            <p className="mt-4 text-lg font-bold text-white/50">No accomplishments logged yet</p>
+            <p className="mt-2 text-sm text-slate-500">
+              Track PRs, awards, and milestones to build your recruiting profile. Use the form above to log your first one.
             </p>
           </SCGlassCard>
         ) : (

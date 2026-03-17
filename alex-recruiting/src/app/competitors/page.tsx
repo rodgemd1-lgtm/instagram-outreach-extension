@@ -46,9 +46,9 @@ export default function CompetitorsPage() {
         if (dashRes.ok) {
           const data = await dashRes.json();
           setJacobStats({
-            followers: data.followers ?? 0,
-            postsPerWeek: data.postsPerWeek ?? 0,
-            engagementRate: data.engagementRate ?? 0,
+            followers: data.followers?.count ?? 0,
+            postsPerWeek: data.posts?.thisWeek ?? 0,
+            engagementRate: data.engagement?.rate ?? 0,
           });
         }
       } catch {
@@ -206,7 +206,12 @@ export default function CompetitorsPage() {
       </SCGlassCard>
 
       {/* Competitor Table */}
-      {competitors.length === 0 && !loading ? (
+      {loading ? (
+        <SCGlassCard className="flex items-center justify-center py-20">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-sc-primary border-t-transparent" />
+          <span className="ml-3 text-sm text-slate-400">Loading competitor data...</span>
+        </SCGlassCard>
+      ) : competitors.length === 0 ? (
         <SCGlassCard className="flex flex-col items-center justify-center px-8 py-16 text-center">
           <span className="material-symbols-outlined mb-4 text-[48px] text-slate-600">
             person_search

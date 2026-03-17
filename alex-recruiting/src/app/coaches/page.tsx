@@ -206,11 +206,22 @@ export default function CoachesPage() {
             <span className="ml-3 text-sm text-slate-400">Loading targets...</span>
           </SCGlassCard>
         ) : filtered.length === 0 ? (
-          <SCGlassCard className="py-16 text-center">
+          <SCGlassCard className="flex flex-col items-center justify-center py-16 text-center">
             <span className="material-symbols-outlined text-[48px] text-white/10">person_search</span>
-            <p className="mt-4 text-sm text-slate-500">
-              No coaches found. Adjust filters or add new targets.
+            <p className="mt-4 text-lg font-bold text-white/50">
+              {coaches.length === 0 ? "No coaches in the database" : "No coaches match your filters"}
             </p>
+            <p className="mt-2 text-sm text-slate-500">
+              {coaches.length === 0
+                ? "Run the data pipeline to seed your target school coaches."
+                : "Try adjusting your search, tier, or division filters."}
+            </p>
+            {coaches.length === 0 && (
+              <SCButton variant="primary" size="sm" className="mt-6" onClick={() => window.location.href = "/scrape"}>
+                <span className="material-symbols-outlined text-[16px]">database</span>
+                Seed Coach Database
+              </SCButton>
+            )}
           </SCGlassCard>
         ) : (
           <SCGlassCard className="overflow-hidden rounded-xl">
