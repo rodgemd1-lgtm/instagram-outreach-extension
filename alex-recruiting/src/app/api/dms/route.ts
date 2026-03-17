@@ -1,7 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import type { DMMessage } from "@/lib/types";
 import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { sendDM, verifyHandle } from "@/lib/integrations/x-api";
+
+// ---------------------------------------------------------------------------
+// Input validation schema — POST /api/dms
+// ---------------------------------------------------------------------------
+const createDMSchema = z.object({
+  coachId: z.string().uuid().optional().nullable(),
+  coachName: z.string().min(1, "coachName is required").max(200),
+  schoolName: z.string().min(1, "schoolName is required").max(200),
+  templateType: z.string().max(100).optional(),
+  content: z.string().min(1, "content is required").max(10000, "content exceeds 10000 chars"),
+  sendNow: z.boolean().optional().default(false),
+  xHandle: z.string().max(100).optional().nullable(),
+  xUserId: z.string().max(100).optional().nullable(),
+});
 
 export const dynamic = "force-dynamic";
 
@@ -65,7 +80,21 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
+  let rawBody: unknown;
+  try {
+    rawBody = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  const parsed = createDMSchema.safeParse(rawBody);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid input", details: parsed.error.flatten().fieldErrors },
+      { status: 400 },
+    );
+  }
+  const body = parsed.data;
   const now = new Date().toISOString();
   const sendNow = body.sendNow === true;
 
@@ -75,6 +104,8 @@ export async function POST(req: NextRequest) {
 
       let recipientId: string | null = body.xUserId ?? null;
       let coachHandle: string | null = body.xHandle ?? null;
+      let coachName: string = body.coachName;
+      let schoolName: string = body.schoolName;
 
       if ((!recipientId || !coachHandle) && body.coachId) {
         const { data: coachRow } = await supabase
@@ -85,8 +116,8 @@ export async function POST(req: NextRequest) {
 
         if (coachRow) {
           coachHandle = coachHandle ?? coachRow.x_handle ?? null;
-          body.coachName = body.coachName ?? coachRow.name;
-          body.schoolName = body.schoolName ?? coachRow.school_name;
+          coachName = coachName || coachRow.name;
+          schoolName = schoolName || coachRow.school_name;
         }
       }
 
@@ -120,8 +151,8 @@ export async function POST(req: NextRequest) {
 
       const insertPayload = {
         coach_id: body.coachId ?? null,
-        coach_name: body.coachName,
-        school_name: body.schoolName,
+        coach_name: coachName,
+        school_name: schoolName,
         template_type: body.templateType ?? "manual",
         content: body.content,
         status,

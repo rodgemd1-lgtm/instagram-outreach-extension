@@ -1,7 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import type { Post, ContentPillar } from "@/lib/types";
 import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { getAllPosts, insertPost } from "@/lib/posts/store";
+
+// ---------------------------------------------------------------------------
+// Input validation schema — POST /api/posts
+// ---------------------------------------------------------------------------
+const createPostSchema = z.object({
+  content: z.string().min(1, "content is required").max(2800, "content exceeds 2800 chars"),
+  pillar: z.enum(["performance", "work_ethic", "character"], {
+    errorMap: () => ({ message: "pillar must be performance, work_ethic, or character" }),
+  }),
+  hashtags: z.array(z.string().max(100)).max(30).optional(),
+  mediaUrl: z.string().url().optional().nullable(),
+  scheduledFor: z.string().datetime({ offset: true }).optional(),
+  bestTime: z.string().max(50).optional(),
+});
 
 export const dynamic = "force-dynamic";
 
@@ -99,7 +114,21 @@ export async function GET(req: NextRequest) {
 // ---------------------------------------------------------------------------
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  const parsed = createPostSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid input", details: parsed.error.flatten().fieldErrors },
+      { status: 400 },
+    );
+  }
+  const data = parsed.data;
 
   // ----- Supabase path -----
   if (isSupabaseConfigured()) {
@@ -108,12 +137,12 @@ export async function POST(req: NextRequest) {
       const now = new Date().toISOString();
 
       const insertRow = {
-        content: body.content,
-        pillar: body.pillar ?? "performance",
-        hashtags: body.hashtags ?? [],
-        media_url: body.mediaUrl ?? null,
-        scheduled_for: body.scheduledFor ?? now,
-        best_time: body.bestTime ?? "",
+        content: data.content,
+        pillar: data.pillar,
+        hashtags: data.hashtags ?? [],
+        media_url: data.mediaUrl ?? null,
+        scheduled_for: data.scheduledFor ?? now,
+        best_time: data.bestTime ?? "",
         status: "draft",
         x_post_id: null,
         impressions: 0,
@@ -141,12 +170,12 @@ export async function POST(req: NextRequest) {
 
   // ----- In-memory fallback -----
   const post: Post = insertPost({
-    content: body.content,
-    pillar: body.pillar as ContentPillar,
-    hashtags: body.hashtags || [],
-    mediaUrl: body.mediaUrl || null,
-    scheduledFor: body.scheduledFor || new Date().toISOString(),
-    bestTime: body.bestTime || "",
+    content: data.content,
+    pillar: data.pillar as ContentPillar,
+    hashtags: data.hashtags || [],
+    mediaUrl: data.mediaUrl || null,
+    scheduledFor: data.scheduledFor || new Date().toISOString(),
+    bestTime: data.bestTime || "",
     status: "draft",
     xPostId: null,
     impressions: 0,
