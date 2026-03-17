@@ -9,6 +9,7 @@ export const revalidate = 0;
 
 interface PostRow {
   engagement_rate: number | null;
+  x_post_id: string | null;
 }
 
 interface DMRow {
@@ -60,7 +61,7 @@ export async function GET() {
         auditsResponse,
         historyResponse,
       ] = await Promise.all([
-        supabase.from("posts").select("engagement_rate"),
+        supabase.from("posts").select("engagement_rate, x_post_id"),
         supabase.from("dm_messages").select("sent_at, responded_at"),
         supabase.from("profile_audits").select("total_score").order("date", { ascending: false }).limit(1),
         supabase
@@ -71,17 +72,18 @@ export async function GET() {
       ]);
 
       const posts = (postsResponse.data ?? []) as PostRow[];
-      if (posts.length > 0) {
-        postsPublished = posts.length;
-        const withEngagement = posts.filter((post) => (post.engagement_rate ?? 0) > 0);
-        if (withEngagement.length > 0) {
-          avgEngagementRate = Number(
-            (
-              withEngagement.reduce((sum, post) => sum + (post.engagement_rate ?? 0), 0) /
-              withEngagement.length
-            ).toFixed(1)
-          );
-        }
+      // Only count posts actually published to X (have an x_post_id),
+      // NOT all DB rows which include drafts and scheduled content.
+      const publishedPosts = posts.filter((post) => post.x_post_id);
+      postsPublished = publishedPosts.length;
+      const withEngagement = posts.filter((post) => (post.engagement_rate ?? 0) > 0);
+      if (withEngagement.length > 0) {
+        avgEngagementRate = Number(
+          (
+            withEngagement.reduce((sum, post) => sum + (post.engagement_rate ?? 0), 0) /
+            withEngagement.length
+          ).toFixed(1)
+        );
       }
 
       const dms = (dmsResponse.data ?? []) as DMRow[];
