@@ -776,3 +776,21 @@ export const ncaaDeadlines = pgTable("ncaa_deadlines", {
   importance: text("importance").default("medium"), // "low" | "medium" | "high" | "critical"
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+// ============ OUTREACH LEARNINGS (Weekly Retrospectives) ============
+
+export const outreachLearnings = pgTable("outreach_learnings", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  weekNumber: integer("week_number").notNull(),
+  weekStart: text("week_start").notNull(),
+  weekEnd: text("week_end").notNull(),
+  whatWorked: jsonb("what_worked").$type<string[]>().default([]),
+  whatDidnt: jsonb("what_didnt").$type<string[]>().default([]),
+  whatToTry: jsonb("what_to_try").$type<string[]>().default([]),
+  metrics: jsonb("metrics").$type<Record<string, number>>().default({}),
+  strategyAdjustments: jsonb("strategy_adjustments").$type<string[]>().default([]),
+  abTestResults: jsonb("ab_test_results").$type<Record<string, unknown>[]>().default([]),
+  generatedBy: text("generated_by").default("ai"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
