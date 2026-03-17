@@ -2,17 +2,11 @@
 
 import { useState, useEffect, useCallback } from "react";
 import {
-  Trophy,
-  Star,
-  Target,
-  Plus,
-  Send,
-  Check,
-  Upload,
-  Loader2,
-  Calendar,
-  ImageIcon,
-} from "lucide-react";
+  SCPageHeader,
+  SCGlassCard,
+  SCBadge,
+  SCButton,
+} from "@/components/sc";
 
 interface Accomplishment {
   id: string;
@@ -28,37 +22,21 @@ interface Accomplishment {
 }
 
 const TYPE_OPTIONS = [
-  { value: "pr", label: "PR (Personal Record)", icon: Target },
-  { value: "award", label: "Award", icon: Trophy },
-  { value: "milestone", label: "Milestone", icon: Star },
+  { value: "pr", label: "PR (Personal Record)", icon: "track_changes" },
+  { value: "award", label: "Award", icon: "emoji_events" },
+  { value: "milestone", label: "Milestone", icon: "stars" },
 ] as const;
 
 function getTypeBadge(type: string) {
   switch (type) {
     case "pr":
-      return {
-        label: "PR",
-        className: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
-        icon: Target,
-      };
+      return { label: "PR", variant: "success" as const, icon: "track_changes" };
     case "award":
-      return {
-        label: "Award",
-        className: "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30",
-        icon: Trophy,
-      };
+      return { label: "Award", variant: "warning" as const, icon: "emoji_events" };
     case "milestone":
-      return {
-        label: "Milestone",
-        className: "bg-blue-500/20 text-blue-400 border border-blue-500/30",
-        icon: Star,
-      };
+      return { label: "Milestone", variant: "info" as const, icon: "stars" };
     default:
-      return {
-        label: type,
-        className: "bg-gray-500/20 text-gray-400 border border-gray-500/30",
-        icon: Star,
-      };
+      return { label: type, variant: "default" as const, icon: "stars" };
   }
 }
 
@@ -202,282 +180,264 @@ export default function AccomplishmentsPage() {
   const isFormValid = title.trim() && value.trim() && unit.trim();
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <div className="max-w-4xl mx-auto px-4 py-8 pb-24 md:pb-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/20">
-              <Trophy className="h-5 w-5 text-emerald-400" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold">Accomplishments</h1>
-              <p className="text-sm text-gray-400">
-                Track PRs, awards, and milestones
-              </p>
-            </div>
-          </div>
-        </div>
+    <div className="space-y-6">
+      <SCPageHeader
+        kicker="Track & Share"
+        title="ACCOMPLISHMENTS"
+        subtitle="Track PRs, awards, and milestones"
+      />
 
-        {/* Add Accomplishment Form */}
-        <div className="mb-10 rounded-xl border border-gray-800 bg-gray-950 p-6">
-          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <Plus className="h-5 w-5 text-emerald-400" />
-            Log Accomplishment
-          </h2>
+      {/* Add Accomplishment Form */}
+      <SCGlassCard className="p-6">
+        <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+          <span className="material-symbols-outlined text-[20px] text-sc-primary">add_circle</span>
+          Log Accomplishment
+        </h2>
 
-          <div className="space-y-4">
-            {/* Type selector */}
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">
-                Type
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                {TYPE_OPTIONS.map((opt) => {
-                  const isSelected = type === opt.value;
-                  return (
-                    <button
-                      key={opt.value}
-                      onClick={() => setType(opt.value)}
-                      className={`flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
-                        isSelected
-                          ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40"
-                          : "bg-gray-900 text-gray-400 border border-gray-800 hover:border-gray-700"
-                      }`}
-                    >
-                      <opt.icon className="h-4 w-4" />
-                      {opt.value === "pr" ? "PR" : opt.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Title */}
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1.5">
-                Title
-              </label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g., Dumbbell Bench Press"
-                className="w-full rounded-lg bg-gray-900 border border-gray-800 px-4 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/20"
-              />
-            </div>
-
-            {/* Value and Unit — side by side */}
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1.5">
-                  Value
-                </label>
-                <input
-                  type="text"
-                  value={value}
-                  onChange={(e) => setValue(e.target.value)}
-                  placeholder="e.g., 85"
-                  className="w-full rounded-lg bg-gray-900 border border-gray-800 px-4 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/20"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1.5">
-                  Unit
-                </label>
-                <input
-                  type="text"
-                  value={unit}
-                  onChange={(e) => setUnit(e.target.value)}
-                  placeholder="e.g., lb DBs"
-                  className="w-full rounded-lg bg-gray-900 border border-gray-800 px-4 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/20"
-                />
-              </div>
-            </div>
-
-            {/* Media Upload */}
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1.5">
-                Media (optional)
-              </label>
-              {mediaUrl ? (
-                <div className="flex items-center gap-3 rounded-lg bg-gray-900 border border-gray-800 px-4 py-3">
-                  <ImageIcon className="h-5 w-5 text-emerald-400" />
-                  <span className="text-sm text-gray-300 truncate flex-1">
-                    Media uploaded
-                  </span>
-                  <button
-                    onClick={() => {
-                      setMediaUrl(null);
-                      setMediaPath(null);
-                    }}
-                    className="text-xs text-gray-500 hover:text-red-400 transition-colors"
-                  >
-                    Remove
-                  </button>
-                </div>
-              ) : (
-                <label className="flex items-center justify-center gap-2 rounded-lg bg-gray-900 border border-dashed border-gray-700 px-4 py-4 cursor-pointer hover:border-gray-600 transition-colors">
-                  {uploading ? (
-                    <Loader2 className="h-5 w-5 text-gray-500 animate-spin" />
-                  ) : (
-                    <Upload className="h-5 w-5 text-gray-500" />
-                  )}
-                  <span className="text-sm text-gray-500">
-                    {uploading ? "Uploading..." : "Click to upload image or video"}
-                  </span>
-                  <input
-                    type="file"
-                    accept="image/*,video/*"
-                    onChange={handleMediaUpload}
-                    className="hidden"
-                    disabled={uploading}
-                  />
-                </label>
-              )}
-            </div>
-
-            {/* Caption Preview (PR type) */}
-            {type === "pr" && title && value && unit && (
-              <div className="rounded-lg bg-gray-900/50 border border-gray-800 p-4">
-                <p className="text-xs font-medium text-gray-500 mb-2">
-                  X Post Preview
-                </p>
-                <p className="text-sm text-gray-300 whitespace-pre-line">
-                  {`New PR! ${title}: ${value} ${unit} \u{1F4AA}\n\nJacob Rodgers | #79 | OL | Pewaukee HS '29\n#ClassOf2029 #OLine #StrengthTraining`}
-                </p>
-              </div>
-            )}
-
-            {/* Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-2">
-              <button
-                onClick={() => handleSubmit(false)}
-                disabled={!isFormValid || submitting}
-                className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-gray-800 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {submitting ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Check className="h-4 w-4" />
-                )}
-                Save
-              </button>
-              <button
-                onClick={() => handleSubmit(true)}
-                disabled={!isFormValid || submitting}
-                className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-emerald-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {submitting ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Send className="h-4 w-4" />
-                )}
-                Save &amp; Post to X
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Timeline */}
-        <div>
-          <h2 className="text-lg font-semibold mb-4">Timeline</h2>
-
-          {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-6 w-6 text-gray-500 animate-spin" />
-            </div>
-          ) : accomplishments.length === 0 ? (
-            <div className="text-center py-16 rounded-xl border border-gray-800 bg-gray-950">
-              <Trophy className="h-10 w-10 text-gray-700 mx-auto mb-3" />
-              <p className="text-gray-500 text-sm">
-                No accomplishments yet. Log your first one above!
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {accomplishments.map((acc) => {
-                const badge = getTypeBadge(acc.type);
-                const BadgeIcon = badge.icon;
-
+        <div className="space-y-4">
+          {/* Type selector */}
+          <div>
+            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
+              Type
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {TYPE_OPTIONS.map((opt) => {
+                const isSelected = type === opt.value;
                 return (
-                  <div
-                    key={acc.id}
-                    className="rounded-xl border border-gray-800 bg-gray-950 p-4 hover:border-gray-700 transition-colors"
+                  <button
+                    key={opt.value}
+                    onClick={() => setType(opt.value)}
+                    className={`flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-bold transition-all ${
+                      isSelected
+                        ? "bg-sc-primary/20 text-sc-primary border border-sc-primary/40 shadow-lg shadow-sc-primary-glow"
+                        : "bg-white/5 text-slate-400 border border-sc-border hover:border-sc-primary/30"
+                    }`}
                   >
-                    <div className="flex items-start gap-4">
-                      {/* Media thumbnail */}
-                      {acc.mediaUrl ? (
-                        <div className="hidden sm:block flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-gray-900 border border-gray-800">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={acc.mediaUrl}
-                            alt={acc.title}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      ) : (
-                        <div className="hidden sm:flex flex-shrink-0 w-16 h-16 rounded-lg bg-gray-900 border border-gray-800 items-center justify-center">
-                          <BadgeIcon className="h-6 w-6 text-gray-700" />
-                        </div>
-                      )}
-
-                      {/* Content */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span
-                            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${badge.className}`}
-                          >
-                            <BadgeIcon className="h-3 w-3" />
-                            {badge.label}
-                          </span>
-                          {acc.postedToX && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30 px-2 py-0.5 text-xs font-medium">
-                              <Check className="h-3 w-3" />
-                              Posted
-                            </span>
-                          )}
-                        </div>
-
-                        <h3 className="text-sm font-semibold text-white">
-                          {acc.title}
-                        </h3>
-                        <p className="text-lg font-bold text-emerald-400">
-                          {acc.value}{" "}
-                          <span className="text-sm font-normal text-gray-400">
-                            {acc.unit}
-                          </span>
-                        </p>
-
-                        <div className="flex items-center gap-1 mt-1 text-xs text-gray-500">
-                          <Calendar className="h-3 w-3" />
-                          {formatDate(acc.createdAt)} at{" "}
-                          {formatTime(acc.createdAt)}
-                        </div>
-                      </div>
-
-                      {/* Post to X button */}
-                      {!acc.postedToX && (
-                        <button
-                          onClick={() => handlePostToX(acc)}
-                          disabled={postingId === acc.id}
-                          className="flex-shrink-0 flex items-center gap-1.5 rounded-lg bg-gray-800 border border-gray-700 px-3 py-2 text-xs font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors disabled:opacity-50"
-                        >
-                          {postingId === acc.id ? (
-                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                          ) : (
-                            <Send className="h-3.5 w-3.5" />
-                          )}
-                          Post to X
-                        </button>
-                      )}
-                    </div>
-                  </div>
+                    <span className="material-symbols-outlined text-[18px]">{opt.icon}</span>
+                    {opt.value === "pr" ? "PR" : opt.label.split(" ")[0]}
+                  </button>
                 );
               })}
             </div>
+          </div>
+
+          {/* Title */}
+          <div>
+            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">
+              Title
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g., Dumbbell Bench Press"
+              className="w-full rounded-lg bg-white/5 border border-sc-border px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-sc-primary/50 focus:ring-1 focus:ring-sc-primary/20"
+            />
+          </div>
+
+          {/* Value and Unit */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">
+                Value
+              </label>
+              <input
+                type="text"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                placeholder="e.g., 85"
+                className="w-full rounded-lg bg-white/5 border border-sc-border px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-sc-primary/50 focus:ring-1 focus:ring-sc-primary/20"
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">
+                Unit
+              </label>
+              <input
+                type="text"
+                value={unit}
+                onChange={(e) => setUnit(e.target.value)}
+                placeholder="e.g., lb DBs"
+                className="w-full rounded-lg bg-white/5 border border-sc-border px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-sc-primary/50 focus:ring-1 focus:ring-sc-primary/20"
+              />
+            </div>
+          </div>
+
+          {/* Media Upload */}
+          <div>
+            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">
+              Media (optional)
+            </label>
+            {mediaUrl ? (
+              <div className="flex items-center gap-3 rounded-lg bg-white/5 border border-sc-border px-4 py-3">
+                <span className="material-symbols-outlined text-[20px] text-emerald-400">image</span>
+                <span className="text-sm text-slate-300 truncate flex-1">Media uploaded</span>
+                <button
+                  onClick={() => {
+                    setMediaUrl(null);
+                    setMediaPath(null);
+                  }}
+                  className="text-xs text-slate-500 hover:text-red-400 transition-colors"
+                >
+                  Remove
+                </button>
+              </div>
+            ) : (
+              <label className="flex items-center justify-center gap-2 rounded-lg bg-white/5 border border-dashed border-sc-border px-4 py-4 cursor-pointer hover:border-sc-primary/30 transition-colors">
+                {uploading ? (
+                  <span className="material-symbols-outlined text-[20px] text-slate-500 animate-spin">progress_activity</span>
+                ) : (
+                  <span className="material-symbols-outlined text-[20px] text-slate-500">cloud_upload</span>
+                )}
+                <span className="text-sm text-slate-500">
+                  {uploading ? "Uploading..." : "Click to upload image or video"}
+                </span>
+                <input
+                  type="file"
+                  accept="image/*,video/*"
+                  onChange={handleMediaUpload}
+                  className="hidden"
+                  disabled={uploading}
+                />
+              </label>
+            )}
+          </div>
+
+          {/* Caption Preview (PR type) */}
+          {type === "pr" && title && value && unit && (
+            <SCGlassCard variant="broadcast" className="p-4">
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
+                X Post Preview
+              </p>
+              <p className="text-sm text-slate-300 whitespace-pre-line">
+                {`New PR! ${title}: ${value} ${unit} \u{1F4AA}\n\nJacob Rodgers | #79 | OL | Pewaukee HS '29\n#ClassOf2029 #OLine #StrengthTraining`}
+              </p>
+            </SCGlassCard>
           )}
+
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3 pt-2">
+            <SCButton
+              variant="secondary"
+              size="md"
+              onClick={() => handleSubmit(false)}
+              disabled={!isFormValid || submitting}
+              className="flex-1"
+            >
+              {submitting ? (
+                <span className="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
+              ) : (
+                <span className="material-symbols-outlined text-[16px]">check</span>
+              )}
+              Save
+            </SCButton>
+            <SCButton
+              variant="primary"
+              size="md"
+              onClick={() => handleSubmit(true)}
+              disabled={!isFormValid || submitting}
+              className="flex-1"
+            >
+              {submitting ? (
+                <span className="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
+              ) : (
+                <span className="material-symbols-outlined text-[16px]">send</span>
+              )}
+              Save &amp; Post to X
+            </SCButton>
+          </div>
         </div>
+      </SCGlassCard>
+
+      {/* Timeline */}
+      <div>
+        <h2 className="text-lg font-bold text-white mb-4">Timeline</h2>
+
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <span className="material-symbols-outlined text-[24px] text-slate-500 animate-spin">progress_activity</span>
+          </div>
+        ) : accomplishments.length === 0 ? (
+          <SCGlassCard className="text-center py-16">
+            <span className="material-symbols-outlined text-[40px] text-white/10 mx-auto block">emoji_events</span>
+            <p className="text-slate-500 text-sm mt-3">
+              No accomplishments yet. Log your first one above!
+            </p>
+          </SCGlassCard>
+        ) : (
+          <div className="space-y-3">
+            {accomplishments.map((acc) => {
+              const badge = getTypeBadge(acc.type);
+
+              return (
+                <SCGlassCard key={acc.id} className="p-4 hover:border-sc-primary/20 transition-colors">
+                  <div className="flex items-start gap-4">
+                    {/* Media thumbnail */}
+                    {acc.mediaUrl ? (
+                      <div className="hidden sm:block flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-white/5 border border-sc-border">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={acc.mediaUrl}
+                          alt={acc.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="hidden sm:flex flex-shrink-0 w-16 h-16 rounded-lg bg-white/5 border border-sc-border items-center justify-center">
+                        <span className="material-symbols-outlined text-[24px] text-white/10">{badge.icon}</span>
+                      </div>
+                    )}
+
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <SCBadge variant={badge.variant}>
+                          <span className="material-symbols-outlined text-[10px] mr-0.5">{badge.icon}</span>
+                          {badge.label}
+                        </SCBadge>
+                        {acc.postedToX && (
+                          <SCBadge variant="info">
+                            <span className="material-symbols-outlined text-[10px] mr-0.5">check</span>
+                            Posted
+                          </SCBadge>
+                        )}
+                      </div>
+
+                      <h3 className="text-sm font-bold text-white">{acc.title}</h3>
+                      <p className="text-lg font-black text-sc-primary">
+                        {acc.value}{" "}
+                        <span className="text-sm font-normal text-slate-400">{acc.unit}</span>
+                      </p>
+
+                      <div className="flex items-center gap-1 mt-1 text-xs text-slate-500">
+                        <span className="material-symbols-outlined text-[12px]">calendar_today</span>
+                        {formatDate(acc.createdAt)} at {formatTime(acc.createdAt)}
+                      </div>
+                    </div>
+
+                    {/* Post to X button */}
+                    {!acc.postedToX && (
+                      <SCButton
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => handlePostToX(acc)}
+                        disabled={postingId === acc.id}
+                        className="flex-shrink-0"
+                      >
+                        {postingId === acc.id ? (
+                          <span className="material-symbols-outlined text-[14px] animate-spin">progress_activity</span>
+                        ) : (
+                          <span className="material-symbols-outlined text-[14px]">send</span>
+                        )}
+                        Post to X
+                      </SCButton>
+                    )}
+                  </div>
+                </SCGlassCard>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

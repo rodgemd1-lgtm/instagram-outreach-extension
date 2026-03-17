@@ -1,25 +1,8 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
-import {
-  CalendarDays,
-  ChevronLeft,
-  ChevronRight,
-  MapPin,
-  DollarSign,
-  Clock,
-  Users,
-  Trophy,
-  TrendingUp,
-  TrendingDown,
-  Minus,
-  Plus,
-  CheckCircle2,
-  AlertCircle,
-  Star,
-  Dumbbell,
-} from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SCPageHeader, SCGlassCard, SCBadge } from "@/components/sc";
 // Types inlined to avoid importing server-only camp-database module
 type CampType = "school_camp" | "prospect_day" | "combine" | "showcase" | "satellite";
 type RegistrationStatus = "not_registered" | "registered" | "waitlisted" | "confirmed";
@@ -306,10 +289,10 @@ function TabButton({
     <button
       onClick={onClick}
       className={cn(
-        "px-4 py-2 text-sm font-medium rounded-lg transition-colors",
+        "px-4 py-2 text-xs font-bold uppercase rounded-lg transition-all",
         active
-          ? "bg-white text-black"
-          : "text-slate-400 hover:text-white hover:bg-slate-800"
+          ? "bg-sc-primary text-white shadow-lg shadow-sc-primary-glow"
+          : "text-slate-500 hover:text-white hover:bg-white/5"
       )}
     >
       {label}
@@ -367,14 +350,14 @@ function CalendarTab({ camps }: { camps: Camp[] }) {
           onClick={prevMonth}
           className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
         >
-          <ChevronLeft className="h-5 w-5" />
+          <span className="material-symbols-outlined text-[20px]">chevron_left</span>
         </button>
         <h3 className="text-lg font-semibold text-white">{monthName}</h3>
         <button
           onClick={nextMonth}
           className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
         >
-          <ChevronRight className="h-5 w-5" />
+          <span className="material-symbols-outlined text-[20px]">chevron_right</span>
         </button>
       </div>
 
@@ -483,18 +466,18 @@ function CalendarTab({ camps }: { camps: Camp[] }) {
           </div>
           <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             <div className="flex items-center gap-2 text-slate-300">
-              <CalendarDays className="h-4 w-4 text-slate-500" />
+              <span className="material-symbols-outlined text-[16px] text-slate-500">calendar_today</span>
               {formatDate(selectedCamp.date)}
             </div>
             {selectedCamp.location && (
               <div className="flex items-center gap-2 text-slate-300">
-                <MapPin className="h-4 w-4 text-slate-500" />
+                <span className="material-symbols-outlined text-[16px] text-slate-500">location_on</span>
                 {selectedCamp.location}
               </div>
             )}
             {selectedCamp.cost !== null && (
               <div className="flex items-center gap-2 text-slate-300">
-                <DollarSign className="h-4 w-4 text-slate-500" />
+                <span className="material-symbols-outlined text-[16px] text-slate-500">attach_money</span>
                 ${selectedCamp.cost}
               </div>
             )}
@@ -538,7 +521,7 @@ function UpcomingTab({
   if (upcoming.length === 0) {
     return (
       <div className="text-center py-16">
-        <CalendarDays className="h-12 w-12 text-slate-600 mx-auto mb-4" />
+        <span className="material-symbols-outlined text-[48px] text-white/10 mx-auto mb-4 block">calendar_today</span>
         <p className="text-slate-400">No upcoming camps scheduled.</p>
       </div>
     );
@@ -571,7 +554,7 @@ function UpcomingTab({
                         recommendation.color
                       )}
                     >
-                      <Star className="h-3 w-3" />
+                      <span className="material-symbols-outlined text-[12px]">star</span>
                       {recommendation.text}
                     </span>
                   )}
@@ -603,24 +586,24 @@ function UpcomingTab({
             {/* Details grid */}
             <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
               <div className="flex items-center gap-2 text-slate-300">
-                <CalendarDays className="h-4 w-4 text-slate-500 flex-shrink-0" />
+                <span className="material-symbols-outlined text-[16px] text-slate-500 flex-shrink-0">calendar_today</span>
                 <span>{formatDate(camp.date)}</span>
               </div>
               {camp.location && (
                 <div className="flex items-center gap-2 text-slate-300">
-                  <MapPin className="h-4 w-4 text-slate-500 flex-shrink-0" />
+                  <span className="material-symbols-outlined text-[16px] text-slate-500 flex-shrink-0">location_on</span>
                   <span>{camp.location}</span>
                 </div>
               )}
               {camp.cost !== null && (
                 <div className="flex items-center gap-2 text-slate-300">
-                  <DollarSign className="h-4 w-4 text-slate-500 flex-shrink-0" />
+                  <span className="material-symbols-outlined text-[16px] text-slate-500 flex-shrink-0">attach_money</span>
                   <span>${camp.cost}</span>
                 </div>
               )}
               {camp.coachesPresent.length > 0 && (
                 <div className="flex items-center gap-2 text-slate-300">
-                  <Users className="h-4 w-4 text-slate-500 flex-shrink-0" />
+                  <span className="material-symbols-outlined text-[16px] text-slate-500 flex-shrink-0">group</span>
                   <span>
                     {camp.coachesPresent
                       .map((c) => c.name)
@@ -633,7 +616,7 @@ function UpcomingTab({
             {/* Registration deadline */}
             {camp.registrationDeadline && (
               <div className="mt-3 flex items-center gap-2 text-xs">
-                <Clock className="h-3.5 w-3.5 text-slate-500" />
+                <span className="material-symbols-outlined text-[14px] text-slate-500">schedule</span>
                 <span className="text-slate-400">
                   Registration deadline:{" "}
                   {formatDate(camp.registrationDeadline)}
@@ -687,7 +670,7 @@ function HistoryTab({ camps }: { camps: Camp[] }) {
   if (pastCamps.length === 0) {
     return (
       <div className="text-center py-16">
-        <Trophy className="h-12 w-12 text-slate-600 mx-auto mb-4" />
+        <span className="material-symbols-outlined text-[48px] text-white/10 mx-auto mb-4 block">emoji_events</span>
         <p className="text-slate-400">No past camps recorded yet.</p>
       </div>
     );
@@ -722,13 +705,13 @@ function HistoryTab({ camps }: { camps: Camp[] }) {
                 <div className="flex items-center gap-2">
                   {camp.followUpStatus === "completed" && (
                     <span className="flex items-center gap-1 text-xs text-green-400">
-                      <CheckCircle2 className="h-3.5 w-3.5" />
+                      <span className="material-symbols-outlined text-[14px]">check_circle</span>
                       Follow-up done
                     </span>
                   )}
                   {camp.followUpStatus === "pending" && (
                     <span className="flex items-center gap-1 text-xs text-yellow-400">
-                      <AlertCircle className="h-3.5 w-3.5" />
+                      <span className="material-symbols-outlined text-[14px]">error</span>
                       Follow-up needed
                     </span>
                   )}
@@ -817,7 +800,7 @@ function HistoryTab({ camps }: { camps: Camp[] }) {
                         className="flex items-center justify-between text-sm"
                       >
                         <div className="flex items-center gap-2">
-                          <Users className="h-3.5 w-3.5 text-slate-500" />
+                          <span className="material-symbols-outlined text-[14px] text-slate-500">group</span>
                           <span className="text-slate-300">
                             {cc.coachName}
                           </span>
@@ -999,13 +982,13 @@ function MeasurablesTab() {
     if (current === null || previous === null) return null;
     const diff = current - previous;
     if (Math.abs(diff) < 0.01) {
-      return <Minus className="h-3.5 w-3.5 text-slate-500" />;
+      return <span className="material-symbols-outlined text-[14px] text-slate-500">remove</span>;
     }
     const improved = lowerIsBetter ? diff < 0 : diff > 0;
     return improved ? (
-      <TrendingUp className="h-3.5 w-3.5 text-green-400" />
+      <span className="material-symbols-outlined text-[14px] text-green-400">trending_up</span>
     ) : (
-      <TrendingDown className="h-3.5 w-3.5 text-red-400" />
+      <span className="material-symbols-outlined text-[14px] text-red-400">trending_down</span>
     );
   }
 
@@ -1082,7 +1065,7 @@ function MeasurablesTab() {
           onClick={() => setShowForm(!showForm)}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
         >
-          <Plus className="h-4 w-4" />
+          <span className="material-symbols-outlined text-[16px]">add</span>
           Log New Measurables
         </button>
 
@@ -1359,48 +1342,42 @@ export default function CampsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-slate-400">Loading camps...</div>
+      <div className="flex items-center justify-center py-24">
+        <span className="material-symbols-outlined text-[24px] text-slate-500 animate-spin">progress_activity</span>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black">
-      {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center gap-3 mb-1">
-          <Dumbbell className="h-6 w-6 text-blue-500" />
-          <h1 className="text-2xl font-bold text-white">Camp Tracker</h1>
-        </div>
-        <p className="text-sm text-slate-400">
-          Track camps, combines, and measurables for Jacob Rodgers &mdash; Class
-          of 2029 OL
-        </p>
-      </div>
+    <div className="space-y-6">
+      <SCPageHeader
+        kicker="Camp Operations"
+        title="CAMPS & EVENTS"
+        subtitle="Track camps, combines, and measurables for Jacob Rodgers — Class of 2029 OL"
+      />
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        <div className="border border-slate-700 rounded-xl p-4 bg-slate-900/50">
-          <p className="text-xs text-slate-400 mb-1">Upcoming</p>
-          <p className="text-2xl font-bold text-white">{upcomingCount}</p>
-        </div>
-        <div className="border border-slate-700 rounded-xl p-4 bg-slate-900/50">
-          <p className="text-xs text-slate-400 mb-1">Confirmed</p>
-          <p className="text-2xl font-bold text-green-400">{confirmedCount}</p>
-        </div>
-        <div className="border border-slate-700 rounded-xl p-4 bg-slate-900/50">
-          <p className="text-xs text-slate-400 mb-1">Past Camps</p>
-          <p className="text-2xl font-bold text-white">{pastCount}</p>
-        </div>
-        <div className="border border-slate-700 rounded-xl p-4 bg-slate-900/50">
-          <p className="text-xs text-slate-400 mb-1">Est. Cost</p>
-          <p className="text-2xl font-bold text-white">${totalCost}</p>
-        </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <SCGlassCard className="p-4">
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Upcoming</p>
+          <p className="text-2xl font-black text-white">{upcomingCount}</p>
+        </SCGlassCard>
+        <SCGlassCard className="p-4">
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Confirmed</p>
+          <p className="text-2xl font-black text-emerald-400">{confirmedCount}</p>
+        </SCGlassCard>
+        <SCGlassCard className="p-4">
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Past Camps</p>
+          <p className="text-2xl font-black text-white">{pastCount}</p>
+        </SCGlassCard>
+        <SCGlassCard className="p-4">
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Est. Cost</p>
+          <p className="text-2xl font-black text-white">${totalCost}</p>
+        </SCGlassCard>
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-1 bg-slate-900/50 p-1 rounded-xl mb-6 overflow-x-auto">
+      <div className="flex items-center gap-1 bg-white/5 border border-sc-border p-1 rounded-xl overflow-x-auto">
         <TabButton
           label="Calendar"
           active={activeTab === "calendar"}

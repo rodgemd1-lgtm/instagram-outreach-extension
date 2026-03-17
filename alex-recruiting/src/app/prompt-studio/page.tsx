@@ -1,19 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  Search,
-  Sparkles,
-  ImageIcon,
-  Film,
-  Loader2,
-  Download,
-  ChevronRight,
-  X,
-} from "lucide-react";
+import { SCPageHeader } from "@/components/sc/sc-page-header";
+import { SCGlassCard } from "@/components/sc/sc-glass-card";
+import { SCBadge } from "@/components/sc/sc-badge";
+import { SCButton } from "@/components/sc/sc-button";
+import { SCInput } from "@/components/sc/sc-input";
 import imagePrompts from "@/lib/recruit/image-prompts.json";
 
 interface ImagePrompt {
@@ -57,7 +49,6 @@ export default function PromptStudioPage() {
   async function handleGenerate(prompt: ImagePrompt) {
     setGenerating(true);
     setError(null);
-
     try {
       const res = await fetch("/api/media/generate", {
         method: "POST",
@@ -69,17 +60,15 @@ export default function PromptStudioPage() {
           aspectRatio: prompt.aspect_ratio,
         }),
       });
-
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Generation failed");
-
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const newImages: GeneratedImage[] = data.images.map((img: any) => ({
         url: img.url,
         width: img.width,
         height: img.height,
         generatedAt: data.generatedAt,
       }));
-
       setHistory((prev) => ({
         ...prev,
         [prompt.id]: [...(prev[prompt.id] || []), ...newImages],
@@ -95,40 +84,34 @@ export default function PromptStudioPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-[var(--app-navy-strong)]">Prompt Studio</h1>
-        <p className="mt-1 text-sm text-[var(--app-muted)]">
-          Browse, test, and generate from {prompts.length} recruiting image prompts.
-          {totalGenerated > 0 && ` ${totalGenerated} images generated this session.`}
-        </p>
-      </div>
+      <SCPageHeader
+        title="PROMPT STUDIO"
+        subtitle={`Browse, test, and generate from ${prompts.length} recruiting image prompts.${totalGenerated > 0 ? ` ${totalGenerated} images generated this session.` : ""}`}
+      />
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--app-muted)]" />
-          <input
-            type="text"
+        <div className="flex-1 min-w-[200px]">
+          <SCInput
+            icon="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search prompts..."
-            className="w-full rounded-lg border border-[rgba(15,40,75,0.12)] bg-white py-2 pl-9 pr-3 text-sm text-[var(--app-navy-strong)] placeholder:text-[var(--app-muted)] focus:border-[var(--app-navy)] focus:outline-none focus:ring-1 focus:ring-[var(--app-navy)]"
           />
         </div>
-        <div className="flex gap-1 rounded-lg bg-[rgba(15,40,75,0.04)] p-1">
+        <div className="flex gap-1 rounded-lg bg-white/5 p-1 border border-sc-border">
           {(["all", "image", "video"] as const).map((type) => (
             <button
               key={type}
               onClick={() => setTypeFilter(type)}
-              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-bold transition-colors ${
                 typeFilter === type
-                  ? "bg-white text-[var(--app-navy-strong)] shadow-sm"
-                  : "text-[var(--app-muted)] hover:text-[var(--app-navy)]"
+                  ? "bg-sc-primary/20 text-sc-primary"
+                  : "text-slate-500 hover:text-white"
               }`}
             >
-              {type === "image" && <ImageIcon className="h-3 w-3" />}
-              {type === "video" && <Film className="h-3 w-3" />}
+              {type === "image" && <span className="material-symbols-outlined text-[14px]">image</span>}
+              {type === "video" && <span className="material-symbols-outlined text-[14px]">videocam</span>}
               {type === "all" ? "All" : type.charAt(0).toUpperCase() + type.slice(1)}
             </button>
           ))}
@@ -136,9 +119,9 @@ export default function PromptStudioPage() {
       </div>
 
       {error && (
-        <div className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
-          {error}
-        </div>
+        <SCGlassCard className="p-3 border-l-4 border-l-red-500">
+          <p className="text-sm text-red-400">{error}</p>
+        </SCGlassCard>
       )}
 
       <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
@@ -154,34 +137,26 @@ export default function PromptStudioPage() {
                 onClick={() => setSelectedPrompt(prompt)}
                 className={`w-full rounded-xl border p-4 text-left transition-all ${
                   isSelected
-                    ? "border-[var(--app-navy)] bg-[rgba(15,40,75,0.04)] shadow-sm"
-                    : "border-[rgba(15,40,75,0.08)] bg-white/74 hover:border-[rgba(15,40,75,0.16)]"
+                    ? "border-sc-primary bg-sc-primary/5"
+                    : "border-sc-border bg-sc-surface-glass hover:border-slate-500"
                 }`}
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <p className="text-sm font-semibold text-[var(--app-navy-strong)]">
-                        {prompt.section}
-                      </p>
-                      <Badge variant="secondary" className="text-[10px]">
-                        {prompt.type}
-                      </Badge>
-                      <Badge variant="outline" className="text-[10px]">
-                        {prompt.aspect_ratio}
-                      </Badge>
+                      <p className="text-sm font-bold text-white">{prompt.section}</p>
+                      <SCBadge>{prompt.type}</SCBadge>
+                      <SCBadge variant="default">{prompt.aspect_ratio}</SCBadge>
                     </div>
-                    <p className="mt-1 text-xs text-[var(--app-muted)] line-clamp-2">
+                    <p className="mt-1 text-xs text-slate-500 line-clamp-2">
                       {prompt.prompt.slice(0, 120)}...
                     </p>
                   </div>
                   <div className="flex items-center gap-1">
                     {images.length > 0 && (
-                      <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 text-[10px]">
-                        {images.length}
-                      </Badge>
+                      <SCBadge variant="success">{images.length}</SCBadge>
                     )}
-                    <ChevronRight className="h-4 w-4 text-[var(--app-muted)]" />
+                    <span className="material-symbols-outlined text-[18px] text-slate-500">chevron_right</span>
                   </div>
                 </div>
               </button>
@@ -190,8 +165,8 @@ export default function PromptStudioPage() {
 
           {filtered.length === 0 && (
             <div className="py-12 text-center">
-              <Search className="mx-auto h-8 w-8 text-[#D1D5DB]" />
-              <p className="mt-2 text-sm text-[var(--app-muted)]">No prompts match your search</p>
+              <span className="material-symbols-outlined text-[32px] text-slate-600">search</span>
+              <p className="mt-2 text-sm text-slate-500">No prompts match your search</p>
             </div>
           )}
         </div>
@@ -199,115 +174,102 @@ export default function PromptStudioPage() {
         {/* Detail Panel */}
         <div className="sticky top-6">
           {selectedPrompt ? (
-            <Card>
-              <CardHeader className="border-b border-[rgba(15,40,75,0.08)] bg-[rgba(15,40,75,0.03)]">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle className="text-lg text-[var(--app-navy-strong)]">
-                      {selectedPrompt.section}
-                    </CardTitle>
-                    <div className="mt-2 flex items-center gap-2">
-                      <Badge variant="secondary">{selectedPrompt.type}</Badge>
-                      <Badge variant="outline">{selectedPrompt.aspect_ratio}</Badge>
-                      <Badge variant="outline">{selectedPrompt.id}</Badge>
-                    </div>
+            <SCGlassCard variant="strong" className="p-6 space-y-4">
+              <div className="flex items-start justify-between">
+                <div>
+                  <h2 className="text-lg font-black text-white">{selectedPrompt.section}</h2>
+                  <div className="mt-2 flex items-center gap-2">
+                    <SCBadge variant="primary">{selectedPrompt.type}</SCBadge>
+                    <SCBadge>{selectedPrompt.aspect_ratio}</SCBadge>
+                    <SCBadge>{selectedPrompt.id}</SCBadge>
                   </div>
-                  <button
-                    onClick={() => setSelectedPrompt(null)}
-                    className="rounded-md p-1 text-[var(--app-muted)] hover:bg-[rgba(15,40,75,0.05)]"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-4 pt-4">
-                {/* Prompt Text */}
-                <div className="rounded-lg bg-[rgba(15,40,75,0.03)] p-3">
-                  <p className="text-xs font-medium text-[var(--app-muted)]">PROMPT</p>
-                  <p className="mt-2 text-xs leading-5 text-[var(--app-navy-strong)]">
-                    {selectedPrompt.prompt}
-                  </p>
-                </div>
-
-                {/* Notes */}
-                {selectedPrompt.notes && (
-                  <div className="rounded-lg border border-amber-200 bg-amber-50/50 p-3">
-                    <p className="text-xs font-medium text-amber-700">NOTES</p>
-                    <p className="mt-1 text-xs leading-5 text-amber-900">
-                      {selectedPrompt.notes}
-                    </p>
-                  </div>
-                )}
-
-                {/* Generate Button */}
-                <Button
-                  onClick={() => handleGenerate(selectedPrompt)}
-                  disabled={generating || selectedPrompt.type === "video"}
-                  className="w-full bg-[var(--app-navy-strong)] text-white hover:bg-[var(--app-navy)]"
+                <button
+                  onClick={() => setSelectedPrompt(null)}
+                  className="rounded-md p-1 text-slate-500 hover:bg-white/5 transition-colors"
                 >
-                  {generating ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <Sparkles className="mr-2 h-4 w-4" />
-                  )}
-                  {selectedPrompt.type === "video"
-                    ? "Video prompts use the Video Generator"
-                    : "Generate Now"}
-                </Button>
+                  <span className="material-symbols-outlined text-[18px]">close</span>
+                </button>
+              </div>
 
-                {/* History */}
-                {(history[selectedPrompt.id] || []).length > 0 && (
-                  <div className="space-y-2">
-                    <p className="text-xs font-medium text-[var(--app-muted)]">
-                      GENERATION HISTORY ({history[selectedPrompt.id].length})
-                    </p>
-                    <div className="grid gap-2 sm:grid-cols-2">
-                      {history[selectedPrompt.id].map((img, i) => (
-                        <div
-                          key={i}
-                          className="group relative overflow-hidden rounded-xl border border-[rgba(15,40,75,0.08)]"
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={img.url}
-                            alt={`Generated ${selectedPrompt.section} #${i + 1}`}
-                            className="w-full object-cover"
-                            style={{
-                              aspectRatio: selectedPrompt.aspect_ratio.replace(":", "/"),
-                            }}
-                          />
-                          <div className="absolute inset-0 flex items-end justify-between bg-gradient-to-t from-black/50 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100">
-                            <span className="text-[10px] text-white/80">
-                              {new Date(img.generatedAt).toLocaleString()}
-                            </span>
-                            <a
-                              href={img.url}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="rounded-lg bg-white/90 p-1.5 text-[var(--app-navy-strong)]"
-                            >
-                              <Download className="h-3.5 w-3.5" />
-                            </a>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+              {/* Prompt Text */}
+              <div className="rounded-lg bg-white/5 border border-sc-border p-3">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">PROMPT</p>
+                <p className="mt-2 text-xs leading-5 text-slate-300">{selectedPrompt.prompt}</p>
+              </div>
+
+              {/* Notes */}
+              {selectedPrompt.notes && (
+                <div className="rounded-lg border border-yellow-500/30 bg-yellow-500/5 p-3">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-yellow-500">NOTES</p>
+                  <p className="mt-1 text-xs leading-5 text-yellow-400/80">{selectedPrompt.notes}</p>
+                </div>
+              )}
+
+              {/* Generate Button */}
+              <SCButton
+                onClick={() => handleGenerate(selectedPrompt)}
+                disabled={generating || selectedPrompt.type === "video"}
+                className="w-full"
+              >
+                {generating ? (
+                  <span className="material-symbols-outlined text-[16px] animate-spin mr-2">progress_activity</span>
+                ) : (
+                  <span className="material-symbols-outlined text-[16px] mr-2">auto_awesome</span>
                 )}
-              </CardContent>
-            </Card>
+                {selectedPrompt.type === "video"
+                  ? "Video prompts use the Video Generator"
+                  : "Generate Now"}
+              </SCButton>
+
+              {/* History */}
+              {(history[selectedPrompt.id] || []).length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                    GENERATION HISTORY ({history[selectedPrompt.id].length})
+                  </p>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {history[selectedPrompt.id].map((img, i) => (
+                      <div
+                        key={i}
+                        className="group relative overflow-hidden rounded-xl border border-sc-border"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={img.url}
+                          alt={`Generated ${selectedPrompt.section} #${i + 1}`}
+                          className="w-full object-cover"
+                          style={{
+                            aspectRatio: selectedPrompt.aspect_ratio.replace(":", "/"),
+                          }}
+                        />
+                        <div className="absolute inset-0 flex items-end justify-between bg-gradient-to-t from-black/50 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100">
+                          <span className="text-[10px] text-white/80">
+                            {new Date(img.generatedAt).toLocaleString()}
+                          </span>
+                          <a
+                            href={img.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="rounded-lg bg-white/90 p-1.5 text-sc-bg"
+                          >
+                            <span className="material-symbols-outlined text-[14px]">download</span>
+                          </a>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </SCGlassCard>
           ) : (
-            <Card>
-              <CardContent className="flex min-h-[400px] flex-col items-center justify-center py-12">
-                <Sparkles className="h-12 w-12 text-[#D1D5DB]" />
-                <p className="mt-3 text-sm font-medium text-[var(--app-navy-strong)]">
-                  Select a prompt
-                </p>
-                <p className="mt-1 text-xs text-[var(--app-muted)]">
-                  Choose a prompt from the list to view details and generate images
-                </p>
-              </CardContent>
-            </Card>
+            <SCGlassCard className="flex min-h-[400px] flex-col items-center justify-center py-12">
+              <span className="material-symbols-outlined text-[48px] text-slate-600">auto_awesome</span>
+              <p className="mt-3 text-sm font-bold text-white">Select a prompt</p>
+              <p className="mt-1 text-xs text-slate-500">
+                Choose a prompt from the list to view details and generate images
+              </p>
+            </SCGlassCard>
           )}
         </div>
       </div>

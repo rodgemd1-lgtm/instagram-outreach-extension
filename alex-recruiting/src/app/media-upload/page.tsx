@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import {
-  StitchPageHeader,
-  GlassCard,
-  StatCard,
-  StitchBadge,
-  MediaDropZone,
-} from "@/components/stitch";
+import { SCPageHeader } from "@/components/sc/sc-page-header";
+import { SCGlassCard } from "@/components/sc/sc-glass-card";
+import { SCStatCard } from "@/components/sc/sc-stat-card";
+import { SCBadge } from "@/components/sc/sc-badge";
+import { SCButton } from "@/components/sc/sc-button";
 
 interface UploadedFile {
   name: string;
@@ -18,59 +16,84 @@ interface UploadedFile {
 export default function MediaUploadPage() {
   const [files, setFiles] = useState<UploadedFile[]>([]);
 
-  function handleFiles(newFiles: File[]) {
-    setFiles((prev) => [
-      ...prev,
-      ...newFiles.map((f) => ({ name: f.name, size: f.size, type: f.type })),
-    ]);
+  function handleFiles(incoming: FileList | null) {
+    if (!incoming) return;
+    const newFiles = Array.from(incoming).map((f) => ({
+      name: f.name,
+      size: f.size,
+      type: f.type,
+    }));
+    setFiles((prev) => [...prev, ...newFiles]);
   }
 
   return (
     <div className="space-y-6">
-      <StitchPageHeader
-        title="Media Lab"
+      <SCPageHeader
+        title="MEDIA UPLOAD CENTER"
         subtitle="Upload, process, and manage recruiting media assets"
       />
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <StatCard label="Uploaded" value={files.length} />
-        <StatCard label="Processing" value={0} />
-        <StatCard label="Ready" value={0} />
-        <StatCard label="Storage" value="0 MB" />
+        <SCStatCard label="Uploaded" value={String(files.length)} icon="cloud_upload" />
+        <SCStatCard label="Processing" value="0" icon="hourglass_top" />
+        <SCStatCard label="Ready" value="0" icon="check_circle" />
+        <SCStatCard label="Storage" value="0 MB" icon="hard_drive" />
       </div>
 
       {/* Upload Zone */}
-      <MediaDropZone onFiles={handleFiles} />
+      <SCGlassCard className="p-8">
+        <label className="flex min-h-[220px] cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-sc-border hover:border-sc-primary/50 transition-colors">
+          <span className="material-symbols-outlined text-[48px] text-slate-500 mb-3">
+            cloud_upload
+          </span>
+          <p className="text-sm font-semibold text-white">Drag and drop files here</p>
+          <p className="text-xs text-slate-500 mt-1">or click to browse</p>
+          <p className="text-[10px] text-slate-600 mt-3">
+            JPG, PNG, HEIC, WEBP, MP4, MOV, WEBM
+          </p>
+          <input
+            type="file"
+            multiple
+            accept=".jpg,.jpeg,.png,.heic,.webp,.mp4,.mov,.webm"
+            className="hidden"
+            onChange={(e) => handleFiles(e.target.files)}
+          />
+        </label>
+      </SCGlassCard>
 
       {/* AI Metadata Processing */}
-      <GlassCard className="p-5">
-        <h3 className="stitch-label mb-3">AI Metadata Processing</h3>
-        <p className="text-sm text-white/40">
+      <SCGlassCard className="p-5">
+        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">
+          AI Metadata Processing
+        </p>
+        <p className="text-sm text-slate-500">
           Upload media above. AI will automatically tag content type, extract key moments,
           and generate metadata for recruiting use.
         </p>
-      </GlassCard>
+      </SCGlassCard>
 
       {/* Recent Uploads */}
       {files.length > 0 && (
         <div>
-          <h2 className="stitch-label mb-4">Recent Uploads</h2>
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">
+            Recent Uploads
+          </p>
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {files.map((file, idx) => (
-              <GlassCard key={idx} className="p-4">
+              <SCGlassCard key={idx} className="p-4">
                 <div className="flex items-start justify-between">
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold text-white">{file.name}</p>
-                    <p className="text-[11px] text-white/30">
+                    <p className="text-[11px] text-slate-500">
                       {(file.size / 1024 / 1024).toFixed(1)} MB
                     </p>
                   </div>
-                  <StitchBadge variant={file.type.startsWith("video") ? "blue" : "default"}>
+                  <SCBadge variant={file.type.startsWith("video") ? "info" : "default"}>
                     {file.type.startsWith("video") ? "Video" : "Image"}
-                  </StitchBadge>
+                  </SCBadge>
                 </div>
-              </GlassCard>
+              </SCGlassCard>
             ))}
           </div>
         </div>

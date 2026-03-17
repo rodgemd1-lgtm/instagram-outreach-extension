@@ -2,19 +2,13 @@
 
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Wifi, Shield } from "lucide-react";
-import {
-  StitchPageHeader,
-  StitchButton,
-  StitchBadge,
-  GlassCard,
-  StatCard,
-  SentimentBars,
-  ActivityRadar,
-  DMConsole,
-} from "@/components/stitch";
-import { StitchTabs } from "@/components/stitch/stitch-tabs";
 import Image from "next/image";
+import { SCPageHeader } from "@/components/sc/sc-page-header";
+import { SCGlassCard } from "@/components/sc/sc-glass-card";
+import { SCStatCard } from "@/components/sc/sc-stat-card";
+import { SCBadge } from "@/components/sc/sc-badge";
+import { SCButton } from "@/components/sc/sc-button";
+import { SCTabs } from "@/components/sc/sc-tabs";
 import { getSchoolLogo, getSchoolColors } from "@/lib/data/school-branding";
 
 interface CoachPersona {
@@ -54,6 +48,7 @@ export default function CoachDetailPage({
   const [persona, setPersona] = useState<CoachPersona | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("intelligence");
 
   useEffect(() => {
     async function fetchPersona() {
@@ -81,14 +76,14 @@ export default function CoachDetailPage({
   if (loading) {
     return (
       <div className="space-y-6">
-        <StitchButton variant="ghost" size="sm" onClick={() => router.push("/coaches")}>
-          <ArrowLeft className="mr-1 h-4 w-4" />
+        <SCButton variant="ghost" size="sm" onClick={() => router.push("/coaches")}>
+          <span className="material-symbols-outlined text-[16px]">arrow_back</span>
           War Room
-        </StitchButton>
-        <GlassCard className="flex items-center justify-center py-20">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#C5050C] border-t-transparent" />
-          <span className="ml-3 text-sm text-white/40">Loading intelligence...</span>
-        </GlassCard>
+        </SCButton>
+        <SCGlassCard className="flex items-center justify-center py-20">
+          <span className="material-symbols-outlined text-[24px] text-slate-500 animate-spin">progress_activity</span>
+          <span className="ml-3 text-sm text-slate-500">Loading intelligence...</span>
+        </SCGlassCard>
       </div>
     );
   }
@@ -96,29 +91,29 @@ export default function CoachDetailPage({
   if (error || !persona) {
     return (
       <div className="space-y-6">
-        <StitchButton variant="ghost" size="sm" onClick={() => router.push("/coaches")}>
-          <ArrowLeft className="mr-1 h-4 w-4" />
+        <SCButton variant="ghost" size="sm" onClick={() => router.push("/coaches")}>
+          <span className="material-symbols-outlined text-[16px]">arrow_back</span>
           War Room
-        </StitchButton>
-        <GlassCard className="py-16 text-center">
-          <p className="text-sm text-white/40">{error || "No intelligence data available."}</p>
-          <StitchButton variant="outline" size="sm" className="mt-4" onClick={() => router.push("/coaches")}>
+        </SCButton>
+        <SCGlassCard className="py-16 text-center">
+          <p className="text-sm text-slate-500">{error || "No intelligence data available."}</p>
+          <SCButton variant="secondary" size="sm" className="mt-4" onClick={() => router.push("/coaches")}>
             Return to War Room
-          </StitchButton>
-        </GlassCard>
+          </SCButton>
+        </SCGlassCard>
       </div>
     );
   }
 
-  const tierVariant = persona.priorityTier === "Tier 1" ? "tier1" : persona.priorityTier === "Tier 2" ? "tier2" : "tier3";
+  const tierBadgeVariant = persona.priorityTier === "Tier 1" ? "danger" as const : persona.priorityTier === "Tier 2" ? "warning" as const : "default" as const;
 
   return (
     <div className="space-y-6">
       {/* Back nav */}
-      <StitchButton variant="ghost" size="sm" onClick={() => router.push("/coaches")}>
-        <ArrowLeft className="mr-1 h-4 w-4" />
+      <SCButton variant="ghost" size="sm" onClick={() => router.push("/coaches")}>
+        <span className="material-symbols-outlined text-[16px]">arrow_back</span>
         War Room
-      </StitchButton>
+      </SCButton>
 
       {/* Profile Header */}
       <div className="flex flex-col gap-6 md:flex-row md:items-start">
@@ -129,223 +124,223 @@ export default function CoachDetailPage({
           >
             <Image src={logoPath} alt={persona.schoolName} width={64} height={64} className="opacity-80" />
           </div>
-          <div className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-[#0bda7d] border-2 border-[#0a0a0a]" />
+          <div className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-emerald-400 border-2 border-sc-bg" />
         </div>
         <div className="flex-1">
-          <h1 className="text-4xl font-extrabold tracking-tight text-white md:text-5xl">
-            {persona.schoolName}
-          </h1>
-          <p className="mt-1 text-sm text-white/40">
-            {persona.division} — {persona.conference} | {persona.communicationStyle.replace(/_/g, " ")}
-          </p>
+          <SCPageHeader
+            title={persona.schoolName}
+            subtitle={`${persona.division} -- ${persona.conference} | ${persona.communicationStyle.replace(/_/g, " ")}`}
+          />
           <div className="mt-3 flex flex-wrap items-center gap-2">
-            <StitchBadge variant={tierVariant as "tier1" | "tier2" | "tier3"}>{persona.priorityTier}</StitchBadge>
-            <StitchBadge variant={persona.personaSource === "ai" ? "green" : "amber"} dot>
+            <SCBadge variant={tierBadgeVariant}>{persona.priorityTier}</SCBadge>
+            <SCBadge variant={persona.personaSource === "ai" ? "success" : "warning"}>
               {persona.personaSource === "ai" ? "AI Persona" : "Deterministic"}
-            </StitchBadge>
+            </SCBadge>
           </div>
         </div>
         <div className="flex gap-2">
-          <StitchButton variant="outline" size="sm">
-            <Wifi className="mr-2 h-4 w-4" />
+          <SCButton variant="secondary" size="sm">
+            <span className="material-symbols-outlined text-[16px]">wifi</span>
             Connect
-          </StitchButton>
-          <StitchButton variant="pirate" size="sm">
-            <Shield className="mr-2 h-4 w-4" />
+          </SCButton>
+          <SCButton size="sm">
+            <span className="material-symbols-outlined text-[16px]">person_add</span>
             Follow
-          </StitchButton>
+          </SCButton>
         </div>
       </div>
 
       {/* Quick stat cards */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <StatCard label="DM Open" value={`${Math.round(persona.dmOpenProbability * 100)}%`} />
-        <StatCard label="Follow Back" value={`${Math.round(persona.followBackProbability * 100)}%`} />
-        <StatCard label="Response Rate" value={`${Math.round(persona.estimatedResponseRate * 100)}%`} />
-        <StatCard label="Priorities" value={persona.recruitingPriorities.length} />
+        <SCStatCard label="DM Open" value={`${Math.round(persona.dmOpenProbability * 100)}%`} icon="mail" />
+        <SCStatCard label="Follow Back" value={`${Math.round(persona.followBackProbability * 100)}%`} icon="person_add" />
+        <SCStatCard label="Response Rate" value={`${Math.round(persona.estimatedResponseRate * 100)}%`} icon="reply" />
+        <SCStatCard label="Priorities" value={String(persona.recruitingPriorities.length)} icon="checklist" />
       </div>
 
-      {/* Tabs content */}
-      <StitchTabs
+      {/* Tabs */}
+      <SCTabs
         tabs={[
           { value: "intelligence", label: "Intelligence" },
           { value: "outreach", label: "Outreach" },
           { value: "actions", label: "Actions" },
         ]}
-        defaultValue="intelligence"
-      >
-        {(activeTab) => (
-          <>
-            {activeTab === "intelligence" && (
-              <>
-              <div className="grid gap-6 md:grid-cols-3">
-                {/* Left column */}
-                <div className="space-y-6 md:col-span-2">
-                  {/* Sentiment Bars */}
-                  <GlassCard className="p-5">
-                    <h3 className="stitch-label mb-4">Response Probabilities</h3>
-                    <SentimentBars
-                      bars={[
-                        { label: "DM Open Probability", value: Math.round(persona.dmOpenProbability * 100), color: "#C5050C" },
-                        { label: "Follow-Back Probability", value: Math.round(persona.followBackProbability * 100), color: "#00f2ff" },
-                        { label: "Est. Response Rate", value: Math.round(persona.estimatedResponseRate * 100), color: "#0bda7d" },
-                      ]}
-                    />
-                  </GlassCard>
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
 
-                  {/* Activity Radar */}
-                  <GlassCard className="p-5">
-                    <h3 className="stitch-label mb-4">Activity Radar</h3>
-                    <div className="mx-auto max-w-[280px]">
-                      <ActivityRadar
-                        data={{
-                          posting: Math.round(persona.dmOpenProbability * 80),
-                          engagement: Math.round(persona.followBackProbability * 90),
-                          recruiting: Math.min(100, persona.recruitingPriorities.length * 25),
-                          responsiveness: Math.round(persona.estimatedResponseRate * 100),
-                          visibility: Math.round((persona.dmOpenProbability + persona.followBackProbability) * 50),
-                        }}
-                      />
-                    </div>
-                  </GlassCard>
-
-                  {/* Contact Windows */}
-                  <GlassCard className="p-5">
-                    <h3 className="stitch-label mb-4">Optimal Contact Windows</h3>
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div>
-                        <p className="text-[11px] text-white/30 mb-2">Best Months</p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {persona.optimalContactMonths.length > 0
-                            ? persona.optimalContactMonths.map((m) => (
-                                <StitchBadge key={m} variant="default">{MONTH_NAMES[m - 1]}</StitchBadge>
-                              ))
-                            : <span className="text-xs text-white/20">No data</span>
-                          }
-                        </div>
+      {/* Tab content */}
+      {activeTab === "intelligence" && (
+        <>
+          <div className="grid gap-6 md:grid-cols-3">
+            <div className="space-y-6 md:col-span-2">
+              {/* Response Probabilities */}
+              <SCGlassCard className="p-5">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Response Probabilities</p>
+                <div className="space-y-3">
+                  {[
+                    { label: "DM Open Probability", value: Math.round(persona.dmOpenProbability * 100), color: "#C5050C" },
+                    { label: "Follow-Back Probability", value: Math.round(persona.followBackProbability * 100), color: "#00f2ff" },
+                    { label: "Est. Response Rate", value: Math.round(persona.estimatedResponseRate * 100), color: "#0bda7d" },
+                  ].map((bar) => (
+                    <div key={bar.label} className="space-y-1">
+                      <div className="flex justify-between text-xs">
+                        <span className="text-slate-400">{bar.label}</span>
+                        <span className="font-mono text-white">{bar.value}%</span>
                       </div>
-                      <div>
-                        <p className="text-[11px] text-white/30 mb-2">Peak Hours</p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {persona.optimalContactHours.length > 0
-                            ? persona.optimalContactHours.map((h) => (
-                                <StitchBadge key={h} variant="default">{formatHour(h)}</StitchBadge>
-                              ))
-                            : <span className="text-xs text-white/20">No data</span>
-                          }
-                        </div>
+                      <div className="h-2 rounded-full bg-white/5 overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all duration-700"
+                          style={{ width: `${bar.value}%`, backgroundColor: bar.color }}
+                        />
                       </div>
                     </div>
-                  </GlassCard>
+                  ))}
                 </div>
+              </SCGlassCard>
 
-                {/* Right column — DM Console */}
-                <div>
-                  <DMConsole schoolId={id} schoolName={persona.schoolName} />
+              {/* Contact Windows */}
+              <SCGlassCard className="p-5">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Optimal Contact Windows</p>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div>
+                    <p className="text-[11px] text-slate-500 mb-2">Best Months</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {persona.optimalContactMonths.length > 0
+                        ? persona.optimalContactMonths.map((m) => (
+                            <SCBadge key={m} variant="default">{MONTH_NAMES[m - 1]}</SCBadge>
+                          ))
+                        : <span className="text-xs text-slate-600">No data</span>
+                      }
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-slate-500 mb-2">Peak Hours</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {persona.optimalContactHours.length > 0
+                        ? persona.optimalContactHours.map((h) => (
+                            <SCBadge key={h} variant="default">{formatHour(h)}</SCBadge>
+                          ))
+                        : <span className="text-xs text-slate-600">No data</span>
+                      }
+                    </div>
+                  </div>
                 </div>
-              </div>
+              </SCGlassCard>
+            </div>
 
-              {/* Deep Intelligence Stream */}
-              <div className="mt-6">
-                <h3 className="stitch-label mb-4">Deep Intelligence Stream</h3>
-                <div className="grid gap-4 md:grid-cols-3">
-                  <GlassCard className="p-4">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#00f2ff]/60 mb-2">Recruiting Pattern</p>
-                    <p className="text-sm text-white/60">
-                      {persona.communicationStyle === "formal"
-                        ? "Prefers structured, formal communication. Lead with credentials and measurables."
-                        : persona.communicationStyle === "casual"
-                          ? "Open to casual interaction. Engage naturally on X before formal outreach."
-                          : "Standard recruiting communication style. Follow program protocols."}
-                    </p>
-                  </GlassCard>
-                  <GlassCard className="p-4">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#0bda7d]/60 mb-2">OL Pipeline Intel</p>
-                    <p className="text-sm text-white/60">
-                      {persona.recruitingPriorities.length > 0
-                        ? `Program is actively recruiting: ${persona.recruitingPriorities.slice(0, 2).join(", ")}. Target window is open.`
-                        : "Limited intel on current OL pipeline needs. Further research recommended."}
-                    </p>
-                  </GlassCard>
-                  <GlassCard className="p-4">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#C5050C]/60 mb-2">Win Probability</p>
-                    <p className="text-sm text-white/60">
-                      {persona.estimatedResponseRate > 0.5
-                        ? "High engagement likelihood. Prioritize this target for immediate outreach."
-                        : persona.estimatedResponseRate > 0.25
-                          ? "Moderate response probability. Sustained engagement recommended before direct DM."
-                          : "Lower response probability. Build visibility through consistent X engagement first."}
-                    </p>
-                  </GlassCard>
-                </div>
-              </div>
-              </>
-            )}
-
-            {activeTab === "outreach" && (
-              <GlassCard className="py-16 text-center">
-                <p className="text-sm text-white/40">
-                  No outreach history recorded yet for {persona.schoolName}.
+            {/* Right column - DM quick panel */}
+            <div>
+              <SCGlassCard className="p-5">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Quick DM</p>
+                <p className="text-sm text-slate-500">
+                  Use the outreach pipeline to draft and send DMs to {persona.schoolName}.
                 </p>
-                <p className="mt-2 text-xs text-white/20">
-                  Interactions will appear here once tracked.
+                <SCButton variant="secondary" size="sm" className="mt-4 w-full" onClick={() => router.push(`/dashboard/outreach?coach=${id}`)}>
+                  <span className="material-symbols-outlined text-[16px]">chat</span>
+                  Open DM Console
+                </SCButton>
+              </SCGlassCard>
+            </div>
+          </div>
+
+          {/* Deep Intelligence Stream */}
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Deep Intelligence Stream</p>
+            <div className="grid gap-4 md:grid-cols-3">
+              <SCGlassCard className="p-4">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-sc-accent-cyan/60 mb-2">Recruiting Pattern</p>
+                <p className="text-sm text-slate-400">
+                  {persona.communicationStyle === "formal"
+                    ? "Prefers structured, formal communication. Lead with credentials and measurables."
+                    : persona.communicationStyle === "casual"
+                      ? "Open to casual interaction. Engage naturally on X before formal outreach."
+                      : "Standard recruiting communication style. Follow program protocols."}
                 </p>
-              </GlassCard>
+              </SCGlassCard>
+              <SCGlassCard className="p-4">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-400/60 mb-2">OL Pipeline Intel</p>
+                <p className="text-sm text-slate-400">
+                  {persona.recruitingPriorities.length > 0
+                    ? `Program is actively recruiting: ${persona.recruitingPriorities.slice(0, 2).join(", ")}. Target window is open.`
+                    : "Limited intel on current OL pipeline needs. Further research recommended."}
+                </p>
+              </SCGlassCard>
+              <SCGlassCard className="p-4">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-sc-primary/60 mb-2">Win Probability</p>
+                <p className="text-sm text-slate-400">
+                  {persona.estimatedResponseRate > 0.5
+                    ? "High engagement likelihood. Prioritize this target for immediate outreach."
+                    : persona.estimatedResponseRate > 0.25
+                      ? "Moderate response probability. Sustained engagement recommended before direct DM."
+                      : "Lower response probability. Build visibility through consistent X engagement first."}
+                </p>
+              </SCGlassCard>
+            </div>
+          </div>
+        </>
+      )}
+
+      {activeTab === "outreach" && (
+        <SCGlassCard className="py-16 text-center">
+          <p className="text-sm text-slate-500">
+            No outreach history recorded yet for {persona.schoolName}.
+          </p>
+          <p className="mt-2 text-xs text-slate-600">
+            Interactions will appear here once tracked.
+          </p>
+        </SCGlassCard>
+      )}
+
+      {activeTab === "actions" && (
+        <div className="space-y-6">
+          <SCGlassCard className="p-5">
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Best Approach Method</p>
+            <p className="text-sm text-white/70">{persona.bestApproachMethod}</p>
+          </SCGlassCard>
+
+          <SCGlassCard className="p-5">
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Step-by-Step Action Plan</p>
+            {persona.bestApproachSteps.length > 0 ? (
+              <ol className="space-y-3">
+                {persona.bestApproachSteps.map((step, idx) => (
+                  <li key={idx} className="flex items-start gap-3">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sc-primary text-xs font-bold text-white">
+                      {idx + 1}
+                    </span>
+                    <span className="text-sm text-slate-400">{step}</span>
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <p className="text-sm text-slate-600">No action steps generated yet.</p>
             )}
+          </SCGlassCard>
 
-            {activeTab === "actions" && (
-              <div className="space-y-6">
-                <GlassCard className="p-5">
-                  <h3 className="stitch-label mb-3">Best Approach Method</h3>
-                  <p className="text-sm text-white/70">{persona.bestApproachMethod}</p>
-                </GlassCard>
-
-                <GlassCard className="p-5">
-                  <h3 className="stitch-label mb-4">Step-by-Step Action Plan</h3>
-                  {persona.bestApproachSteps.length > 0 ? (
-                    <ol className="space-y-3">
-                      {persona.bestApproachSteps.map((step, idx) => (
-                        <li key={idx} className="flex items-start gap-3">
-                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full pirate-gradient text-xs font-bold text-white">
-                            {idx + 1}
-                          </span>
-                          <span className="text-sm text-white/60">{step}</span>
-                        </li>
-                      ))}
-                    </ol>
-                  ) : (
-                    <p className="text-sm text-white/30">No action steps generated yet.</p>
-                  )}
-                </GlassCard>
-
-                {/* Recruiting Priorities */}
-                <GlassCard className="p-5">
-                  <h3 className="stitch-label mb-4">Recruiting Priorities</h3>
-                  {persona.recruitingPriorities.length > 0 ? (
-                    <ul className="space-y-2">
-                      {persona.recruitingPriorities.map((p, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-sm text-white/60">
-                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#C5050C]" />
-                          {p}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-sm text-white/30">No priority data available.</p>
-                  )}
-                </GlassCard>
-
-                <GlassCard className="p-5">
-                  <h3 className="stitch-label mb-3">Engagement Strategy</h3>
-                  <p className="text-sm text-white/60">
-                    {persona.engagementStrategy || "No strategy data available."}
-                  </p>
-                </GlassCard>
-              </div>
+          <SCGlassCard className="p-5">
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Recruiting Priorities</p>
+            {persona.recruitingPriorities.length > 0 ? (
+              <ul className="space-y-2">
+                {persona.recruitingPriorities.map((p, idx) => (
+                  <li key={idx} className="flex items-start gap-2 text-sm text-slate-400">
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sc-primary" />
+                    {p}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-slate-600">No priority data available.</p>
             )}
-          </>
-        )}
-      </StitchTabs>
+          </SCGlassCard>
+
+          <SCGlassCard className="p-5">
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Engagement Strategy</p>
+            <p className="text-sm text-slate-400">
+              {persona.engagementStrategy || "No strategy data available."}
+            </p>
+          </SCGlassCard>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,18 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
-  Palette,
-  Type,
-  Image as ImageIcon,
-  BookOpen,
-  Check,
-  Copy,
-  Download,
-} from "lucide-react";
+  SCPageHeader,
+  SCGlassCard,
+  SCBadge,
+  SCTabs,
+} from "@/components/sc";
 import { schoolColors } from "@/lib/data/school-branding";
 import { targetSchools } from "@/lib/data/target-schools";
 
@@ -47,7 +41,7 @@ const TYPOGRAPHY = [
     font: "font-sans",
     weight: "font-medium",
     size: "text-lg",
-    sample: "6'4\" | 285 lbs | 3.8 GPA",
+    sample: '6\'4" | 285 lbs | 3.8 GPA',
     use: "Section labels, stats",
   },
   {
@@ -71,6 +65,7 @@ const TYPOGRAPHY = [
 const GUIDELINES = [
   {
     title: "Voice & Tone",
+    icon: "record_voice_over",
     items: [
       "Confident but not arrogant — let the work speak",
       "Direct, disciplined, coach-ready language",
@@ -80,6 +75,7 @@ const GUIDELINES = [
   },
   {
     title: "Visual Identity",
+    icon: "palette",
     items: [
       "Dark, cinematic backgrounds with warm stadium lighting",
       "Red jersey (#CC0022) as signature color anchor",
@@ -89,6 +85,7 @@ const GUIDELINES = [
   },
   {
     title: "Content Constitution",
+    icon: "gavel",
     items: [
       "No trash talk or opponent disrespect",
       "No personal drama or complaints",
@@ -98,6 +95,7 @@ const GUIDELINES = [
   },
   {
     title: "Platform Strategy",
+    icon: "campaign",
     items: [
       "X is the primary recruiting visibility channel",
       "3-5 posts per week across all content pillars",
@@ -109,6 +107,13 @@ const GUIDELINES = [
 
 type Tab = "colors" | "typography" | "assets" | "guidelines";
 
+const TABS = [
+  { label: "Colors", value: "colors" },
+  { label: "Typography", value: "typography" },
+  { label: "School Assets", value: "assets" },
+  { label: "Guidelines", value: "guidelines" },
+];
+
 export default function BrandKitPage() {
   const [activeTab, setActiveTab] = useState<Tab>("colors");
   const [copiedColor, setCopiedColor] = useState<string | null>(null);
@@ -119,98 +124,60 @@ export default function BrandKitPage() {
     setTimeout(() => setCopiedColor(null), 2000);
   }
 
-  const tabs: { id: Tab; label: string; icon: typeof Palette }[] = [
-    { id: "colors", label: "Colors", icon: Palette },
-    { id: "typography", label: "Typography", icon: Type },
-    { id: "assets", label: "School Assets", icon: ImageIcon },
-    { id: "guidelines", label: "Guidelines", icon: BookOpen },
-  ];
-
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-[var(--app-navy-strong)]">Brand Kit Studio</h1>
-        <p className="mt-1 text-sm text-[var(--app-muted)]">
-          Jacob Rodgers brand system — colors, typography, school assets, and content guidelines.
-        </p>
-      </div>
+      <SCPageHeader
+        kicker="Visual System"
+        title="BRAND KIT"
+        subtitle="Jacob Rodgers brand system — colors, typography, school assets, and content guidelines."
+      />
 
-      {/* Tab Navigation */}
-      <div className="flex gap-1 rounded-lg bg-[rgba(15,40,75,0.04)] p-1">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-              activeTab === tab.id
-                ? "bg-white text-[var(--app-navy-strong)] shadow-sm"
-                : "text-[var(--app-muted)] hover:text-[var(--app-navy)]"
-            }`}
-          >
-            <tab.icon className="h-4 w-4" />
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      <SCTabs tabs={TABS} activeTab={activeTab} onTabChange={(v) => setActiveTab(v as Tab)} />
 
       {/* Colors Tab */}
       {activeTab === "colors" && (
         <div className="space-y-6">
-          <Card>
-            <CardHeader className="border-b border-[rgba(15,40,75,0.08)] bg-[rgba(15,40,75,0.03)]">
-              <CardTitle className="text-lg text-[var(--app-navy-strong)]">Brand Colors</CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-4 pt-4 sm:grid-cols-2 lg:grid-cols-3">
+          <SCGlassCard className="p-6">
+            <h3 className="text-lg font-bold text-white mb-4">Brand Colors</h3>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {BRAND_COLORS.map((color) => (
                 <div
                   key={color.hex}
-                  className="overflow-hidden rounded-xl border border-[rgba(15,40,75,0.08)]"
+                  className="overflow-hidden rounded-xl border border-sc-border"
                 >
-                  <div
-                    className="h-24 w-full"
-                    style={{ backgroundColor: color.hex }}
-                  />
-                  <div className="p-3">
+                  <div className="h-24 w-full" style={{ backgroundColor: color.hex }} />
+                  <div className="p-3 bg-white/5">
                     <div className="flex items-center justify-between">
-                      <p className="text-sm font-semibold text-[var(--app-navy-strong)]">
-                        {color.name}
-                      </p>
+                      <p className="text-sm font-bold text-white">{color.name}</p>
                       <button
                         onClick={() => copyColor(color.hex)}
-                        className="rounded-md p-1 text-[var(--app-muted)] hover:bg-[rgba(15,40,75,0.05)]"
+                        className="rounded-md p-1 text-slate-500 hover:text-white transition-colors"
                       >
                         {copiedColor === color.hex ? (
-                          <Check className="h-3.5 w-3.5 text-emerald-600" />
+                          <span className="material-symbols-outlined text-[14px] text-emerald-400">check</span>
                         ) : (
-                          <Copy className="h-3.5 w-3.5" />
+                          <span className="material-symbols-outlined text-[14px]">content_copy</span>
                         )}
                       </button>
                     </div>
-                    <p className="mt-0.5 font-mono text-xs text-[var(--app-muted)]">
-                      {color.hex}
-                    </p>
-                    <p className="mt-1 text-xs text-[var(--app-muted)]">{color.use}</p>
+                    <p className="mt-0.5 font-mono text-xs text-slate-500">{color.hex}</p>
+                    <p className="mt-1 text-xs text-slate-500">{color.use}</p>
                   </div>
                 </div>
               ))}
-            </CardContent>
-          </Card>
+            </div>
+          </SCGlassCard>
 
-          <Card>
-            <CardHeader className="border-b border-[rgba(15,40,75,0.08)] bg-[rgba(15,40,75,0.03)]">
-              <CardTitle className="text-lg text-[var(--app-navy-strong)]">
-                Target School Colors
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-3 pt-4 sm:grid-cols-2 lg:grid-cols-3">
+          <SCGlassCard className="p-6">
+            <h3 className="text-lg font-bold text-white mb-4">Target School Colors</h3>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {targetSchools.map((school) => {
                 const colors = schoolColors[school.id];
                 if (!colors) return null;
                 return (
                   <div
                     key={school.id}
-                    className="flex items-center gap-3 rounded-xl border border-[rgba(15,40,75,0.08)] p-3"
+                    className="flex items-center gap-3 rounded-xl border border-sc-border bg-white/5 p-3"
                   >
                     <div className="flex gap-1">
                       <div
@@ -218,74 +185,62 @@ export default function BrandKitPage() {
                         style={{ backgroundColor: colors.primary }}
                       />
                       <div
-                        className="h-8 w-8 rounded-lg border border-[rgba(15,40,75,0.1)]"
+                        className="h-8 w-8 rounded-lg border border-sc-border"
                         style={{ backgroundColor: colors.secondary }}
                       />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-[var(--app-navy-strong)]">
-                        {school.name}
-                      </p>
-                      <p className="font-mono text-[10px] text-[var(--app-muted)]">
+                      <p className="truncate text-sm font-bold text-white">{school.name}</p>
+                      <p className="font-mono text-[10px] text-slate-500">
                         {colors.primary} / {colors.secondary}
                       </p>
                     </div>
-                    <Badge variant="outline" className="text-[10px]">
-                      {school.priorityTier}
-                    </Badge>
+                    <SCBadge variant="default">{school.priorityTier}</SCBadge>
                   </div>
                 );
               })}
-            </CardContent>
-          </Card>
+            </div>
+          </SCGlassCard>
         </div>
       )}
 
       {/* Typography Tab */}
       {activeTab === "typography" && (
-        <Card>
-          <CardHeader className="border-b border-[rgba(15,40,75,0.08)] bg-[rgba(15,40,75,0.03)]">
-            <CardTitle className="text-lg text-[var(--app-navy-strong)]">Type System</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6 pt-4">
+        <SCGlassCard className="p-6">
+          <h3 className="text-lg font-bold text-white mb-4">Type System</h3>
+          <div className="space-y-6">
             {TYPOGRAPHY.map((specimen) => (
               <div
                 key={specimen.name}
-                className="rounded-xl border border-[rgba(15,40,75,0.08)] p-4"
+                className="rounded-xl border border-sc-border bg-white/5 p-4"
               >
                 <div className="flex items-center justify-between">
-                  <Badge variant="outline">{specimen.name}</Badge>
-                  <span className="text-[10px] text-[var(--app-muted)]">
-                    {specimen.font} · {specimen.weight} · {specimen.size}
+                  <SCBadge variant="primary">{specimen.name}</SCBadge>
+                  <span className="text-[10px] text-slate-500">
+                    {specimen.font} / {specimen.weight} / {specimen.size}
                   </span>
                 </div>
                 <div className="mt-3">
-                  <p
-                    className={`${specimen.font} ${specimen.weight} ${specimen.size} text-[var(--app-navy-strong)]`}
-                  >
+                  <p className={`${specimen.font} ${specimen.weight} ${specimen.size} text-white`}>
                     {specimen.sample}
                   </p>
                 </div>
-                <p className="mt-2 text-xs text-[var(--app-muted)]">{specimen.use}</p>
+                <p className="mt-2 text-xs text-slate-500">{specimen.use}</p>
               </div>
             ))}
-          </CardContent>
-        </Card>
+          </div>
+        </SCGlassCard>
       )}
 
       {/* Assets Tab */}
       {activeTab === "assets" && (
-        <Card>
-          <CardHeader className="border-b border-[rgba(15,40,75,0.08)] bg-[rgba(15,40,75,0.03)]">
-            <CardTitle className="text-lg text-[var(--app-navy-strong)]">
-              School Logo Assets
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="grid gap-4 pt-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+        <SCGlassCard className="p-6">
+          <h3 className="text-lg font-bold text-white mb-4">School Logo Assets</h3>
+          <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
             {targetSchools.map((school) => (
               <div
                 key={school.id}
-                className="flex flex-col items-center gap-2 rounded-xl border border-[rgba(15,40,75,0.08)] bg-white/80 p-4"
+                className="flex flex-col items-center gap-2 rounded-xl border border-sc-border bg-white/5 p-4"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -293,37 +248,32 @@ export default function BrandKitPage() {
                   alt={school.name}
                   className="h-16 w-16 rounded-full"
                 />
-                <p className="text-center text-xs font-medium text-[var(--app-navy-strong)]">
-                  {school.name}
-                </p>
-                <Badge variant="secondary" className="text-[10px]">
-                  {school.conference}
-                </Badge>
+                <p className="text-center text-xs font-bold text-white">{school.name}</p>
+                <SCBadge variant="default">{school.conference}</SCBadge>
               </div>
             ))}
-          </CardContent>
-        </Card>
+          </div>
+        </SCGlassCard>
       )}
 
       {/* Guidelines Tab */}
       {activeTab === "guidelines" && (
         <div className="grid gap-4 sm:grid-cols-2">
           {GUIDELINES.map((section) => (
-            <Card key={section.title}>
-              <CardHeader className="border-b border-[rgba(15,40,75,0.08)] bg-[rgba(15,40,75,0.03)]">
-                <CardTitle className="text-lg text-[var(--app-navy-strong)]">
-                  {section.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2 pt-4">
+            <SCGlassCard key={section.title} className="p-6">
+              <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <span className="material-symbols-outlined text-[20px] text-sc-primary">{section.icon}</span>
+                {section.title}
+              </h3>
+              <div className="space-y-2">
                 {section.items.map((item, i) => (
                   <div key={i} className="flex items-start gap-2">
-                    <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-emerald-600" />
-                    <p className="text-sm text-[var(--app-navy-strong)]">{item}</p>
+                    <span className="material-symbols-outlined text-[14px] text-emerald-400 mt-0.5 flex-shrink-0">check_circle</span>
+                    <p className="text-sm text-slate-300">{item}</p>
                   </div>
                 ))}
-              </CardContent>
-            </Card>
+              </div>
+            </SCGlassCard>
           ))}
         </div>
       )}

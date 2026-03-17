@@ -1,31 +1,14 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { SCPageHeader } from "@/components/sc/sc-page-header";
+import { SCGlassCard } from "@/components/sc/sc-glass-card";
+import { SCStatCard } from "@/components/sc/sc-stat-card";
+import { SCBadge } from "@/components/sc/sc-badge";
+import { SCButton } from "@/components/sc/sc-button";
 import { cn } from "@/lib/utils";
-import {
-  Bot,
-  Play,
-  CheckCircle2,
-  XCircle,
-  Clock,
-  AlertTriangle,
-  RefreshCw,
-  ChevronDown,
-  ChevronUp,
-  Eye,
-  UserSearch,
-  Timer,
-  GraduationCap,
-  Shield,
-  Zap,
-  Activity,
-  Loader2,
-} from "lucide-react";
 
-/* ─── Types ─── */
+/* ── Types ── */
 interface AgentStatus {
   id: string;
   name: string;
@@ -52,52 +35,13 @@ interface AgentAction {
   createdAt: string;
 }
 
-/* ─── Agent Config ─── */
-// Maps real backend agent IDs to display metadata
-const agentMeta: Record<string, { icon: typeof Bot; color: string; bgColor: string; schedule: string; displayName: string }> = {
-  "coach-intelligence": {
-    icon: Eye,
-    color: "text-purple-600",
-    bgColor: "bg-purple-50",
-    schedule: "Every 4 hours",
-    displayName: "Target Scout",
-  },
-  "profile-optimizer": {
-    icon: Shield,
-    color: "text-blue-600",
-    bgColor: "bg-blue-50",
-    schedule: "Daily 7 AM CT",
-    displayName: "Deadline Guardian",
-  },
-  "timing-optimizer": {
-    icon: Timer,
-    color: "text-orange-600",
-    bgColor: "bg-orange-50",
-    schedule: "Every 6 hours",
-    displayName: "Content Engineer",
-  },
-  "placement-analyst": {
-    icon: GraduationCap,
-    color: "text-emerald-600",
-    bgColor: "bg-emerald-50",
-    schedule: "Daily 10 PM CT",
-    displayName: "Placement Analyst",
-  },
-  "x-growth-agent": {
-    icon: Zap,
-    color: "text-[#2DD4BF]",
-    bgColor: "bg-[rgba(45,212,191,0.1)]",
-    schedule: "Manual Run",
-    displayName: "X Growth Scraper",
-  },
-};
-
-const priorityColors: Record<number, string> = {
-  5: "bg-red-100 text-red-700 border-red-200",
-  4: "bg-orange-100 text-orange-700 border-orange-200",
-  3: "bg-yellow-100 text-yellow-700 border-yellow-200",
-  2: "bg-blue-100 text-blue-700 border-blue-200",
-  1: "bg-slate-100 text-slate-600 border-slate-200",
+/* ── Agent Config ── */
+const agentMeta: Record<string, { icon: string; schedule: string; displayName: string }> = {
+  "coach-intelligence": { icon: "visibility", schedule: "Every 4 hours", displayName: "Target Scout" },
+  "profile-optimizer": { icon: "shield", schedule: "Daily 7 AM CT", displayName: "Deadline Guardian" },
+  "timing-optimizer": { icon: "timer", schedule: "Every 6 hours", displayName: "Content Engineer" },
+  "placement-analyst": { icon: "school", schedule: "Daily 10 PM CT", displayName: "Placement Analyst" },
+  "x-growth-agent": { icon: "bolt", schedule: "Manual Run", displayName: "X Growth Scraper" },
 };
 
 const actionTypeLabels: Record<string, string> = {
@@ -117,7 +61,15 @@ const actionTypeLabels: Record<string, string> = {
   recommend_schedule: "Schedule",
 };
 
-/* ─── Main Page ─── */
+const priorityVariant: Record<number, "danger" | "warning" | "info" | "default"> = {
+  5: "danger",
+  4: "warning",
+  3: "warning",
+  2: "info",
+  1: "default",
+};
+
+/* ── Main Page ── */
 export default function AgentsPage() {
   const [agents, setAgents] = useState<AgentStatus[]>([]);
   const [actions, setActions] = useState<AgentAction[]>([]);
@@ -133,21 +85,17 @@ export default function AgentsPage() {
         fetch("/api/agents/status"),
         fetch("/api/agents/actions"),
       ]);
-
       if (statusRes.ok) {
         const statusData = await statusRes.json();
         setAgents(statusData.agents || []);
       }
-
       if (actionsRes.ok) {
         const actionsData = await actionsRes.json();
         setActions(actionsData.actions || []);
       }
-
       setError(null);
     } catch {
       setError("Could not connect to agent system. Make sure the database is configured.");
-      // Set default agent data using real backend IDs + x-growth special agent
       setAgents([
         { id: "coach-intelligence", name: "Coach Intelligence", description: "Monitors coach activity and detects recruiting signals", cronSchedule: "0 */4 * * *", lastRunAt: null, consecutiveFailures: 0, lastRunStatus: null, lastRunSummary: null, pendingActions: 0 },
         { id: "profile-optimizer", name: "Profile Optimizer", description: "Evaluates and improves Jake's X profile daily", cronSchedule: "0 12 * * *", lastRunAt: null, consecutiveFailures: 0, lastRunStatus: null, lastRunSummary: null, pendingActions: 0 },
@@ -162,7 +110,7 @@ export default function AgentsPage() {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 30000); // Refresh every 30s
+    const interval = setInterval(fetchData, 30000);
     return () => clearInterval(interval);
   }, [fetchData]);
 
@@ -174,7 +122,7 @@ export default function AgentsPage() {
         res = await fetch("/api/agents/x-growth", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ handle: "CoachFickell", maxTweets: 10 }), // Default demo target
+          body: JSON.stringify({ handle: "CoachFickell", maxTweets: 10 }),
         });
       } else {
         res = await fetch("/api/agents/run", {
@@ -243,7 +191,9 @@ export default function AgentsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
+        <span className="material-symbols-outlined text-[32px] animate-spin text-slate-400">
+          progress_activity
+        </span>
       </div>
     );
   }
@@ -254,325 +204,256 @@ export default function AgentsPage() {
   const failedAgents = agents.filter((a) => (a.consecutiveFailures ?? 0) > 0).length;
 
   return (
-    <div className="space-y-4 md:space-y-6">
-      {/* ═══ HEADER ═══ */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <Bot className="h-5 w-5 text-slate-700" />
-            Agent Command Center
-          </h1>
-          <p className="text-sm text-slate-500 mt-0.5">5 autonomous agents managing Jacob&apos;s recruiting machine</p>
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={fetchData}
-          className="flex items-center gap-1.5"
-        >
-          <RefreshCw className="h-3.5 w-3.5" />
-          Refresh
-        </Button>
-      </div>
+    <div className="space-y-6">
+      <SCPageHeader
+        title="AI AGENTS"
+        subtitle="5 autonomous agents managing Jacob's recruiting machine"
+        actions={
+          <SCButton variant="secondary" onClick={fetchData}>
+            <span className="material-symbols-outlined text-[16px] mr-1">refresh</span>
+            Refresh
+          </SCButton>
+        }
+      />
 
       {error && (
-        <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 flex items-start gap-2">
-          <AlertTriangle className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
-          <p className="text-sm text-amber-800">{error}</p>
-        </div>
+        <SCGlassCard className="p-3 border-l-4 border-l-yellow-500">
+          <div className="flex items-start gap-2">
+            <span className="material-symbols-outlined text-[18px] text-yellow-500 mt-0.5">warning</span>
+            <p className="text-sm text-yellow-400">{error}</p>
+          </div>
+        </SCGlassCard>
       )}
 
-      {/* ═══ SUMMARY CARDS ═══ */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-xs text-slate-500 font-medium">Active Agents</p>
-            <div className="flex items-end justify-between mt-1">
-              <p className="text-2xl font-bold text-slate-900">{activeAgents}/{agents.length}</p>
-              <Activity className="h-5 w-5 text-green-500" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-xs text-slate-500 font-medium">Pending Actions</p>
-            <div className="flex items-end justify-between mt-1">
-              <p className="text-2xl font-bold text-slate-900">{totalPending}</p>
-              {totalPending > 0 && <Zap className="h-5 w-5 text-yellow-500" />}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-xs text-slate-500 font-medium">High Priority</p>
-            <div className="flex items-end justify-between mt-1">
-              <p className="text-2xl font-bold text-slate-900">{highPriority}</p>
-              {highPriority > 0 && <AlertTriangle className="h-5 w-5 text-red-500" />}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-xs text-slate-500 font-medium">Issues</p>
-            <div className="flex items-end justify-between mt-1">
-              <p className="text-2xl font-bold text-slate-900">{failedAgents}</p>
-              {failedAgents === 0 ? (
-                <CheckCircle2 className="h-5 w-5 text-green-500" />
-              ) : (
-                <XCircle className="h-5 w-5 text-red-500" />
-              )}
-            </div>
-          </CardContent>
-        </Card>
+      {/* Summary Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <SCStatCard label="Active Agents" value={`${activeAgents}/${agents.length}`} icon="smart_toy" />
+        <SCStatCard label="Pending Actions" value={String(totalPending)} icon="bolt" />
+        <SCStatCard label="High Priority" value={String(highPriority)} icon="priority_high" />
+        <SCStatCard
+          label="Issues"
+          value={String(failedAgents)}
+          icon={failedAgents === 0 ? "check_circle" : "error"}
+        />
       </div>
 
-      {/* ═══ AGENT STATUS GRID ═══ */}
+      {/* Agent Status Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {agents.map((agent) => {
-          const meta = agentMeta[agent.id] || { icon: Bot, color: "text-slate-600", bgColor: "bg-slate-50", schedule: agent.cronSchedule };
-          const Icon = meta.icon;
+          const meta = agentMeta[agent.id] || { icon: "smart_toy", schedule: agent.cronSchedule, displayName: agent.name };
           const isRunning = runningAgent === agent.id;
           const hasFailed = (agent.consecutiveFailures ?? 0) > 0;
           const isExpanded = expandedRun === agent.id;
 
           return (
-            <Card key={agent.id} className={cn(
-              "transition-all",
-              hasFailed && "border-red-200",
-              isRunning && "border-blue-200"
-            )}>
-              <CardHeader className="pb-2">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={cn("flex h-10 w-10 items-center justify-center rounded-lg", meta.bgColor)}>
-                      <Icon className={cn("h-5 w-5", meta.color)} />
-                    </div>
-                    <div>
-                      <CardTitle className="text-sm">{meta.displayName || agent.name}</CardTitle>
-                      <p className="text-xs text-slate-500 mt-0.5">{meta.schedule}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {agent.pendingActions > 0 && (
-                      <Badge className="bg-yellow-100 text-yellow-700 border-yellow-200 text-[10px]">
-                        {agent.pendingActions} pending
-                      </Badge>
-                    )}
-                    {agent.lastRunStatus === "completed" && (
-                      <div className="h-2.5 w-2.5 rounded-full bg-green-500" title="Healthy" />
-                    )}
-                    {agent.lastRunStatus === "running" && (
-                      <div className="h-2.5 w-2.5 rounded-full bg-blue-500 animate-pulse" title="Running" />
-                    )}
-                    {agent.lastRunStatus === "failed" && (
-                      <div className="h-2.5 w-2.5 rounded-full bg-red-500" title="Failed" />
-                    )}
-                    {!agent.lastRunStatus && (
-                      <div className="h-2.5 w-2.5 rounded-full bg-slate-300" title="Never run" />
-                    )}
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <p className="text-xs text-slate-500 mb-3">{agent.description}</p>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 text-xs text-slate-400">
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      {formatTime(agent.lastRunAt)}
+            <SCGlassCard
+              key={agent.id}
+              variant={hasFailed ? "broadcast" : "default"}
+              className="p-5"
+            >
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/5 border border-sc-border">
+                    <span className="material-symbols-outlined text-[20px] text-sc-primary">
+                      {meta.icon}
                     </span>
-                    {hasFailed && (
-                      <span className="flex items-center gap-1 text-red-500">
-                        <AlertTriangle className="h-3 w-3" />
-                        {agent.consecutiveFailures} failures
-                      </span>
-                    )}
                   </div>
-
-                  <div className="flex items-center gap-1.5">
-                    {agent.lastRunSummary && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 px-2 text-xs"
-                        onClick={() => setExpandedRun(isExpanded ? null : agent.id)}
-                      >
-                        {isExpanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-                      </Button>
-                    )}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-7 px-2.5 text-xs"
-                      onClick={() => triggerAgent(agent.id)}
-                      disabled={isRunning}
-                    >
-                      {isRunning ? (
-                        <Loader2 className="h-3 w-3 animate-spin" />
-                      ) : (
-                        <Play className="h-3 w-3" />
-                      )}
-                      <span className="ml-1">{isRunning ? "Running..." : "Run Now"}</span>
-                    </Button>
+                  <div>
+                    <p className="text-sm font-bold text-white">{meta.displayName}</p>
+                    <p className="text-xs text-slate-500">{meta.schedule}</p>
                   </div>
                 </div>
+                <div className="flex items-center gap-2">
+                  {agent.pendingActions > 0 && (
+                    <SCBadge variant="warning">{agent.pendingActions} pending</SCBadge>
+                  )}
+                  {agent.lastRunStatus === "completed" && (
+                    <div className="h-2.5 w-2.5 rounded-full bg-emerald-500" title="Healthy" />
+                  )}
+                  {agent.lastRunStatus === "running" && (
+                    <div className="h-2.5 w-2.5 rounded-full bg-blue-500 animate-pulse" title="Running" />
+                  )}
+                  {agent.lastRunStatus === "failed" && (
+                    <div className="h-2.5 w-2.5 rounded-full bg-red-500" title="Failed" />
+                  )}
+                  {!agent.lastRunStatus && (
+                    <div className="h-2.5 w-2.5 rounded-full bg-slate-600" title="Never run" />
+                  )}
+                </div>
+              </div>
 
-                {/* Expanded Run Summary */}
-                {isExpanded && agent.lastRunSummary && (
-                  <div className="mt-3 rounded-lg bg-slate-50 p-3 border border-slate-100">
-                    <p className="text-xs text-slate-600 whitespace-pre-wrap">{agent.lastRunSummary}</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+              <p className="text-xs text-slate-500 mb-3">{agent.description}</p>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3 text-xs text-slate-500">
+                  <span className="flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[14px]">schedule</span>
+                    {formatTime(agent.lastRunAt)}
+                  </span>
+                  {hasFailed && (
+                    <span className="flex items-center gap-1 text-red-400">
+                      <span className="material-symbols-outlined text-[14px]">warning</span>
+                      {agent.consecutiveFailures} failures
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                  {agent.lastRunSummary && (
+                    <SCButton
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setExpandedRun(isExpanded ? null : agent.id)}
+                    >
+                      <span className="material-symbols-outlined text-[16px]">
+                        {isExpanded ? "expand_less" : "expand_more"}
+                      </span>
+                    </SCButton>
+                  )}
+                  <SCButton
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => triggerAgent(agent.id)}
+                    disabled={isRunning}
+                  >
+                    {isRunning ? (
+                      <span className="material-symbols-outlined text-[14px] animate-spin mr-1">progress_activity</span>
+                    ) : (
+                      <span className="material-symbols-outlined text-[14px] mr-1">play_arrow</span>
+                    )}
+                    {isRunning ? "Running..." : "Run Now"}
+                  </SCButton>
+                </div>
+              </div>
+
+              {isExpanded && agent.lastRunSummary && (
+                <div className="mt-3 rounded-lg bg-white/5 border border-sc-border p-3">
+                  <p className="text-xs text-slate-400 whitespace-pre-wrap">{agent.lastRunSummary}</p>
+                </div>
+              )}
+            </SCGlassCard>
           );
         })}
       </div>
 
-      {/* ═══ APPROVAL QUEUE ═══ */}
-      <Card>
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-sm flex items-center gap-2">
-              <Zap className="h-4 w-4 text-yellow-500" />
-              Action Approval Queue
-              {totalPending > 0 && (
-                <Badge className="bg-yellow-100 text-yellow-700 border-yellow-200 text-[10px] ml-1">
-                  {totalPending}
-                </Badge>
-              )}
-            </CardTitle>
-            {totalPending > 0 && (
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-7 px-2.5 text-xs text-red-600 hover:text-red-700 hover:bg-red-50"
-                  onClick={() => bulkAction("rejected")}
-                >
-                  Reject All
-                </Button>
-                <Button
-                  size="sm"
-                  className="h-7 px-2.5 text-xs bg-green-600 hover:bg-green-700"
-                  onClick={() => bulkAction("approved")}
-                >
-                  Approve All
-                </Button>
-              </div>
-            )}
+      {/* Approval Queue */}
+      <SCGlassCard variant="strong" className="p-5">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-[20px] text-yellow-500">bolt</span>
+            <p className="text-sm font-bold text-white">Action Approval Queue</p>
+            {totalPending > 0 && <SCBadge variant="warning">{totalPending}</SCBadge>}
           </div>
-        </CardHeader>
-        <CardContent>
-          {actions.length === 0 ? (
-            <div className="text-center py-8">
-              <CheckCircle2 className="h-8 w-8 text-green-400 mx-auto mb-2" />
-              <p className="text-sm text-slate-500">No pending actions</p>
-              <p className="text-xs text-slate-400 mt-1">Agents will create actions on their next run</p>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {actions.map((action) => {
-                const meta = agentMeta[action.agentId];
-                const isProcessing = processingAction === action.id;
-
-                return (
-                  <div
-                    key={action.id}
-                    className="flex items-start gap-3 rounded-lg border border-slate-100 p-3 hover:border-slate-200 transition-colors"
-                  >
-                    {/* Agent Icon */}
-                    <div className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-lg", meta?.bgColor || "bg-slate-50")}>
-                      {meta ? <meta.icon className={cn("h-4 w-4", meta.color)} /> : <Bot className="h-4 w-4 text-slate-400" />}
-                    </div>
-
-                    {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <p className="text-sm font-medium text-slate-800">{action.title}</p>
-                        <Badge className={cn("text-[10px] border", priorityColors[action.priority] || priorityColors[3])}>
-                          P{action.priority}
-                        </Badge>
-                        <Badge variant="outline" className="text-[10px]">
-                          {actionTypeLabels[action.actionType] || action.actionType}
-                        </Badge>
-                      </div>
-                      {action.description && (
-                        <p className="text-xs text-slate-500 mt-1 line-clamp-2">{action.description}</p>
-                      )}
-                      <p className="text-[10px] text-slate-400 mt-1">
-                        {formatTime(action.createdAt)} via {agentMeta[action.agentId]?.schedule ? agents.find((a) => a.id === action.agentId)?.name : action.agentId}
-                      </p>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 w-7 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
-                        onClick={() => handleAction(action.id, "rejected")}
-                        disabled={isProcessing}
-                      >
-                        <XCircle className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 w-7 p-0 text-green-600 hover:text-green-700 hover:bg-green-50"
-                        onClick={() => handleAction(action.id, "approved")}
-                        disabled={isProcessing}
-                      >
-                        {isProcessing ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <CheckCircle2 className="h-4 w-4" />
-                        )}
-                      </Button>
-                    </div>
-                  </div>
-                );
-              })}
+          {totalPending > 0 && (
+            <div className="flex items-center gap-2">
+              <SCButton variant="danger" size="sm" onClick={() => bulkAction("rejected")}>
+                Reject All
+              </SCButton>
+              <SCButton size="sm" onClick={() => bulkAction("approved")}>
+                Approve All
+              </SCButton>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* ═══ HOW IT WORKS ═══ */}
-      <Card className="border-slate-200 bg-gradient-to-br from-slate-50 via-white to-slate-50">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm flex items-center gap-2">
-            <UserSearch className="h-4 w-4 text-slate-500" />
-            How the Agent System Works
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {[
-              { icon: Eye, color: "text-purple-600", bg: "bg-purple-50", title: "Target Scout", desc: "Monitors coach activity, detects recruiting signals, and maps engagement patterns" },
-              { icon: Shield, color: "text-blue-600", bg: "bg-blue-50", title: "Deadline Guardian", desc: "Audits profile quality, NCAA compliance, and recommends bio/photo improvements" },
-              { icon: Timer, color: "text-orange-600", bg: "bg-orange-50", title: "Content Engineer", desc: "Optimizes posting windows, coach activity timing, and weekly content schedules" },
-              { icon: GraduationCap, color: "text-emerald-600", bg: "bg-emerald-50", title: "Placement Analyst", desc: "Analyzes roster gaps, calculates fit scores, and projects offer likelihood" },
-              { icon: Zap, color: "text-[#2DD4BF]", bg: "bg-[rgba(45,212,191,0.1)]", title: "X Growth Scraper", desc: "Locally executes Playwright to extract real timeline data and engagement metrics" },
-            ].map((item) => (
-              <div key={item.title} className="rounded-lg border border-slate-100 p-3">
-                <div className={cn("flex h-8 w-8 items-center justify-center rounded-lg mb-2", item.bg)}>
-                  <item.icon className={cn("h-4 w-4", item.color)} />
+        {actions.length === 0 ? (
+          <div className="text-center py-8">
+            <span className="material-symbols-outlined text-[32px] text-emerald-500 mb-2">check_circle</span>
+            <p className="text-sm text-slate-400">No pending actions</p>
+            <p className="text-xs text-slate-600 mt-1">Agents will create actions on their next run</p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {actions.map((action) => {
+              const meta = agentMeta[action.agentId];
+              const isProcessing = processingAction === action.id;
+
+              return (
+                <div
+                  key={action.id}
+                  className="flex items-start gap-3 rounded-lg border border-sc-border bg-white/5 p-3 hover:bg-white/[0.08] transition-colors"
+                >
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/5">
+                    <span className="material-symbols-outlined text-[16px] text-sc-primary">
+                      {meta?.icon || "smart_toy"}
+                    </span>
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-sm font-medium text-white">{action.title}</p>
+                      <SCBadge variant={priorityVariant[action.priority] || "default"}>
+                        P{action.priority}
+                      </SCBadge>
+                      <SCBadge variant="default">
+                        {actionTypeLabels[action.actionType] || action.actionType}
+                      </SCBadge>
+                    </div>
+                    {action.description && (
+                      <p className="text-xs text-slate-500 mt-1 line-clamp-2">{action.description}</p>
+                    )}
+                    <p className="text-[10px] text-slate-600 mt-1">
+                      {formatTime(action.createdAt)} via {agents.find((a) => a.id === action.agentId)?.name || action.agentId}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      className="h-7 w-7 flex items-center justify-center rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
+                      onClick={() => handleAction(action.id, "rejected")}
+                      disabled={isProcessing}
+                    >
+                      <span className="material-symbols-outlined text-[18px]">cancel</span>
+                    </button>
+                    <button
+                      className="h-7 w-7 flex items-center justify-center rounded-lg text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 transition-colors"
+                      onClick={() => handleAction(action.id, "approved")}
+                      disabled={isProcessing}
+                    >
+                      {isProcessing ? (
+                        <span className="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
+                      ) : (
+                        <span className="material-symbols-outlined text-[18px]">check_circle</span>
+                      )}
+                    </button>
+                  </div>
                 </div>
-                <p className="text-xs font-semibold text-slate-800">{item.title}</p>
-                <p className="text-[10px] text-slate-500 mt-1 leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
-          <div className="mt-3 pt-3 border-t border-slate-100">
-            <p className="text-xs text-slate-500">
-              <span className="font-semibold text-slate-600">Human-in-the-loop:</span>{" "}
-              Profile changes, posts, DMs, and follows always require your approval. Internal analysis runs automatically.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+        )}
+      </SCGlassCard>
+
+      {/* How It Works */}
+      <SCGlassCard className="p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="material-symbols-outlined text-[20px] text-slate-400">person_search</span>
+          <p className="text-sm font-bold text-white">How the Agent System Works</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+          {[
+            { icon: "visibility", title: "Target Scout", desc: "Monitors coach activity, detects recruiting signals, and maps engagement patterns" },
+            { icon: "shield", title: "Deadline Guardian", desc: "Audits profile quality, NCAA compliance, and recommends bio/photo improvements" },
+            { icon: "timer", title: "Content Engineer", desc: "Optimizes posting windows, coach activity timing, and weekly content schedules" },
+            { icon: "school", title: "Placement Analyst", desc: "Analyzes roster gaps, calculates fit scores, and projects offer likelihood" },
+            { icon: "bolt", title: "X Growth Scraper", desc: "Locally executes Playwright to extract real timeline data and engagement metrics" },
+          ].map((item) => (
+            <div key={item.title} className="rounded-lg border border-sc-border bg-white/5 p-3">
+              <span className="material-symbols-outlined text-[20px] text-sc-primary mb-2 block">
+                {item.icon}
+              </span>
+              <p className="text-xs font-bold text-white">{item.title}</p>
+              <p className="text-[10px] text-slate-500 mt-1 leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-3 pt-3 border-t border-sc-border">
+          <p className="text-xs text-slate-500">
+            <span className="font-bold text-slate-400">Human-in-the-loop:</span>{" "}
+            Profile changes, posts, DMs, and follows always require your approval. Internal analysis runs automatically.
+          </p>
+        </div>
+      </SCGlassCard>
     </div>
   );
 }

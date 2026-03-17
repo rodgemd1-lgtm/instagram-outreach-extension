@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { MessageSquare, Send, X } from "lucide-react";
+import { SCPageHeader } from "@/components/sc/sc-page-header";
+import { SCGlassCard } from "@/components/sc/sc-glass-card";
+import { SCBadge } from "@/components/sc/sc-badge";
+import { SCButton } from "@/components/sc/sc-button";
 
 interface Message {
   role: "user" | "assistant";
@@ -19,8 +22,8 @@ const members = [
 ];
 
 const MEMBER_COLORS: Record<string, string> = {
-  devin: "#0F1720",
-  marcus: "#0F1720",
+  devin: "#C5050C",
+  marcus: "#3B82F6",
   nina: "#D4A853",
   trey: "#22C55E",
   jordan: "#F59E0B",
@@ -108,7 +111,6 @@ export default function TeamPage() {
       const decoder = new TextDecoder();
       let assistantMessage = "";
 
-      // Add empty assistant message that we'll stream into
       setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
       if (reader) {
@@ -146,7 +148,6 @@ export default function TeamPage() {
         }
       }
 
-      // If we never got content, show a fallback
       if (!assistantMessage) {
         setMessages((prev) => {
           const updated = [...prev];
@@ -173,16 +174,12 @@ export default function TeamPage() {
   const selectedMemberData = members.find((m) => m.id === selectedMember);
 
   return (
-    <div>
+    <div className="space-y-6">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold uppercase tracking-tight text-[#0F1720]">
-          REC Team
-        </h1>
-        <p className="mt-1 text-sm text-[#6B7280]">
-          Your 7-person virtual recruiting agency
-        </p>
-      </div>
+      <SCPageHeader
+        title="TEAM ROSTER"
+        subtitle="Your 7-person virtual recruiting agency"
+      />
 
       {/* Team Grid */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
@@ -190,52 +187,52 @@ export default function TeamPage() {
           const isSelected = selectedMember === member.id;
           const color = MEMBER_COLORS[member.id];
           return (
-            <button
+            <SCGlassCard
               key={member.id}
-              onClick={() => handleSelectMember(member.id)}
-              className={`group rounded-lg border p-4 text-left transition-all ${
-                isSelected
-                  ? "ring-2 ring-[#0F1720] border-[#E5E7EB] bg-white"
-                  : "border-[#E5E7EB] bg-white hover:border-[#D1D5DB] hover:shadow-sm"
+              variant={isSelected ? "strong" : "default"}
+              className={`cursor-pointer transition-all ${
+                isSelected ? "ring-1 ring-sc-primary" : "hover:border-white/20"
               }`}
             >
-              <div className="flex items-center gap-3">
-                {/* Avatar with colored ring */}
-                <div
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold"
-                  style={{
-                    boxShadow: `0 0 0 2px ${color}`,
-                    color: color,
-                    backgroundColor: `${color}15`,
-                  }}
-                >
-                  {member.name[0]}
-                </div>
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-[#0F1720]">
-                    {member.name}
-                  </p>
-                  <p className="truncate text-xs text-[#6B7280]">{member.role}</p>
-                </div>
-              </div>
-              <div
-                className={`mt-3 flex items-center gap-1.5 text-xs font-medium text-[#0F1720] transition-opacity ${
-                  isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                }`}
+              <button
+                onClick={() => handleSelectMember(member.id)}
+                className="w-full p-4 text-left"
               >
-                <MessageSquare className="h-3.5 w-3.5" />
-                {isSelected ? "Active" : "Chat"}
-              </div>
-            </button>
+                <div className="flex items-center gap-3">
+                  <div
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold"
+                    style={{
+                      boxShadow: `0 0 0 2px ${color}`,
+                      color: color,
+                      backgroundColor: `${color}15`,
+                    }}
+                  >
+                    {member.name[0]}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-bold text-white">
+                      {member.name}
+                    </p>
+                    <p className="truncate text-xs text-slate-400">{member.role}</p>
+                  </div>
+                </div>
+                <div className={`mt-3 flex items-center gap-1.5 text-xs font-bold transition-opacity ${
+                  isSelected ? "text-sc-primary opacity-100" : "text-slate-500 opacity-0 group-hover:opacity-100"
+                }`}>
+                  <span className="material-symbols-outlined text-[14px]">chat</span>
+                  {isSelected ? "Active" : "Chat"}
+                </div>
+              </button>
+            </SCGlassCard>
           );
         })}
       </div>
 
       {/* Inline Chat Area */}
       {selectedMemberData && (
-        <div className="mt-6 flex min-h-[500px] flex-col rounded-lg border border-[#E5E7EB] bg-white">
+        <SCGlassCard variant="strong" className="flex min-h-[500px] flex-col">
           {/* Chat Header */}
-          <div className="flex items-center justify-between border-b border-[#E5E7EB] px-5 py-3">
+          <div className="flex items-center justify-between border-b border-sc-border px-5 py-3">
             <div className="flex items-center gap-3">
               <div
                 className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold"
@@ -248,38 +245,32 @@ export default function TeamPage() {
                 {selectedMemberData.name[0]}
               </div>
               <div>
-                <p className="text-sm font-semibold text-[#0F1720]">
+                <p className="text-sm font-bold text-white">
                   {selectedMemberData.name}
                 </p>
                 <div className="flex items-center gap-1.5">
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-[#6B7280]">
+                  <p className="text-[10px] uppercase tracking-widest text-slate-400">
                     {selectedMemberData.role}
                   </p>
-                  <span className="text-[10px] text-[#D1D5DB]">|</span>
+                  <span className="text-[10px] text-slate-600">|</span>
                   {MEMBER_TAGS[selectedMemberData.id]?.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full bg-[#F5F5F4] px-1.5 py-0.5 text-[9px] text-[#6B7280]"
-                    >
+                    <SCBadge key={tag} variant="default" className="text-[9px]">
                       {tag}
-                    </span>
+                    </SCBadge>
                   ))}
                 </div>
               </div>
             </div>
-            <button
-              onClick={handleClose}
-              className="rounded-lg p-1.5 text-[#6B7280] transition-colors hover:bg-[#F5F5F4] hover:text-[#0F1720]"
-            >
-              <X className="h-4 w-4" />
-            </button>
+            <SCButton variant="ghost" size="sm" onClick={handleClose}>
+              <span className="material-symbols-outlined text-[16px]">close</span>
+            </SCButton>
           </div>
 
           {/* Messages Area */}
           <div className="flex-1 overflow-y-auto px-5 py-4">
             {messages.length === 0 && (
               <div className="flex h-full items-center justify-center">
-                <p className="text-sm text-[#6B7280]">
+                <p className="text-sm text-slate-500">
                   Send a message to start chatting with {selectedMemberData.name}.
                 </p>
               </div>
@@ -293,8 +284,8 @@ export default function TeamPage() {
                   <div
                     className={`max-w-[80%] rounded-xl px-4 py-2.5 text-sm ${
                       message.role === "user"
-                        ? "bg-[#0F1720] text-white"
-                        : "bg-[#F5F5F4] text-[#0F1720]"
+                        ? "bg-sc-primary text-white"
+                        : "bg-white/5 text-slate-200"
                     }`}
                   >
                     <p className="whitespace-pre-wrap">{message.content}</p>
@@ -303,8 +294,8 @@ export default function TeamPage() {
               ))}
               {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
                 <div className="flex justify-start">
-                  <div className="rounded-xl bg-[#F5F5F4] px-4 py-3">
-                    <p className="animate-pulse text-xs text-[#6B7280]">
+                  <div className="rounded-xl bg-white/5 px-4 py-3">
+                    <p className="animate-pulse text-xs text-slate-500">
                       {selectedMemberData.name} is analyzing...
                     </p>
                   </div>
@@ -315,14 +306,14 @@ export default function TeamPage() {
           </div>
 
           {/* Input Area */}
-          <div className="border-t border-[#E5E7EB] px-4 py-3">
+          <div className="border-t border-sc-border px-4 py-3">
             {/* Quick prompts */}
             <div className="mb-2 flex flex-wrap gap-1.5">
               {MEMBER_PROMPTS[selectedMemberData.id]?.map((prompt) => (
                 <button
                   key={prompt}
                   onClick={() => setInputValue(prompt)}
-                  className="rounded-full border border-[#E5E7EB] px-2.5 py-1 text-[11px] text-[#6B7280] transition-colors hover:bg-[#F5F5F4] hover:text-[#0F1720]"
+                  className="rounded-full border border-sc-border px-2.5 py-1 text-[11px] text-slate-500 transition-colors hover:bg-white/5 hover:text-white"
                 >
                   {prompt}
                 </button>
@@ -341,19 +332,19 @@ export default function TeamPage() {
                   }
                 }}
                 placeholder={`Message ${selectedMemberData.name}...`}
-                className="flex-1 rounded-lg border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm text-[#0F1720] placeholder:text-[#9CA3AF] focus:border-[#0F1720] focus:outline-none"
+                className="flex-1 rounded-lg border border-sc-border bg-white/5 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-sc-primary/50 focus:outline-none"
                 disabled={isLoading}
               />
-              <button
+              <SCButton
                 onClick={handleSend}
                 disabled={!inputValue.trim() || isLoading}
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#0F1720] text-white transition-colors hover:bg-[#1F2937] disabled:opacity-40 disabled:hover:bg-[#0F1720]"
+                size="sm"
               >
-                <Send className="h-4 w-4" />
-              </button>
+                <span className="material-symbols-outlined text-[16px]">send</span>
+              </SCButton>
             </div>
           </div>
-        </div>
+        </SCGlassCard>
       )}
     </div>
   );

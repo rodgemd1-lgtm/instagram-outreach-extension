@@ -1,11 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Users, LayoutGrid, List, Search } from "lucide-react";
 import type { Coach } from "@/lib/types";
-import { CoachTable } from "@/components/dashboard/coach-table";
-import { CoachCard } from "@/components/dashboard/coach-card";
-import { CoachDetail } from "@/components/dashboard/coach-detail";
+import { SCPageHeader } from "@/components/sc/sc-page-header";
+import { SCTable } from "@/components/sc/sc-table";
+import { SCGlassCard } from "@/components/sc/sc-glass-card";
+import { SCBadge } from "@/components/sc/sc-badge";
+import { SCButton } from "@/components/sc/sc-button";
+import { SCInput } from "@/components/sc/sc-input";
 
 export default function CoachesPage() {
   const [coaches, setCoaches] = useState<Coach[]>([]);
@@ -39,26 +41,123 @@ export default function CoachesPage() {
     setDetailOpen(true);
   }, []);
 
+  const tierBadgeVariant = (tier: string) => {
+    if (tier === "Tier 1") return "danger" as const;
+    if (tier === "Tier 2") return "warning" as const;
+    return "default" as const;
+  };
+
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  const columns = [
+    {
+      key: "name",
+      header: "Coach",
+      render: (row: any) => {
+        const c = row as Coach;
+        return (
+          <button
+            onClick={() => handleCoachClick(c)}
+            className="text-left hover:text-sc-primary transition-colors"
+          >
+            <p className="font-bold text-white">{c.name}</p>
+            <p className="text-xs text-slate-400">{c.title}</p>
+          </button>
+        );
+      },
+    },
+    {
+      key: "schoolName",
+      header: "School",
+      render: (row: any) => (
+        <span className="text-slate-300">{(row as Coach).schoolName}</span>
+      ),
+    },
+    {
+      key: "division",
+      header: "Division",
+      render: (row: any) => (
+        <span className="text-slate-400 text-xs">{(row as Coach).division}</span>
+      ),
+    },
+    {
+      key: "priorityTier",
+      header: "Tier",
+      render: (row: any) => {
+        const c = row as Coach;
+        return (
+          <SCBadge variant={tierBadgeVariant(c.priorityTier)}>
+            {c.priorityTier}
+          </SCBadge>
+        );
+      },
+    },
+    {
+      key: "followStatus",
+      header: "Follow",
+      render: (row: any) => {
+        const c = row as Coach;
+        return (
+          <SCBadge variant={c.followStatus === "followed_back" ? "success" : c.followStatus === "followed" ? "info" : "default"}>
+            {c.followStatus?.replace(/_/g, " ") || "none"}
+          </SCBadge>
+        );
+      },
+    },
+    {
+      key: "dmStatus",
+      header: "DM",
+      render: (row: any) => {
+        const c = row as Coach;
+        return (
+          <SCBadge variant={c.dmStatus === "responded" ? "success" : c.dmStatus === "sent" ? "info" : "default"}>
+            {c.dmStatus?.replace(/_/g, " ") || "none"}
+          </SCBadge>
+        );
+      },
+    },
+  ];
+  /* eslint-enable @typescript-eslint/no-explicit-any */
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-[#0F1720]">Coaches</h1>
-          <p className="text-sm text-[#9CA3AF] mt-1">{coaches.length} coaches tracked</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <button onClick={() => setViewMode("list")} className={`p-2 rounded-lg ${viewMode === "list" ? "bg-[#0F1720] text-white" : "bg-[#F5F5F4] text-[#6B7280]"}`}><List className="w-4 h-4" /></button>
-          <button onClick={() => setViewMode("card")} className={`p-2 rounded-lg ${viewMode === "card" ? "bg-[#0F1720] text-white" : "bg-[#F5F5F4] text-[#6B7280]"}`}><LayoutGrid className="w-4 h-4" /></button>
-        </div>
-      </div>
+      <SCPageHeader
+        title="COACH DATABASE"
+        subtitle={`${coaches.length} coaches tracked`}
+        actions={
+          <div className="flex items-center gap-2">
+            <SCButton
+              variant={viewMode === "list" ? "primary" : "secondary"}
+              size="sm"
+              onClick={() => setViewMode("list")}
+            >
+              <span className="material-symbols-outlined text-[16px]">view_list</span>
+            </SCButton>
+            <SCButton
+              variant={viewMode === "card" ? "primary" : "secondary"}
+              size="sm"
+              onClick={() => setViewMode("card")}
+            >
+              <span className="material-symbols-outlined text-[16px]">grid_view</span>
+            </SCButton>
+          </div>
+        }
+      />
 
       {/* Filters */}
       <div className="flex gap-3 flex-wrap">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
-          <input type="text" placeholder="Search coaches or schools..." value={search} onChange={e => setSearch(e.target.value)} className="w-full pl-10 pr-4 py-2 text-sm border border-[#E5E7EB] rounded-lg bg-white text-[#0F1720] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#0F1720] focus:ring-offset-1" />
+        <div className="flex-1 max-w-sm">
+          <SCInput
+            icon="search"
+            placeholder="Search coaches or schools..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
         </div>
-        <select value={tierFilter} onChange={e => setTierFilter(e.target.value)} className="px-3 py-2 text-sm border border-[#E5E7EB] rounded-lg bg-white text-[#0F1720] focus:outline-none focus:ring-2 focus:ring-[#0F1720]">
+        <select
+          value={tierFilter}
+          onChange={e => setTierFilter(e.target.value)}
+          className="px-3 py-2 text-sm bg-white/5 border border-sc-border rounded-lg text-white focus:outline-none focus:ring-1 focus:ring-sc-primary/50"
+        >
           <option value="all">All Tiers</option>
           <option value="Tier 1">Tier 1</option>
           <option value="Tier 2">Tier 2</option>
@@ -70,30 +169,102 @@ export default function CoachesPage() {
       {loading ? (
         <div className="space-y-4">
           {Array.from({length: 3}).map((_, i) => (
-            <div key={i} className="bg-white border border-[#E5E7EB] rounded-lg p-4 animate-pulse">
-              <div className="h-5 w-48 bg-[#F5F5F4] rounded mb-3" />
-              <div className="h-4 w-full bg-[#F5F5F4] rounded mb-2" />
-              <div className="h-4 w-2/3 bg-[#F5F5F4] rounded" />
-            </div>
+            <SCGlassCard key={i} className="p-4 animate-pulse">
+              <div className="h-5 w-48 bg-white/5 rounded mb-3" />
+              <div className="h-4 w-full bg-white/5 rounded mb-2" />
+              <div className="h-4 w-2/3 bg-white/5 rounded" />
+            </SCGlassCard>
           ))}
         </div>
       ) : filteredCoaches.length === 0 ? (
-        <div className="text-center py-16">
-          <Users className="w-10 h-10 text-[#D1D5DB] mx-auto mb-3" />
-          <p className="text-[#6B7280] font-medium">No coaches found</p>
-          <p className="text-sm text-[#9CA3AF] mt-1">{search || tierFilter !== "all" ? "Try adjusting your filters" : "Add coaches to start tracking"}</p>
-        </div>
+        <SCGlassCard className="text-center py-16">
+          <span className="material-symbols-outlined text-[40px] text-slate-600 mb-3 block">group</span>
+          <p className="text-slate-300 font-medium">No coaches found</p>
+          <p className="text-sm text-slate-500 mt-1">
+            {search || tierFilter !== "all" ? "Try adjusting your filters" : "Add coaches to start tracking"}
+          </p>
+        </SCGlassCard>
       ) : viewMode === "list" ? (
-        <CoachTable coaches={filteredCoaches} onCoachClick={handleCoachClick} />
+        <SCTable columns={columns} data={filteredCoaches as unknown as Record<string, unknown>[]} />
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredCoaches.map(coach => (
-            <CoachCard key={coach.id} coach={coach} onClick={() => handleCoachClick(coach)} />
+            <SCGlassCard
+              key={coach.id}
+              className="p-5 cursor-pointer hover:border-sc-primary/30 transition-colors"
+            >
+              <button
+                onClick={() => handleCoachClick(coach)}
+                className="w-full text-left"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div>
+                    <p className="font-bold text-white">{coach.name}</p>
+                    <p className="text-xs text-slate-400">{coach.title}</p>
+                  </div>
+                  <SCBadge variant={tierBadgeVariant(coach.priorityTier)}>
+                    {coach.priorityTier}
+                  </SCBadge>
+                </div>
+                <p className="text-sm text-slate-300">{coach.schoolName}</p>
+                <p className="text-xs text-slate-500 mt-1">{coach.division} &middot; {coach.conference}</p>
+                <div className="flex gap-2 mt-3">
+                  <SCBadge variant={coach.followStatus === "followed_back" ? "success" : "default"}>
+                    {coach.followStatus?.replace(/_/g, " ") || "none"}
+                  </SCBadge>
+                </div>
+              </button>
+            </SCGlassCard>
           ))}
         </div>
       )}
 
-      <CoachDetail open={detailOpen} onClose={() => setDetailOpen(false)} coach={selectedCoach} onDraftDM={() => {}} />
+      {/* Detail slide-over */}
+      {detailOpen && selectedCoach && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <div className="absolute inset-0 bg-black/60" onClick={() => setDetailOpen(false)} />
+          <div className="relative w-full max-w-lg bg-sc-bg border-l border-sc-border overflow-y-auto p-6">
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-black text-white">{selectedCoach.name}</h2>
+                <p className="text-sm text-slate-400">{selectedCoach.title}</p>
+              </div>
+              <SCButton variant="ghost" size="sm" onClick={() => setDetailOpen(false)}>
+                <span className="material-symbols-outlined">close</span>
+              </SCButton>
+            </div>
+            <div className="space-y-4">
+              <SCGlassCard className="p-4">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">School</p>
+                <p className="text-white font-bold">{selectedCoach.schoolName}</p>
+                <p className="text-xs text-slate-400">{selectedCoach.division} &middot; {selectedCoach.conference}</p>
+              </SCGlassCard>
+              <SCGlassCard className="p-4">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Status</p>
+                <div className="flex flex-wrap gap-2">
+                  <SCBadge variant={tierBadgeVariant(selectedCoach.priorityTier)}>{selectedCoach.priorityTier}</SCBadge>
+                  <SCBadge variant={selectedCoach.dmOpen ? "success" : "default"}>{selectedCoach.dmOpen ? "DM Open" : "DM Closed"}</SCBadge>
+                  <SCBadge variant={selectedCoach.followStatus === "followed_back" ? "success" : "info"}>
+                    {selectedCoach.followStatus?.replace(/_/g, " ") || "none"}
+                  </SCBadge>
+                </div>
+              </SCGlassCard>
+              {selectedCoach.xHandle && (
+                <SCGlassCard className="p-4">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">X Handle</p>
+                  <p className="text-white font-mono">@{selectedCoach.xHandle}</p>
+                </SCGlassCard>
+              )}
+              {selectedCoach.notes && (
+                <SCGlassCard className="p-4">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Notes</p>
+                  <p className="text-sm text-slate-300">{selectedCoach.notes}</p>
+                </SCGlassCard>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

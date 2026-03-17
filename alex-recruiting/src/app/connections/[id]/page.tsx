@@ -1,15 +1,11 @@
 "use client";
 
 import { use } from "react";
-import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {
-  StitchButton,
-  GlassCard,
-  StitchBadge,
-  ActivityRadar,
-  SentimentBars,
-} from "@/components/stitch";
+import { SCPageHeader } from "@/components/sc/sc-page-header";
+import { SCGlassCard } from "@/components/sc/sc-glass-card";
+import { SCBadge } from "@/components/sc/sc-badge";
+import { SCButton } from "@/components/sc/sc-button";
 
 export default function FollowerProfilePage({
   params,
@@ -21,54 +17,67 @@ export default function FollowerProfilePage({
 
   return (
     <div className="space-y-6">
-      <StitchButton variant="ghost" size="sm" onClick={() => router.push("/connections")}>
-        <ArrowLeft className="mr-1 h-4 w-4" />
+      <SCButton variant="ghost" size="sm" onClick={() => router.push("/connections")}>
+        <span className="material-symbols-outlined text-[16px]">arrow_back</span>
         Connections
-      </StitchButton>
+      </SCButton>
 
       {/* Profile Header */}
       <div className="flex items-start gap-6">
-        <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-white/5 rotate-3">
+        <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-sc-border bg-white/5 rotate-3">
           <span className="text-2xl font-black text-white/40">
             {id.charAt(0).toUpperCase()}
           </span>
         </div>
         <div>
-          <h1 className="text-3xl font-extrabold text-white">@{id}</h1>
-          <p className="mt-1 text-sm text-white/40">Follower Profile</p>
+          <SCPageHeader
+            title={`@${id}`}
+            subtitle="Follower Profile"
+          />
           <div className="mt-2 flex gap-2">
-            <StitchBadge variant="default">Follower</StitchBadge>
+            <SCBadge variant="default">Follower</SCBadge>
           </div>
         </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Sentiment Radar */}
-        <GlassCard className="p-5">
-          <h3 className="stitch-label mb-4">Interaction Radar</h3>
-          <div className="mx-auto max-w-[240px]">
-            <ActivityRadar
-              data={{
-                posting: 40,
-                engagement: 60,
-                recruiting: 20,
-                responsiveness: 50,
-                visibility: 30,
-              }}
-            />
+        {/* Interaction Radar placeholder */}
+        <SCGlassCard className="p-5">
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Interaction Radar</p>
+          <div className="space-y-3">
+            {[
+              { label: "Posting", value: 40 },
+              { label: "Engagement", value: 60 },
+              { label: "Recruiting", value: 20 },
+              { label: "Responsiveness", value: 50 },
+              { label: "Visibility", value: 30 },
+            ].map((item) => (
+              <div key={item.label} className="space-y-1">
+                <div className="flex justify-between text-xs">
+                  <span className="text-slate-400">{item.label}</span>
+                  <span className="font-mono text-white">{item.value}%</span>
+                </div>
+                <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-sc-primary/70 transition-all duration-700"
+                    style={{ width: `${item.value}%` }}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
-        </GlassCard>
+        </SCGlassCard>
 
         {/* Interaction Feed */}
-        <GlassCard className="p-5">
-          <h3 className="stitch-label mb-4">Interaction History</h3>
-          <p className="text-sm text-white/30">
+        <SCGlassCard className="p-5">
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Interaction History</p>
+          <p className="text-sm text-slate-500">
             No interaction data available yet for @{id}.
           </p>
-          <p className="mt-2 text-xs text-white/20">
+          <p className="mt-2 text-xs text-slate-600">
             Follow, like, or engage with this account to build interaction data.
           </p>
-        </GlassCard>
+        </SCGlassCard>
       </div>
     </div>
   );
