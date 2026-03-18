@@ -11,6 +11,8 @@ import { SCHeroBanner, SCAnimatedNumber, SCPageTransition } from "@/components/s
 import { motion } from "framer-motion";
 import { targetSchools } from "@/lib/data/target-schools";
 import { getSchoolLogo } from "@/lib/data/school-branding";
+import { StalenessIndicator } from "@/components/staleness-indicator";
+import { DailyActionPlan } from "@/components/daily-action-plan";
 
 interface DashboardStats {
   profileViews: number | null;
@@ -36,6 +38,7 @@ export default function DashboardPage() {
   });
   const [recentActivity, setRecentActivity] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -72,6 +75,10 @@ export default function DashboardPage() {
             (p.xPostId || p.x_post_id) &&
             new Date(p.createdAt || p.date) > weekAgo
         ).length;
+
+        if (analyticsRes?.meta?.lastUpdated) {
+          setLastUpdated(analyticsRes.meta.lastUpdated);
+        }
 
         setStats({
           profileViews: analyticsRes?.current?.profileVisits ?? analyticsRes?.profileViews ?? null,
@@ -178,6 +185,9 @@ export default function DashboardPage() {
       {/* Hero Banner */}
       <SCHeroBanner screen="command" className="mb-6" />
 
+      {/* Today's Plan — Daily Action Items */}
+      <DailyActionPlan />
+
       {/* Stat Cards — 3-col grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {statCards.map((card, i) => (
@@ -196,6 +206,9 @@ export default function DashboardPage() {
           </motion.div>
         ))}
       </div>
+
+      {/* Data staleness indicator */}
+      {!loading && <StalenessIndicator lastUpdated={lastUpdated} className="mt-1" />}
 
       {/* AI Recommendation Engine */}
       <SCGlassCard className="overflow-hidden">

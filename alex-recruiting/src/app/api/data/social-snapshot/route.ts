@@ -16,7 +16,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db, isDbConfigured } from "@/lib/db";
 import * as schema from "@/lib/db/schema";
-import { desc } from "drizzle-orm";
 import { targetSchools } from "@/lib/data/target-schools";
 
 export const dynamic = "force-dynamic";
@@ -186,81 +185,19 @@ async function attemptLiveSnapshot(handle: string): Promise<GrowthSnapshotData |
 }
 
 /**
- * Generate a mock snapshot, building on the latest snapshot from the database
- * to create a realistic growth trajectory.
+ * No mock data — return zeros when real X API is unavailable.
  */
 async function generateMockSnapshot(): Promise<GrowthSnapshotData> {
-  let baseFollowers = 142;
-  let baseCoachFollowers = 3;
-  let baseFollowing = 87;
-  let baseEngagement = 4.2;
-  let basePosts = 4;
-  let baseDms = 2;
-
-  // Try to read the latest snapshot from the database for continuity
-  if (isDbConfigured()) {
-    try {
-      const latest = await db
-        .select()
-        .from(schema.growthSnapshots)
-        .orderBy(desc(schema.growthSnapshots.snapshotDate))
-        .limit(1);
-
-      if (latest.length > 0) {
-        const last = latest[0];
-        baseFollowers = last.followerCount;
-        baseCoachFollowers = last.coachFollowers ?? baseCoachFollowers;
-        baseFollowing = last.followingCount ?? baseFollowing;
-        baseEngagement = last.engagementRate ?? baseEngagement;
-        basePosts = last.postsThisWeek ?? basePosts;
-        baseDms = last.dmsThisWeek ?? baseDms;
-      }
-    } catch {
-      // DB read failed — use defaults
-    }
-  }
-
-  // Apply small realistic increments
-  const followerGain = 2 + Math.floor(Math.random() * 4); // +2 to +5
-  const coachFollowerGain = Math.random() > 0.7 ? 1 : 0; // 30% chance of +1
-  const followingGain = 1 + Math.floor(Math.random() * 3); // +1 to +3
-  const engagementDelta = (Math.random() - 0.3) * 0.5; // slight fluctuation
-
-  // Build coach follow status with realistic mock data
-  const coachFollowStatus: CoachFollowEntry[] = targetSchools.map((school, idx) => {
-    // Tier 3 (D2) schools more likely to follow back, Tier 1 less likely
-    let followBackChance: number;
-    switch (school.priorityTier) {
-      case "Tier 3":
-        followBackChance = 0.4;
-        break;
-      case "Tier 2":
-        followBackChance = 0.2;
-        break;
-      default:
-        followBackChance = 0.05;
-    }
-
-    // Use deterministic seed per school for consistency across calls
-    const seed = school.id.split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
-    const isFollowedBy = (seed % 100) / 100 < followBackChance;
-
-    return {
-      schoolName: school.name,
-      handle: school.officialXHandle,
-      isFollowing: idx < baseFollowing, // Following most target school accounts
-      isFollowedBy,
-    };
-  });
-
+  // No mock data — return empty/zero snapshot when real X API unavailable
   return {
-    followerCount: baseFollowers + followerGain,
-    coachFollowers: baseCoachFollowers + coachFollowerGain,
-    followingCount: baseFollowing + followingGain,
-    engagementRate: Math.round((baseEngagement + engagementDelta) * 100) / 100,
-    postsThisWeek: basePosts + Math.floor(Math.random() * 2),
-    dmsThisWeek: baseDms + (Math.random() > 0.5 ? 1 : 0),
+    followerCount: 0,
+    coachFollowers: 0,
+    followingCount: 0,
+    engagementRate: 0,
+    postsThisWeek: 0,
+    dmsThisWeek: 0,
     snapshotDate: new Date().toISOString(),
-    coachFollowStatus,
-  };
+    coachFollowStatus: [],
+    source: "empty",
+  } as GrowthSnapshotData & { source: string };
 }

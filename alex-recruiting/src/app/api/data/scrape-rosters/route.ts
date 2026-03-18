@@ -151,65 +151,22 @@ async function scrapeSchoolRoster(school: TargetSchool): Promise<EnrichedSchoolD
 }
 
 /**
- * Generate realistic mock OL roster data based on division level.
+ * No mock data — return empty/zero data structure when real scraping unavailable.
  */
 function generateMockRosterData(school: TargetSchool): EnrichedSchoolData {
-  const hashValue = school.id
-    .split("")
-    .reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
-
-  let olRosterCount: number;
-  let olGraduating: number;
-  let scholarships: number;
-
-  switch (school.division) {
-    case "D1 FBS":
-      // D1 FBS programs carry 15-22 OL on roster, 3-6 graduating, 85 scholarships
-      olRosterCount = 15 + (hashValue % 8);
-      olGraduating = 3 + (hashValue % 4);
-      scholarships = 85;
-      break;
-    case "D1 FCS":
-      // D1 FCS: 12-18 OL, 2-5 graduating, 63 scholarships
-      olRosterCount = 12 + (hashValue % 7);
-      olGraduating = 2 + (hashValue % 4);
-      scholarships = 63;
-      break;
-    case "D2":
-      // D2: 10-15 OL, 2-4 graduating, 36 scholarships
-      olRosterCount = 10 + (hashValue % 6);
-      olGraduating = 2 + (hashValue % 3);
-      scholarships = 36;
-      break;
-    default:
-      olRosterCount = 10 + (hashValue % 5);
-      olGraduating = 2 + (hashValue % 3);
-      scholarships = 36;
-  }
-
-  const talentScore = computeTalentScore(olRosterCount, olGraduating, school.division);
-
-  // Recruiting rank varies by tier — top-tier programs rank higher
-  let recruitingRank: number | null = null;
-  if (school.priorityTier === "Tier 1") {
-    recruitingRank = 10 + (hashValue % 30); // 10-39
-  } else if (school.priorityTier === "Tier 2") {
-    recruitingRank = 40 + (hashValue % 60); // 40-99
-  }
-  // Tier 3 (D2) typically unranked in national recruiting
-
+  // No mock data — return zeros when real scraping unavailable
   return {
     schoolId: school.id,
     name: school.name,
     slug: school.id,
     division: school.division,
     conference: school.conference,
-    olRosterCount,
-    olGraduating,
-    scholarshipsAvailable: scholarships,
-    talentScore,
-    recruitingRank,
-    coachTenure: 2 + (hashValue % 8), // 2-9 years
+    olRosterCount: 0,
+    olGraduating: 0,
+    scholarshipsAvailable: 0,
+    talentScore: 0,
+    recruitingRank: null,
+    coachTenure: null,
     source: "mock",
   };
 }

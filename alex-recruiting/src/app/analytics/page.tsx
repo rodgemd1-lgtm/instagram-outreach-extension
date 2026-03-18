@@ -10,6 +10,7 @@ import { SCBadge } from "@/components/sc/sc-badge";
 import { SCHeroBanner } from "@/components/sc";
 import { SCPageTransition } from "@/components/sc";
 import { SCAnimatedNumber } from "@/components/sc";
+import { StalenessIndicator } from "@/components/staleness-indicator";
 
 interface AnalyticsData {
   current: {
@@ -61,12 +62,16 @@ const cardVariants = {
 export default function AnalyticsPage() {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/analytics")
       .then((res) => res.json())
       .then((d) => {
         setData(d);
+        if (d?.meta?.lastUpdated) {
+          setLastUpdated(d.meta.lastUpdated);
+        }
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -237,6 +242,9 @@ export default function AnalyticsPage() {
             </motion.div>
           ))}
         </div>
+
+        {/* Data staleness indicator */}
+        <StalenessIndicator lastUpdated={lastUpdated} />
 
         {/* Full Metrics Grid */}
         <div>

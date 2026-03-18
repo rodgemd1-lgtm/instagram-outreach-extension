@@ -49,6 +49,7 @@ export interface LiveDashboardResponse {
   competitorUpdates: string[];
   meta: {
     fetchedAt: string;
+    lastUpdated: string;
     dataSource: "live" | "fallback";
     jacobUserId: string | null;
   };
@@ -88,6 +89,7 @@ export async function GET(): Promise<NextResponse> {
       competitorUpdates: [],
       meta: {
         fetchedAt: snapshot.fetchedAt,
+        lastUpdated: new Date().toISOString(),
         dataSource: snapshot.dataSource,
         jacobUserId: snapshot.jacobUserId,
       },
@@ -114,6 +116,7 @@ export async function GET(): Promise<NextResponse> {
       competitorUpdates: [],
       meta: {
         fetchedAt: new Date().toISOString(),
+        lastUpdated: new Date().toISOString(),
         dataSource: "fallback",
         jacobUserId: null,
       },

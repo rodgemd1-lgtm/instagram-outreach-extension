@@ -1,4 +1,4 @@
-import { pgTable, text, integer, boolean, timestamp, real, jsonb, uuid } from "drizzle-orm/pg-core";
+import { pgTable, text, integer, boolean, timestamp, real, jsonb, uuid, uniqueIndex } from "drizzle-orm/pg-core";
 
 // ============ LEGACY SCHOOLS (17 target schools) ============
 
@@ -67,7 +67,10 @@ export const coaches = pgTable("coaches", {
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (t) => [
+  uniqueIndex("coaches_name_school_slug_idx").on(t.name, t.schoolSlug),
+  uniqueIndex("coaches_name_school_name_idx").on(t.name, t.schoolName),
+]);
 
 export const posts = pgTable("posts", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -84,7 +87,9 @@ export const posts = pgTable("posts", {
   engagementRate: real("engagement_rate").default(0),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (t) => [
+  uniqueIndex("posts_content_idx").on(t.content),
+]);
 
 export const dmMessages = pgTable("dm_messages", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -98,7 +103,9 @@ export const dmMessages = pgTable("dm_messages", {
   respondedAt: timestamp("responded_at"),
   responseContent: text("response_content"),
   createdAt: timestamp("created_at").defaultNow(),
-});
+}, (t) => [
+  uniqueIndex("dm_messages_coach_name_template_type_idx").on(t.coachName, t.templateType),
+]);
 
 export const engagementLog = pgTable("engagement_log", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -144,7 +151,9 @@ export const competitorRecruits = pgTable("competitor_recruits", {
   topContentTypes: jsonb("top_content_types").$type<string[]>().default([]),
   schoolInterestSignals: jsonb("school_interest_signals").$type<string[]>().default([]),
   lastUpdated: timestamp("last_updated").defaultNow(),
-});
+}, (t) => [
+  uniqueIndex("competitor_recruits_name_idx").on(t.name),
+]);
 
 export const analyticsSnapshots = pgTable("analytics_snapshots", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -291,7 +300,9 @@ export const videoAssets = pgTable("video_assets", {
   optimizedFilePath: text("optimized_file_path"),
   width: integer("width"),
   height: integer("height"),
-});
+}, (t) => [
+  uniqueIndex("video_assets_supabase_url_idx").on(t.supabaseUrl),
+]);
 
 export const scrapeJobs = pgTable("scrape_jobs", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -500,7 +511,9 @@ export const engagementActions = pgTable("engagement_actions", {
   content: text("content"),
   resultFollowerGain: integer("result_follower_gain"),
   createdAt: timestamp("created_at").defaultNow(),
-});
+}, (t) => [
+  uniqueIndex("engagement_actions_target_handle_idx").on(t.targetHandle),
+]);
 
 export const growthSnapshots = pgTable("growth_snapshots", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -512,7 +525,9 @@ export const growthSnapshots = pgTable("growth_snapshots", {
   dmsThisWeek: integer("dms_this_week"),
   snapshotDate: timestamp("snapshot_date").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
-});
+}, (t) => [
+  uniqueIndex("growth_snapshots_snapshot_date_idx").on(t.snapshotDate),
+]);
 
 // ============ CAMP TRACKER ============
 
@@ -670,7 +685,9 @@ export const panelCoaches = pgTable("panel_coaches", {
   status: text("status").default("invited"),
   invitedAt: timestamp("invited_at").defaultNow(),
   completedAt: timestamp("completed_at"),
-});
+}, (t) => [
+  uniqueIndex("panel_coaches_name_school_idx").on(t.name, t.school),
+]);
 
 export const panelSurveys = pgTable("panel_surveys", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -682,7 +699,9 @@ export const panelSurveys = pgTable("panel_surveys", {
   comparisonScore: integer("comparison_score"),
   wouldShare: boolean("would_share"),
   submittedAt: timestamp("submitted_at").defaultNow(),
-});
+}, (t) => [
+  uniqueIndex("panel_surveys_panel_coach_id_would_recruit_idx").on(t.panelCoachId, t.wouldRecruit),
+]);
 
 // ============ RESEARCH PIPELINE ============
 
@@ -793,4 +812,6 @@ export const outreachLearnings = pgTable("outreach_learnings", {
   generatedBy: text("generated_by").default("ai"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (t) => [
+  uniqueIndex("outreach_learnings_week_number_idx").on(t.weekNumber),
+]);

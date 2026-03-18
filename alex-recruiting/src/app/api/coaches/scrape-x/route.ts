@@ -19,58 +19,19 @@ interface XAnalysis {
   analysisStatus: string;
 }
 
-// Deterministic mock analysis based on static school data
+// No mock data — return empty/zero analysis when real X API unavailable
 function generateMockAnalysis(school: (typeof targetSchools)[0]): XAnalysis {
-  const tierDefaults = {
-    "Tier 1": {
-      tweetFrequency: 4.2,
-      engagementRate: 2.8,
-      interactsWithRecruits: false,
-      peakActivityHours: [10, 14, 18],
-      themes: ["game highlights", "recruiting announcements", "program culture"],
-    },
-    "Tier 2": {
-      tweetFrequency: 3.5,
-      engagementRate: 3.4,
-      interactsWithRecruits: true,
-      peakActivityHours: [9, 13, 17, 20],
-      themes: ["recruit interactions", "camp invites", "game recaps", "player spotlights"],
-    },
-    "Tier 3": {
-      tweetFrequency: 2.8,
-      engagementRate: 4.1,
-      interactsWithRecruits: true,
-      peakActivityHours: [8, 12, 16, 21],
-      themes: ["recruit engagement", "camp promotions", "player development", "community"],
-    },
-  };
-
-  const defaults = tierDefaults[school.priorityTier];
-
-  const conferenceHashtags: Record<string, string[]> = {
-    "Big Ten": ["#B1G", "#BigTenFootball"],
-    "Big 12": ["#Big12FB", "#Big12"],
-    MAC: ["#MACtion", "#MACFootball"],
-    "Missouri Valley": ["#MVFC", "#FCSFootball"],
-    GLIAC: ["#GLIAC", "#D2Football"],
-    NSIC: ["#NSIC", "#D2FB"],
-  };
-
   return {
     schoolId: school.id,
     schoolName: school.name,
     xHandle: school.officialXHandle,
-    tweetFrequency: defaults.tweetFrequency,
-    contentThemes: defaults.themes,
-    engagementRate: defaults.engagementRate,
-    interactsWithRecruits: defaults.interactsWithRecruits,
-    peakActivityHours: defaults.peakActivityHours,
-    commonHashtags: [
-      ...(conferenceHashtags[school.conference] || []),
-      "#CollegeFootball",
-      "#Recruiting",
-    ],
-    analysisStatus: "mock",
+    tweetFrequency: 0,
+    contentThemes: [],
+    engagementRate: 0,
+    interactsWithRecruits: false,
+    peakActivityHours: [],
+    commonHashtags: [],
+    analysisStatus: "empty",
   };
 }
 

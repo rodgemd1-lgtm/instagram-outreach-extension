@@ -260,48 +260,9 @@ function estimateCampCost(division: string): number {
 }
 
 /**
- * Generate realistic mock camp data when all live scraping fails.
+ * No mock data — return empty when real scraping unavailable.
  */
-function generateMockCamps(schools: TargetSchool[]): CampListing[] {
-  const camps: CampListing[] = [];
-
-  const campTemplates: Array<{
-    suffix: string;
-    type: CampListing["campType"];
-    monthOffset: number;
-  }> = [
-    { suffix: "Elite Prospect Camp", type: "school_camp", monthOffset: 0 },
-    { suffix: "Prospect Day", type: "prospect_day", monthOffset: 0 },
-    { suffix: "OL/DL Big Man Camp", type: "school_camp", monthOffset: 1 },
-  ];
-
-  for (const school of schools) {
-    const hashValue = school.id.split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
-    // Each school gets 2-3 camps
-    const campCount = 2 + (hashValue % 2);
-    const templates = campTemplates.slice(0, campCount);
-
-    for (let i = 0; i < templates.length; i++) {
-      const template = templates[i];
-      const month = 6 + template.monthOffset; // June or July
-      const day = 5 + ((hashValue + i * 11) % 23); // Days 5-27
-
-      camps.push({
-        name: `${school.name} ${template.suffix}`,
-        school: school.name,
-        location: `${school.name} Football Complex`,
-        campType: template.type,
-        date: `2026-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`,
-        dateEnd: template.type === "school_camp"
-          ? `2026-${String(month).padStart(2, "0")}-${String(Math.min(day + 1, 28)).padStart(2, "0")}`
-          : null,
-        cost: estimateCampCost(school.division) + (i * 25),
-        registrationStatus: "not_registered",
-        sourceUrl: null,
-        source: "mock",
-      });
-    }
-  }
-
-  return camps;
+function generateMockCamps(_schools: TargetSchool[]): CampListing[] {
+  // No mock data — return empty when real scraping unavailable
+  return [];
 }

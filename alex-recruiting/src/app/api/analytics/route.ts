@@ -128,5 +128,8 @@ export async function GET() {
     current,
     history: history.length > 0 ? history : [current],
     targets,
+    meta: {
+      lastUpdated: new Date().toISOString(),
+    },
   });
 }
