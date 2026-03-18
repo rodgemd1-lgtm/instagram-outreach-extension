@@ -150,7 +150,11 @@ export default function CoachDetailPage({
             className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl border-2"
             style={{ borderColor: colors.primary + "60" }}
           >
-            <Image src={logoPath} alt={persona.schoolName} width={64} height={64} className="opacity-80" />
+            {logoPath ? (
+              <Image src={logoPath} alt={persona.schoolName} width={64} height={64} className="opacity-80" />
+            ) : (
+              <span className="text-2xl font-black text-slate-400">{persona.schoolName.charAt(0)}</span>
+            )}
           </div>
           <div className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-emerald-400 border-2 border-sc-bg" />
         </div>

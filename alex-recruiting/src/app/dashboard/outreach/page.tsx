@@ -7,6 +7,7 @@ import { SCGlassCard } from "@/components/sc/sc-glass-card";
 import { SCStatCard } from "@/components/sc/sc-stat-card";
 import { SCBadge } from "@/components/sc/sc-badge";
 import { SCButton } from "@/components/sc/sc-button";
+import { DMComposer } from "@/components/dm-composer";
 
 export default function OutreachPage() {
   const [dms, setDMs] = useState<DMMessage[]>([]);
@@ -190,10 +191,10 @@ export default function OutreachPage() {
                         className="w-full text-left"
                       >
                         <p className="text-sm font-bold text-white truncate">
-                          {coach?.name || dm.coachId}
+                          {dm.coachName || coach?.name || dm.coachId}
                         </p>
                         <p className="text-xs text-slate-400 truncate mt-1">
-                          {coach?.schoolName || "Unknown School"}
+                          {dm.schoolName || coach?.schoolName || "Unknown School"}
                         </p>
                         <p className="text-xs text-slate-500 mt-2 line-clamp-2">
                           {dm.content}
@@ -215,30 +216,13 @@ export default function OutreachPage() {
 
       {/* Composer slide-over */}
       {composerOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end">
-          <div className="absolute inset-0 bg-black/60" onClick={() => { setComposerOpen(false); setSelectedDM(null); }} />
-          <div className="relative w-full max-w-lg bg-sc-bg border-l border-sc-border overflow-y-auto p-6">
-            <div className="flex items-start justify-between mb-6">
-              <h2 className="text-xl font-black text-white">
-                {selectedDM ? "Edit DM" : "New DM"}
-              </h2>
-              <SCButton variant="ghost" size="sm" onClick={() => { setComposerOpen(false); setSelectedDM(null); }}>
-                <span className="material-symbols-outlined">close</span>
-              </SCButton>
-            </div>
-            <SCGlassCard className="p-4">
-              <p className="text-sm text-slate-400">
-                DM composer functionality preserved. Select a coach and draft your message.
-              </p>
-              {selectedDM && (
-                <div className="mt-4 space-y-2">
-                  <p className="text-xs text-slate-500">Current content:</p>
-                  <p className="text-sm text-white">{selectedDM.content}</p>
-                </div>
-              )}
-            </SCGlassCard>
-          </div>
-        </div>
+        <DMComposer
+          coaches={coaches}
+          selectedDM={selectedDM}
+          preselectedCoachId={preselectedCoachId}
+          onClose={() => { setComposerOpen(false); setSelectedDM(null); }}
+          onSaved={() => { setComposerOpen(false); setSelectedDM(null); void fetchData(); }}
+        />
       )}
     </div>
   );

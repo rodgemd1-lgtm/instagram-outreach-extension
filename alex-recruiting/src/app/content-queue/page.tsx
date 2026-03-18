@@ -599,28 +599,8 @@ export default function ContentQueuePage() {
 
       if (data.success) {
         setActionMessage(`Generated ${data.generated} posts across 30 days.`);
-        if (data.posts && data.posts.length > 0 && posts.length === 0) {
-          setPosts(
-            data.posts.map((p: Record<string, unknown>) => ({
-              id: p.id as string,
-              content: p.content as string,
-              pillar: p.pillar as string,
-              hashtags: (p.hashtags as string[]) || [],
-              mediaUrl: null,
-              scheduledFor: p.scheduledFor as string,
-              bestTime: p.bestTime as string,
-              status: p.status as string,
-              xPostId: null,
-              impressions: 0,
-              engagements: 0,
-              engagementRate: 0,
-              createdAt: p.createdAt as string,
-              updatedAt: null,
-            }))
-          );
-        } else {
-          await fetchPosts();
-        }
+        // Always re-fetch from API to get accurate counts and full post list
+        await fetchPosts();
       }
     } catch (err) {
       console.error("Generate month failed:", err);

@@ -337,16 +337,19 @@ export default function CoachesPage() {
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
                           <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white/5">
-                            <Image
-                              src={logoPath}
-                              alt={coach.schoolName}
-                              width={24}
-                              height={24}
-                              className="opacity-70"
-                              onError={(e) => {
-                                (e.target as HTMLImageElement).style.display = "none";
-                              }}
-                            />
+                            {logoPath ? (
+                              <Image
+                                src={logoPath}
+                                alt={coach.schoolName}
+                                width={24}
+                                height={24}
+                                className="opacity-70"
+                              />
+                            ) : (
+                              <span className="text-[10px] font-bold text-slate-500">
+                                {coach.schoolName.charAt(0)}
+                              </span>
+                            )}
                           </div>
                           <div>
                             <p className="text-sm font-bold text-white">{coach.schoolName}</p>

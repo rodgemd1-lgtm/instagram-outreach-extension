@@ -273,9 +273,9 @@ export default function DashboardPage() {
             ) : recentActivity.length > 0 ? (
               recentActivity.map((item) => (
                 <div key={item.id} className="px-6 py-3 flex items-center gap-3 hover:bg-sc-primary/5 transition-colors">
-                  {item.schoolId ? (
+                  {item.schoolId && getSchoolLogo(item.schoolId) ? (
                     <img
-                      src={getSchoolLogo(item.schoolId)}
+                      src={getSchoolLogo(item.schoolId)!}
                       alt=""
                       className="w-8 h-8 rounded-full"
                     />
@@ -328,11 +328,17 @@ export default function DashboardPage() {
                       key={school.id}
                       className="flex items-center gap-2.5 py-1.5 px-2 rounded-lg hover:bg-white/5 transition-colors"
                     >
-                      <img
-                        src={getSchoolLogo(school.id)}
-                        alt={school.name}
-                        className="w-7 h-7 rounded-full"
-                      />
+                      {getSchoolLogo(school.id) ? (
+                        <img
+                          src={getSchoolLogo(school.id)!}
+                          alt={school.name}
+                          className="w-7 h-7 rounded-full"
+                        />
+                      ) : (
+                        <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center">
+                          <span className="text-[10px] font-bold text-slate-400">{school.name.charAt(0)}</span>
+                        </div>
+                      )}
                       <span className="text-sm text-white flex-1 truncate">
                         {school.name}
                       </span>

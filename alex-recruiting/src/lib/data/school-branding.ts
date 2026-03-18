@@ -97,11 +97,21 @@ const defaultColors: SchoolBrand = {
   name: "Unknown",
 };
 
+/** Set of school IDs that have logo SVGs in public/logos/ */
+const SCHOOLS_WITH_LOGOS = new Set([
+  "ball-state", "central-michigan", "ferris-state", "illinois-state",
+  "iowa-state", "iowa", "michigan-tech", "minnesota-state-mankato",
+  "north-dakota-state", "northern-illinois", "northwestern",
+  "saginaw-valley", "south-dakota-state", "western-michigan",
+  "winona-state", "wisconsin", "youngstown-state",
+]);
+
 /**
- * Returns the path to a school's logo SVG.
+ * Returns the path to a school's logo SVG, or null if no logo exists.
  */
-export function getSchoolLogo(id: string): string {
-  return `/logos/${id}.svg`;
+export function getSchoolLogo(id: string): string | null {
+  if (SCHOOLS_WITH_LOGOS.has(id)) return `/logos/${id}.svg`;
+  return null;
 }
 
 /**

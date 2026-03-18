@@ -16,7 +16,7 @@ export function generateDM(
     COACH_LAST_NAME: lastName,
     SCHOOL_NAME: coach.schoolName,
     NCSA_LINK: jacobProfile.ncsaProfileUrl || "[NCSA LINK]",
-    CAMP_NAME: extraVars?.campName || "[CAMP NAME]",
+    CAMP_NAME: extraVars?.campName || extraVars?.CAMP_NAME || "recent prospect showcase",
     ...extraVars,
   };
 

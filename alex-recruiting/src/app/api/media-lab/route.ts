@@ -47,13 +47,24 @@ export async function GET(req: NextRequest) {
     }
 
     if (!canRunHeavyMediaBuild()) {
-      return NextResponse.json(
-        {
-          error: "Media Lab refresh is only available in local operator mode.",
-          cached: false,
+      // On Vercel: return an empty snapshot with guidance instead of a 503 error
+      return NextResponse.json({
+        snapshot: {
+          photos: [],
+          videos: [],
+          reels: [],
+          posts: [],
+          summary: {
+            totalPhotos: 0,
+            totalVideos: 0,
+            totalReels: 0,
+            totalPosts: 0,
+          },
+          generatedAt: new Date().toISOString(),
         },
-        { status: 503 }
-      );
+        cached: false,
+        hint: "Media Lab heavy builds run locally. Use 'npm run dev' on your machine and visit /media-lab to process media files. Uploads via /media-upload are available on Vercel.",
+      });
     }
 
     const snapshot = await buildSnapshot({
@@ -75,13 +86,11 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     if (!canRunHeavyMediaBuild()) {
-      return NextResponse.json(
-        {
-          error: "Media Lab refresh is only available in local operator mode.",
-          refreshed: false,
-        },
-        { status: 503 }
-      );
+      return NextResponse.json({
+        snapshot: null,
+        refreshed: false,
+        hint: "Media Lab heavy builds only run locally. Start the dev server on your machine to process media.",
+      });
     }
 
     const body = await req.json().catch(() => ({}));

@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SCShell } from "@/components/sc/sc-shell";
 import { SCSplashScreen } from "@/components/sc/sc-splash-screen";
+import { OperatorDock } from "@/components/operator-dock";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -57,6 +58,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}>
         <SCSplashScreen />
+        <OperatorDock />
         <SCShell>{children}</SCShell>
       </body>
     </html>

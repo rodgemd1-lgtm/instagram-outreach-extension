@@ -21,6 +21,17 @@ import { weeklyCalendar } from "@/lib/data/weekly-calendar";
 import { hooksLibrary, type Hook } from "@/lib/data/hooks-library";
 import { getHashtagsForPost } from "@/lib/data/hashtags";
 import { type PostFormulaType } from "@/lib/data/content-psychology";
+import { fillTemplate } from "@/lib/data/templates";
+
+// Default template variables for content generation
+const DEFAULT_TEMPLATE_VARS: Record<string, string> = {
+  CAMP_NAME: "recent prospect showcase",
+  SCHOOL_NAME: "Pewaukee",
+  NCSA_LINK: "https://www.ncsasports.org/mens-football/jacob-rodgers",
+  HUDL_LINK: "hudl.com/profile/jacob-rodgers",
+  WEBSITE_LINK: "jacobrodgers.com",
+  SKILL_AREA: "hand placement and footwork",
+};
 
 export const dynamic = "force-dynamic";
 
@@ -214,6 +225,8 @@ function buildPostContent(
   activityContext?: ActivityContext
 ): string {
   const hashtagStr = hashtags.join(" ");
+  // Substitute any template variables in the hook text (e.g. {CAMP_NAME})
+  const hookText = fillTemplate(hook.text, DEFAULT_TEMPLATE_VARS);
 
   // If activity context is provided, try to use activity-specific content
   if (activityContext?.currentActivities && activityContext.currentActivities.length > 0) {
@@ -224,7 +237,7 @@ function buildPostContent(
     const variants = ACTIVITY_VARIANTS[activity]?.[formulaType];
     if (variants && variants.length > 0) {
       const variant = variants[Math.floor(Math.random() * variants.length)];
-      return `${hook.text}\n\n${variant}\n\n${hashtagStr}`;
+      return `${hookText}\n\n${variant}\n\n${hashtagStr}`;
     }
   }
 
@@ -239,7 +252,7 @@ function buildPostContent(
         "The strength coaches have us on a whole new program this month.",
       ];
       const credit = credits[Math.floor(Math.random() * credits.length)];
-      return `${hook.text}\n\n${credit}\n\n${hashtagStr}`;
+      return `${hookText}\n\n${credit}\n\n${hashtagStr}`;
     }
     case "curious_student": {
       const questions = [
@@ -250,7 +263,7 @@ function buildPostContent(
         "Working on my second-level blocking. Any drills coaches would recommend?",
       ];
       const question = questions[Math.floor(Math.random() * questions.length)];
-      return `${hook.text}\n\n${question}\n\n${hashtagStr}`;
+      return `${hookText}\n\n${question}\n\n${hashtagStr}`;
     }
     case "honest_progress": {
       const updates = [
@@ -261,10 +274,10 @@ function buildPostContent(
         "Tracking my progress month over month. The numbers don't lie -- consistency is the cheat code.",
       ];
       const update = updates[Math.floor(Math.random() * updates.length)];
-      return `${hook.text}\n\n${update}\n\n${hashtagStr}`;
+      return `${hookText}\n\n${update}\n\n${hashtagStr}`;
     }
     case "ambient_update": {
-      return `${hook.text}\n\n${hashtagStr}`;
+      return `${hookText}\n\n${hashtagStr}`;
     }
     case "narrative_loop": {
       const loops = [
@@ -275,10 +288,10 @@ function buildPostContent(
         "New personal challenge: improve every measurable by next camp. Updates coming.",
       ];
       const loop = loops[Math.floor(Math.random() * loops.length)];
-      return `${hook.text}\n\n${loop}\n\n${hashtagStr}`;
+      return `${hookText}\n\n${loop}\n\n${hashtagStr}`;
     }
     default:
-      return `${hook.text}\n\n${hashtagStr}`;
+      return `${hookText}\n\n${hashtagStr}`;
   }
 }
 
