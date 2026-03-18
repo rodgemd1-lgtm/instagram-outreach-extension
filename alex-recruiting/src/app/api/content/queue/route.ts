@@ -49,6 +49,7 @@ export async function GET(req: NextRequest) {
         posts: [],
         total: 0,
         counts: { queued: 0, draft: 0, approved: 0, rejected: 0, posted: 0 },
+        hint: "No posts yet. Use the Content Generator or ask Trey to draft posts.",
       });
     }
 
@@ -137,6 +138,9 @@ export async function GET(req: NextRequest) {
       posts: serialized,
       total: serialized.length,
       counts,
+      ...(serialized.length === 0 && {
+        hint: "No posts yet. Use the Content Generator or ask Trey to draft posts.",
+      }),
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";

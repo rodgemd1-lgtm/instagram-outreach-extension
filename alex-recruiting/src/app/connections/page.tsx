@@ -239,6 +239,15 @@ export default function ConnectionsPage() {
         subtitle="Find and connect with the right people on X"
       />
 
+      {/* Info banner — static target list notice */}
+      <div className="flex items-center gap-2 rounded-lg bg-blue-500/10 border border-blue-500/20 px-4 py-2.5">
+        <span className="material-symbols-outlined text-[18px] text-blue-400 flex-shrink-0">info</span>
+        <p className="text-xs text-blue-300">
+          Static target list — follow status tracked in{" "}
+          <a href="/outreach" className="underline hover:text-blue-200 font-semibold">Outreach</a>
+        </p>
+      </div>
+
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <SCStatCard label="Total Targets" value={String(stats.total)} icon="group" />
