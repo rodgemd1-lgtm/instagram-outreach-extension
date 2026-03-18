@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-interface SCGlassCardProps {
+interface SCGlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   className?: string;
   variant?: "default" | "strong" | "broadcast";
@@ -19,8 +19,9 @@ export function SCGlassCard({
   children,
   className,
   variant = "default",
+  ...props
 }: SCGlassCardProps) {
   return (
-    <div className={cn(variantStyles[variant], className)}>{children}</div>
+    <div className={cn(variantStyles[variant], className)} {...props}>{children}</div>
   );
 }

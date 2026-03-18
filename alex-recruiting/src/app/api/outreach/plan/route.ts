@@ -168,60 +168,64 @@ export async function GET() {
     try {
       const allCoaches = await db.select().from(coaches);
 
-      const plan = emptyPlan();
-      let dmsDrafted = 0;
-      let dmsSent = 0;
-      let responses = 0;
-      let followed = 0;
+      // If Drizzle returns 0 coaches, the real data may be in Supabase — fall through
+      if (allCoaches.length > 0) {
+        const plan = emptyPlan();
+        let dmsDrafted = 0;
+        let dmsSent = 0;
+        let responses = 0;
+        let followed = 0;
 
-      for (const c of allCoaches) {
-        const stage = mapFollowStatusToStage(c.followStatus, c.dmStatus);
+        for (const c of allCoaches) {
+          const stage = mapFollowStatusToStage(c.followStatus, c.dmStatus);
 
-        if (c.dmStatus === "drafted") dmsDrafted++;
-        if (c.dmStatus === "sent") dmsSent++;
-        if (c.dmStatus === "responded") responses++;
-        if (
-          c.followStatus === "followed" ||
-          c.followStatus === "followed_back"
-        )
-          followed++;
+          if (c.dmStatus === "drafted") dmsDrafted++;
+          if (c.dmStatus === "sent") dmsSent++;
+          if (c.dmStatus === "responded") responses++;
+          if (
+            c.followStatus === "followed" ||
+            c.followStatus === "followed_back"
+          )
+            followed++;
 
-        const school = targetSchools.find((s) => s.id === c.schoolId);
+          const school = targetSchools.find((s) => s.id === c.schoolId);
 
-        const outreachCoach: OutreachCoach = {
-          id: c.id,
-          name: c.name ?? "",
-          schoolId: c.schoolId ?? "",
-          schoolName: c.schoolName,
-          division: c.division,
-          conference: c.conference ?? "",
-          priorityTier: c.priorityTier,
-          xHandle: c.xHandle ?? "",
-          stage,
-          nextAction: getNextAction(stage, c.priorityTier),
-          nextActionDate: getNextActionDate(stage, c.priorityTier),
-          priorityScore: getPriorityScore(c.priorityTier, c.division),
-          lastActionDate: c.lastEngaged
-            ? new Date(c.lastEngaged).toISOString().split("T")[0]
-            : null,
-          dmTimeline: school?.dmTimeline ?? "",
+          const outreachCoach: OutreachCoach = {
+            id: c.id,
+            name: c.name ?? "",
+            schoolId: c.schoolId ?? "",
+            schoolName: c.schoolName,
+            division: c.division,
+            conference: c.conference ?? "",
+            priorityTier: c.priorityTier,
+            xHandle: c.xHandle ?? "",
+            stage,
+            nextAction: getNextAction(stage, c.priorityTier),
+            nextActionDate: getNextActionDate(stage, c.priorityTier),
+            priorityScore: getPriorityScore(c.priorityTier, c.division),
+            lastActionDate: c.lastEngaged
+              ? new Date(c.lastEngaged).toISOString().split("T")[0]
+              : null,
+            dmTimeline: school?.dmTimeline ?? "",
+          };
+
+          plan.stages[stage].push(outreachCoach);
+        }
+
+        plan.stats = {
+          total: allCoaches.length,
+          dmsDrafted,
+          dmsSent,
+          responses,
+          followRate:
+            allCoaches.length > 0
+              ? `${Math.round((followed / allCoaches.length) * 100)}%`
+              : "0%",
         };
 
-        plan.stages[stage].push(outreachCoach);
+        return NextResponse.json(plan);
       }
-
-      plan.stats = {
-        total: allCoaches.length,
-        dmsDrafted,
-        dmsSent,
-        responses,
-        followRate:
-          allCoaches.length > 0
-            ? `${Math.round((followed / allCoaches.length) * 100)}%`
-            : "0%",
-      };
-
-      return NextResponse.json(plan);
+      // allCoaches.length === 0: fall through to Supabase to find coaches there
     } catch (error) {
       console.error("[GET /api/outreach/plan] Drizzle error:", error);
       // Fall through to Supabase fallback

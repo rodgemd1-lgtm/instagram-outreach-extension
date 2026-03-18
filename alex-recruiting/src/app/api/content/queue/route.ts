@@ -30,7 +30,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db, isDbConfigured } from "@/lib/db";
 import * as schema from "@/lib/db/schema";
-import { eq, inArray, or, asc, sql } from "drizzle-orm";
+import { eq, inArray, asc, sql } from "drizzle-orm";
+import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
 
@@ -45,6 +46,59 @@ export async function GET(req: NextRequest) {
     const statusFilter = searchParams.get("status");
 
     if (!isDbConfigured()) {
+      // Try Supabase as fallback when Drizzle (JIB Postgres) is not configured
+      if (isSupabaseConfigured()) {
+        try {
+          const supabase = createAdminClient();
+          let query = supabase
+            .from("posts")
+            .select("id, content, pillar, hashtags, media_url, scheduled_for, best_time, status, x_post_id, impressions, engagements, engagement_rate, created_at, updated_at")
+            .order("scheduled_for", { ascending: true });
+
+          if (statusFilter) query = query.eq("status", statusFilter);
+          if (pillarFilter) query = query.eq("pillar", pillarFilter);
+
+          const { data: postsData, error } = await query;
+          if (!error && postsData) {
+            const counts = { queued: 0, draft: 0, approved: 0, rejected: 0, posted: 0 };
+            // Get counts across all statuses
+            const { data: allPostsData } = await supabase.from("posts").select("status");
+            for (const p of allPostsData ?? []) {
+              const s = p.status as keyof typeof counts;
+              if (s in counts) counts[s]++;
+            }
+
+            const serialized = postsData.map((p: Record<string, unknown>) => ({
+              id: p.id,
+              content: p.content,
+              pillar: p.pillar,
+              hashtags: (p.hashtags as string[]) ?? [],
+              mediaUrl: p.media_url ?? null,
+              scheduledFor: p.scheduled_for ?? null,
+              bestTime: p.best_time ?? null,
+              status: p.status,
+              xPostId: p.x_post_id ?? null,
+              impressions: (p.impressions as number) ?? 0,
+              engagements: (p.engagements as number) ?? 0,
+              engagementRate: (p.engagement_rate as number) ?? 0,
+              createdAt: p.created_at ?? null,
+              updatedAt: p.updated_at ?? null,
+            }));
+
+            return NextResponse.json({
+              posts: serialized,
+              total: serialized.length,
+              counts,
+              ...(serialized.length === 0 && {
+                hint: "No posts yet. Use the Content Generator or ask Trey to draft posts.",
+              }),
+            });
+          }
+        } catch (supaErr) {
+          console.error("[GET /api/content/queue] Supabase fallback error:", supaErr);
+        }
+      }
+
       return NextResponse.json({
         posts: [],
         total: 0,
@@ -56,7 +110,7 @@ export async function GET(req: NextRequest) {
     // Build query conditions
     let posts;
     try {
-      // If no specific status filter, get queued and draft posts
+      // If a specific status filter is provided, filter by it; otherwise return all posts
       if (statusFilter) {
         if (pillarFilter) {
           posts = await db
@@ -78,20 +132,13 @@ export async function GET(req: NextRequest) {
           posts = await db
             .select()
             .from(schema.posts)
-            .where(
-              sql`(${schema.posts.status} = 'queued' OR ${schema.posts.status} = 'draft') AND ${schema.posts.pillar} = ${pillarFilter}`
-            )
+            .where(eq(schema.posts.pillar, pillarFilter))
             .orderBy(asc(schema.posts.scheduledFor));
         } else {
+          // No filters — return all posts so the calendar/list view shows everything
           posts = await db
             .select()
             .from(schema.posts)
-            .where(
-              or(
-                eq(schema.posts.status, "queued"),
-                eq(schema.posts.status, "draft")
-              )
-            )
             .orderBy(asc(schema.posts.scheduledFor));
         }
       }

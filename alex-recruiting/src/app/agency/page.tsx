@@ -1,16 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   SCPageHeader,
   SCStatCard,
   SCGlassCard,
   SCBadge,
+  SCButton,
   SCHeroBanner,
   SCPageTransition,
 } from "@/components/sc";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { TEAM_MEMBERS } from "@/lib/rec/types";
 import type { RecTask, NCSALead } from "@/lib/rec/types";
 
@@ -25,9 +26,11 @@ const MEMBER_COLORS: Record<string, string> = {
 };
 
 export default function AgencyPage() {
+  const router = useRouter();
   const [tasks, setTasks] = useState<RecTask[]>([]);
   const [leads, setLeads] = useState<NCSALead[]>([]);
   const [loading, setLoading] = useState(true);
+  const [expandedMember, setExpandedMember] = useState<string | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -81,6 +84,8 @@ export default function AgencyPage() {
           {TEAM_MEMBERS.map((member, index) => {
             const memberTasks = tasks.filter(t => t.assignedTo === member.id);
             const activeTasks = memberTasks.filter(t => t.status === "in_progress");
+            const pendingMemberTasks = memberTasks.filter(t => t.status === "pending");
+            const isExpanded = expandedMember === member.id;
 
             return (
               <motion.div
@@ -89,8 +94,10 @@ export default function AgencyPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.06, ease: "easeOut" }}
               >
-              <Link href={`/agency/${member.id}`}>
-                <SCGlassCard className="p-4 transition-all hover:border-sc-primary/30 cursor-pointer">
+                <SCGlassCard
+                  className="p-4 transition-all hover:border-sc-primary/30 cursor-pointer"
+                  onClick={() => router.push(`/agency/${member.id}`)}
+                >
                   <div className="flex items-start gap-3">
                     <div
                       className={`flex h-10 w-10 items-center justify-center rounded-xl ${MEMBER_COLORS[member.color] || "bg-white/10"}`}
@@ -115,18 +122,89 @@ export default function AgencyPage() {
                       arrow_forward
                     </span>
                   </div>
+
+                  {/* Task stats row */}
                   <div className="mt-3 flex items-center gap-3 text-[10px] text-slate-600">
                     <span className="flex items-center gap-1">
                       <span className="material-symbols-outlined text-[12px]">schedule</span>
-                      {memberTasks.filter(t => t.status === "pending").length} pending
+                      {pendingMemberTasks.length} pending
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[12px]">play_circle</span>
+                      {activeTasks.length} active
                     </span>
                     <span className="flex items-center gap-1">
                       <span className="material-symbols-outlined text-[12px]">check_circle</span>
                       {memberTasks.filter(t => t.status === "completed").length} done
                     </span>
                   </div>
+
+                  {/* Action buttons */}
+                  <div className="mt-3 flex items-center gap-2">
+                    <SCButton
+                      size="sm"
+                      variant="primary"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(`/agency/${member.id}`);
+                      }}
+                    >
+                      <span className="material-symbols-outlined text-[14px]">chat</span>
+                      Chat
+                    </SCButton>
+                    <SCButton
+                      size="sm"
+                      variant="ghost"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setExpandedMember(isExpanded ? null : member.id);
+                      }}
+                    >
+                      <span className="material-symbols-outlined text-[14px]">
+                        {isExpanded ? "expand_less" : "checklist"}
+                      </span>
+                      {isExpanded ? "Hide Tasks" : "View Tasks"}
+                    </SCButton>
+                  </div>
+
+                  {/* Expandable task list */}
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
+                        className="overflow-hidden"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <div className="mt-3 border-t border-white/5 pt-3 space-y-2">
+                          {[...activeTasks, ...pendingMemberTasks].length === 0 ? (
+                            <p className="text-[11px] text-slate-600 text-center py-2">
+                              No active tasks
+                            </p>
+                          ) : (
+                            [...activeTasks, ...pendingMemberTasks].slice(0, 5).map((task) => (
+                              <div
+                                key={task.id}
+                                className="flex items-center gap-2 rounded-lg bg-white/[0.03] px-3 py-2"
+                              >
+                                <SCBadge
+                                  variant={task.status === "in_progress" ? "success" : "default"}
+                                >
+                                  {task.status === "in_progress" ? "Active" : "Pending"}
+                                </SCBadge>
+                                <p className="flex-1 text-[11px] text-slate-400 truncate">
+                                  {task.title}
+                                </p>
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </SCGlassCard>
-              </Link>
               </motion.div>
             );
           })}

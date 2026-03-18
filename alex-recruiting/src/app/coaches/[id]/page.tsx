@@ -49,6 +49,34 @@ export default function CoachDetailPage({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("intelligence");
+  const [followLoading, setFollowLoading] = useState(false);
+  const [followStatus, setFollowStatus] = useState<"idle" | "following" | "failed">("idle");
+  const [followError, setFollowError] = useState<string | null>(null);
+
+  async function handleFollow() {
+    setFollowLoading(true);
+    setFollowError(null);
+    try {
+      const res = await fetch("/api/coaches/follow", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ schoolId: id }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setFollowStatus("following");
+      } else {
+        setFollowStatus("failed");
+        setFollowError(data.error || "Failed to follow coach on X.");
+      }
+    } catch (err) {
+      console.error("Follow error:", err);
+      setFollowStatus("failed");
+      setFollowError("Network error. Please try again.");
+    } finally {
+      setFollowLoading(false);
+    }
+  }
 
   useEffect(() => {
     async function fetchPersona() {
@@ -139,15 +167,30 @@ export default function CoachDetailPage({
           </div>
         </div>
         <div className="flex gap-2">
-          <SCButton variant="secondary" size="sm">
+          <SCButton variant="secondary" size="sm" onClick={() => router.push("/outreach")}>
             <span className="material-symbols-outlined text-[16px]">wifi</span>
             Connect
           </SCButton>
-          <SCButton size="sm">
-            <span className="material-symbols-outlined text-[16px]">person_add</span>
-            Follow
+          <SCButton
+            size="sm"
+            onClick={handleFollow}
+            disabled={followLoading || followStatus === "following"}
+          >
+            {followLoading ? (
+              <span className="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
+            ) : (
+              <span className="material-symbols-outlined text-[16px]">
+                {followStatus === "following" ? "check" : "person_add"}
+              </span>
+            )}
+            {followLoading ? "Following..." : followStatus === "following" ? "Following" : "Follow"}
           </SCButton>
         </div>
+        {followError && (
+          <div className="mt-2 rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-2 text-xs text-red-400">
+            {followError}
+          </div>
+        )}
       </div>
 
       {/* Quick stat cards */}

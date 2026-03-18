@@ -38,36 +38,43 @@ export default function CompetitorsPage() {
   const [competitors, setCompetitors] = useState<Competitor[]>([]);
   const [jacobStats, setJacobStats] = useState<JacobStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const dashRes = await fetch("/api/dashboard/live");
-        if (dashRes.ok) {
-          const data = await dashRes.json();
-          setJacobStats({
-            followers: data.followers?.count ?? 0,
-            postsPerWeek: data.posts?.thisWeek ?? 0,
-            engagementRate: data.engagement?.rate ?? 0,
-          });
-        }
-      } catch {
-        // Will show '--' if fetch fails
+  async function fetchData() {
+    try {
+      const dashRes = await fetch("/api/dashboard/live");
+      if (dashRes.ok) {
+        const data = await dashRes.json();
+        setJacobStats({
+          followers: data.followers?.count ?? 0,
+          postsPerWeek: data.posts?.thisWeek ?? 0,
+          engagementRate: data.engagement?.rate ?? 0,
+        });
       }
-
-      try {
-        const compRes = await fetch("/api/intelligence/competitors");
-        if (compRes.ok) {
-          const data = await compRes.json();
-          setCompetitors(data.competitors || []);
-        }
-      } catch {
-        // Empty state is fine
-      }
-
-      setLoading(false);
+    } catch {
+      // Will show '--' if fetch fails
     }
 
+    try {
+      const compRes = await fetch("/api/dashboard/competitors");
+      if (compRes.ok) {
+        const data = await compRes.json();
+        setCompetitors(data.competitors || []);
+      }
+    } catch {
+      // Empty state is fine
+    }
+
+    setLoading(false);
+  }
+
+  async function handleRefresh() {
+    setRefreshing(true);
+    await fetchData();
+    setRefreshing(false);
+  }
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -151,13 +158,13 @@ export default function CompetitorsPage() {
         subtitle="Monitor 2029 OL recruits in the Wisconsin/Midwest region -- follower growth, posting cadence, engagement."
         actions={
           <div className="flex gap-3">
-            <SCButton variant="secondary" size="sm">
+            <SCButton variant="secondary" size="sm" onClick={() => window.open("https://x.com/search?q=2029%20OL%20recruit&f=user", "_blank")}>
               <span className="material-symbols-outlined text-[16px]">search</span>
               Discover
             </SCButton>
-            <SCButton variant="secondary" size="sm">
-              <span className="material-symbols-outlined text-[16px]">refresh</span>
-              Refresh
+            <SCButton variant="secondary" size="sm" onClick={handleRefresh} disabled={refreshing}>
+              <span className={`material-symbols-outlined text-[16px] ${refreshing ? "animate-spin" : ""}`}>refresh</span>
+              {refreshing ? "Refreshing..." : "Refresh"}
             </SCButton>
           </div>
         }

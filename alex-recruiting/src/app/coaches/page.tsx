@@ -49,6 +49,16 @@ const cardVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
 };
 
+const EMPTY_FORM = {
+  name: "",
+  title: "",
+  schoolName: "",
+  division: "D1 FBS",
+  conference: "",
+  xHandle: "",
+  priorityTier: "Tier 2",
+};
+
 export default function CoachesPage() {
   const router = useRouter();
   const [coaches, setCoaches] = useState<Coach[]>([]);
@@ -56,6 +66,71 @@ export default function CoachesPage() {
   const [search, setSearch] = useState("");
   const [tierFilter, setTierFilter] = useState("all");
   const [divisionFilter, setDivisionFilter] = useState("all");
+  const [showNewTargetModal, setShowNewTargetModal] = useState(false);
+  const [newCoachForm, setNewCoachForm] = useState(EMPTY_FORM);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleExport = async () => {
+    try {
+      const res = await fetch("/api/coaches");
+      const data = await res.json();
+      const rows: Coach[] = data.coaches ?? [];
+      const headers = [
+        "name",
+        "schoolName",
+        "division",
+        "conference",
+        "priorityTier",
+        "xHandle",
+        "followStatus",
+        "dmStatus",
+        "olNeedScore",
+        "xActivityScore",
+      ];
+      const csvLines = [
+        headers.join(","),
+        ...rows.map((r) =>
+          headers
+            .map((h) => {
+              const val = String(r[h as keyof Coach] ?? "");
+              return val.includes(",") ? `"${val}"` : val;
+            })
+            .join(",")
+        ),
+      ];
+      const blob = new Blob([csvLines.join("\n")], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `coaches-export-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Export failed:", error);
+    }
+  };
+
+  const handleNewCoachSubmit = async () => {
+    if (!newCoachForm.name || !newCoachForm.schoolName) return;
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/coaches", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newCoachForm),
+      });
+      if (!res.ok) throw new Error("Failed to create coach");
+      setShowNewTargetModal(false);
+      setNewCoachForm(EMPTY_FORM);
+      await fetchCoaches();
+    } catch (error) {
+      console.error("Failed to add coach:", error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const fetchCoaches = useCallback(async () => {
     try {
@@ -115,11 +190,11 @@ export default function CoachesPage() {
           subtitle="Coach intelligence and targeting operations"
           actions={
             <div className="flex gap-3">
-              <SCButton variant="secondary" size="sm">
+              <SCButton variant="secondary" size="sm" onClick={handleExport}>
                 <span className="material-symbols-outlined text-[16px]">download</span>
                 Export DB
               </SCButton>
-              <SCButton variant="primary" size="sm">
+              <SCButton variant="primary" size="sm" onClick={() => setShowNewTargetModal(true)}>
                 <span className="material-symbols-outlined text-[16px]">add</span>
                 New Target
               </SCButton>
@@ -342,6 +417,130 @@ export default function CoachesPage() {
               </tbody>
             </table>
           </SCGlassCard>
+        )}
+        {/* New Target Modal */}
+        {showNewTargetModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+            <SCGlassCard className="w-full max-w-md p-6">
+              <div className="mb-5 flex items-center justify-between">
+                <h2 className="text-lg font-black uppercase tracking-wider text-white">
+                  Add New Target
+                </h2>
+                <button
+                  onClick={() => setShowNewTargetModal(false)}
+                  className="text-slate-400 hover:text-white transition-colors"
+                >
+                  <span className="material-symbols-outlined">close</span>
+                </button>
+              </div>
+              <div className="space-y-4">
+                <SCInput
+                  label="Coach Name"
+                  placeholder="e.g. John Smith"
+                  value={newCoachForm.name}
+                  onChange={(e) =>
+                    setNewCoachForm((f) => ({ ...f, name: e.target.value }))
+                  }
+                />
+                <SCInput
+                  label="Title"
+                  placeholder="e.g. Offensive Line Coach"
+                  value={newCoachForm.title}
+                  onChange={(e) =>
+                    setNewCoachForm((f) => ({ ...f, title: e.target.value }))
+                  }
+                />
+                <SCInput
+                  label="School Name"
+                  placeholder="e.g. University of Wisconsin"
+                  value={newCoachForm.schoolName}
+                  onChange={(e) =>
+                    setNewCoachForm((f) => ({ ...f, schoolName: e.target.value }))
+                  }
+                />
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="sc-label mb-1.5 block text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      Division
+                    </label>
+                    <select
+                      className="w-full rounded-lg border border-sc-border bg-white/5 px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-sc-primary/50"
+                      value={newCoachForm.division}
+                      onChange={(e) =>
+                        setNewCoachForm((f) => ({ ...f, division: e.target.value }))
+                      }
+                    >
+                      <option value="D1 FBS" className="bg-sc-surface text-white">D1 FBS</option>
+                      <option value="D1 FCS" className="bg-sc-surface text-white">D1 FCS</option>
+                      <option value="D2" className="bg-sc-surface text-white">D2</option>
+                      <option value="D3" className="bg-sc-surface text-white">D3</option>
+                      <option value="NAIA" className="bg-sc-surface text-white">NAIA</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="sc-label mb-1.5 block text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      Priority Tier
+                    </label>
+                    <select
+                      className="w-full rounded-lg border border-sc-border bg-white/5 px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-sc-primary/50"
+                      value={newCoachForm.priorityTier}
+                      onChange={(e) =>
+                        setNewCoachForm((f) => ({ ...f, priorityTier: e.target.value }))
+                      }
+                    >
+                      <option value="Tier 1" className="bg-sc-surface text-white">Tier 1 (Reach)</option>
+                      <option value="Tier 2" className="bg-sc-surface text-white">Tier 2 (Target)</option>
+                      <option value="Tier 3" className="bg-sc-surface text-white">Tier 3 (Safety)</option>
+                    </select>
+                  </div>
+                </div>
+                <SCInput
+                  label="Conference"
+                  placeholder="e.g. Big Ten"
+                  value={newCoachForm.conference}
+                  onChange={(e) =>
+                    setNewCoachForm((f) => ({ ...f, conference: e.target.value }))
+                  }
+                />
+                <SCInput
+                  label="X Handle"
+                  icon="alternate_email"
+                  placeholder="e.g. @coachsmith"
+                  value={newCoachForm.xHandle}
+                  onChange={(e) =>
+                    setNewCoachForm((f) => ({ ...f, xHandle: e.target.value }))
+                  }
+                />
+              </div>
+              <div className="mt-6 flex justify-end gap-3">
+                <SCButton
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowNewTargetModal(false)}
+                >
+                  Cancel
+                </SCButton>
+                <SCButton
+                  variant="primary"
+                  size="sm"
+                  disabled={submitting || !newCoachForm.name || !newCoachForm.schoolName}
+                  onClick={handleNewCoachSubmit}
+                >
+                  {submitting ? (
+                    <>
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined text-[16px]">add</span>
+                      Add Target
+                    </>
+                  )}
+                </SCButton>
+              </div>
+            </SCGlassCard>
+          </div>
         )}
       </div>
     </SCPageTransition>

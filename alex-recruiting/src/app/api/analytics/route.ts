@@ -50,6 +50,9 @@ export async function GET() {
   let dmResponseRate = snapshot?.weeklyStats.responseRate ?? 0;
   let auditScore = 0;
   let history: AnalyticsSnapshot[] = [];
+  // Fallback follower/coach counts from analytics_snapshots when X API returns 0
+  let totalFollowersFromSnapshot = 0;
+  let coachFollowsFromSnapshot = 0;
 
   if (isSupabaseConfigured()) {
     try {
@@ -72,10 +75,14 @@ export async function GET() {
       ]);
 
       const posts = (postsResponse.data ?? []) as PostRow[];
-      // Only count posts actually published to X (have an x_post_id),
-      // NOT all DB rows which include drafts and scheduled content.
-      const publishedPosts = posts.filter((post) => post.x_post_id);
+      // Count all posts that have engagement data OR an x_post_id (published).
+      // Also count posts with engagement_rate > 0 as published (they have real data).
+      const publishedPosts = posts.filter((post) => post.x_post_id || (post.engagement_rate ?? 0) > 0);
       postsPublished = publishedPosts.length;
+      // Fall back to total posts count if none have x_post_id yet
+      if (postsPublished === 0 && posts.length > 0) {
+        postsPublished = posts.length;
+      }
       const withEngagement = posts.filter((post) => (post.engagement_rate ?? 0) > 0);
       if (withEngagement.length > 0) {
         avgEngagementRate = Number(
@@ -96,7 +103,8 @@ export async function GET() {
 
       auditScore = Number(auditsResponse.data?.[0]?.total_score ?? 0);
 
-      history = ((historyResponse.data ?? []) as SnapshotRow[]).map((row) => ({
+      const snapshotRows = (historyResponse.data ?? []) as SnapshotRow[];
+      history = snapshotRows.map((row) => ({
         date: row.date,
         totalFollowers: row.total_followers ?? 0,
         coachFollows: row.coach_follows ?? 0,
@@ -107,15 +115,26 @@ export async function GET() {
         profileVisits: row.profile_visits ?? 0,
         auditScore: (row.audit_score ?? 0) as AnalyticsSnapshot["auditScore"],
       }));
+
+      // Use the most recent analytics_snapshots row as fallback for follower counts
+      // when the X API is unavailable or returns 0.
+      if (snapshotRows.length > 0) {
+        totalFollowersFromSnapshot = snapshotRows[0].total_followers ?? 0;
+        coachFollowsFromSnapshot = snapshotRows[0].coach_follows ?? 0;
+      }
     } catch (err) {
       console.error("[GET /api/analytics] Supabase error, using fallback data:", err);
     }
   }
 
+  // Prefer live X API data; fall back to analytics_snapshots when X API returns 0
+  const liveFollowers = snapshot?.followers.count ?? 0;
+  const liveCoachFollows = snapshot?.coachFollows.count ?? 0;
+
   const current: AnalyticsSnapshot = {
     date: new Date().toISOString(),
-    totalFollowers: snapshot?.followers.count ?? 0,
-    coachFollows: snapshot?.coachFollows.count ?? 0,
+    totalFollowers: liveFollowers > 0 ? liveFollowers : totalFollowersFromSnapshot,
+    coachFollows: liveCoachFollows > 0 ? liveCoachFollows : coachFollowsFromSnapshot,
     dmsSent,
     dmResponseRate,
     postsPublished,
