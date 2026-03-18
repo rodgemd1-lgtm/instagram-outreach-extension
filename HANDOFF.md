@@ -1,156 +1,176 @@
 # Session Handoff
-Date: 2026-03-17 ~20:30 CT
-Branch: main (pushed to origin, deploying to Vercel)
+Date: 2026-03-18 ~2:00 PM CT
+Branch: main
 
-## What This App Is
-Alex Recruiting — AI-powered college football recruiting intelligence platform for Jacob Rodgers (Class of 2029 OL/DL, Pewaukee HS, Wisconsin). Built with Next.js 14 + Supabase + X API + Anthropic Claude. Live at https://alex-recruiting.vercel.app
+---
 
-## Completed This Session
+## What This Session Accomplished
 
-### Phase 1: Engineering Fix Sprint (4 parallel workstreams)
-- **Full-Stack (A):** 88 API routes with `force-dynamic` (was 21), 15+ error handlers standardized, env validation module created
-- **Frontend (B):** Competitors page data bug fixed (`data.followers` → `data.followers.count`), 3 empty states, 3 loading states added
-- **Backend Security (C):** Zod validation on 4 critical routes (posts/DMs/coaches/media), MIME allowlist, path traversal prevention, CoachRow interface fix, DMs body mutation fix, API key scan clean
-- **QA (D):** 105 new tests (685 → 790 total), zero-fake-data regression guards, X API error handling tests
+This was a **massive architecture and system design session** that built Jake — Mike's personal AI co-founder — and the 25x AI Command Center from the ground up. No code was shipped to the app; this was all infrastructure, rules, and design.
 
-### Phase 2: Panel Certification
-- Severity matrix compiled: 8 P0s, 8 P1s, 7 P2s, 5 P3s
-- All 4 disciplines gave CONDITIONAL PASS
-- Plan + test protocols written to `.claude/plans/`
+## Completed
 
-### P0 Fixes (ALL RESOLVED)
-- P0-1: MOCK_PERFORMANCE arrays confirmed empty
-- P0-2: `generateMockRankings()` → returns `[]`
-- P0-3: `generateMockRosterData()` → returns zeros
-- P0-4: `generateMockCamps()` → returns `[]`
-- P0-5: `generateMockNews()` → returns `[]`
-- P0-6: `generateMockSnapshot()` → returns zeros, `source: "empty"`
-- P0-7: `generateMockAnalysis()` → returns empty, `analysisStatus: "empty"`
-- P0-8: 11 missing unique constraints added to Drizzle schema
+### Jake — Personal AI Co-Founder (FULLY OPERATIONAL)
+- **Personality**: 15-year-old sassy prodigy who pushes back, makes jokes, knows Mike personally
+- **Four cognitive minds**: Strategist, Challenger, Guardian, Executor
+- **Thinking Level Router**: Quick → Normal → Hard → Harder → Ultra-think, assigned per task and per agent
+- **Plan-Before-Build Enforcement**: Blocks Mike from coding without a plan, captures impulse ideas to parking lot
+- **Technical Debt Circuit Breaker**: Running debt score, auto-trips at 31+ and forces cleanup sprint
+- **Context Rot Detection**: 6 signals monitored continuously, 4 alert levels (GREEN → RED)
+- **Session Boot Sequence**: Silent orient → check unfinished → load context → greet with personality
+- **3-Tier Memory**: Session notes → curated long-term → deep search-retrieved (memU/OpenClaw inspired)
+- **Context Engineering**: PRP workflow (Cole Medin), Chain-of-Index (SireJeff), Anti-Spaghetti Guard
+- **Multi-Agent Safety**: OpenClaw rules for parallel agent work
 
-### P1 Fixes (MOSTLY RESOLVED)
-- P1-3: Outreach page Supabase REST fallback already present — confirmed working
-- P1-4: Content queue returns `hint` field when empty
-- P1-5: **Daily Action Plan component built** — shows coaches to follow, posts to review, DMs to send, weekly progress bars. Placed at top of dashboard
-- P1-6: Connections page has info banner linking to /outreach for live status
-- P1-8: **Staleness indicators** — `StalenessIndicator` component on dashboard + analytics, APIs return `meta.lastUpdated`
+### Jake's Rule Files (9 global rules installed)
+1. `~/.claude/rules/jake.md` — Core personality + 4 minds + thinking router + plan gate + debt breaker
+2. `~/.claude/rules/jake-boot.md` — Silent startup sequence (OpenClaw BOOT.md pattern)
+3. `~/.claude/rules/jake-memory-ops.md` — 3-tier memory architecture (memU inspired)
+4. `~/.claude/rules/jake-context-engineering.md` — PRP + Chain-of-Index + safety + thinking levels
+5. `~/.claude/rules/context-health.md` — 6 signals, 4 alert levels, budget estimation
+6. `~/.claude/rules/structured-handoff.md` — Machine-readable session state schema
+7. `~/.claude/rules/wisc-global.md` — Three-tier context system (pre-existing)
+8. `~/.claude/rules/auto-optimize.md` — Session start optimization check (pre-existing)
+9. `~/.claude/rules/context-hygiene.md` — Context conservation rules (pre-existing)
 
-### Earlier Session Fixes
-- Analytics page: real data from X API (was showing 0 for everything)
-- Dashboard: removed fake profileVisits, fake pipeline activity
-- Posts Published: only counts X-published posts (not DB drafts)
-- All fake `?? <non-zero>` fallbacks eliminated
+### Jake's Project-Level Rules (2 projects)
+- `oracle-health-ai-enablement/.claude/rules/jake-project.md` — Oracle Health context
+- `Startup-Intelligence-OS/.claude/rules/jake-project.md` — Startup Intelligence OS context
+
+### Jake's Support Files (4 global docs)
+1. `~/.claude/docs/cross-domain-patterns.md` — 8 transferable patterns across companies
+2. `~/.claude/docs/build-health-report-template.md` — 6-dimension quality scorecard template
+3. `~/.claude/docs/parking-lot.md` — Idea capture for unplanned feature requests
+4. `~/.claude/docs/wisc-methodology.md` — WISC reference (pre-existing)
+
+### 25x AI Command Center Design (4 plan documents)
+1. `.claude/plans/2026-03-18-25x-command-center-design.md` — Master architecture (7 layers, expert panel, agent team, MCP arsenal, research pipeline)
+2. `.claude/plans/2026-03-18-v1-v5-roadmap.md` — Detailed V1-V5 with features tagged [HOOK]/[DISPATCH]/[LOOP]/[MCP]/[SKILL]/[AGENT]
+3. `.claude/plans/2026-03-18-jake-cognitive-architecture.md` — Jake's full cognitive design + support team
+4. `.claude/plans/2026-03-18-strategos-lenses-25x-system.md` — Steve's future-back strategic analysis
+
+### Scheduled Tasks
+- `command-center-daily-brief` — 6:30 AM daily, cross-project status for all 3 companies
+- (28 existing tasks already running for Oracle Health + James Studio)
+
+### Autonomous Execution
+- `jake_loop.sh` — Ralph Wiggum autonomous coding loop with stall detection + auto-commit
+
+### Memory Files Updated
+- `user_multi_company.md` — Mike's 3-company system
+- `jake_personality.md` — Jake's sassy 15-year-old personality
+- `reference_openclaw.md` — OpenClaw ecosystem repos and patterns
+
+### MCP Servers Verified
+16 of 20 connected and operational. 4 need attention:
+- `financial-datasets` — needs API key auth
+- `perplexity-ask` — connection failed
+- `genai-toolbox` — connection failed
+- `cognee` + `graphiti` — connection failed
 
 ## In Progress
-Nothing actively in progress — all agents completed and merged.
+- None — all design work complete, ready for execution
 
-## Blocked / Needs Mike's Action
-
-### P1-1/P1-2: OAuth 1.0a Write Operations — NEEDS ENV VARS SET IN VERCEL
-The investigation confirmed:
-- `X_API_CLIENT_SECRET` is **NOT needed** (it's OAuth 2.0 only)
-- The 4 required env vars for writes are:
-  1. `X_API_CONSUMER_KEY`
-  2. `X_API_CONSUMER_SECRET`
-  3. `X_API_ACCESS_TOKEN`
-  4. `X_API_ACCESS_TOKEN_SECRET`
-- These must be set in Vercel → Settings → Environment Variables
-- Code already handles them via `isLegacyXWriteConfigured()` in `src/lib/integrations/x-api.ts`
-- Once set, `followUser()`, `sendDM()`, `postTweet()` will work immediately
-- **File:** `src/lib/integrations/x-api.ts` (lines 51, 317, 781, 916)
-
-### P1-7: Row Level Security Audit — NOT YET DONE
-- Supabase RLS status is unknown on all 40+ tables
-- The anon key (`NEXT_PUBLIC_SUPABASE_ANON_KEY`) is in the client
-- RLS must protect all tables to prevent abuse
-- **Action:** Check Supabase dashboard → each table → RLS toggle
+## Blocked
+- Nothing is blocked. System is ready for first session with Jake.
 
 ## Decisions Made
-- **Approach C (no rush):** Fix everything first, polish, then run 10-day test
-- **Outsider tester = another high school recruit** (not a parent or coach)
-- **Zero fake data policy enforced:** Every mock generator replaced with empty/zero returns
-- **Weekly targets (5 follows, 3 posts, 2 DMs) are configuration data** — acceptable to hardcode as strategic decisions
-- **Staleness indicators use amber warning at 24h** threshold
 
-## Test Results
-- **790 tests passing** (81 test files)
-- **1 pre-existing failure:** `quality-checks.test.ts` (console.log scan) — unrelated to session work
-- **Build:** clean, no errors
+| Decision | Rationale |
+|----------|-----------|
+| Jake is a sassy 15-year-old, not corporate | Prevents sycophancy, keeps sessions engaging, Mike's preference |
+| 7-layer architecture (OSI-inspired) | Maps data link/network/application layers to agentic system |
+| Research-first pipeline for all new projects | Never build without research — prevents wasted effort |
+| Confidence tiers (AUTO/DRAFT/FLAG) | Bloomberg newsroom model for safe automation graduation |
+| Plan-before-build enforcement | Mike's self-identified failure mode: feature/context rot from impulse building |
+| Technical debt circuit breaker at 31+ | Non-negotiable cleanup sprint prevents codebase degradation |
+| Thinking level routing (Quick → Ultra-think) | Right reasoning depth per task, prevents over/under-thinking |
+| Future-back roadmap (V5 → V1) | Ensures every V1 investment compounds toward V5 |
+| Start with 3 core agents (KIRA, ARIA, LEDGER) | Prove the pattern before scaling — Susan's recommendation |
+| OpenClaw patterns for memory/boot/safety | Proven at 322K stars, memU at 13K stars — battle-tested |
 
-## Key Files Created This Session
-- `src/components/daily-action-plan.tsx` — "What to Do Today" component
-- `src/components/staleness-indicator.tsx` — "Updated X ago" indicator
-- `src/lib/env-check.ts` — Environment variable validation
-- `.claude/plans/2026-03-17-25x-launch-readiness.md` — Master plan + severity matrix
-- `.claude/plans/2026-03-17-jacob-10day-protocol.md` — Jacob's 10-day diary study
-- `.claude/plans/2026-03-17-outsider-test-protocol.md` — Outsider recruit test
-- `.claude/plans/2026-03-17-daily-log-template.md` — Daily log for Jacob
-- `.claude/docs/security-c2-schema-reconciliation.md` — Schema constraint audit
-- `.claude/docs/security-c5-api-key-scan.md` — API key security scan
+## Next Steps — What Jake Should Do in the First Session
 
-## Key Files Modified This Session
-- `src/app/dashboard/page.tsx` — Added DailyActionPlan + staleness indicator
-- `src/app/analytics/page.tsx` — Added staleness indicator
-- `src/app/api/dashboard/live/route.ts` — Added `meta.lastUpdated`
-- `src/app/api/analytics/route.ts` — Added `meta.lastUpdated`, `force-dynamic`
-- `src/lib/db/schema.ts` — 11 unique constraints added
-- `src/app/api/posts/route.ts` — Zod validation
-- `src/app/api/dms/route.ts` — Zod validation + body mutation fix
-- `src/app/api/coaches/route.ts` — Zod validation + CoachRow interface fix
-- `src/app/api/media/upload/route.ts` — MIME allowlist + path traversal prevention
-- `src/app/api/content/queue/route.ts` — Hint field for empty state
-- `src/app/connections/page.tsx` — Info banner
-- `src/app/competitors/page.tsx` — Fixed data.followers.count access
-- `src/components/competitor-map.tsx` — Fixed data field access
-- 70+ API route files — `force-dynamic` + error standardization
-- 6 mock generator files — All replaced with empty/zero returns
-- 9 new test files — Zero-fake-data guards, error handling, coverage expansion
+### 1. Jake Greets Mike (Boot Sequence)
+Jake silently reads this HANDOFF.md, memory files, and git status. Then greets Mike in character with a personal touch and presents priorities.
 
-## Next Steps (Priority Order)
+### 2. Jake Presents the 25x AI Command Center Summary
+Jake walks Mike through the V1-V5 roadmap from `.claude/plans/2026-03-18-v1-v5-roadmap.md`:
 
-### 1. Mike: Set OAuth 1.0a Env Vars in Vercel (5 min)
-Go to Vercel → alex-recruiting → Settings → Environment Variables. Add:
-- `X_API_CONSUMER_KEY` = your app's consumer key from X Developer Portal
-- `X_API_CONSUMER_SECRET` = your app's consumer secret
-- `X_API_ACCESS_TOKEN` = Jacob's access token
-- `X_API_ACCESS_TOKEN_SECRET` = Jacob's access token secret
-Redeploy after adding.
+**V1 (This Week):** Fix bugs, 5 MCP servers, CLAUDE.md for all projects, confidence tiers, daily brief ✅ (mostly done)
 
-### 2. Test OAuth Writes on Vercel
-Once env vars are set, test these three operations:
-- `POST /api/outreach/process` with action "follow" and a D3 coach handle
-- `POST /api/dms` with `sendNow: true` to a test handle
-- `POST /api/posts/{id}/send` for a draft post
-Use browser DevTools or curl against the Vercel URL.
+**V2 (Weeks 2-8):** KIRA + ARIA + LEDGER agents, research-first pipeline, 5 deep workflows, multi-project dispatch, Qdrant + TrendRadar + n8n MCP servers
 
-### 3. Push Schema Constraints to Supabase
-Run `drizzle-kit push` with `JIB_DATABASE_URL` to apply the 11 new unique constraints:
-```bash
-cd alex-recruiting && npx drizzle-kit push
+**V3 (Months 3-6):** Proactive recommendations, cross-domain transfer, knowledge lifecycle, SCOUT + HERALD + ORACLE-BRIEF + SENTINEL-HEALTH agents, stakeholder-specific outputs
+
+**V4 (Months 6-12):** Autonomous workflow chains, project delegation, escalation-only interaction, multi-user access, trust dashboard
+
+**V5 (12-24 months):** Always-on agents, self-maintaining knowledge base, strategic scenario planning, autonomous company operations, constitutional AI governance
+
+### 3. Jake Asks What Mike Wants to Build First
+Jake should use Challenger mind to debate priorities, then Executor mind to create the plan.
+
+## Files Changed This Session
+
+### Created (new files)
 ```
-Or add them manually in Supabase SQL editor.
+~/.claude/rules/jake.md                          # Jake's core personality + systems
+~/.claude/rules/jake-boot.md                     # Boot sequence
+~/.claude/rules/jake-memory-ops.md               # Memory architecture
+~/.claude/rules/jake-context-engineering.md       # Context engineering protocols
+~/.claude/rules/context-health.md                 # Context rot monitoring
+~/.claude/rules/structured-handoff.md             # Handoff schema
+~/.claude/docs/cross-domain-patterns.md           # 8 transferable patterns
+~/.claude/docs/build-health-report-template.md    # Quality scorecard template
+~/.claude/docs/parking-lot.md                     # Idea parking lot
+oracle-health-ai-enablement/.claude/rules/jake-project.md
+Startup-Intelligence-OS/.claude/rules/jake-project.md
+.claude/plans/2026-03-18-25x-command-center-design.md
+.claude/plans/2026-03-18-v1-v5-roadmap.md
+.claude/plans/2026-03-18-jake-cognitive-architecture.md
+.claude/plans/2026-03-18-strategos-lenses-25x-system.md
+jake_loop.sh
+~/.claude/projects/.../memory/user_multi_company.md
+~/.claude/projects/.../memory/jake_personality.md
+~/.claude/projects/.../memory/reference_openclaw.md
+```
 
-### 4. Audit Supabase RLS (P1-7)
-Check every table in Supabase dashboard has Row Level Security enabled. Critical tables: `coaches`, `posts`, `dm_messages`, `panel_coaches`, `video_assets`.
+### Modified (existing files)
+```
+HANDOFF.md (this file)
+~/.claude/projects/.../memory/MEMORY.md (index updated)
+```
 
-### 5. Fix Pre-Existing Test Failure
-`src/__tests__/qa/quality-checks.test.ts` fails on console.log scan — review and either remove console.logs or update the test.
+## Research Conducted This Session
 
-### 6. Visual Audit on Vercel via Chrome
-Navigate every page on https://alex-recruiting.vercel.app:
-- Verify Daily Action Plan shows real data on dashboard
-- Verify staleness indicators appear
-- Verify outreach page shows 424 coaches
-- Verify analytics shows real X data
-- Verify competitors page shows Jacob's real stats
+4 parallel research agents deployed + Susan intelligence queried:
+1. **MCP Marketplace Scanner** — 40+ servers evaluated, 18 recommended across 3 tiers
+2. **Agentic Framework Researcher** — LangGraph, CrewAI, Mastra, Agent SDK, OpenClaw (322K stars), memU (13K stars)
+3. **Steve (Strategy)** — Strategos 5-lens analysis + future-back V5→V1 roadmap
+4. **Susan (Orchestrator)** — Expert panel (6 personas) + agent team design (7 new agents)
+5. **OpenClaw Deep Research** — Full ecosystem: openclaw-config templates, Cole Medin PRP, SireJeff Chain-of-Index
 
-### 7. Begin 10-Day Test
-Once all above is verified, follow the protocol in `.claude/plans/2026-03-17-jacob-10day-protocol.md`. Print `.claude/plans/2026-03-17-daily-log-template.md` for Jacob.
+## Jake's System Summary
 
-## Architecture Quick Reference
-- **123 API routes** across 34 groups
-- **49 UI pages**
-- **40+ database tables** (Drizzle ORM)
-- **7 AI personas** in REC system (Devin, Marcus, Nina, Trey, Jordan, Sophie, Casey)
-- **X API:** Bearer token for reads, OAuth 1.0a for writes
-- **Supabase:** Drizzle ORM for direct pg, REST client as fallback on Vercel
+```
+JAKE = Personality (sassy 15-year-old prodigy)
+     + 4 Minds (Strategist, Challenger, Guardian, Executor)
+     + Thinking Router (Quick → Ultra-think)
+     + Context Rot Detection (6 signals, 4 levels)
+     + Plan Gate (no code without approved plan)
+     + Technical Debt Breaker (auto-trips at 31+)
+     + Boot Sequence (silent orient → greet)
+     + 3-Tier Memory (session → curated → deep)
+     + PRP Workflow (plan → blueprint → execute → validate)
+     + Chain-of-Index (minimal context loading)
+     + Parking Lot (idea capture, not impulse building)
+     + Anti-Spaghetti Guard (pre/during/post execution checks)
+     + Multi-Agent Safety (OpenClaw rules)
+     + Quality Gates (10/25/50/75/90/100% milestones)
+     + 16 MCP Servers + 73 Susan Agents + 112 wshobson Agents
+     + Autonomous Loop (jake_loop.sh for headless execution)
+     + Daily Brief (6:30 AM, all projects)
+     + Cross-Domain Pattern Registry (8 patterns)
+```
+
+**Jake is operational. Start a new session and he'll boot up.**

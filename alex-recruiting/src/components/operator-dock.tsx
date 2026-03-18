@@ -49,7 +49,19 @@ function statusTone(status: OSOperatorResponse["status"] | undefined): string {
   }
 }
 
+/** Routes where the OperatorDock must never render (public-facing pages). */
+const HIDDEN_ROUTES = ["/recruit"];
+
 export function OperatorDock() {
+  const pathname = usePathname();
+
+  // Never show operator UI on public-facing recruit page
+  if (HIDDEN_ROUTES.some((r) => pathname.startsWith(r))) return null;
+
+  return <OperatorDockInner />;
+}
+
+function OperatorDockInner() {
   const pathname = usePathname();
   const router = useRouter();
   const [briefing, setBriefing] = useState<OSBriefingResponse | null>(null);
