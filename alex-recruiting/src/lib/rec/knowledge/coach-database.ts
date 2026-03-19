@@ -17,42 +17,42 @@ export const wiacCoaches: WiacCoach[] = [
   // --- UW-Whitewater ---
   { school: 'UW-Whitewater', name: 'Jace Rindahl', title: 'Head Coach', xHandle: '@CoachRindahl', tier: 1 },
   { school: 'UW-Whitewater', name: 'Jake Kienbaum', title: 'Offensive Line Coach', xHandle: '@CoachKienbaum', tier: 2 },
-  { school: 'UW-Whitewater', name: 'Ben Farnsworth', title: 'Defensive Line Coach', xHandle: null, tier: 2 },
+  { school: 'UW-Whitewater', name: 'Ryan Cortez', title: 'Defensive Coordinator/DL', xHandle: '@CoachCortez53', tier: 2 },
 
   // --- UW-Oshkosh ---
-  { school: 'UW-Oshkosh', name: 'Peter Jennings', title: 'Head Coach', xHandle: null, tier: 1 },
-  { school: 'UW-Oshkosh', name: 'Matt Oates', title: 'Offensive Line Coach', xHandle: null, tier: 2 },
-  { school: 'UW-Oshkosh', name: 'Ryan Minnich', title: 'Defensive Line Coach', xHandle: null, tier: 2 },
+  { school: 'UW-Oshkosh', name: 'Peter Jennings', title: 'Head Coach', xHandle: '@PeteyBananas', tier: 1 },
+  { school: 'UW-Oshkosh', name: 'Rich Worsell', title: 'Offensive Coordinator/OL', xHandle: '@Coach_Worsell', tier: 2 },
+  { school: 'UW-Oshkosh', name: 'Alex Jagla', title: 'Defensive Line Coach', xHandle: '@jaglabeans', tier: 2 },
 
   // --- UW-Eau Claire ---
   { school: 'UW-Eau Claire', name: 'Rob Erickson', title: 'Head Coach', xHandle: '@CoachE_Blugolds', tier: 1 },
-  { school: 'UW-Eau Claire', name: 'Drew Bdenk', title: 'Offensive Line Coach', xHandle: null, tier: 2 },
-  { school: 'UW-Eau Claire', name: 'Tony Paciotti', title: 'Defensive Line Coach', xHandle: null, tier: 2 },
+  { school: 'UW-Eau Claire', name: 'Michael McHugh', title: 'OL/Run Game Coordinator', xHandle: null, tier: 2 },
+  { school: 'UW-Eau Claire', name: 'Ricky Lang', title: 'Defensive Line Coach', xHandle: null, tier: 2 },
 
   // --- UW-La Crosse ---
-  { school: 'UW-La Crosse', name: 'Michael Zweifel', title: 'Head Coach', xHandle: null, tier: 1 },
-  { school: 'UW-La Crosse', name: 'Nate Posorski', title: 'Offensive Line Coach', xHandle: null, tier: 2 },
-  { school: 'UW-La Crosse', name: 'Gabe Steger', title: 'Defensive Line Coach', xHandle: null, tier: 2 },
+  { school: 'UW-La Crosse', name: 'Michael Zweifel', title: 'Head Coach', xHandle: '@CoachMZweifel', tier: 1 },
+  { school: 'UW-La Crosse', name: 'Staff TBD', title: 'Offensive Line Coach', xHandle: null, tier: 2 },
+  { school: 'UW-La Crosse', name: 'Staff TBD', title: 'Defensive Line Coach', xHandle: null, tier: 2 },
 
   // --- UW-Stevens Point ---
   { school: 'UW-Stevens Point', name: 'Luke Venne', title: 'Head Coach', xHandle: '@CoachVenne', tier: 1 },
-  { school: 'UW-Stevens Point', name: 'Derek Fulton', title: 'Offensive Line Coach', xHandle: null, tier: 2 },
-  { school: 'UW-Stevens Point', name: 'Alex Mielke', title: 'Defensive Line Coach', xHandle: null, tier: 2 },
+  { school: 'UW-Stevens Point', name: 'Austin Archer', title: 'Offensive Coordinator/OL', xHandle: '@CoachAArcher', tier: 2 },
+  { school: 'UW-Stevens Point', name: 'Lorenzo Bocanegra', title: 'Defensive Line Coach', xHandle: null, tier: 2 },
 
   // --- UW-Platteville ---
-  { school: 'UW-Platteville', name: 'Ryan Munz', title: 'Head Coach', xHandle: null, tier: 1 },
-  { school: 'UW-Platteville', name: 'Kyle Rinka', title: 'Offensive Line Coach', xHandle: null, tier: 2 },
-  { school: 'UW-Platteville', name: 'Dalton Diehl', title: 'Defensive Line Coach', xHandle: null, tier: 2 },
+  { school: 'UW-Platteville', name: 'Ryan Munz', title: 'Head Coach', xHandle: '@Ryan_Munz', tier: 1 },
+  { school: 'UW-Platteville', name: 'Brent Allen', title: 'Offensive Coordinator/OL', xHandle: '@Allenbt29', tier: 2 },
+  { school: 'UW-Platteville', name: 'Staff TBD', title: 'Defensive Line Coach', xHandle: null, tier: 2 },
 
   // --- UW-Stout ---
-  { school: 'UW-Stout', name: 'Clayt Birmingham', title: 'Head Coach', xHandle: null, tier: 1 },
-  { school: 'UW-Stout', name: 'Nick Pesho', title: 'Offensive Line Coach', xHandle: null, tier: 2 },
-  { school: 'UW-Stout', name: 'Bryce Stang', title: 'Defensive Line Coach', xHandle: null, tier: 2 },
+  { school: 'UW-Stout', name: 'Clayt Birmingham', title: 'Head Coach', xHandle: '@BlueDevil_HC', tier: 1 },
+  { school: 'UW-Stout', name: 'Derek Branch', title: 'Offensive Line Coach', xHandle: '@CoachDeBo76', tier: 2 },
+  { school: 'UW-Stout', name: 'Jake Schiff', title: 'Defensive Line Coach', xHandle: '@CoachJRSchiff', tier: 2 },
 
   // --- UW-River Falls ---
-  { school: 'UW-River Falls', name: 'TBD', title: 'Head Coach (Vacant)', xHandle: null, tier: 1 },
-  { school: 'UW-River Falls', name: 'TBD', title: 'Offensive Line Coach', xHandle: null, tier: 2 },
-  { school: 'UW-River Falls', name: 'TBD', title: 'Defensive Line Coach', xHandle: null, tier: 2 },
+  { school: 'UW-River Falls', name: 'Jake Wissing', title: 'Interim Head Coach', xHandle: null, tier: 1 },
+  { school: 'UW-River Falls', name: 'Kristian Crabb', title: 'OL/Run Game Coordinator', xHandle: null, tier: 2 },
+  { school: 'UW-River Falls', name: 'Pete Range', title: 'Defensive Line Coach', xHandle: null, tier: 2 },
 ];
 
 /** Get WIAC coaches filtered by school */
