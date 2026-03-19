@@ -59,8 +59,8 @@ describe("User Workflows — Page Exports", () => {
     expect(typeof mod.default).toBe("function");
   });
 
-  it("content page exports a default component", async () => {
-    const mod = await import("@/app/content/page");
+  it("profile studio page exports a default component", async () => {
+    const mod = await import("@/app/profile-studio/page");
     expect(mod.default).toBeDefined();
     expect(typeof mod.default).toBe("function");
   });
@@ -73,18 +73,18 @@ describe("User Workflows — Page Exports", () => {
 });
 
 describe("User Workflows — Navigation Behavior", () => {
-  it("keeps the coach pipeline active through nested coach routes", () => {
-    expect(getActiveNavItem("/coaches/priority")?.label).toBe("Coaches");
-    expect(getNavSectionLabel("/coaches/priority")).toBe("Coaches");
+  it("keeps the primary publishing tab active through nested publishing routes", () => {
+    expect(getActiveNavItem("/posts/queued")?.label).toBe("Publish");
+    expect(getNavSectionLabel("/posts/queued")).toBe("Publishing");
   });
 
-  it("keeps the outreach tab active through nested outreach routes", () => {
-    expect(getActiveNavItem("/outreach/sequences")?.label).toBe("Outreach");
-    expect(getNavSectionLabel("/outreach/sequences")).toBe("Outreach");
+  it("keeps the coach pipeline active through nested outreach routes", () => {
+    expect(getActiveNavItem("/coaches/priority")?.label).toBe("Outreach");
+    expect(getNavSectionLabel("/coaches/priority")).toBe("Outreach");
   });
 
-  it("falls back to the Command route when no route matches", () => {
-    expect(getActiveNavItem("/totally-unknown")?.label).toBe("Command");
+  it("falls back to the Today route when no route matches", () => {
+    expect(getActiveNavItem("/totally-unknown")?.label).toBe("Today");
     expect(getNavSectionLabel("/totally-unknown")).toBe("Command");
   });
 });

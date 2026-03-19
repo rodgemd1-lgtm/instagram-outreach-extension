@@ -9,9 +9,11 @@ function readFileContent(filePath: string): string {
 describe("Zero Fake Data Policy", () => {
   test("no non-empty MOCK_PERFORMANCE arrays in components", () => {
     const contentManager = readFileContent("components/content-manager.tsx");
+    const managePage = readFileContent("app/manage/page.tsx");
 
     // Arrays should be empty (type-only declarations are OK)
     expect(contentManager).not.toMatch(/MOCK_PERFORMANCE\s*=\s*\[\s*\{/);
+    expect(managePage).not.toMatch(/MOCK_PERFORMANCE\s*=\s*\[\s*\{/);
   });
 
   test("no hardcoded follower counts in dashboard live-data", () => {

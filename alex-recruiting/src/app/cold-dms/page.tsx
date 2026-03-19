@@ -1,2 +1,5 @@
-import { redirect } from "next/navigation";
-export default function ColdDmsRedirect() { redirect("/outreach"); }
+import { ColdDMEngine } from "@/components/cold-dm-engine";
+
+export default function ColdDMsPage() {
+  return <ColdDMEngine />;
+}

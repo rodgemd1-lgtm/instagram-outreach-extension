@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { getSchoolLogo } from "@/lib/data/school-branding";
-import dynamic from "next/dynamic";
 import {
   SCPageHeader,
   SCStatCard,
@@ -16,15 +15,7 @@ import {
   SCHeroBanner,
   SCPageTransition,
   SCAnimatedNumber,
-  SCTabs,
 } from "@/components/sc";
-import { IntelligenceView } from "@/components/coaches/intelligence-view";
-import { CompetitorsView } from "@/components/coaches/competitors-view";
-
-const SchoolMap = dynamic(
-  () => import("@/components/school-map").then((m) => m.SchoolMap),
-  { ssr: false, loading: () => <div className="flex min-h-[400px] items-center justify-center"><span className="material-symbols-outlined animate-spin text-[32px] text-slate-500">progress_activity</span></div> }
-);
 
 interface Coach {
   id: string;
@@ -58,13 +49,6 @@ const cardVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
 };
 
-const COACH_TABS = [
-  { label: "All Coaches", value: "coaches" },
-  { label: "Profiles", value: "profiles" },
-  { label: "Map", value: "map" },
-  { label: "Competitors", value: "competitors" },
-];
-
 const EMPTY_FORM = {
   name: "",
   title: "",
@@ -85,7 +69,6 @@ export default function CoachesPage() {
   const [showNewTargetModal, setShowNewTargetModal] = useState(false);
   const [newCoachForm, setNewCoachForm] = useState(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
-  const [activeTab, setActiveTab] = useState("coaches");
 
   const handleExport = async () => {
     try {
@@ -221,9 +204,6 @@ export default function CoachesPage() {
 
         <SCHeroBanner screen="command" className="mb-6" />
 
-        <SCTabs tabs={COACH_TABS} activeTab={activeTab} onTabChange={setActiveTab} className="mb-6" />
-
-        {activeTab === "coaches" && (<>
         {/* Stat Cards */}
         <motion.div
           className="grid grid-cols-2 gap-3 md:grid-cols-4"
@@ -441,12 +421,6 @@ export default function CoachesPage() {
             </table>
           </SCGlassCard>
         )}
-        </>)}
-
-        {activeTab === "profiles" && <IntelligenceView />}
-        {activeTab === "map" && <SCGlassCard className="overflow-hidden p-0"><SchoolMap /></SCGlassCard>}
-        {activeTab === "competitors" && <CompetitorsView />}
-
         {/* New Target Modal */}
         {showNewTargetModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">

@@ -3,7 +3,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 
 describe('Content Queue — Edit Button', () => {
-  const filePath = path.resolve(__dirname, '../../components/content/content-queue.tsx');
+  const filePath = path.resolve(__dirname, '../../app/content-queue/page.tsx');
   const source = fs.readFileSync(filePath, 'utf-8');
 
   it('edit button uses an <a> tag with href (not a noop onClick)', () => {
