@@ -33,7 +33,8 @@ export const expandedTargetSchools: ExpandedTargetSchool[] = [
     xHandle: '@waborawk_fb',
     coaches: [
       { name: 'Jace Rindahl', title: 'Head Coach', xHandle: '@CoachRindahl', email: null, phone: null },
-      { name: 'Brian Borland', title: 'Offensive Line Coach', xHandle: null, email: null, phone: null },
+      { name: 'Jake Kienbaum', title: 'Offensive Line Coach', xHandle: '@CoachKienbaum', email: null, phone: null },
+      { name: 'Ryan Cortez', title: 'Defensive Coordinator/DL', xHandle: '@CoachCortez53', email: null, phone: null },
     ],
   },
   {
@@ -47,8 +48,9 @@ export const expandedTargetSchools: ExpandedTargetSchool[] = [
     athleticsUrl: 'https://uwotitans.com/sports/football',
     xHandle: '@UWOFootball',
     coaches: [
-      { name: 'Peter Jennings', title: 'Head Coach', xHandle: '@CoachJennings', email: null, phone: null },
-      { name: 'Matt Dempsey', title: 'Defensive Line Coach', xHandle: null, email: null, phone: null },
+      { name: 'Peter Jennings', title: 'Head Coach', xHandle: '@PeteyBananas', email: null, phone: null },
+      { name: 'Rich Worsell', title: 'Offensive Coordinator/OL', xHandle: '@Coach_Worsell', email: null, phone: null },
+      { name: 'Alex Jagla', title: 'Defensive Line Coach', xHandle: '@jaglabeans', email: null, phone: null },
     ],
   },
   {
@@ -62,8 +64,9 @@ export const expandedTargetSchools: ExpandedTargetSchool[] = [
     athleticsUrl: 'https://blugolds.com/sports/football',
     xHandle: '@BlugoldFB',
     coaches: [
-      { name: 'Rob Erickson', title: 'Head Coach', xHandle: '@CoachEricksonEC', email: null, phone: null },
-      { name: 'Dan Fischer', title: 'Offensive Line Coach', xHandle: null, email: null, phone: null },
+      { name: 'Rob Erickson', title: 'Head Coach', xHandle: '@CoachE_Blugolds', email: null, phone: null },
+      { name: 'Michael McHugh', title: 'OL/Run Game Coordinator', xHandle: null, email: null, phone: null },
+      { name: 'Ricky Lang', title: 'Defensive Line Coach', xHandle: null, email: null, phone: null },
     ],
   },
   {
@@ -77,8 +80,7 @@ export const expandedTargetSchools: ExpandedTargetSchool[] = [
     athleticsUrl: 'https://uwleagles.com/sports/football',
     xHandle: '@UWLFootball',
     coaches: [
-      { name: 'Michael Zweifel', title: 'Head Coach', xHandle: '@CoachZweifel', email: null, phone: null },
-      { name: 'Kevin Zettel', title: 'Defensive Line Coach', xHandle: null, email: null, phone: null },
+      { name: 'Michael Zweifel', title: 'Head Coach', xHandle: '@CoachMZweifel', email: null, phone: null },
     ],
   },
   {
@@ -89,11 +91,12 @@ export const expandedTargetSchools: ExpandedTargetSchool[] = [
     tier: 1,
     state: 'WI',
     city: 'Stevens Point',
-    athleticsUrl: 'https://uwsppointers.com/sports/football',
-    xHandle: '@PointerFootball',
+    athleticsUrl: 'https://athletics.uwsp.edu/sports/football',
+    xHandle: '@UWSPfootball',
     coaches: [
       { name: 'Luke Venne', title: 'Head Coach', xHandle: '@CoachVenne', email: null, phone: null },
-      { name: 'Aaron Seifert', title: 'Offensive Line Coach', xHandle: null, email: null, phone: null },
+      { name: 'Austin Archer', title: 'Offensive Coordinator/OL', xHandle: '@CoachAArcher', email: null, phone: null },
+      { name: 'Lorenzo Bocanegra', title: 'Defensive Line Coach', xHandle: null, email: null, phone: null },
     ],
   },
   {
@@ -104,11 +107,11 @@ export const expandedTargetSchools: ExpandedTargetSchool[] = [
     tier: 1,
     state: 'WI',
     city: 'Platteville',
-    athleticsUrl: 'https://uwppioneers.com/sports/football',
-    xHandle: '@UWPlattFB',
+    athleticsUrl: 'https://letsgopioneers.com/sports/fball',
+    xHandle: '@UWPlattFootball',
     coaches: [
-      { name: 'Ryan Munz', title: 'Head Coach', xHandle: '@CoachMunz', email: null, phone: null },
-      { name: 'Tony Becker', title: 'Offensive Line Coach', xHandle: null, email: null, phone: null },
+      { name: 'Ryan Munz', title: 'Head Coach', xHandle: '@Ryan_Munz', email: null, phone: null },
+      { name: 'Brent Allen', title: 'Offensive Coordinator/OL', xHandle: '@Allenbt29', email: null, phone: null },
     ],
   },
   {
@@ -122,8 +125,9 @@ export const expandedTargetSchools: ExpandedTargetSchool[] = [
     athleticsUrl: 'https://uwstout.prestosports.com/sports/fball',
     xHandle: '@StoutFootball',
     coaches: [
-      { name: 'Clayt Birmingham', title: 'Head Coach', xHandle: '@CoachBirmingham', email: null, phone: null },
-      { name: 'Greg Nordeen', title: 'Defensive Line Coach', xHandle: null, email: null, phone: null },
+      { name: 'Clayt Birmingham', title: 'Head Coach', xHandle: '@BlueDevil_HC', email: null, phone: null },
+      { name: 'Derek Branch', title: 'Offensive Line Coach', xHandle: '@CoachDeBo76', email: null, phone: null },
+      { name: 'Jake Schiff', title: 'Defensive Line Coach', xHandle: '@CoachJRSchiff', email: null, phone: null },
     ],
   },
   {
@@ -137,8 +141,8 @@ export const expandedTargetSchools: ExpandedTargetSchool[] = [
     athleticsUrl: 'https://uwrfsports.com/sports/football',
     xHandle: '@FalconFootball',
     coaches: [
-      { name: 'TBD', title: 'Head Coach', xHandle: null, email: null, phone: null },
-      { name: 'Jake Larson', title: 'Offensive Line Coach', xHandle: null, email: null, phone: null },
+      { name: 'Jake Wissing', title: 'Interim Head Coach', xHandle: null, email: null, phone: null },
+      { name: 'Kristian Crabb', title: 'OL/Run Game Coordinator', xHandle: null, email: null, phone: null },
     ],
   },
 
