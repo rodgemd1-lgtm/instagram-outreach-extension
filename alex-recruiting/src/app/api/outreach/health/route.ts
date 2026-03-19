@@ -6,7 +6,13 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const allSequences = await listSequences();
+    let allSequences: Awaited<ReturnType<typeof listSequences>> = [];
+    let sequenceError: string | null = null;
+    try {
+      allSequences = await listSequences();
+    } catch (e) {
+      sequenceError = e instanceof Error ? e.message : "Failed to query sequences";
+    }
     const active = allSequences.filter((s) => s.status === "active");
     const paused = allSequences.filter((s) => s.status === "paused");
     const completed = allSequences.filter((s) => s.status === "completed");
@@ -67,6 +73,7 @@ export async function GET() {
       },
       recentDMs,
       coachCoverage,
+      sequenceError,
       cronSchedule: "0 14,19 * * 1-5 (weekdays 2pm + 7pm CT)",
       engineLocation: "src/lib/outreach/dm-sequences.ts → processSequences()",
       upcomingDue: active
