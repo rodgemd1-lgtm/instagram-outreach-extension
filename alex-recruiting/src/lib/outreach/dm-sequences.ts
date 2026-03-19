@@ -54,13 +54,15 @@ export interface CreateSequenceOptions {
 export interface ProcessResult {
   processed: number;
   sent: number;
+  wouldSend: number;
   skipped: number;
+  dryRun: boolean;
   errors: string[];
   details: Array<{
     sequenceId: string;
     coachName: string;
     step: number;
-    action: "sent" | "skipped" | "error";
+    action: "sent" | "skipped" | "error" | "would_send";
     reason?: string;
   }>;
 }
@@ -222,11 +224,14 @@ export async function createSequence(
 // processSequences — Find all due sequences and fire their current step
 // ---------------------------------------------------------------------------
 
-export async function processSequences(): Promise<ProcessResult> {
+export async function processSequences(options?: { dryRun?: boolean }): Promise<ProcessResult> {
+  const dryRun = options?.dryRun ?? false;
   const result: ProcessResult = {
     processed: 0,
     sent: 0,
+    wouldSend: 0,
     skipped: 0,
+    dryRun,
     errors: [],
     details: [],
   };
@@ -358,6 +363,19 @@ export async function processSequences(): Promise<ProcessResult> {
           step: seq.currentStep,
           action: "skipped",
           reason: "coach X handle could not be resolved",
+        });
+        continue;
+      }
+
+      // Dry run: log what would be sent without actually sending
+      if (dryRun) {
+        result.wouldSend++;
+        result.details.push({
+          sequenceId: seq.id,
+          coachName,
+          step: seq.currentStep,
+          action: "would_send",
+          reason: `[DRY RUN] Would send to ${coachHandle}: "${personalizedMessage.slice(0, 100)}..."`,
         });
         continue;
       }

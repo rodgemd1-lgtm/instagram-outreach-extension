@@ -19,8 +19,10 @@ export async function POST(req: NextRequest) {
   const startedAt = Date.now();
 
   try {
-    console.info("[Outreach Process] Starting sequence processing run...");
-    const result = await processSequences();
+    const url = new URL(req.url);
+    const dryRun = url.searchParams.get("dryRun") === "true";
+    console.info(`[Outreach Process] Starting sequence processing run...${dryRun ? " (DRY RUN)" : ""}`);
+    const result = await processSequences({ dryRun });
 
     const durationMs = Date.now() - startedAt;
 
@@ -32,9 +34,11 @@ export async function POST(req: NextRequest) {
       success: true,
       runAt: new Date().toISOString(),
       durationMs,
+      dryRun: result.dryRun,
       summary: {
         processed: result.processed,
         sent: result.sent,
+        wouldSend: result.wouldSend,
         skipped: result.skipped,
         errorCount: result.errors.length,
       },
