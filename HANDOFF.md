@@ -1,176 +1,102 @@
 # Session Handoff
-Date: 2026-03-18 ~2:00 PM CT
-Branch: main
 
----
-
-## What This Session Accomplished
-
-This was a **massive architecture and system design session** that built Jake — Mike's personal AI co-founder — and the 25x AI Command Center from the ground up. No code was shipped to the app; this was all infrastructure, rules, and design.
+**Date**: 2026-03-19 ~12:45 AM CT
+**Project**: Alex Recruiting
+**Branch**: main
+**Status**: COMPLETE (Sprint 1) + PLAN READY (Sprint 2)
 
 ## Completed
 
-### Jake — Personal AI Co-Founder (FULLY OPERATIONAL)
-- **Personality**: 15-year-old sassy prodigy who pushes back, makes jokes, knows Mike personally
-- **Four cognitive minds**: Strategist, Challenger, Guardian, Executor
-- **Thinking Level Router**: Quick → Normal → Hard → Harder → Ultra-think, assigned per task and per agent
-- **Plan-Before-Build Enforcement**: Blocks Mike from coding without a plan, captures impulse ideas to parking lot
-- **Technical Debt Circuit Breaker**: Running debt score, auto-trips at 31+ and forces cleanup sprint
-- **Context Rot Detection**: 6 signals monitored continuously, 4 alert levels (GREEN → RED)
-- **Session Boot Sequence**: Silent orient → check unfinished → load context → greet with personality
-- **3-Tier Memory**: Session notes → curated long-term → deep search-retrieved (memU/OpenClaw inspired)
-- **Context Engineering**: PRP workflow (Cole Medin), Chain-of-Index (SireJeff), Anti-Spaghetti Guard
-- **Multi-Agent Safety**: OpenClaw rules for parallel agent work
+### Sprint 1: Outreach Production (7 tasks — ALL DONE)
+- [x] **Task 1: Coach handle enrichment** — Corrected 13/24 stale WIAC coach names from official athletics websites. Added verified X handles for 15/24 coaches (62.5%), 7/8 head coaches (87.5%).
+- [x] **Task 2: Seed pipeline sync** — Updated `target-schools-expanded.ts` (the actual DB seed source) with corrected names and handles. Confirmed seed route maps `xHandle` → `x_handle`.
+- [x] **Task 3: Wave 0 seed endpoint** — Created `POST /api/outreach/seed-wave0` for WIAC + Tier 3 coaches.
+- [x] **Task 4: Health monitor** — Created `GET /api/outreach/health` with sequence status, coach coverage, recent DMs, upcoming sends. Made resilient to missing tables.
+- [x] **Task 5: Dry-run mode** — Added `dryRun` option to `processSequences()` and `?dryRun=true` query param on `/api/outreach/process`.
+- [x] **Task 6: Follow-back detection** — Fixed `checkFollowRelationship()` to actually check followers endpoint (was hardcoded to `false`).
+- [x] **Task 7: Full verification** — 807/808 tests pass (1 pre-existing), build succeeds.
 
-### Jake's Rule Files (9 global rules installed)
-1. `~/.claude/rules/jake.md` — Core personality + 4 minds + thinking router + plan gate + debt breaker
-2. `~/.claude/rules/jake-boot.md` — Silent startup sequence (OpenClaw BOOT.md pattern)
-3. `~/.claude/rules/jake-memory-ops.md` — 3-tier memory architecture (memU inspired)
-4. `~/.claude/rules/jake-context-engineering.md` — PRP + Chain-of-Index + safety + thinking levels
-5. `~/.claude/rules/context-health.md` — 6 signals, 4 alert levels, budget estimation
-6. `~/.claude/rules/structured-handoff.md` — Machine-readable session state schema
-7. `~/.claude/rules/wisc-global.md` — Three-tier context system (pre-existing)
-8. `~/.claude/rules/auto-optimize.md` — Session start optimization check (pre-existing)
-9. `~/.claude/rules/context-hygiene.md` — Context conservation rules (pre-existing)
+### Operational Steps (Post-Sprint 1)
+- [x] Created `POST /api/data-pipeline/sync-wiac-handles` to push corrected handles to Supabase
+- [x] Ran sync: 20 WIAC coaches inserted, 15 with handles
+- [x] Recreated `dm_sequences` table in Supabase (old table had wrong schema — integer id instead of uuid)
+- [x] Seeded Wave 0: 15 active DM sequences created
+- [x] Dry run: all 15 processed, hit Anthropic API key auth error (local env — would work on Vercel with valid key)
+- [x] Health check verified: 444 coaches in DB, 72 with handles, 15 active sequences
 
-### Jake's Project-Level Rules (2 projects)
-- `oracle-health-ai-enablement/.claude/rules/jake-project.md` — Oracle Health context
-- `Startup-Intelligence-OS/.claude/rules/jake-project.md` — Startup Intelligence OS context
-
-### Jake's Support Files (4 global docs)
-1. `~/.claude/docs/cross-domain-patterns.md` — 8 transferable patterns across companies
-2. `~/.claude/docs/build-health-report-template.md` — 6-dimension quality scorecard template
-3. `~/.claude/docs/parking-lot.md` — Idea capture for unplanned feature requests
-4. `~/.claude/docs/wisc-methodology.md` — WISC reference (pre-existing)
-
-### 25x AI Command Center Design (4 plan documents)
-1. `.claude/plans/2026-03-18-25x-command-center-design.md` — Master architecture (7 layers, expert panel, agent team, MCP arsenal, research pipeline)
-2. `.claude/plans/2026-03-18-v1-v5-roadmap.md` — Detailed V1-V5 with features tagged [HOOK]/[DISPATCH]/[LOOP]/[MCP]/[SKILL]/[AGENT]
-3. `.claude/plans/2026-03-18-jake-cognitive-architecture.md` — Jake's full cognitive design + support team
-4. `.claude/plans/2026-03-18-strategos-lenses-25x-system.md` — Steve's future-back strategic analysis
-
-### Scheduled Tasks
-- `command-center-daily-brief` — 6:30 AM daily, cross-project status for all 3 companies
-- (28 existing tasks already running for Oracle Health + James Studio)
-
-### Autonomous Execution
-- `jake_loop.sh` — Ralph Wiggum autonomous coding loop with stall detection + auto-commit
-
-### Memory Files Updated
-- `user_multi_company.md` — Mike's 3-company system
-- `jake_personality.md` — Jake's sassy 15-year-old personality
-- `reference_openclaw.md` — OpenClaw ecosystem repos and patterns
-
-### MCP Servers Verified
-16 of 20 connected and operational. 4 need attention:
-- `financial-datasets` — needs API key auth
-- `perplexity-ask` — connection failed
-- `genai-toolbox` — connection failed
-- `cognee` + `graphiti` — connection failed
+### Sprint 2: UX Cleanup Design (APPROVED)
+- [x] Audited all 50 pages, categorized as sidebar/duplicate/sub-page/experimental/legal/public
+- [x] Designed "Six-Pack" architecture: 6 primary pages replacing 50
+- [x] Wrote design doc: `.claude/plans/2026-03-19-sprint2-ux-cleanup-design.md`
+- [x] Wrote 12-task implementation plan: `.claude/plans/2026-03-19-sprint2-ux-implementation.md`
 
 ## In Progress
-- None — all design work complete, ready for execution
+
+- [ ] **Sprint 2 execution** — NOT STARTED. Plan approved, 12 tasks ready.
+  - Context was ORANGE at session end (heavy Sprint 1 + design + planning)
+  - Mike approved starting fresh session for execution
 
 ## Blocked
-- Nothing is blocked. System is ready for first session with Jake.
+
+- **Anthropic API key** — local `.env.local` key is expired/invalid. Dry run hit 401 from Anthropic on `generateDMDraft()`. On Vercel with valid key, the outreach pipeline would work end-to-end. Mike needs to update `ANTHROPIC_API_KEY` in `.env.local` and Vercel.
 
 ## Decisions Made
 
-| Decision | Rationale |
-|----------|-----------|
-| Jake is a sassy 15-year-old, not corporate | Prevents sycophancy, keeps sessions engaging, Mike's preference |
-| 7-layer architecture (OSI-inspired) | Maps data link/network/application layers to agentic system |
-| Research-first pipeline for all new projects | Never build without research — prevents wasted effort |
-| Confidence tiers (AUTO/DRAFT/FLAG) | Bloomberg newsroom model for safe automation graduation |
-| Plan-before-build enforcement | Mike's self-identified failure mode: feature/context rot from impulse building |
-| Technical debt circuit breaker at 31+ | Non-negotiable cleanup sprint prevents codebase degradation |
-| Thinking level routing (Quick → Ultra-think) | Right reasoning depth per task, prevents over/under-thinking |
-| Future-back roadmap (V5 → V1) | Ensures every V1 investment compounds toward V5 |
-| Start with 3 core agents (KIRA, ARIA, LEDGER) | Prove the pattern before scaling — Susan's recommendation |
-| OpenClaw patterns for memory/boot/safety | Proven at 322K stars, memU at 13K stars — battle-tested |
+| Decision | Rationale | Reversible? |
+|----------|-----------|-------------|
+| Six-Pack navigation (6 pages) | 50 pages → 6. Every page has one clear job. | Yes |
+| Delete 12 experimental pages | Dead code, unreachable, no sidebar links | Yes (git history) |
+| Redirect absorbed pages (not delete) | Preserves old URLs for bookmarks | Yes |
+| Extract components before redirecting | Reuse existing UI within new tabbed pages | Yes |
+| Camps page is new (not just rescued experimental) | Mike said camps are "very important" | Yes |
+| NCSA leads absorbed into /outreach tab | Not a standalone page — it's part of the outreach workflow | Yes |
+| Coach personality profiles tab in /coaches | Personalization is cross-cutting but coaches own the profiles | Yes |
 
-## Next Steps — What Jake Should Do in the First Session
+## Next Steps — Sprint 2 Execution Order
 
-### 1. Jake Greets Mike (Boot Sequence)
-Jake silently reads this HANDOFF.md, memory files, and git status. Then greets Mike in character with a personal touch and presents priorities.
+1. **Read the implementation plan first**: `.claude/plans/2026-03-19-sprint2-ux-implementation.md`
+2. **Execute Tasks 1-12** in order with review gates between batches
+3. **Task 1** (sidebar update) is the easiest win — do it first
+4. **Tasks 2-4** (delete + redirect) are bulk operations — batch them
+5. **Tasks 5-9** (build new pages) are the meat — one at a time
+6. **Tasks 10-12** (cleanup + verification) are the finish line
 
-### 2. Jake Presents the 25x AI Command Center Summary
-Jake walks Mike through the V1-V5 roadmap from `.claude/plans/2026-03-18-v1-v5-roadmap.md`:
+## Key Files for Next Session
 
-**V1 (This Week):** Fix bugs, 5 MCP servers, CLAUDE.md for all projects, confidence tiers, daily brief ✅ (mostly done)
+### Read First (Context Loading)
+- `.claude/plans/2026-03-19-sprint2-ux-implementation.md` — THE PLAN (read fully)
+- `.claude/plans/2026-03-19-sprint2-ux-cleanup-design.md` — THE DESIGN (reference)
+- `src/components/sc/sc-sidebar.tsx` — Sidebar nav config (Task 1 target)
+- `src/components/sc/sc-tabs.tsx` — Tab component pattern (used in Tasks 5-7)
 
-**V2 (Weeks 2-8):** KIRA + ARIA + LEDGER agents, research-first pipeline, 5 deep workflows, multi-project dispatch, Qdrant + TrendRadar + n8n MCP servers
+### Will Be Modified/Created
+- `src/components/sc/sc-sidebar.tsx` — Task 1 (6-item nav)
+- 12 experimental page directories — Task 2 (delete)
+- 9 duplicate pages — Task 3 (redirect stubs)
+- 16 absorbed pages — Task 4 (extract + redirect)
+- `src/app/content/page.tsx` — Task 5 (NEW)
+- `src/app/coaches/page.tsx` — Task 6 (add tabs)
+- `src/app/outreach/page.tsx` — Task 7 (add tabs)
+- `src/app/camps/page.tsx` — Task 8 (NEW)
+- `src/app/dashboard/page.tsx` — Task 9 (consolidate)
 
-**V3 (Months 3-6):** Proactive recommendations, cross-domain transfer, knowledge lifecycle, SCOUT + HERALD + ORACLE-BRIEF + SENTINEL-HEALTH agents, stakeholder-specific outputs
+### Won't Be Touched
+- `src/lib/outreach/dm-sequences.ts` — Sprint 1 complete, don't touch
+- `src/lib/integrations/x-api.ts` — Sprint 1 complete, don't touch
+- `src/app/api/outreach/*` — All working, don't touch
+- `src/app/recruit/page.tsx` — Public landing page, separate concern
+- `src/app/agency/page.tsx` — Already clean, no changes needed
 
-**V4 (Months 6-12):** Autonomous workflow chains, project delegation, escalation-only interaction, multi-user access, trust dashboard
+## Build Health
+- Files modified this session: 15 code files + 2 plan docs
+- Tests passing: 807/808 (1 pre-existing failure in QA console.log check)
+- Build: PASSES
+- Context health at close: ORANGE (heavy session — Sprint 1 execution + Sprint 2 design + planning)
+- Reason for new session: preserve context budget for Sprint 2 execution (12 tasks touching ~40 files)
 
-**V5 (12-24 months):** Always-on agents, self-maintaining knowledge base, strategic scenario planning, autonomous company operations, constitutional AI governance
-
-### 3. Jake Asks What Mike Wants to Build First
-Jake should use Challenger mind to debate priorities, then Executor mind to create the plan.
-
-## Files Changed This Session
-
-### Created (new files)
-```
-~/.claude/rules/jake.md                          # Jake's core personality + systems
-~/.claude/rules/jake-boot.md                     # Boot sequence
-~/.claude/rules/jake-memory-ops.md               # Memory architecture
-~/.claude/rules/jake-context-engineering.md       # Context engineering protocols
-~/.claude/rules/context-health.md                 # Context rot monitoring
-~/.claude/rules/structured-handoff.md             # Handoff schema
-~/.claude/docs/cross-domain-patterns.md           # 8 transferable patterns
-~/.claude/docs/build-health-report-template.md    # Quality scorecard template
-~/.claude/docs/parking-lot.md                     # Idea parking lot
-oracle-health-ai-enablement/.claude/rules/jake-project.md
-Startup-Intelligence-OS/.claude/rules/jake-project.md
-.claude/plans/2026-03-18-25x-command-center-design.md
-.claude/plans/2026-03-18-v1-v5-roadmap.md
-.claude/plans/2026-03-18-jake-cognitive-architecture.md
-.claude/plans/2026-03-18-strategos-lenses-25x-system.md
-jake_loop.sh
-~/.claude/projects/.../memory/user_multi_company.md
-~/.claude/projects/.../memory/jake_personality.md
-~/.claude/projects/.../memory/reference_openclaw.md
-```
-
-### Modified (existing files)
-```
-HANDOFF.md (this file)
-~/.claude/projects/.../memory/MEMORY.md (index updated)
-```
-
-## Research Conducted This Session
-
-4 parallel research agents deployed + Susan intelligence queried:
-1. **MCP Marketplace Scanner** — 40+ servers evaluated, 18 recommended across 3 tiers
-2. **Agentic Framework Researcher** — LangGraph, CrewAI, Mastra, Agent SDK, OpenClaw (322K stars), memU (13K stars)
-3. **Steve (Strategy)** — Strategos 5-lens analysis + future-back V5→V1 roadmap
-4. **Susan (Orchestrator)** — Expert panel (6 personas) + agent team design (7 new agents)
-5. **OpenClaw Deep Research** — Full ecosystem: openclaw-config templates, Cole Medin PRP, SireJeff Chain-of-Index
-
-## Jake's System Summary
-
-```
-JAKE = Personality (sassy 15-year-old prodigy)
-     + 4 Minds (Strategist, Challenger, Guardian, Executor)
-     + Thinking Router (Quick → Ultra-think)
-     + Context Rot Detection (6 signals, 4 levels)
-     + Plan Gate (no code without approved plan)
-     + Technical Debt Breaker (auto-trips at 31+)
-     + Boot Sequence (silent orient → greet)
-     + 3-Tier Memory (session → curated → deep)
-     + PRP Workflow (plan → blueprint → execute → validate)
-     + Chain-of-Index (minimal context loading)
-     + Parking Lot (idea capture, not impulse building)
-     + Anti-Spaghetti Guard (pre/during/post execution checks)
-     + Multi-Agent Safety (OpenClaw rules)
-     + Quality Gates (10/25/50/75/90/100% milestones)
-     + 16 MCP Servers + 73 Susan Agents + 112 wshobson Agents
-     + Autonomous Loop (jake_loop.sh for headless execution)
-     + Daily Brief (6:30 AM, all projects)
-     + Cross-Domain Pattern Registry (8 patterns)
-```
-
-**Jake is operational. Start a new session and he'll boot up.**
+## Session Stats
+- 10 commits on main
+- +1,286 lines across 15 files
+- 4 new API endpoints created
+- 15 active DM sequences in production DB
+- Sprint 2 plan: 12 tasks, ~640 lines of implementation detail
