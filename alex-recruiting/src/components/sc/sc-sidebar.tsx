@@ -18,27 +18,11 @@ const navSections: NavSection[] = [
   {
     items: [
       { label: "Command", href: "/dashboard", icon: "dashboard" },
-      { label: "Outreach", href: "/outreach", icon: "campaign" },
       { label: "Coaches", href: "/coaches", icon: "groups" },
-      { label: "Analytics", href: "/analytics", icon: "monitoring" },
-      { label: "Intelligence", href: "/intelligence", icon: "radar" },
-    ],
-  },
-  {
-    title: "Operations",
-    items: [
-      { label: "Content", href: "/content-queue", icon: "edit_note" },
-      { label: "Messages", href: "/dms", icon: "mail" },
-      { label: "Scouting", href: "/audit", icon: "description" },
+      { label: "Outreach", href: "/outreach", icon: "campaign" },
+      { label: "Content", href: "/content", icon: "edit_note" },
+      { label: "Camps", href: "/camps", icon: "event" },
       { label: "Agency", href: "/agency", icon: "smart_toy" },
-    ],
-  },
-  {
-    title: "Tools",
-    items: [
-      { label: "Map", href: "/map", icon: "map" },
-      { label: "Competitors", href: "/competitors", icon: "compare_arrows" },
-      { label: "Media Lab", href: "/media-lab", icon: "movie" },
     ],
   },
 ];
