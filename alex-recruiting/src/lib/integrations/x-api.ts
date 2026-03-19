@@ -975,21 +975,42 @@ export async function checkFollowRelationship(
   sourceUserId: string,
   targetUserId: string
 ): Promise<{ following: boolean; followed_by: boolean }> {
-  const endpoint = `${X_API_BASE}/users/${sourceUserId}/following`;
-  enforceRateLimit(endpoint);
+  let following = false;
+  let followed_by = false;
+
+  // Check if source follows target
+  const followingEndpoint = `${X_API_BASE}/users/${sourceUserId}/following`;
+  enforceRateLimit(followingEndpoint);
   try {
-    const response = await axios.get(endpoint, {
+    const response = await axios.get(followingEndpoint, {
       headers: getHeaders(),
       params: { "user.fields": "id" },
     });
-    recordRequest(endpoint);
-    const following = (response.data.data || []).some(
+    recordRequest(followingEndpoint);
+    following = (response.data.data || []).some(
       (u: XUser) => u.id === targetUserId
     );
-    return { following, followed_by: false }; // Need reverse check for followed_by
   } catch {
-    return { following: false, followed_by: false };
+    // Default to false on error
   }
+
+  // Check if target follows source (reverse check for follow-back detection)
+  const followersEndpoint = `${X_API_BASE}/users/${sourceUserId}/followers`;
+  enforceRateLimit(followersEndpoint);
+  try {
+    const response = await axios.get(followersEndpoint, {
+      headers: getHeaders(),
+      params: { "user.fields": "id" },
+    });
+    recordRequest(followersEndpoint);
+    followed_by = (response.data.data || []).some(
+      (u: XUser) => u.id === targetUserId
+    );
+  } catch {
+    // Default to false on error
+  }
+
+  return { following, followed_by };
 }
 
 // ---------------------------------------------------------------------------
