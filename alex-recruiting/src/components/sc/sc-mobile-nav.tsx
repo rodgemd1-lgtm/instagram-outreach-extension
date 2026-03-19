@@ -11,9 +11,10 @@ interface MobileTab {
 
 const tabs: MobileTab[] = [
   { label: "Command", href: "/dashboard", icon: "dashboard" },
+  { label: "Coaches", href: "/coaches", icon: "groups" },
   { label: "Outreach", href: "/outreach", icon: "campaign" },
-  { label: "Analytics", href: "/analytics", icon: "monitoring" },
-  { label: "Messages", href: "/dms", icon: "mail" },
+  { label: "Content", href: "/content", icon: "edit_note" },
+  { label: "Camps", href: "/camps", icon: "event" },
   { label: "Agency", href: "/agency", icon: "smart_toy" },
 ];
 
