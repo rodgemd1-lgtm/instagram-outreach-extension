@@ -17,6 +17,21 @@ import { jacobProfile } from "@/lib/data/jacob-profile";
 import { dispatchOperatorCommand } from "@/lib/os/operator-client";
 import type { Coach, DMMessage } from "@/lib/types";
 
+/* ------------------------------------------------------------------ */
+/* Types                                                               */
+/* ------------------------------------------------------------------ */
+
+interface DMVariation {
+  content: string;
+  tone: "professional" | "casual" | "contextual";
+  compliant: boolean;
+  complianceNote: string;
+}
+
+/* ------------------------------------------------------------------ */
+/* Helpers                                                             */
+/* ------------------------------------------------------------------ */
+
 function buildIntroDraft(coach: Coach): string {
   const lastName = coach.name.split(" ").pop() ?? coach.name;
   return fillTemplate(dmTemplates.intro.template, {
@@ -32,6 +47,10 @@ function tierSort(coach: Coach): number {
   return 2;
 }
 
+/* ------------------------------------------------------------------ */
+/* Main Component                                                      */
+/* ------------------------------------------------------------------ */
+
 export function DMList() {
   const [coaches, setCoaches] = useState<Coach[]>([]);
   const [recentDMs, setRecentDMs] = useState<DMMessage[]>([]);
@@ -39,6 +58,16 @@ export function DMList() {
   const [loading, setLoading] = useState(true);
   const [sendingId, setSendingId] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState("all");
+
+  // AI generation state
+  const [generatingId, setGeneratingId] = useState<string | null>(null);
+  const [generatingAll, setGeneratingAll] = useState(false);
+  const [variations, setVariations] = useState<Record<string, DMVariation[]>>({});
+  const [selectedVariation, setSelectedVariation] = useState<Record<string, number>>({});
+  const [aiGenerated, setAiGenerated] = useState<Set<string>>(new Set());
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
+
+  /* ---- Data loading ---- */
 
   const load = useCallback(async () => {
     try {
@@ -73,6 +102,8 @@ export function DMList() {
     void load();
   }, [load]);
 
+  /* ---- Queue computation ---- */
+
   const queue = useMemo(
     () =>
       coaches
@@ -96,9 +127,9 @@ export function DMList() {
         count: queue.filter((coach) => coach.priorityTier === "Tier 1").length,
       },
       {
-        label: "Tier 2 Targets",
-        icon: "target",
-        count: queue.filter((coach) => coach.priorityTier === "Tier 2").length,
+        label: "AI Drafted",
+        icon: "auto_awesome",
+        count: aiGenerated.size,
       },
       {
         label: "Sent / Logged",
@@ -106,13 +137,119 @@ export function DMList() {
         count: recentDMs.filter((dm) => dm.status === "sent" || dm.status === "responded").length,
       },
     ],
-    [queue, recentDMs]
+    [queue, recentDMs, aiGenerated.size]
   );
 
   const nextCoach = queue[0] ?? null;
 
+  /* ---- AI DM generation (single coach) ---- */
+
+  async function generateAIDM(coach: Coach) {
+    setGeneratingId(coach.id);
+    setActionMessage(null);
+    try {
+      const response = await fetch("/api/dms/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ coachId: coach.id }),
+      });
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body.error || `Generation failed (${response.status})`);
+      }
+
+      const data = await response.json();
+      const vars: DMVariation[] = data.variations ?? [];
+
+      setVariations((current) => ({ ...current, [coach.id]: vars }));
+      setSelectedVariation((current) => ({ ...current, [coach.id]: 0 }));
+
+      // Set the first variation as the draft
+      if (vars.length > 0) {
+        setDrafts((current) => ({ ...current, [coach.id]: vars[0].content }));
+        setAiGenerated((current) => new Set(current).add(coach.id));
+      }
+
+      setActionMessage(`Generated 3 AI variations for ${coach.name}`);
+    } catch (error) {
+      console.error("Failed to generate AI DM:", error);
+      setActionMessage(`Failed to generate AI DM for ${coach.name}`);
+    } finally {
+      setGeneratingId(null);
+    }
+  }
+
+  /* ---- AI DM generation (batch) ---- */
+
+  async function generateAllAIDMs() {
+    setGeneratingAll(true);
+    setActionMessage(null);
+    try {
+      const eligibleIds = queue.map((c) => c.id).slice(0, 10);
+
+      const response = await fetch("/api/dms/generate-batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ coachIds: eligibleIds }),
+      });
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body.error || `Batch generation failed (${response.status})`);
+      }
+
+      const data = await response.json();
+      const batchDrafts = data.drafts ?? [];
+
+      // Update drafts with generated content
+      setDrafts((current) => {
+        const next = { ...current };
+        for (const d of batchDrafts) {
+          next[d.coachId] = d.content;
+        }
+        return next;
+      });
+
+      // Mark all as AI-generated
+      setAiGenerated((current) => {
+        const next = new Set(current);
+        for (const d of batchDrafts) {
+          next.add(d.coachId);
+        }
+        return next;
+      });
+
+      const errorCount = data.errors?.length ?? 0;
+      setActionMessage(
+        `Generated ${batchDrafts.length} AI drafts${errorCount > 0 ? ` (${errorCount} failed)` : ""}`
+      );
+
+      // Refresh the DM list to show new drafts
+      await load();
+    } catch (error) {
+      console.error("Failed to generate batch DMs:", error);
+      setActionMessage("Batch generation failed. Try generating individually.");
+    } finally {
+      setGeneratingAll(false);
+    }
+  }
+
+  /* ---- Variation selection ---- */
+
+  function selectVariation(coachId: string, index: number) {
+    const vars = variations[coachId];
+    if (!vars || !vars[index]) return;
+
+    setSelectedVariation((current) => ({ ...current, [coachId]: index }));
+    setDrafts((current) => ({ ...current, [coachId]: vars[index].content }));
+  }
+
+  /* ---- Send / Log actions ---- */
+
   async function sendDraft(coach: Coach) {
     setSendingId(coach.id);
+    setActionMessage(null);
     try {
       const response = await fetch("/api/dms", {
         method: "POST",
@@ -133,18 +270,57 @@ export function DMList() {
         throw new Error(body.error || `Send failed (${response.status})`);
       }
 
+      setActionMessage(`DM sent to ${coach.name} via X`);
       await load();
     } catch (error) {
       console.error("Failed to send DM:", error);
+      setActionMessage(`Failed to send DM to ${coach.name}`);
     } finally {
       setSendingId(null);
     }
   }
 
+  async function logDraft(coach: Coach) {
+    setSendingId(coach.id);
+    setActionMessage(null);
+    try {
+      const response = await fetch("/api/dms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          coachId: coach.id,
+          coachName: coach.name,
+          schoolName: coach.schoolName,
+          templateType: "intro",
+          xHandle: coach.xHandle,
+          content: drafts[coach.id],
+          sendNow: false,
+        }),
+      });
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body.error || `Log failed (${response.status})`);
+      }
+
+      setActionMessage(`DM drafted and saved for ${coach.name} — send when ready`);
+      await load();
+    } catch (error) {
+      console.error("Failed to log DM:", error);
+      setActionMessage(`Failed to save draft for ${coach.name}`);
+    } finally {
+      setSendingId(null);
+    }
+  }
+
+  /* ---- Filtering ---- */
+
   const filteredDMs = useMemo(() => {
     if (filterStatus === "all") return recentDMs;
     return recentDMs.filter((dm) => dm.status === filterStatus);
   }, [recentDMs, filterStatus]);
+
+  /* ---- Render ---- */
 
   return (
     <SCPageTransition>
@@ -152,17 +328,23 @@ export function DMList() {
       <SCPageHeader
         kicker="Secure Comms"
         title="VAULT ARCHIVE"
-        subtitle="Coach outreach that feels personal, respectful, and easy to answer"
+        subtitle="AI-personalized coach outreach — generate, review, send when ready"
         actions={
           <div className="flex gap-3">
             <SCButton
               variant="primary"
               size="sm"
-              onClick={() => dispatchOperatorCommand({ command: "Draft the next DM" })}
-              disabled={!nextCoach}
+              onClick={generateAllAIDMs}
+              disabled={generatingAll || queue.length === 0}
             >
-              <span className="material-symbols-outlined text-[16px]">edit</span>
-              Draft Next DM
+              {generatingAll ? (
+                <span className="material-symbols-outlined animate-spin text-[16px]">
+                  progress_activity
+                </span>
+              ) : (
+                <span className="material-symbols-outlined text-[16px]">auto_awesome</span>
+              )}
+              {generatingAll ? "Generating..." : "Generate All AI DMs"}
             </SCButton>
             <SCButton
               variant="secondary"
@@ -177,6 +359,13 @@ export function DMList() {
       />
 
       <SCHeroBanner screen="outreach" className="mb-6" />
+
+      {/* Action feedback message */}
+      {actionMessage && (
+        <SCGlassCard variant="broadcast" className="px-4 py-3">
+          <p className="text-sm font-bold text-white">{actionMessage}</p>
+        </SCGlassCard>
+      )}
 
       {/* Wave Summary Metrics */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -201,7 +390,7 @@ export function DMList() {
           </h3>
           <p className="mt-3 text-sm leading-relaxed text-slate-400">
             {nextCoach
-              ? `${nextCoach.schoolName} is the current lead target in the queue. Open the draft, keep the note tight, and send only if the message earns a reply.`
+              ? `${nextCoach.schoolName} is the current lead target in the queue. Hit "Generate AI DM" for personalized variations, pick the best one, and send when ready.`
               : "There is no clean DM-ready record right now. Enrich coach handles and priorities first, then return here to send outreach."}
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
@@ -231,7 +420,7 @@ export function DMList() {
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            {["all", "draft", "sent", "responded"].map((status) => (
+            {["all", "drafted", "sent", "responded"].map((status) => (
               <button
                 key={status}
                 onClick={() => setFilterStatus(status)}
@@ -300,90 +489,190 @@ export function DMList() {
           </SCGlassCard>
         ) : (
           <div className="space-y-3">
-            {queue.map((coach) => (
-              <SCGlassCard key={coach.id} className="p-4">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="text-sm font-bold text-white">{coach.name}</p>
-                      <SCBadge
-                        variant={
-                          coach.priorityTier === "Tier 1"
-                            ? "danger"
-                            : coach.priorityTier === "Tier 2"
-                            ? "warning"
-                            : "default"
-                        }
-                      >
-                        {coach.priorityTier}
-                      </SCBadge>
-                      {coach.dmOpen && <SCBadge variant="success">DM Open</SCBadge>}
+            {queue.map((coach) => {
+              const coachVariations = variations[coach.id];
+              const isGenerating = generatingId === coach.id;
+              const isSending = sendingId === coach.id;
+              const isAI = aiGenerated.has(coach.id);
+              const selected = selectedVariation[coach.id] ?? 0;
+
+              return (
+                <SCGlassCard key={coach.id} className="p-4">
+                  {/* Coach header */}
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-bold text-white">{coach.name}</p>
+                        <SCBadge
+                          variant={
+                            coach.priorityTier === "Tier 1"
+                              ? "danger"
+                              : coach.priorityTier === "Tier 2"
+                              ? "warning"
+                              : "default"
+                          }
+                        >
+                          {coach.priorityTier}
+                        </SCBadge>
+                        {coach.dmOpen && <SCBadge variant="success">DM Open</SCBadge>}
+                        {isAI && (
+                          <SCBadge variant="info">
+                            <span className="material-symbols-outlined text-[12px] mr-0.5">auto_awesome</span>
+                            AI
+                          </SCBadge>
+                        )}
+                      </div>
+                      <p className="text-xs text-slate-500 mt-1">
+                        {coach.schoolName} · {coach.title || "Football staff"} · {coach.xHandle}
+                      </p>
                     </div>
-                    <p className="text-xs text-slate-500 mt-1">
-                      {coach.schoolName} · {coach.title || "Football staff"} · {coach.xHandle}
-                    </p>
+                    <SCBadge
+                      variant={
+                        coach.dmStatus === "responded"
+                          ? "success"
+                          : coach.dmStatus === "sent"
+                          ? "info"
+                          : "default"
+                      }
+                    >
+                      {coach.dmStatus.replaceAll("_", " ")}
+                    </SCBadge>
                   </div>
-                  <SCBadge
-                    variant={
-                      coach.dmStatus === "responded"
-                        ? "success"
-                        : coach.dmStatus === "sent"
-                        ? "info"
-                        : "default"
-                    }
-                  >
-                    {coach.dmStatus.replaceAll("_", " ")}
-                  </SCBadge>
-                </div>
 
-                <textarea
-                  className="mt-3 w-full rounded-lg border border-sc-border bg-white/5 p-3 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-sc-primary/50"
-                  value={drafts[coach.id] ?? ""}
-                  onChange={(event) =>
-                    setDrafts((current) => ({
-                      ...current,
-                      [coach.id]: event.target.value,
-                    }))
-                  }
-                  rows={4}
-                />
+                  {/* Variation selector (when AI generated 3 options) */}
+                  {coachVariations && coachVariations.length > 1 && (
+                    <div className="mt-3 flex gap-2">
+                      {coachVariations.map((v, i) => (
+                        <button
+                          key={v.tone}
+                          onClick={() => selectVariation(coach.id, i)}
+                          className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${
+                            selected === i
+                              ? "bg-sc-primary text-white"
+                              : "bg-white/5 text-slate-500 hover:text-white"
+                          }`}
+                        >
+                          <span className="material-symbols-outlined text-[14px]">
+                            {v.tone === "professional" ? "business_center" : v.tone === "casual" ? "chat_bubble" : "tune"}
+                          </span>
+                          {v.tone === "professional" ? "Pro" : v.tone === "casual" ? "Casual" : "Custom"}
+                          {!v.compliant && (
+                            <span className="material-symbols-outlined text-[12px] text-yellow-500" title={v.complianceNote}>
+                              warning
+                            </span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  )}
 
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <SCButton
-                    size="sm"
-                    variant="primary"
-                    onClick={() => sendDraft(coach)}
-                    disabled={sendingId === coach.id || !drafts[coach.id]?.trim()}
-                  >
-                    {sendingId === coach.id ? (
-                      <span className="material-symbols-outlined animate-spin text-[14px]">
-                        progress_activity
-                      </span>
-                    ) : (
-                      <span className="material-symbols-outlined text-[14px]">send</span>
-                    )}
-                    Send via X
-                  </SCButton>
-                  <SCButton
-                    size="sm"
-                    variant="ghost"
-                    onClick={() =>
+                  {/* Draft textarea */}
+                  <textarea
+                    className="mt-3 w-full rounded-lg border border-sc-border bg-white/5 p-3 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-sc-primary/50"
+                    value={drafts[coach.id] ?? ""}
+                    onChange={(event) =>
                       setDrafts((current) => ({
                         ...current,
-                        [coach.id]: buildIntroDraft(coach),
+                        [coach.id]: event.target.value,
                       }))
                     }
-                  >
-                    <span className="material-symbols-outlined text-[14px]">restart_alt</span>
-                    Reset draft
-                  </SCButton>
-                </div>
+                    rows={4}
+                    placeholder="DM content..."
+                  />
 
-                {coach.notes ? (
-                  <p className="mt-2 text-xs text-slate-600">{coach.notes}</p>
-                ) : null}
-              </SCGlassCard>
-            ))}
+                  {/* Character count */}
+                  <div className="mt-1 flex items-center justify-between">
+                    <span className={`text-[10px] ${(drafts[coach.id]?.length ?? 0) > 280 ? "text-yellow-500" : "text-slate-600"}`}>
+                      {drafts[coach.id]?.length ?? 0} chars
+                      {(drafts[coach.id]?.length ?? 0) > 280 && " — consider shortening"}
+                    </span>
+                    {coachVariations && coachVariations[selected] && !coachVariations[selected].compliant && (
+                      <span className="text-[10px] text-yellow-500 flex items-center gap-1">
+                        <span className="material-symbols-outlined text-[12px]">warning</span>
+                        Compliance note — review before sending
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Action buttons */}
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {/* Generate AI DM */}
+                    <SCButton
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => generateAIDM(coach)}
+                      disabled={isGenerating || generatingAll}
+                    >
+                      {isGenerating ? (
+                        <span className="material-symbols-outlined animate-spin text-[14px]">
+                          progress_activity
+                        </span>
+                      ) : (
+                        <span className="material-symbols-outlined text-[14px]">auto_awesome</span>
+                      )}
+                      {isGenerating ? "Generating..." : "Generate AI DM"}
+                    </SCButton>
+
+                    {/* Send via X */}
+                    <SCButton
+                      size="sm"
+                      variant="primary"
+                      onClick={() => sendDraft(coach)}
+                      disabled={isSending || !drafts[coach.id]?.trim()}
+                    >
+                      {isSending ? (
+                        <span className="material-symbols-outlined animate-spin text-[14px]">
+                          progress_activity
+                        </span>
+                      ) : (
+                        <span className="material-symbols-outlined text-[14px]">send</span>
+                      )}
+                      Send via X
+                    </SCButton>
+
+                    {/* Log for Later */}
+                    <SCButton
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => logDraft(coach)}
+                      disabled={isSending || !drafts[coach.id]?.trim()}
+                    >
+                      <span className="material-symbols-outlined text-[14px]">schedule_send</span>
+                      Save for Later
+                    </SCButton>
+
+                    {/* Reset */}
+                    <SCButton
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        setDrafts((current) => ({
+                          ...current,
+                          [coach.id]: buildIntroDraft(coach),
+                        }));
+                        setVariations((current) => {
+                          const next = { ...current };
+                          delete next[coach.id];
+                          return next;
+                        });
+                        setAiGenerated((current) => {
+                          const next = new Set(current);
+                          next.delete(coach.id);
+                          return next;
+                        });
+                      }}
+                    >
+                      <span className="material-symbols-outlined text-[14px]">restart_alt</span>
+                      Reset
+                    </SCButton>
+                  </div>
+
+                  {coach.notes ? (
+                    <p className="mt-2 text-xs text-slate-600">{coach.notes}</p>
+                  ) : null}
+                </SCGlassCard>
+              );
+            })}
           </div>
         )}
       </div>
