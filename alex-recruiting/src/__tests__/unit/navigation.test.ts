@@ -1,31 +1,32 @@
 /**
- * Unit tests for app navigation — verify all new pages are properly registered
+ * Unit tests for Six-Pack navigation — verify all 6 primary pages are registered
  */
 
 import { describe, it, expect } from "vitest";
 import { navSections, primaryTabs, getActiveNavItem, getNavSectionLabel } from "@/lib/app-navigation";
 
-describe("App Navigation", () => {
+describe("Six-Pack Navigation", () => {
   const allNavItems = navSections.flatMap((s) => s.items);
   const allItems = [...primaryTabs, ...allNavItems];
 
-  it("has all 7 new pages in nav sections", () => {
-    const newPaths = [
-      "/content-queue",
-      "/outreach",
-      "/brand-kit",
-      "/capture",
-      "/x-growth",
-      "/map",
-      "/prompt-studio",
-    ];
-    const navHrefs = allNavItems.map((item) => item.href);
-    for (const path of newPaths) {
-      expect(navHrefs).toContain(path);
-    }
+  it("primaryTabs has 6 items matching the Six-Pack", () => {
+    expect(primaryTabs).toHaveLength(6);
+    const hrefs = primaryTabs.map((t) => t.href);
+    expect(hrefs).toContain("/dashboard");
+    expect(hrefs).toContain("/coaches");
+    expect(hrefs).toContain("/outreach");
+    expect(hrefs).toContain("/content");
+    expect(hrefs).toContain("/camps");
+    expect(hrefs).toContain("/agency");
   });
 
-  it("has no duplicate hrefs", () => {
+  it("navSections has 6 sections", () => {
+    expect(navSections).toHaveLength(6);
+    const ids = navSections.map((s) => s.id);
+    expect(ids).toEqual(["command", "coaches", "outreach", "content", "media", "agency"]);
+  });
+
+  it("has no duplicate hrefs in nav items", () => {
     const hrefs = allNavItems.map((item) => item.href);
     const uniqueHrefs = new Set(hrefs);
     expect(hrefs.length).toBe(uniqueHrefs.size);
@@ -45,59 +46,22 @@ describe("App Navigation", () => {
     }
   });
 
-  it("content-queue is in the Publishing section", () => {
-    const publishing = navSections.find((s) => s.id === "content");
-    expect(publishing).toBeTruthy();
-    const hrefs = publishing!.items.map((i) => i.href);
-    expect(hrefs).toContain("/content-queue");
-    expect(hrefs).toContain("/prompt-studio");
+  it("getActiveNavItem returns correct item for Six-Pack paths", () => {
+    expect(getActiveNavItem("/dashboard")?.label).toBe("Command");
+    expect(getActiveNavItem("/coaches")?.label).toBe("Coaches");
+    expect(getActiveNavItem("/outreach")?.label).toBe("Outreach");
+    expect(getActiveNavItem("/content")?.label).toBe("Content");
+    expect(getActiveNavItem("/camps")?.label).toBe("Camps");
+    expect(getActiveNavItem("/agency")?.label).toBe("Agency");
   });
 
-  it("outreach is in the Outreach section", () => {
-    const outreach = navSections.find((s) => s.id === "outreach");
-    expect(outreach).toBeTruthy();
-    const hrefs = outreach!.items.map((i) => i.href);
-    expect(hrefs).toContain("/outreach");
+  it("getNavSectionLabel returns correct section for paths", () => {
+    expect(getNavSectionLabel("/coaches/pipeline")).toBe("Coaches");
+    expect(getNavSectionLabel("/outreach/sequences")).toBe("Outreach");
+    expect(getNavSectionLabel("/unknown-route")).toBe("Command");
   });
 
-  it("brand-kit and capture are in the Media section", () => {
-    const media = navSections.find((s) => s.id === "media");
-    expect(media).toBeTruthy();
-    const hrefs = media!.items.map((i) => i.href);
-    expect(hrefs).toContain("/brand-kit");
-    expect(hrefs).toContain("/capture");
-  });
-
-  it("x-growth and map are in the Research section", () => {
-    const research = navSections.find((s) => s.id === "systems");
-    expect(research).toBeTruthy();
-    const hrefs = research!.items.map((i) => i.href);
-    expect(hrefs).toContain("/x-growth");
-    expect(hrefs).toContain("/map");
-  });
-
-  it("getActiveNavItem returns correct item for new paths", () => {
-    expect(getActiveNavItem("/content-queue")?.label).toBe("Content Queue");
-    expect(getActiveNavItem("/outreach")?.label).toBe("Outreach Program");
-    expect(getActiveNavItem("/brand-kit")?.label).toBe("Brand Kit");
-    expect(getActiveNavItem("/x-growth")?.label).toBe("X Growth");
-    expect(getActiveNavItem("/map")?.label).toBe("School Map");
-  });
-
-  it("getNavSectionLabel returns correct section for new paths", () => {
-    expect(getNavSectionLabel("/content-queue")).toBe("Publishing");
-    expect(getNavSectionLabel("/outreach")).toBe("Outreach");
-    expect(getNavSectionLabel("/brand-kit")).toBe("Media");
-    expect(getNavSectionLabel("/x-growth")).toBe("Research");
-  });
-
-  it("primaryTabs has 6 items for mobile bottom nav", () => {
-    expect(primaryTabs).toHaveLength(6);
-  });
-
-  it("navSections has 5 sections", () => {
-    expect(navSections).toHaveLength(5);
-    const ids = navSections.map((s) => s.id);
-    expect(ids).toEqual(["command", "content", "outreach", "media", "systems"]);
+  it("getActiveNavItem falls back to Command for unknown routes", () => {
+    expect(getActiveNavItem("/totally-unknown")?.label).toBe("Command");
   });
 });

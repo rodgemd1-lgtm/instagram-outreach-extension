@@ -36,14 +36,14 @@ describe("app navigation", () => {
   });
 
   it("resolves the active item for nested routes", () => {
-    expect(getActiveNavItem("/posts")?.label).toBe("Publish");
-    expect(getActiveNavItem("/posts/queued")?.label).toBe("Publish");
-    expect(getActiveNavItem("/media-lab/reels")?.label).toBe("Media");
+    expect(getActiveNavItem("/coaches/detail")?.label).toBe("Coaches");
+    expect(getActiveNavItem("/outreach/sequences")?.label).toBe("Outreach");
+    expect(getActiveNavItem("/camps/upcoming")?.label).toBe("Camps");
   });
 
   it("returns the expected section label for nested routes", () => {
-    expect(getNavSectionLabel("/posts/queued")).toBe("Publishing");
-    expect(getNavSectionLabel("/coaches/pipeline")).toBe("Outreach");
+    expect(getNavSectionLabel("/coaches/pipeline")).toBe("Coaches");
+    expect(getNavSectionLabel("/outreach/sequences")).toBe("Outreach");
     expect(getNavSectionLabel("/unknown-route")).toBe("Command");
   });
 });
