@@ -232,13 +232,13 @@ export default function DashboardPage() {
                 : "Start building your recruiting pipeline. Add target coaches and begin outreach to get personalized recommendations."}
             </p>
             <div className="flex gap-3 flex-wrap">
-              <Link href="/dashboard/coaches">
+              <Link href="/coaches">
                 <SCButton variant="primary" size="sm">
                   <span className="material-symbols-outlined text-[16px]">group</span>
                   Coach Pipeline
                 </SCButton>
               </Link>
-              <Link href="/dashboard/outreach">
+              <Link href="/outreach">
                 <SCButton variant="secondary" size="sm">
                   <span className="material-symbols-outlined text-[16px]">send</span>
                   Send DM
@@ -356,9 +356,9 @@ export default function DashboardPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: "View Recruit Site", href: "/recruit", icon: "open_in_new" },
-          { label: "Draft Content", href: "/dashboard/content", icon: "edit_note" },
-          { label: "Coach Pipeline", href: "/dashboard/coaches", icon: "group" },
-          { label: "Send DM", href: "/dashboard/outreach", icon: "send" },
+          { label: "Draft Content", href: "/content", icon: "edit_note" },
+          { label: "Coach Pipeline", href: "/coaches", icon: "group" },
+          { label: "Send DM", href: "/outreach", icon: "send" },
         ].map((action) => (
           <Link key={action.href} href={action.href}>
             <SCGlassCard className="p-5 hover:bg-sc-primary/5 transition-all cursor-pointer group text-center">

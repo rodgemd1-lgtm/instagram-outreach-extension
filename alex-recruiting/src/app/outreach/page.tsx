@@ -13,7 +13,10 @@ import {
   SCHeroBanner,
   SCPageTransition,
   SCAnimatedNumber,
+  SCTabs,
 } from "@/components/sc";
+import { DMList } from "@/components/outreach/dm-list";
+import { ConnectionsList } from "@/components/outreach/connections-list";
 
 type OutreachStage = "research" | "follow" | "engage" | "dm" | "response" | "relationship";
 
@@ -65,6 +68,12 @@ const STAGE_COLORS: Record<OutreachStage, string> = {
   relationship: "bg-sc-primary/15 text-sc-primary",
 };
 
+const OUTREACH_TABS = [
+  { label: "Pipeline", value: "pipeline" },
+  { label: "DM Sequences", value: "dms" },
+  { label: "Follow Strategy", value: "follows" },
+];
+
 const staggerContainer = {
   hidden: {},
   show: {
@@ -86,6 +95,7 @@ export default function OutreachPage() {
   const [generating, setGenerating] = useState(false);
   const [search, setSearch] = useState("");
   const [tierFilter, setTierFilter] = useState("all");
+  const [activeTab, setActiveTab] = useState("pipeline");
 
   const fetchPlan = useCallback(async () => {
     setLoading(true);
@@ -160,6 +170,12 @@ export default function OutreachPage() {
 
         <SCHeroBanner screen="outreach" className="mb-6" />
 
+        <SCTabs tabs={OUTREACH_TABS} activeTab={activeTab} onTabChange={setActiveTab} className="mb-6" />
+
+        {activeTab === "dms" && <DMList />}
+        {activeTab === "follows" && <ConnectionsList />}
+
+        {activeTab === "pipeline" && (<>
         {/* Metrics Row */}
         <motion.div
           className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5"
@@ -394,6 +410,7 @@ export default function OutreachPage() {
             <p className="text-sm text-yellow-500/70">{plan.ncaaNote}</p>
           </SCGlassCard>
         )}
+        </>)}
       </div>
     </SCPageTransition>
   );
