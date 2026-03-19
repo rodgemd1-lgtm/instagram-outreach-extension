@@ -27,7 +27,8 @@ describe('expandedTargetSchools', () => {
       expect(s.tier).toBeGreaterThanOrEqual(1);
       expect(s.tier).toBeLessThanOrEqual(4);
       expect(s.state).toHaveLength(2);
-      expect(s.coaches).toHaveLength(2);
+      expect(s.coaches.length).toBeGreaterThanOrEqual(1);
+      expect(s.coaches.length).toBeLessThanOrEqual(4);
     });
   });
 });

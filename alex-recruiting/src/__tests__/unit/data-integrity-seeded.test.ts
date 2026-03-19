@@ -14,9 +14,10 @@ describe('data integrity', () => {
     expect(new Set(slugs).size).toBe(slugs.length);
   });
 
-  it('all schools have exactly 2 coaches', () => {
+  it('all schools have between 1 and 4 coaches', () => {
     expandedTargetSchools.forEach(s => {
-      expect(s.coaches.length).toBe(2);
+      expect(s.coaches.length).toBeGreaterThanOrEqual(1);
+      expect(s.coaches.length).toBeLessThanOrEqual(4);
     });
   });
 

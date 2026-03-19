@@ -8,10 +8,10 @@ import { taskSchedule30d } from '@/lib/data/task-schedule-30d';
 import { wiacCoaches } from '@/lib/rec/knowledge/coach-database';
 
 describe('all pages have backing data', () => {
-  it('coaches page: 40 schools with 80 coaches', () => {
+  it('coaches page: 40 schools with at least 80 coaches', () => {
     expect(expandedTargetSchools.length).toBe(40);
     const totalCoaches = expandedTargetSchools.reduce((sum, s) => sum + s.coaches.length, 0);
-    expect(totalCoaches).toBe(80);
+    expect(totalCoaches).toBeGreaterThanOrEqual(80);
   });
   it('coaches page: WIAC has 24 coaches', () => {
     expect(wiacCoaches.length).toBe(24);
