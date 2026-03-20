@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { DMMessage } from "@/lib/types";
 import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { sendDM, verifyHandle } from "@/lib/integrations/x-api";
+import { dmStore } from "@/lib/outreach/dm-store";
 
 // ---------------------------------------------------------------------------
 // Input validation schema — POST /api/dms
@@ -19,8 +20,6 @@ const createDMSchema = z.object({
 });
 
 export const dynamic = "force-dynamic";
-
-const dmStore: DMMessage[] = [];
 
 interface DMMessageRow {
   id: string;
