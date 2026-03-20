@@ -1,104 +1,138 @@
-# Alex Recruiting — Session Handoff (March 17, 2026 — Evening)
+# Session Handoff
 
-## Start Here
+**Date**: 2026-03-20 (evening session)
+**Branch**: `sprint2/ux-cleanup`
+**Project**: Alex Recruiting
+**Status**: PARTIAL — Iowa D3 campaign seeded, structural issues identified, QA process requested
 
-Copy the prompt at the bottom of this file into a new Claude Code session to continue.
+---
 
-## What Was Accomplished This Session
+## Completed
 
-1. **349 verified X/Twitter follow targets** built from 5 parallel research agents — real handles confirmed via web search across college coaches (D3/D2/FCS/FBS), recruiting media, WI HS community, strength training, and peer recruits
-2. **26-week follow schedule** at 7-8 follows/week, phased by priority (D2/D3 first → FCS → FBS → media → community)
-3. **Fake fallback data removed** from `src/lib/dashboard/live-data.ts` — no more fake 47 followers, 3 coach follows, 6.2% engagement
-4. **Database connected** — `JIB_DATABASE_URL` added to `.env.local` and Vercel, missing tables created (`engagement_actions`, `growth_snapshots`, `rec_tasks`, `outreach_learnings`, `dm_sequences`, `camps`, etc.)
-5. **Database seeded** — 424 coaches, 687 schools, 17 posts, 17 DMs, 110 tasks, 8 panel coaches, 15 competitors
-6. **Deployed to Vercel** — https://alex-recruiting.vercel.app — build succeeds, env vars set (bearer token fixed from %3D encoding issue)
-7. **X API confirmed working on Vercel** — `/api/analytics` returns real data: `totalFollowers: 3, coachFollows: 0, postsPublished: 17, avgEngagementRate: 4.51`
+- [x] Created `src/lib/data/iowa-d3-outreach.ts` — centralized data file with 8 Iowa D3 coach outreach content (emails, DMs, X callouts)
+- [x] Created `src/app/api/outreach/seed-iowa-d3/route.ts` — POST endpoint that seeds all 3 channels via Supabase direct insert
+- [x] Created `src/lib/outreach/dm-store.ts` — shared in-memory DM store (extracted from route handler)
+- [x] Modified `src/app/api/dms/route.ts` — imports shared dm-store instead of local array
+- [x] Modified `src/lib/outreach/email-sequences.ts` — added try/catch fallback for `generateEmail`, `listEmails`, `getEmailAnalytics` when Supabase tables exist but Drizzle schema mismatches
+- [x] Fixed seed route: DMs insert directly into Supabase `dm_messages` table (bypassing in-memory store)
+- [x] Fixed seed route: Emails insert directly into Supabase `email_outreach` table (same pattern)
+- [x] Verified: 8 DMs visible in DM Sequences tab (all 8 Iowa D3 coaches confirmed in DOM)
+- [x] Verified: 8 emails exist in Supabase via API (`curl` returns 8 coaches, status: draft)
+- [x] Verified: 8 X callout posts created in file-backed post store
 
-## What Is Broken — Must Fix
+## In Progress
 
-### Critical: Analytics page shows 0 despite API returning 3
-- `/api/analytics` returns correct data (verified via curl on Vercel)
-- But the analytics page component renders 0 — likely a client-side fetch issue or the page is reading from `getDashboardSnapshot()` server function which may be caching/erroring
-- File: `src/app/analytics/page.tsx` fetches from `/api/analytics` on client side
-- The dashboard snapshot in `src/lib/dashboard/live-data.ts` calls X API — verify it works on Vercel serverless
+- [ ] **Email Tracker component shows "No emails found"** — emails exist in Supabase (confirmed via `curl` from terminal), but browser fetch returns 0. Root cause: `listEmails()` uses Drizzle ORM `db.select().from(emailOutreach)` which queries differently than the Supabase REST client that inserted the data. The Drizzle select may be hitting a different schema version or connection. Fix options:
+  1. Make `listEmails` use Supabase client instead of Drizzle for reads
+  2. Run proper Drizzle migration so schema aligns
+  3. Add Supabase-client fallback inside `listEmails` (like seed does)
+- [ ] X callout posts — need visual verification in Content tab
+- [ ] **Nothing committed** — all changes are uncommitted
 
-### Critical: OAuth 1.0a write operations not tested
-- Bearer token (read) works on Vercel ✅
-- OAuth 1.0a (write — follow, DM, post) needs testing on Vercel
-- Keys set: `X_API_CONSUMER_KEY`, `X_API_CONSUMER_SECRET`, `X_API_ACCESS_TOKEN`, `X_API_ACCESS_TOKEN_SECRET`
-- `X_API_CLIENT_SECRET` is EMPTY in `.env.local` — may need to be set for OAuth 2.0
-- Write functions: `followUser()`, `sendDM()`, `postTweet()` in `src/lib/integrations/x-api.ts`
+## Blocked
 
-### Critical: Multiple pages show empty/zero data
-- **Outreach page** — "Total Coaches: 0" even though 424 coaches in DB (queries different table/view)
-- **Content Queue** — "No content queued yet" because it reads `scheduled_posts` table, not `posts` table
-- **Analytics** — follower count shows 0 on page despite API returning 3
-- **Connections page** — may not be pulling from peer-follow-targets correctly
+- **Email display in UI**: Drizzle ORM reads return empty while Supabase client reads return data. This is a systemic divergence across the app.
+- **Duplicate DMs on re-seed**: Seed route deduplicates emails but not DMs. Running seed multiple times creates duplicate DMs.
 
-### High: Database schema mismatches
-- Seed endpoints use Supabase `.upsert()` with `onConflict` that requires unique constraints
-- Many constraints missing — coaches, posts, competitor_recruits, dm_messages all fail on upsert
-- Some tables have columns named differently than Drizzle schema expects (e.g., `school_name` vs `school`, `content` vs `title`)
-- Tables created via Supabase dashboard don't match Drizzle schema in `src/lib/db/schema.ts`
+## Decisions Made
 
-### High: No "What to do today" section for Jacob
-- Jacob needs a daily action plan: what to post, who to follow, who to DM
-- Currently no onboarding flow or task list for the user
-- The AI Recommendation Engine on Command page gives generic advice
+| Decision | Rationale | Reversible? |
+|----------|-----------|-------------|
+| Direct Supabase client inserts for seed data | Drizzle ORM insert fails on email_outreach (schema mismatch?) but Supabase REST client works | Yes |
+| Shared dm-store module | Next.js route handlers can't reliably self-fetch; shared module lets seed and GET use same store | Yes |
+| In-memory + Supabase dual-path pattern | Multiple tables have inconsistent migration states — try/catch fallback keeps app functional | Yes — resolve with proper migration |
 
-### Medium: Remaining fake/fallback data in codebase
-- `Scout Velocity: 73/wk` on Command page — likely hardcoded
-- Various `?? <number>` fallbacks across API routes and components
-- 4 audit agents were launched — check their output files for results
+---
 
-## Audit Agents Launched (check output files)
-- Fake data hunter: completed or in-progress
-- Database audit: completed or in-progress
-- Backend API audit: completed or in-progress
-- Frontend page audit: completed or in-progress
+## Known Structural Issues
 
-## Architecture Quick Reference
+### 1. Directory Nesting
+```
+~/Desktop/alex-recruiting-project/    ← outer wrapper
+  alex-recruiting/                     ← git repo root
+    alex-recruiting/                   ← Next.js app (src/, package.json, etc.)
+```
+The git repo is at `alex-recruiting-project/alex-recruiting/` but the actual Next.js working directory is one level deeper at `alex-recruiting/alex-recruiting/`. This may cause Vercel deployment confusion. **Mike wants to evaluate flattening.**
 
-- **Framework**: Next.js 15.5 App Router + React 18 + TypeScript
-- **Database**: Supabase PostgreSQL via Drizzle ORM (`JIB_DATABASE_URL`)
-- **AI**: Anthropic Claude SDK
-- **X/Twitter**: OAuth 1.0a + Bearer token, functions in `src/lib/integrations/x-api.ts`
-- **Deployment**: Vercel (https://alex-recruiting.vercel.app)
-- **Testing**: Vitest — 657 passing, 1 pre-existing failure
-- **Git root**: `/Users/mikerodgers/Desktop/alex-recruiting-project/alex-recruiting`
-- **Next.js root**: `alex-recruiting/` subdirectory (rootDirectory set in Vercel)
+### 2. Branch Sprawl
+- `main` — last pushed to remote, behind current work
+- `sprint2/ux-cleanup` — current branch with ALL sprint 2-4 work
+- 3 stale worktree branches (`worktree-agent-*`) — should be cleaned up
+- Nothing pushed recently; remote `main` is significantly behind
 
-## Key Files
+### 3. Drizzle vs Supabase Client Divergence
+Tables defined in Drizzle schema (`src/lib/db/schema.ts`) but never properly migrated. `isDbConfigured()` returns true (env vars exist), Drizzle operations fail on some tables. Supabase REST client works because tables were created via dashboard. Needs reconciliation.
 
-| File | Purpose |
-|------|---------|
-| `src/lib/dashboard/live-data.ts` | X API calls for real-time metrics (followers, engagement, coach follows) |
-| `src/lib/integrations/x-api.ts` | All X API functions: follow, DM, post, verify handle |
-| `src/lib/data/peer-follow-targets.ts` | 349 follow targets with 26-week schedule |
-| `src/lib/data/content-calendar-30d.ts` | 17 Coach Panel approved posts |
-| `src/lib/data/cold-dms.ts` | DM templates by tier |
-| `src/lib/db/schema.ts` | Drizzle database schema |
-| `src/app/api/analytics/route.ts` | Analytics API endpoint |
-| `src/app/api/outreach/follow-plan/route.ts` | Follow plan with weekly batches |
-| `src/app/api/data-pipeline/seed-all/route.ts` | Seed orchestrator |
-| `.env.local` | All API keys (21+ services) |
+### 4. In-Memory Store Fragility
+Email sequences, DMs, and posts use in-memory arrays as fallbacks. Hot reloads clear these. Only Supabase-persisted data survives restarts.
 
-## Jacob's Real X Account
+---
 
-- Handle: `@JacobRodge52987`
-- User ID: `2029703725091328001`
-- Real followers: 3
-- Real following: 9
-- Real tweets: 8
-- Bio: "OL/DL | 6'4\" 285 | Pewaukee HS '29"
+## Mike's Vision: QA Process + Ship to Jacob
 
-## Vercel Environment
+Mike wants to establish a **formal, repeatable QA workflow** before shipping:
 
-- Project: `alex-recruiting` on `michael-rodgers-projects-e4209a00`
-- URL: https://alex-recruiting.vercel.app
-- Node: 20.x
-- 26 env vars configured for production
+### QA Panel Composition
+- **Frontend Developer** — UI/UX, responsiveness, accessibility
+- **Backend Developer** — API correctness, data integrity, error handling
+- **QA Engineer** — Test coverage, edge cases, regression
+- **AI Engineer** — Agent behavior, prompt quality, content generation
+- **Coaching Panel** — Real-world usability from a coach's perspective
+- **Jake** — Architecture, code quality, context health
+- **Susan's team** — Additional specialists as needed
 
-## Git Commits This Session
-- `a9f9725` feat(outreach): expand follow targets to 349 verified handles with 26-week schedule
-- `512a345` fix(data): remove all fake fallback values — show 0 when no real data
+### The Process
+1. Build the QA workflow as a Susan-orchestrated process (MCP server integration)
+2. Run first full test cycle against current app state
+3. Iterate: fix issues → re-test → fix → re-test
+4. Target: **10/10 from all panelists** before shipping
+5. Ship to Jacob for real-world use
+
+### Structural Cleanup (Do First)
+1. Evaluate directory flattening
+2. Merge work into `main` or create clean release branch
+3. Clean stale worktree branches
+4. Run Drizzle migration alignment
+5. Fix email display bug
+
+---
+
+## Next Steps (Priority Order)
+
+1. **Commit current Iowa D3 work** — 3 new files + 2 modified files
+2. **Fix email tracker display** — resolve Drizzle/Supabase read divergence
+3. **Structural cleanup** — directory flattening evaluation, branch cleanup, migration alignment
+4. **Design QA workflow** — use Susan's team to build a multi-agent review process (`/susan-plan` or `/plan-feature`)
+5. **Run first QA cycle** — test full app through new process
+6. **Iterate to 10/10** — fix panelist findings, re-test
+7. **Ship to Jacob**
+
+## Files Changed (Uncommitted)
+
+### New Files
+- `alex-recruiting/src/lib/data/iowa-d3-outreach.ts`
+- `alex-recruiting/src/app/api/outreach/seed-iowa-d3/route.ts`
+- `alex-recruiting/src/lib/outreach/dm-store.ts`
+
+### Modified Files
+- `alex-recruiting/src/app/api/dms/route.ts`
+- `alex-recruiting/src/lib/outreach/email-sequences.ts`
+
+### Untracked (Not Part of This Session)
+- `AGENTS.md`
+- `alex-recruiting/.claude/hookify.protect-operator-dock-routes.local.md`
+- `alex-recruiting/.claude/hookify.protect-recruit-page.local.md`
+
+## Build Health
+- Files modified this session: 5 (2 modified, 3 new)
+- Tests passing: Not run this session
+- Context health at close: **ORANGE** — session hit compaction, went in circles on email display bug
+- Debt score: ~22 (HIGH) — unmigrated tables, in-memory fallbacks, no tests for new code, Drizzle/Supabase divergence
+
+---
+
+## Resume Prompt
+
+Copy this into a new session:
+
+> Read HANDOFF.md. I want to pick up where we left off. Priority: (1) commit the Iowa D3 work, (2) fix the email tracker display bug (Drizzle reads return empty but Supabase client reads return data), (3) start planning the QA workflow with Susan's team. Context is ORANGE — keep scope tight.
