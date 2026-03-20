@@ -210,23 +210,27 @@ export async function generateEmail(
   const now = new Date();
 
   if (isDbConfigured()) {
-    const [row] = await db
-      .insert(emailOutreach)
-      .values({
-        coachId: opts.coachId ?? null,
-        coachName: opts.coachName,
-        schoolName: opts.schoolName,
-        coachEmail: opts.coachEmail ?? null,
-        templateType: opts.templateType,
-        subject,
-        body: `${body}\n\n${template.signature}`,
-        status: opts.status ?? "draft",
-        sequenceId: opts.sequenceId ?? null,
-        stepNumber: opts.stepNumber ?? null,
-      })
-      .returning();
+    try {
+      const [row] = await db
+        .insert(emailOutreach)
+        .values({
+          coachId: opts.coachId ?? null,
+          coachName: opts.coachName,
+          schoolName: opts.schoolName,
+          coachEmail: opts.coachEmail ?? null,
+          templateType: opts.templateType,
+          subject,
+          body: `${body}\n\n${template.signature}`,
+          status: opts.status ?? "draft",
+          sequenceId: opts.sequenceId ?? null,
+          stepNumber: opts.stepNumber ?? null,
+        })
+        .returning();
 
-    return dbRowToRecord(row);
+      return dbRowToRecord(row);
+    } catch {
+      // Table may not exist yet — fall through to in-memory
+    }
   }
 
   // In-memory fallback
@@ -409,8 +413,12 @@ export async function getEmailAnalytics(): Promise<EmailAnalytics> {
   let allEmails: EmailOutreachRecord[] = [];
 
   if (isDbConfigured()) {
-    const rows = await db.select().from(emailOutreach);
-    allEmails = rows.map(dbRowToRecord);
+    try {
+      const rows = await db.select().from(emailOutreach);
+      allEmails = rows.map(dbRowToRecord);
+    } catch {
+      allEmails = [...inMemoryEmails];
+    }
   } else {
     allEmails = [...inMemoryEmails];
   }
@@ -482,29 +490,33 @@ export async function listEmails(filters?: {
   sequenceId?: string;
 }): Promise<EmailOutreachRecord[]> {
   if (isDbConfigured()) {
-    let query = db.select().from(emailOutreach);
+    try {
+      let query = db.select().from(emailOutreach);
 
-    if (filters?.status) {
-      query = query.where(eq(emailOutreach.status, filters.status)) as typeof query;
-    }
+      if (filters?.status) {
+        query = query.where(eq(emailOutreach.status, filters.status)) as typeof query;
+      }
 
-    const rows = await query;
-    let results = rows.map(dbRowToRecord);
+      const rows = await query;
+      let results = rows.map(dbRowToRecord);
 
-    // Apply additional filters in-memory for simplicity
-    if (filters?.coachName) {
-      results = results.filter((e) =>
-        e.coachName.toLowerCase().includes(filters.coachName!.toLowerCase())
+      // Apply additional filters in-memory for simplicity
+      if (filters?.coachName) {
+        results = results.filter((e) =>
+          e.coachName.toLowerCase().includes(filters.coachName!.toLowerCase())
+        );
+      }
+      if (filters?.sequenceId) {
+        results = results.filter((e) => e.sequenceId === filters.sequenceId);
+      }
+
+      return results.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
+    } catch {
+      // Table may not exist yet — fall through to in-memory
     }
-    if (filters?.sequenceId) {
-      results = results.filter((e) => e.sequenceId === filters.sequenceId);
-    }
-
-    return results.sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
   }
 
   let results = [...inMemoryEmails];
