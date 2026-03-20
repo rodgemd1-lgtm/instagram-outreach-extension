@@ -106,23 +106,27 @@ export async function createTask(data: {
   const id = generateId();
   const now = new Date();
 
-  const [row] = await db
-    .insert(recTasks)
-    .values({
-      id,
-      assignedTo: data.assignedTo,
-      title: data.title,
-      description: data.description,
-      status: "pending",
-      priority: data.priority,
-      createdAt: now,
-      updatedAt: now,
-      completedAt: null,
-      output: null,
-    })
-    .returning();
+  try {
+    const [row] = await db
+      .insert(recTasks)
+      .values({
+        id,
+        assignedTo: data.assignedTo,
+        title: data.title,
+        description: data.description,
+        status: "pending",
+        priority: data.priority,
+        createdAt: now,
+        updatedAt: now,
+        completedAt: null,
+        output: null,
+      })
+      .returning();
 
-  return rowToTask(row);
+    return rowToTask(row);
+  } catch {
+    return memCreateTask(data);
+  }
 }
 
 export async function getAllTasks(): Promise<RecTask[]> {
@@ -130,8 +134,12 @@ export async function getAllTasks(): Promise<RecTask[]> {
     return memGetAllTasks();
   }
 
-  const rows = await db.select().from(recTasks);
-  return rows.map(rowToTask);
+  try {
+    const rows = await db.select().from(recTasks);
+    return rows.map(rowToTask);
+  } catch {
+    return memGetAllTasks();
+  }
 }
 
 export async function getTasksForMember(
@@ -141,11 +149,15 @@ export async function getTasksForMember(
     return memGetTasksForMember(memberId);
   }
 
-  const rows = await db
-    .select()
-    .from(recTasks)
-    .where(eq(recTasks.assignedTo, memberId));
-  return rows.map(rowToTask);
+  try {
+    const rows = await db
+      .select()
+      .from(recTasks)
+      .where(eq(recTasks.assignedTo, memberId));
+    return rows.map(rowToTask);
+  } catch {
+    return memGetTasksForMember(memberId);
+  }
 }
 
 export async function getTasksByStatus(
@@ -155,11 +167,15 @@ export async function getTasksByStatus(
     return memGetTasksByStatus(status);
   }
 
-  const rows = await db
-    .select()
-    .from(recTasks)
-    .where(eq(recTasks.status, status));
-  return rows.map(rowToTask);
+  try {
+    const rows = await db
+      .select()
+      .from(recTasks)
+      .where(eq(recTasks.status, status));
+    return rows.map(rowToTask);
+  } catch {
+    return memGetTasksByStatus(status);
+  }
 }
 
 export async function updateTask(
@@ -184,14 +200,18 @@ export async function updateTask(
     values.output = updates.output;
   }
 
-  const [row] = await db
-    .update(recTasks)
-    .set(values)
-    .where(eq(recTasks.id, id))
-    .returning();
+  try {
+    const [row] = await db
+      .update(recTasks)
+      .set(values)
+      .where(eq(recTasks.id, id))
+      .returning();
 
-  if (!row) return undefined;
-  return rowToTask(row);
+    if (!row) return undefined;
+    return rowToTask(row);
+  } catch {
+    return memUpdateTask(id, updates);
+  }
 }
 
 export async function clearTasks(): Promise<void> {

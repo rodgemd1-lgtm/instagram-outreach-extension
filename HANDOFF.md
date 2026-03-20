@@ -1,73 +1,87 @@
 # Session Handoff
 
-**Date**: 2026-03-19 ~2:00 PM CT
+**Date**: 2026-03-20 ~6:45 AM CT
+**Branch**: sprint2/ux-cleanup
 **Project**: Alex Recruiting
-**Branch**: sprint2/ux-cleanup (Sprint 2 + 3 work)
-**Session Goal**: Sprint 3 Phase 2 — Content Creator + Sprint 2 cleanup
-**Status**: COMPLETE
 
 ## Completed
 
-### Sprint 3 Phase 1: DM Pipeline (prior session)
-- [x] Steps 1-4: AI DM generation, batch generation, enhanced UI, approval flow
-- Commit: 84f3157
+### Sprint 4 Buildout — 6 New Features (commit `e1e704e`)
+- **Measurables Tracker** (`src/components/measurables-tracker.tsx` + `/measurables` page)
+  - D1/D2/D3 benchmark comparison bars (green/yellow/red color coding)
+  - Measurement input form (type, value, source, date, notes)
+  - History table with trend arrows, 4 stat cards (height, weight, bench, squat)
+  - Fetches from existing `/api/rec/measurables` API
+- **Camp Discovery** — already fully built in `/camps/page.tsx` (calendar, upcoming, history, measurables tabs)
+- **Email Outreach** (`src/components/email-composer.tsx` + `email-tracker.tsx`)
+  - 5 template types: intro, follow-up, camp thank you, film share, visit request
+  - Coach/school input with preview pane, analytics cards, filter tabs
+  - Wired as "Email" tab in `/outreach` page
+- **Notification Center** (`src/components/notification-center.tsx` + `/api/notifications` route)
+  - Bell icon with unread badge (iOS-style), dropdown panel
+  - 6 notification types: coach_view, dm_response, deadline, camp_reminder, content_approved, email_opened
+  - In-memory store with seed data, mark read / mark all read
+  - Wired into operator dock header
+- **Film Library** (`src/components/film-library.tsx` + `/film` page)
+  - Grid of highlight clips with tag filtering, play counts, share links
+  - Fallback data for demo mode, `/videos` now redirects to `/film`
+- **DM Delivery via X API** (`src/components/dm-sender.tsx` + `/api/dms/send` route)
+  - "Send via X" button with confirmation modal, delivery status tracking
+  - Mock mode when no X API key, rate limit indicator
 
-### Sprint 3 Phase 2: Content Creator (this session)
-- [x] Step 5: AI Weekly Generation API (`src/app/api/content/generate-week/route.ts`)
-  - POST endpoint generates 5-7 posts per week via Claude
-  - Pillar balance (40% performance, 40% work ethic, 20% character)
-  - Psychology mechanism per post, optimal timing from weekly calendar
-  - Constitution compliance, Supabase save, in-memory fallback
-- [x] Step 6: Weekly Review Component (`src/components/content/weekly-review.tsx`)
-  - Day-by-day cards with inline edit, approve/reject/delete
-  - Batch "Approve All" and "Schedule All" buttons
-  - "Add Post" for custom posts
-  - Character count with 280-char warning
-  - Psychology mechanism and media suggestion display
-- [x] Step 7: Media Attachment (integrated into WeeklyReview)
-  - Modal file picker for photo/video upload per post
-  - "Media attached" badge when file is added
-- [x] Step 8: Wire Create Tab (`src/app/content/page.tsx`)
-  - Replaced "coming in Sprint 3" placeholder with WeeklyReview component
-- [x] Step 9: Auto-Scheduling Support
-  - Generate-week API saves posts with `scheduled_for` timestamps to posts table
-  - Approve → Schedule status flow in WeeklyReview
-  - Content Queue reads all posts and displays on calendar
-- Commit: 94d00c4
+### Infrastructure
+- Reinstalled `next`, `tailwindcss`, `postcss`, `autoprefixer` (npm was corrupted)
+- Cleared `.next` cache
+- Build plan written to `.claude/plans/2026-03-20-sprint4-buildout.md`
 
-### Sprint 2 Cleanup (this session)
-- [x] Committed Sprint 2 leftover expanded pages + new route pages + updated tests
-  - Commit: abc33e1
-- [x] Deleted 34 duplicate ' 2' files (recruit components, SC components)
-  - Commit: 8267623
-- [x] Fixed launch.json for dev server
-  - Commit: e019046
+## In Progress
+- **Dev server verification**: Server starts but webpack compile times out on Node v25.5.0
+  - Must use Node 22 to run: `export PATH="/opt/homebrew/Cellar/node@22/22.22.0/bin:$PATH"`
+- **Duplicate ' 2' files**: ~40 untracked duplicate files need deletion (recruit components, SC components, test files)
+- **Uncommitted changes**: `launch.json` (Node 22 path), `package.json`/`package-lock.json` (reinstalled deps)
 
-## Not Started
-- [ ] Sprint 3 Phase 3 items (Sprint 4 candidates):
-  - Auto-posting cron job via Twitter API
-  - Post performance analytics
-  - Multi-platform scheduling (LinkedIn, Instagram)
+## Blocked
+- **Visual verification**: Cannot screenshot pages because Node v25.5.0 webpack compile times out
+  - Unblocked by switching to Node 22
+- **TypeScript check**: Could not run `npx tsc --noEmit` during session (npm was reinstalling)
 
 ## Decisions Made
-| Decision | Rationale | Reversible? |
-|----------|-----------|-------------|
-| Media picker as modal in WeeklyReview | Simpler than separate component, inline UX | Yes |
-| 5-7 posts per week (not daily) | Matches scarcity principle — quality over quantity | Yes |
-| Skip Saturday/Sunday unless context given | Most high school athletes post weekdays | Yes |
-| Fallback posts when no API key | App works in demo mode without Anthropic key | Yes |
-| npx next dev in launch.json | Avoids Turbopack issues on Node v25.5.0 | Yes |
+- Standalone `/measurables` page created (camps already has embedded measurables tab — both exist)
+- In-memory notification store (no DB table yet — upgrade to Supabase later)
+- Mock mode for X API DM send (allows demo without Twitter credentials)
+- `/videos` redirects to `/film` (new Film Library replaces old redirect to `/content`)
+- Email Composer + Tracker wired as tab in Outreach page (not a separate route)
 
-## Context for Next Session
-- Key insight: The app is functionally complete for demo. All 6 tabs work. Content Creator is the newest addition.
-- Saturday deadline: App is demo-ready. Consider a full smoke test across all tabs.
-- Known issue: Node v25.5.0 breaks vitest and Turbopack. Dev server works with webpack mode.
-- Working tree: Clean except HANDOFF.md and 2 local hookify config files.
-- Tests to run: `npm test` (currently broken on Node v25.5.0, was 762/778 on prior Node version)
+## Next Steps
+1. **Switch to Node 22** and verify dev server boots: `export PATH="/opt/homebrew/Cellar/node@22/22.22.0/bin:$PATH" && npm run dev`
+2. **Smoke test new pages**: `/measurables`, `/film`, `/outreach` (Email tab), operator dock (notification bell)
+3. **Delete ~40 duplicate ' 2' files** and commit cleanup
+4. **Run TypeScript check**: `npx tsc --noEmit`
+5. **Commit uncommitted changes**: launch.json + package.json updates
+6. **Saturday demo prep**: Full smoke test across all tabs
 
-## Build Health
-- Files modified this session: 3 new + 1 modified (Sprint 3) + 26 committed (Sprint 2 leftovers) + 34 deleted (duplicates)
-- Tests passing: Unable to run (Node v25.5.0 vitest compat issue)
-- TypeScript: 0 errors in Sprint 3 files
-- Dev server: Running, verified visually via preview
-- Context health at close: GREEN
+## Files Changed
+
+### New (10) — committed in `e1e704e`
+- `src/components/measurables-tracker.tsx`
+- `src/components/email-composer.tsx`
+- `src/components/email-tracker.tsx`
+- `src/components/notification-center.tsx`
+- `src/components/film-library.tsx`
+- `src/components/dm-sender.tsx`
+- `src/app/api/notifications/route.ts`
+- `src/app/api/dms/send/route.ts`
+- `src/app/measurables/page.tsx`
+- `src/app/film/page.tsx`
+
+### Modified (4) — committed in `e1e704e`
+- `src/app/outreach/page.tsx` — added Email tab with composer + tracker
+- `src/components/operator-dock.tsx` — added NotificationCenter bell
+- `src/app/videos/page.tsx` — redirect to /film
+- `.claude/plans/2026-03-20-sprint4-buildout.md` — build plan
+
+### Uncommitted (4)
+- `.claude/launch.json` — Node 22 path for dev server
+- `package.json` — autoprefixer added
+- `package-lock.json` — dependency updates
+- `HANDOFF.md` — this file

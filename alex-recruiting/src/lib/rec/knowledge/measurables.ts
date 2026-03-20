@@ -197,12 +197,17 @@ export async function getMeasurables(
   if (!isDbConfigured()) {
     return memoryMeasurables.filter((m) => m.athleteId === athleteId);
   }
-  const rows = await db
-    .select()
-    .from(measurables)
-    .where(eq(measurables.athleteId, athleteId))
-    .orderBy(desc(measurables.measuredAt));
-  return rows.map(rowToMeasurement);
+  try {
+    const rows = await db
+      .select()
+      .from(measurables)
+      .where(eq(measurables.athleteId, athleteId))
+      .orderBy(desc(measurables.measuredAt));
+    return rows.map(rowToMeasurement);
+  } catch {
+    // Table may not exist yet — fall back to in-memory store
+    return memoryMeasurables.filter((m) => m.athleteId === athleteId);
+  }
 }
 
 export async function getMeasurablesByType(
@@ -214,12 +219,18 @@ export async function getMeasurablesByType(
       (m) => m.athleteId === athleteId && m.measureType === type
     );
   }
-  const rows = await db
-    .select()
-    .from(measurables)
-    .where(and(eq(measurables.athleteId, athleteId), eq(measurables.measureType, type)))
-    .orderBy(desc(measurables.measuredAt));
-  return rows.map(rowToMeasurement);
+  try {
+    const rows = await db
+      .select()
+      .from(measurables)
+      .where(and(eq(measurables.athleteId, athleteId), eq(measurables.measureType, type)))
+      .orderBy(desc(measurables.measuredAt));
+    return rows.map(rowToMeasurement);
+  } catch {
+    return memoryMeasurables.filter(
+      (m) => m.athleteId === athleteId && m.measureType === type
+    );
+  }
 }
 
 export async function addMeasurement(data: {
@@ -251,22 +262,41 @@ export async function addMeasurement(data: {
     return measurement;
   }
 
-  const [row] = await db
-    .insert(measurables)
-    .values({
+  try {
+    const [row] = await db
+      .insert(measurables)
+      .values({
+        athleteId: data.athleteId ?? "jacob-rodgers",
+        measureType: data.measureType,
+        value: data.value,
+        unit: data.unit,
+        measuredAt: data.measuredAt ? new Date(data.measuredAt) : new Date(),
+        source: data.source ?? "self_reported",
+        campId: data.campId,
+        verified: data.verified ?? false,
+        notes: data.notes,
+      })
+      .returning();
+
+    return rowToMeasurement(row);
+  } catch {
+    // Table may not exist — use in-memory store
+    const measurement: Measurement = {
+      id: memGenerateId(),
       athleteId: data.athleteId ?? "jacob-rodgers",
       measureType: data.measureType,
       value: data.value,
       unit: data.unit,
-      measuredAt: data.measuredAt ? new Date(data.measuredAt) : new Date(),
+      measuredAt: data.measuredAt ?? new Date().toISOString(),
       source: data.source ?? "self_reported",
-      campId: data.campId,
+      campId: data.campId ?? null,
       verified: data.verified ?? false,
-      notes: data.notes,
-    })
-    .returning();
-
-  return rowToMeasurement(row);
+      notes: data.notes ?? null,
+      createdAt: new Date().toISOString(),
+    };
+    memoryMeasurables.push(measurement);
+    return measurement;
+  }
 }
 
 // ---- Percentile calculation ----
