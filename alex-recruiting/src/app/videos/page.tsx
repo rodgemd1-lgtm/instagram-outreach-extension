@@ -1,2 +1,2 @@
 import { redirect } from "next/navigation";
-export default function VideosRedirect() { redirect("/content"); }
+export default function VideosRedirect() { redirect("/film"); }

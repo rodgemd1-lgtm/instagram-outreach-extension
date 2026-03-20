@@ -17,6 +17,8 @@ import {
 } from "@/components/sc";
 import { DMList } from "@/components/outreach/dm-list";
 import { ConnectionsList } from "@/components/outreach/connections-list";
+import EmailComposer from "@/components/email-composer";
+import { EmailTracker } from "@/components/email-tracker";
 
 type OutreachStage = "research" | "follow" | "engage" | "dm" | "response" | "relationship";
 
@@ -71,6 +73,7 @@ const STAGE_COLORS: Record<OutreachStage, string> = {
 const OUTREACH_TABS = [
   { label: "Pipeline", value: "pipeline" },
   { label: "DM Sequences", value: "dms" },
+  { label: "Email", value: "email" },
   { label: "Follow Strategy", value: "follows" },
 ];
 
@@ -173,6 +176,12 @@ export default function OutreachPage() {
         <SCTabs tabs={OUTREACH_TABS} activeTab={activeTab} onTabChange={setActiveTab} className="mb-6" />
 
         {activeTab === "dms" && <DMList />}
+        {activeTab === "email" && (
+          <div className="space-y-6">
+            <EmailComposer />
+            <EmailTracker />
+          </div>
+        )}
         {activeTab === "follows" && <ConnectionsList />}
 
         {activeTab === "pipeline" && (<>

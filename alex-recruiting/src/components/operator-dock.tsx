@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { OPERATOR_EVENT_NAME, type OperatorCommandEventDetail } from "@/lib/os/operator-client";
+import { NotificationCenter } from "@/components/notification-center";
 import type {
   OSBriefingResponse,
   OSOperatorCard,
@@ -217,9 +218,12 @@ function OperatorDockInner() {
         <div className="border-b border-[rgba(15,40,75,0.08)] px-5 py-4">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-[rgba(15,40,75,0.08)] bg-white/76 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--app-navy)]">
-                <TerminalSquare className="h-3.5 w-3.5" />
-                Embedded Operator
+              <div className="flex items-center gap-2">
+                <div className="inline-flex items-center gap-2 rounded-full border border-[rgba(15,40,75,0.08)] bg-white/76 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--app-navy)]">
+                  <TerminalSquare className="h-3.5 w-3.5" />
+                  Embedded Operator
+                </div>
+                <NotificationCenter />
               </div>
               <h2 className="mt-3 text-lg font-semibold tracking-tight text-[var(--app-navy-strong)]">
                 Startup Intelligence OS
