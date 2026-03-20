@@ -152,7 +152,7 @@ export async function POST(req: NextRequest) {
         updated_at: now,
       };
 
-      const { data, error } = await supabase
+      const { data: row, error } = await supabase
         .from("posts")
         .insert(insertRow)
         .select()
@@ -160,7 +160,7 @@ export async function POST(req: NextRequest) {
 
       if (error) throw error;
 
-      const post = rowToPost(data as PostRow);
+      const post = rowToPost(row as PostRow);
       return NextResponse.json({ post }, { status: 201 });
     } catch (err) {
       console.error("[POST /api/posts] Supabase error, falling through to in-memory:", err);

@@ -32,6 +32,7 @@ const statusOrder: Record<Post["status"], number> = {
   scheduled: 2,
   posted: 3,
   rejected: 4,
+  pending_panel: 5,
 };
 
 export function PostQueue() {

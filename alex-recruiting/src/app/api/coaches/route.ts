@@ -6,7 +6,7 @@ import {
   createAdminClient,
   isSupabaseConfigured,
 } from "@/lib/supabase/admin";
-import type { Coach } from "@/lib/types";
+import type { Coach, DivisionTier, PriorityTier } from "@/lib/types";
 
 // ---------------------------------------------------------------------------
 // Input validation schema — POST /api/coaches
@@ -36,7 +36,7 @@ export const dynamic = "force-dynamic";
 // ---------------------------------------------------------------------------
 // In-memory fallback (used when Supabase env vars are missing)
 // ---------------------------------------------------------------------------
-const coachStore = targetSchools.map((school) => ({
+const coachStore: Coach[] = targetSchools.map((school) => ({
   id: school.id,
   name: `OL Coach — ${school.name}`,
   title: "Offensive Line Coach",
@@ -194,8 +194,8 @@ export async function POST(req: NextRequest) {
   const body = parsed.data;
 
   const now = new Date().toISOString();
-  const priorityTier =
-    body.priorityTier ||
+  const priorityTier: PriorityTier =
+    (body.priorityTier as PriorityTier) ||
     getTierForDivision(body.division, body.conference || "");
 
   // ── Supabase path ──────────────────────────────────────────────────────
@@ -249,7 +249,7 @@ export async function POST(req: NextRequest) {
     title: body.title || "",
     schoolId: body.schoolId || "",
     schoolName: body.schoolName,
-    division: body.division,
+    division: body.division as DivisionTier,
     conference: body.conference || "",
     xHandle: body.xHandle || "",
     dmOpen: body.dmOpen || false,

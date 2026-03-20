@@ -1,10 +1,10 @@
 // Alex Recruiting Intelligence System — Shared Types
 
-export type DivisionTier = "D1 FBS" | "D1 FCS" | "D2" | "D3" | "NAIA";
+export type DivisionTier = "D1 FBS" | "D1 FCS" | "D2" | "D3" | "NAIA" | "FBS" | "FCS" | "JUCO";
 export type PriorityTier = "Tier 1" | "Tier 2" | "Tier 3";
 export type FollowStatus = "not_followed" | "followed" | "followed_back" | "unfollowed";
 export type DMStatus = "not_sent" | "drafted" | "approved" | "sent" | "responded" | "no_response";
-export type PostStatus = "draft" | "approved" | "scheduled" | "posted" | "rejected";
+export type PostStatus = "draft" | "approved" | "scheduled" | "posted" | "rejected" | "pending_panel";
 export type ContentPillar = "performance" | "work_ethic" | "character";
 export type AuditScore = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 

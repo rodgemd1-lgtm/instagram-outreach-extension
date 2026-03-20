@@ -190,10 +190,10 @@ export async function POST(req: NextRequest) {
 
   const dm: DMMessage = {
     id: `dm-${Date.now()}`,
-    coachId: body.coachId,
+    coachId: body.coachId ?? "",
     coachName: body.coachName,
     schoolName: body.schoolName,
-    templateType: body.templateType,
+    templateType: body.templateType ?? "custom",
     content: body.content,
     status: sendNow ? "sent" : "drafted",
     sentAt: sendNow ? now : null,

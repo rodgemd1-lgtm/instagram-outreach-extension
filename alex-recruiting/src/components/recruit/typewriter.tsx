@@ -21,7 +21,7 @@ export function TypewriterText({
 }: TypewriterTextProps) {
   const [displayedCount, setDisplayedCount] = useState(0);
   const [started, setStarted] = useState(autoStart);
-  const intervalRef = useRef<ReturnType<typeof setInterval>>();
+  const intervalRef = useRef<ReturnType<typeof setInterval>>(undefined);
   const reducedMotion =
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;

@@ -131,7 +131,7 @@ export function DailyActionPlan() {
         // DMs sent this week
         const weeklyDMs = allDMs.filter(
           (d) =>
-            (d.status === "sent" || d.status === "delivered") &&
+            d.status === "sent" &&
             d.sentAt &&
             new Date(d.sentAt) > weekAgo
         ).length;

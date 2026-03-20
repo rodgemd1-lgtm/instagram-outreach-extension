@@ -81,11 +81,11 @@ interface XConnectionStatus {
 }
 
 const TABS = [
-  { id: "command", label: "Command" },
-  { id: "profile", label: "Profile" },
-  { id: "visual", label: "Visuals" },
-  { id: "publishing", label: "Publishing" },
-  { id: "launch", label: "Launch" },
+  { value: "command", label: "Command" },
+  { value: "profile", label: "Profile" },
+  { value: "visual", label: "Visuals" },
+  { value: "publishing", label: "Publishing" },
+  { value: "launch", label: "Launch" },
 ];
 
 export default function ProfileStudioPage() {
