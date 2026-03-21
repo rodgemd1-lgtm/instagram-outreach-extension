@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { IOWA_D3_OUTREACH } from "@/lib/data/iowa-d3-outreach";
 import { generateEmail, listEmails } from "@/lib/outreach/email-sequences";
 import { insertPost } from "@/lib/posts/store";
@@ -11,7 +11,11 @@ import type { Post } from "@/lib/types";
 // Creates email drafts, DM drafts, and X callout posts for all 8 schools
 // ---------------------------------------------------------------------------
 
-export async function POST() {
+export async function POST(request: NextRequest) {
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret || request.headers.get("authorization") !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   const results = {
     emails: [] as { coachName: string; schoolName: string; status: string }[],
     dms: [] as { coachName: string; schoolName: string; status: string }[],

@@ -641,7 +641,7 @@ function PerformanceTab({ posts }: { posts: AirtablePostRecord[] }) {
       <SCGlassCard className="p-5">
         <h3 className="text-sm font-bold text-white mb-1">Post Performance</h3>
         <p className="text-xs text-slate-500 mb-4">
-          Engagement metrics for posted content (sample data — connect Airtable for live tracking)
+          Engagement metrics for posted content
         </p>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">

@@ -1,6 +1,6 @@
 import { access } from "fs/promises";
 import path from "path";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { runProfileAudit, getScoreInterpretation } from "@/lib/alex/profile-audit";
 import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { jacobProfile } from "@/lib/data/jacob-profile";
@@ -201,7 +201,11 @@ async function hasGeneratedHeader(): Promise<boolean> {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret || request.headers.get("authorization") !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
   let storedPostsLast30Days: Post[] = getAllPosts().filter((post) =>

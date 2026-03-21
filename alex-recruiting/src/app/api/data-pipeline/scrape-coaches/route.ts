@@ -99,7 +99,7 @@ function validateAuth(request: NextRequest): boolean {
   const cronSecret = process.env.CRON_SECRET;
 
   // In dev, if CRON_SECRET is not set, allow requests
-  if (!cronSecret || cronSecret === "your_cron_secret_here") {
+  if (!cronSecret) {
     if (process.env.NODE_ENV === "development") {
       console.warn(
         "[scrape-coaches] CRON_SECRET not set — allowing request (dev mode)"

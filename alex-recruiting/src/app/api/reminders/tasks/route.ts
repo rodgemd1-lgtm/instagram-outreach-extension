@@ -20,7 +20,7 @@ export const dynamic = "force-dynamic";
 
 function isAuthorized(req: NextRequest): boolean {
   const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) return true;
+  if (!cronSecret) return false;
 
   const authHeader = req.headers.get("authorization");
   if (!authHeader) return false;

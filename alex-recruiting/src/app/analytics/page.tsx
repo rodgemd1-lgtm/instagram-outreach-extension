@@ -114,7 +114,7 @@ export default function AnalyticsPage() {
 
   const topMetrics = [
     {
-      label: "Commit Conversion",
+      label: "DM Response Rate",
       value: data.current.dmResponseRate,
       suffix: "%",
       icon: "target",

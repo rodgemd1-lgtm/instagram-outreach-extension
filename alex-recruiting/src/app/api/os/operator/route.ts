@@ -21,6 +21,12 @@ interface CoachesResponse {
 
 type BriefingResponse = OSBriefingResponse;
 
+function validateOperatorAuth(request: NextRequest): boolean {
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret) return false;
+  return request.headers.get("authorization") === `Bearer ${cronSecret}`;
+}
+
 function normalizeCommand(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
 }
@@ -99,6 +105,10 @@ function routeFromCommand(input: string): string | null {
 }
 
 export async function POST(req: NextRequest) {
+  if (!validateOperatorAuth(req)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const body = await req.json().catch(() => ({}));
   const command = normalizeCommand(body.command);
   const lower = command.toLowerCase();

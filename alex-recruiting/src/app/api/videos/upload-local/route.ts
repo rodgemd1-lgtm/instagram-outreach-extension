@@ -7,6 +7,19 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
+// Allowlisted directories — must match videos/serve/route.ts
+const ALLOWED_DIRS = [
+  `${process.env.HOME}/Desktop/2025 Football Videos`,
+  `${process.env.HOME}/Desktop/Jacob Media Master`,
+  `${process.env.HOME}/Library/CloudStorage`,
+  "/tmp/alex-recruiting-export",
+];
+
+function isPathAllowed(filePath: string): boolean {
+  const resolved = path.resolve(filePath);
+  return ALLOWED_DIRS.some((dir) => resolved.startsWith(dir));
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -21,6 +34,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { error: "filePath and source are required" },
         { status: 400 }
+      );
+    }
+
+    // Path traversal protection
+    if (!isPathAllowed(filePath)) {
+      return NextResponse.json(
+        { error: "Access denied — file path not in allowed directories" },
+        { status: 403 }
       );
     }
 

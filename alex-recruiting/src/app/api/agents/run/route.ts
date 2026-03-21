@@ -5,6 +5,11 @@ import { AgentId, AGENT_CONFIGS } from "@/lib/agents/types";
 export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret || request.headers.get("authorization") !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const body = await request.json();
     const { agentId } = body as { agentId: string };

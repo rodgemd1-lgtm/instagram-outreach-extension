@@ -77,7 +77,7 @@ export function SCSidebar({ user }: SCSidebarProps) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+      <nav aria-label="Main navigation" className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
         {navSections.map((section, sectionIdx) => (
           <div key={sectionIdx}>
             {section.title && (
@@ -93,9 +93,11 @@ export function SCSidebar({ user }: SCSidebarProps) {
                 <Link
                   key={item.href}
                   href={item.href}
+                  aria-current={active ? "page" : undefined}
                   className={`
                     group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
                     transition-all duration-150 relative
+                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sc-primary focus-visible:ring-offset-2 focus-visible:ring-offset-sc-surface
                     ${
                       active
                         ? "text-sc-text border-l-[3px] border-sc-primary"

@@ -232,7 +232,7 @@ function MiniStat({
   return (
     <div className="text-center py-4">
       <div className="text-lg md:text-2xl font-mono font-bold text-white/80">
-        <span dangerouslySetInnerHTML={{ __html: value }} />
+        <span>{value}</span>
         {suffix && (
           <span className="text-xs text-white/30 ml-1">{suffix}</span>
         )}

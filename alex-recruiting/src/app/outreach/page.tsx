@@ -201,14 +201,14 @@ export default function OutreachPage() {
           </motion.div>
           <motion.div variants={staggerItem}>
             <SCStatCard
-              label="Signing Success Rate"
+              label="Response Rate"
               value={<SCAnimatedNumber value={signingRate} suffix="%" />}
               icon="verified"
             />
           </motion.div>
           <motion.div variants={staggerItem}>
             <SCStatCard
-              label="Confirmed Prospects"
+              label="Responses Received"
               value={<SCAnimatedNumber value={plan?.stats.responses ?? 0} />}
               icon="how_to_reg"
             />

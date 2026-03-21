@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { seedCoachesAndSchools } from "@/lib/db/seed-coaches";
 import { isSupabaseConfigured } from "@/lib/supabase/admin";
 
@@ -12,7 +12,11 @@ export const dynamic = "force-dynamic";
 // Safe to call repeatedly -- existing school rows are updated (upsert) rather
 // than duplicated.
 // ---------------------------------------------------------------------------
-export async function POST() {
+export async function POST(request: NextRequest) {
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret || request.headers.get("authorization") !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   if (!isSupabaseConfigured()) {
     return NextResponse.json(
       {

@@ -20,7 +20,8 @@ export default function ContentPage() {
     <SCPageTransition>
       <div className="space-y-6">
         <SCPageHeader
-          title="Content Studio"
+          kicker="Content Operations"
+          title="CONTENT STUDIO"
           subtitle="Create, schedule, and manage Jacob's X presence"
         />
         <SCTabs tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} className="mb-6" />

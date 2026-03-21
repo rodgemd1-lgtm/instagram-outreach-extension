@@ -873,7 +873,7 @@ export function ContentManager() {
               <CardHeader>
                 <CardTitle className="text-lg">Post Performance</CardTitle>
                 <CardDescription>
-                  Engagement metrics for posted content (sample data — connect Airtable for live tracking)
+                  Engagement metrics for posted content
                 </CardDescription>
               </CardHeader>
               <CardContent>

@@ -107,6 +107,19 @@ export function SCHeader() {
     }
   };
 
+  // Close all dropdowns on Escape
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setNotifOpen(false);
+        setSettingsOpen(false);
+        setUserOpen(false);
+      }
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   // Close other dropdowns when opening one
   const toggleNotif = () => { setNotifOpen(!notifOpen); setSettingsOpen(false); setUserOpen(false); };
   const toggleSettings = () => { setSettingsOpen(!settingsOpen); setNotifOpen(false); setUserOpen(false); };
@@ -115,30 +128,37 @@ export function SCHeader() {
   return (
     <header className="sticky top-0 z-50 h-16 bg-sc-bg/80 backdrop-blur-md border-b border-sc-border flex items-center justify-between px-6 gap-4">
       {/* Left: Search bar */}
-      <div ref={searchRef} className="flex items-center gap-3 flex-1 max-w-md relative">
+      <div ref={searchRef} role="search" className="flex items-center gap-3 flex-1 max-w-md relative">
         <div className="relative w-full">
           <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-sc-text-dim text-lg">
             search
           </span>
           <input
-            type="text"
+            type="search"
             value={searchValue}
             onChange={(e) => handleSearch(e.target.value)}
             onFocus={() => searchValue.trim() && setSearchOpen(true)}
             onKeyDown={handleKeyDown}
             placeholder="Search coaches, schools, content..."
-            className="w-full bg-white/5 border-none rounded-lg pl-10 pr-4 py-2 text-sm text-sc-text placeholder:text-sc-text-dim focus:outline-none focus:ring-1 focus:ring-sc-primary/50"
+            aria-label="Search coaches, schools, and content"
+            aria-expanded={searchOpen && searchResults.length > 0}
+            aria-controls={searchOpen && searchResults.length > 0 ? "search-results" : undefined}
+            role="combobox"
+            aria-autocomplete="list"
+            className="w-full bg-white/5 border-none rounded-lg pl-10 pr-4 py-2 text-sm text-sc-text placeholder:text-sc-text-dim focus:outline-none focus:ring-2 focus:ring-sc-primary/50"
           />
         </div>
 
         {/* Search results dropdown */}
         {searchOpen && searchResults.length > 0 && (
-          <div className="absolute top-full left-0 right-0 mt-1 bg-sc-surface border border-sc-border rounded-lg shadow-xl overflow-hidden z-[60]">
+          <div id="search-results" role="listbox" className="absolute top-full left-0 right-0 mt-1 bg-sc-surface border border-sc-border rounded-lg shadow-xl overflow-hidden z-[60]">
             {searchResults.map((r, i) => (
               <button
                 key={`${r.type}-${r.href}-${i}`}
+                role="option"
+                aria-selected={false}
                 onClick={() => handleResultClick(r)}
-                className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 transition-colors text-left"
+                className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 transition-colors text-left focus-visible:outline-none focus-visible:bg-white/10"
               >
                 <span className="material-symbols-outlined text-sm text-sc-text-muted">
                   {r.type === "coach" ? "person" : r.type === "school" ? "school" : "dashboard"}
@@ -174,8 +194,9 @@ export function SCHeader() {
           <button
             type="button"
             onClick={toggleNotif}
-            className="relative p-2 rounded-lg hover:bg-white/5 transition-colors"
+            className="relative p-2 rounded-lg hover:bg-white/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sc-primary"
             aria-label="Notifications"
+            aria-expanded={notifOpen}
           >
             <span className="material-symbols-outlined text-sc-text-muted text-xl">
               notifications
@@ -220,8 +241,9 @@ export function SCHeader() {
           <button
             type="button"
             onClick={toggleSettings}
-            className="p-2 rounded-lg hover:bg-white/5 transition-colors"
+            className="p-2 rounded-lg hover:bg-white/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sc-primary"
             aria-label="Settings"
+            aria-expanded={settingsOpen}
           >
             <span className="material-symbols-outlined text-sc-text-muted text-xl">
               settings
@@ -259,8 +281,9 @@ export function SCHeader() {
           <button
             type="button"
             onClick={toggleUser}
-            className="w-8 h-8 rounded-full border-2 border-sc-primary/50 bg-sc-surface flex items-center justify-center hover:border-sc-primary transition-colors"
+            className="w-8 h-8 rounded-full border-2 border-sc-primary/50 bg-sc-surface flex items-center justify-center hover:border-sc-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sc-primary focus-visible:ring-offset-2 focus-visible:ring-offset-sc-bg"
             aria-label="User menu"
+            aria-expanded={userOpen}
           >
             <span className="text-[10px] font-bold text-sc-primary">JR</span>
           </button>

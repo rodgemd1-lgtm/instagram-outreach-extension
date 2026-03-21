@@ -29,7 +29,7 @@ export function SCMobileNav() {
   }
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-sc-surface border-t border-sc-border lg:hidden pb-[env(safe-area-inset-bottom)]">
+    <nav aria-label="Mobile navigation" className="fixed bottom-0 left-0 right-0 z-50 bg-sc-surface border-t border-sc-border lg:hidden pb-[env(safe-area-inset-bottom)]">
       <div className="flex items-center justify-around h-16">
         {tabs.map((tab) => {
           const active = isActive(tab.href);
@@ -37,7 +37,8 @@ export function SCMobileNav() {
             <Link
               key={tab.href}
               href={tab.href}
-              className={`flex flex-col items-center justify-center gap-0.5 flex-1 py-2 transition-colors ${
+              aria-current={active ? "page" : undefined}
+              className={`flex flex-col items-center justify-center gap-0.5 flex-1 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sc-primary focus-visible:ring-inset ${
                 active ? "text-sc-primary" : "text-slate-500"
               }`}
             >

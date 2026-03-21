@@ -163,9 +163,13 @@ export async function POST(req: NextRequest) {
   }
 }
 
-/* ─── GET — list inquiries ───────────────────────────────────── */
+/* ─── GET — list inquiries (admin only) ────────────────────── */
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret || request.headers.get("authorization") !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   if (!isSupabaseConfigured()) {
     return NextResponse.json([]);
   }

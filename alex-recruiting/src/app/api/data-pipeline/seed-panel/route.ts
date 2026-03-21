@@ -20,7 +20,7 @@ export const dynamic = "force-dynamic";
 
 function validateAuth(request: NextRequest): boolean {
   const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) return true; // no secret configured = allow (dev mode)
+  if (!cronSecret) return false;
   const authHeader = request.headers.get("authorization");
   return authHeader === `Bearer ${cronSecret}`;
 }
