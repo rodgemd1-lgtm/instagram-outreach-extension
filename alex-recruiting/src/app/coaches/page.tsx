@@ -170,7 +170,7 @@ export default function CoachesPage() {
 
   // Stats
   const totalCoaches = coaches.length;
-  const withFollows = coaches.filter((c) => c.followStatus === "following").length;
+  const withFollows = coaches.filter((c) => c.followStatus === "followed" || c.followStatus === "followed_back").length;
   const withDMs = coaches.filter((c) => c.dmStatus === "sent" || c.dmStatus === "responded").length;
   const responded = coaches.filter((c) => c.dmStatus === "responded").length;
   const engagementRate = totalCoaches > 0 ? Math.round((withFollows / totalCoaches) * 100) : 0;
@@ -213,21 +213,21 @@ export default function CoachesPage() {
         >
           <motion.div variants={cardVariants}>
             <SCStatCard
-              label="Total Offers"
+              label="Coaches Tracked"
               value={<SCAnimatedNumber value={totalCoaches} />}
               icon="groups"
             />
           </motion.div>
           <motion.div variants={cardVariants}>
             <SCStatCard
-              label="Under Review"
+              label="Followed"
               value={<SCAnimatedNumber value={withFollows} />}
               icon="pending"
             />
           </motion.div>
           <motion.div variants={cardVariants}>
             <SCStatCard
-              label="Signed"
+              label="Responded"
               value={<SCAnimatedNumber value={responded} />}
               icon="task_alt"
             />
@@ -473,8 +473,8 @@ export default function CoachesPage() {
                         setNewCoachForm((f) => ({ ...f, division: e.target.value }))
                       }
                     >
-                      <option value="D1 FBS" className="bg-sc-surface text-white">D1 FBS</option>
-                      <option value="D1 FCS" className="bg-sc-surface text-white">D1 FCS</option>
+                      <option value="FBS" className="bg-sc-surface text-white">D1 FBS</option>
+                      <option value="FCS" className="bg-sc-surface text-white">D1 FCS</option>
                       <option value="D2" className="bg-sc-surface text-white">D2</option>
                       <option value="D3" className="bg-sc-surface text-white">D3</option>
                       <option value="NAIA" className="bg-sc-surface text-white">NAIA</option>

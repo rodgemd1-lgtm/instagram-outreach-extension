@@ -27,71 +27,9 @@ interface Notification {
 // ---------------------------------------------------------------------------
 // In-memory seed data (replaced by DB later)
 // ---------------------------------------------------------------------------
-const notifications: Notification[] = [
-  {
-    id: "notif-1",
-    type: "coach_view",
-    title: "Profile View",
-    message: "Coach Mike Smith viewed your profile",
-    read: false,
-    actionUrl: "/coaches",
-    createdAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(), // 45 min ago
-  },
-  {
-    id: "notif-2",
-    type: "dm_response",
-    title: "DM Response",
-    message: "DM response from Coach Johnson at UW-Whitewater",
-    read: false,
-    actionUrl: "/outreach",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2h ago
-  },
-  {
-    id: "notif-3",
-    type: "deadline",
-    title: "Registration Deadline",
-    message: "Camp registration deadline: UW-Platteville Prospect Day in 3 days",
-    read: false,
-    actionUrl: "/camps",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 4).toISOString(), // 4h ago
-  },
-  {
-    id: "notif-4",
-    type: "camp_reminder",
-    title: "Camp Reminder",
-    message: "Reminder: Carthage College Camp this Saturday",
-    read: false,
-    actionUrl: "/camps",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(), // 6h ago
-  },
-  {
-    id: "notif-5",
-    type: "content_approved",
-    title: "Content Approved",
-    message: "Weekly content batch approved — 5 posts scheduled",
-    read: true,
-    actionUrl: "/content",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(), // 12h ago
-  },
-  {
-    id: "notif-6",
-    type: "email_opened",
-    title: "Email Opened",
-    message: "Coach Davis opened your email",
-    read: true,
-    actionUrl: "/outreach",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1d ago
-  },
-  {
-    id: "notif-7",
-    type: "coach_view",
-    title: "Profile View",
-    message: "Coach Rivera at Carroll University viewed your highlights",
-    read: true,
-    actionUrl: "/coaches",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 36).toISOString(), // 1.5d ago
-  },
-];
+// Empty default — notifications are populated by real events (coach views,
+// DM responses, deadlines).  No hardcoded fake data.
+const notifications: Notification[] = [];
 
 // ---------------------------------------------------------------------------
 // GET  /api/notifications?unread=true

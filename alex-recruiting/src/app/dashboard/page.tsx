@@ -64,7 +64,7 @@ export default function DashboardPage() {
         const posts = Array.isArray(postsRes)
           ? postsRes
           : postsRes?.posts || [];
-        const dms = Array.isArray(dmsRes) ? dmsRes : dmsRes?.messages || [];
+        const dms = Array.isArray(dmsRes) ? dmsRes : dmsRes?.dms || [];
 
         // Only count posts actually published to X (have xPostId/x_post_id),
         // NOT all DB drafts which inflate the number

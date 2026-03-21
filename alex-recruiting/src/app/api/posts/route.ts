@@ -68,9 +68,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const status = searchParams.get("status");
   const pillar = searchParams.get("pillar");
-  let supabasePosts: Post[] = [];
-
-  // ----- Supabase path -----
+  // ----- Supabase path (primary) -----
   if (isSupabaseConfigured()) {
     try {
       const supabase = createAdminClient();
@@ -84,29 +82,23 @@ export async function GET(req: NextRequest) {
       const { data, error } = await query;
       if (error) throw error;
 
-      supabasePosts = (data as PostRow[]).map(rowToPost);
+      const posts = (data as PostRow[]).map(rowToPost);
+      return NextResponse.json({ posts, total: posts.length });
     } catch (err) {
       console.error("[GET /api/posts] Supabase error, falling through to in-memory:", err);
     }
   }
 
+  // ----- In-memory fallback (only when Supabase is unavailable) -----
   let localPosts = getAllPosts();
   if (status) localPosts = localPosts.filter((p) => p.status === status);
   if (pillar) localPosts = localPosts.filter((p) => p.pillar === pillar);
 
-  const merged = [...supabasePosts];
-  const seen = new Set(merged.map((post) => post.id));
-  for (const post of localPosts) {
-    if (seen.has(post.id)) continue;
-    merged.push(post);
-    seen.add(post.id);
-  }
-
-  merged.sort(
+  localPosts.sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
 
-  return NextResponse.json({ posts: merged, total: merged.length });
+  return NextResponse.json({ posts: localPosts, total: localPosts.length });
 }
 
 // ---------------------------------------------------------------------------

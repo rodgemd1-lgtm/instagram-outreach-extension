@@ -4,7 +4,8 @@
     {
       "name": "dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "alex-recruiting"],
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "/Users/mikerodgers/Desktop/alex-recruiting-project/alex-recruiting/alex-recruiting",
       "port": 3000
     }
   ]

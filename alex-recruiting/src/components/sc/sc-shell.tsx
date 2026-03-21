@@ -30,7 +30,7 @@ export function SCShell({ children }: SCShellProps) {
       <div className="flex flex-1 flex-col overflow-y-auto lg:ml-64">
         <SCHeader />
 
-        <main className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full">
+        <main className="flex-1 p-4 pb-20 md:p-8 md:pb-8 max-w-7xl mx-auto w-full">
           {children}
         </main>
 

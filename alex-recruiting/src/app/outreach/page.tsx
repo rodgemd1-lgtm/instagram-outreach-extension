@@ -381,6 +381,7 @@ export default function OutreachPage() {
                                 className={`rounded px-1.5 py-0.5 text-[9px] font-bold transition-all ${STAGE_COLORS.dm}`}
                                 onClick={(e) => {
                                   e.stopPropagation();
+                                  router.push(`/coaches/${coach.schoolId}?tab=dm`);
                                 }}
                               >
                                 DM
@@ -389,6 +390,7 @@ export default function OutreachPage() {
                                 className={`rounded px-1.5 py-0.5 text-[9px] font-bold transition-all ${STAGE_COLORS.engage}`}
                                 onClick={(e) => {
                                   e.stopPropagation();
+                                  router.push(`/coaches/${coach.schoolId}`);
                                 }}
                               >
                                 Engage
