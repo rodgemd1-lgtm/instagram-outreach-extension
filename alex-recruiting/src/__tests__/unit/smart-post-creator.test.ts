@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { SmartPostCreator } from '@/components/smart-post-creator';
 import * as fs from 'node:fs';
 import * as path from 'node:path';

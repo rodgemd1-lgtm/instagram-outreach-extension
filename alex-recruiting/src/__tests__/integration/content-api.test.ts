@@ -1,6 +1,14 @@
 import { describe, it, expect } from "vitest";
 import { NextRequest } from "next/server";
 
+function mockPost(path: string) {
+  return new NextRequest(`http://localhost:3000${path}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({}),
+  });
+}
+
 /**
  * Integration tests for the content pipeline API routes.
  *
@@ -85,7 +93,7 @@ describe("GET /api/content/queue", () => {
 describe("POST /api/content/generate-month", () => {
   it("returns success with generated posts", async () => {
     const { POST } = await import("@/app/api/content/generate-month/route");
-    const response = await POST();
+    const response = await POST(mockPost("/api/content/generate-month"));
     const data = await response.json();
 
     expect(data.success).toBe(true);
@@ -95,7 +103,7 @@ describe("POST /api/content/generate-month", () => {
 
   it("generates a substantial number of posts (90-120 for 30 days)", async () => {
     const { POST } = await import("@/app/api/content/generate-month/route");
-    const response = await POST();
+    const response = await POST(mockPost("/api/content/generate-month"));
     const data = await response.json();
 
     // 30 days * 3-4 posts per day = 90-120 posts
@@ -106,7 +114,7 @@ describe("POST /api/content/generate-month", () => {
 
   it("generated posts have all required fields", async () => {
     const { POST } = await import("@/app/api/content/generate-month/route");
-    const response = await POST();
+    const response = await POST(mockPost("/api/content/generate-month"));
     const data = await response.json();
 
     for (const post of data.posts) {
@@ -127,7 +135,7 @@ describe("POST /api/content/generate-month", () => {
 
   it("generated posts have valid pillars", async () => {
     const { POST } = await import("@/app/api/content/generate-month/route");
-    const response = await POST();
+    const response = await POST(mockPost("/api/content/generate-month"));
     const data = await response.json();
 
     const validPillars = ["performance", "work_ethic", "character"];
@@ -139,7 +147,7 @@ describe("POST /api/content/generate-month", () => {
 
   it("generated posts span approximately 30 days", async () => {
     const { POST } = await import("@/app/api/content/generate-month/route");
-    const response = await POST();
+    const response = await POST(mockPost("/api/content/generate-month"));
     const data = await response.json();
 
     // Verify posts span a 30-day range by checking first and last scheduled dates
@@ -168,7 +176,7 @@ describe("POST /api/content/generate-month", () => {
 
   it("all generated posts have queued status", async () => {
     const { POST } = await import("@/app/api/content/generate-month/route");
-    const response = await POST();
+    const response = await POST(mockPost("/api/content/generate-month"));
     const data = await response.json();
 
     for (const post of data.posts) {
@@ -178,7 +186,7 @@ describe("POST /api/content/generate-month", () => {
 
   it("generated posts include additional metadata fields", async () => {
     const { POST } = await import("@/app/api/content/generate-month/route");
-    const response = await POST();
+    const response = await POST(mockPost("/api/content/generate-month"));
     const data = await response.json();
 
     // Spot-check a few posts for extra fields

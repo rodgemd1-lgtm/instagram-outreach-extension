@@ -14,6 +14,45 @@ import * as path from "path";
 let tempDir: string;
 let originalCwd: () => string;
 
+/** Helper to build a valid Post object with overrides */
+function makePost(overrides: Record<string, unknown> = {}) {
+  return {
+    id: "test-id",
+    createdAt: "2025-06-01T00:00:00Z",
+    updatedAt: "2025-06-01T00:00:00Z",
+    status: "draft" as const,
+    pillar: "performance" as const,
+    content: "",
+    hashtags: [],
+    mediaUrl: null,
+    scheduledFor: "",
+    bestTime: "",
+    xPostId: null,
+    impressions: 0,
+    engagements: 0,
+    engagementRate: 0,
+    ...overrides,
+  };
+}
+
+/** Helper to build insert data (no id/createdAt/updatedAt) */
+function makeInsertData(overrides: Record<string, unknown> = {}) {
+  return {
+    status: "draft" as const,
+    pillar: "performance" as const,
+    content: "",
+    hashtags: [],
+    mediaUrl: null,
+    scheduledFor: "",
+    bestTime: "",
+    xPostId: null,
+    impressions: 0,
+    engagements: 0,
+    engagementRate: 0,
+    ...overrides,
+  };
+}
+
 beforeEach(() => {
   tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "posts-store-test-"));
   originalCwd = process.cwd;
@@ -41,16 +80,8 @@ describe("getAllPosts", () => {
   test("returns posts sorted newest first", async () => {
     const storePath = path.join(tempDir, ".posts-store.json");
     const posts = [
-      {
-        id: "old", createdAt: "2025-01-01T00:00:00Z",
-        updatedAt: "2025-01-01T00:00:00Z", status: "Draft",
-        pillar: "performance", hook: "", caption: "", mediaType: "text", tags: [],
-      },
-      {
-        id: "new", createdAt: "2025-06-01T00:00:00Z",
-        updatedAt: "2025-06-01T00:00:00Z", status: "Draft",
-        pillar: "performance", hook: "", caption: "", mediaType: "text", tags: [],
-      },
+      makePost({ id: "old", createdAt: "2025-01-01T00:00:00Z", updatedAt: "2025-01-01T00:00:00Z" }),
+      makePost({ id: "new", createdAt: "2025-06-01T00:00:00Z", updatedAt: "2025-06-01T00:00:00Z" }),
     ];
     fs.writeFileSync(storePath, JSON.stringify(posts));
     const { getAllPosts } = await getStore();
@@ -61,13 +92,13 @@ describe("getAllPosts", () => {
 
   test("returns all posts", async () => {
     const storePath = path.join(tempDir, ".posts-store.json");
-    const posts = Array.from({ length: 5 }, (_, i) => ({
-      id: `post-${i}`,
-      createdAt: `2025-0${i + 1}-01T00:00:00Z`,
-      updatedAt: `2025-0${i + 1}-01T00:00:00Z`,
-      status: "Draft", pillar: "performance",
-      hook: "", caption: "", mediaType: "text", tags: [],
-    }));
+    const posts = Array.from({ length: 5 }, (_, i) =>
+      makePost({
+        id: `post-${i}`,
+        createdAt: `2025-0${i + 1}-01T00:00:00Z`,
+        updatedAt: `2025-0${i + 1}-01T00:00:00Z`,
+      })
+    );
     fs.writeFileSync(storePath, JSON.stringify(posts));
     const { getAllPosts } = await getStore();
     expect(getAllPosts()).toHaveLength(5);
@@ -85,18 +116,17 @@ describe("getPostById", () => {
   test("returns matching post when found", async () => {
     const storePath = path.join(tempDir, ".posts-store.json");
     const posts = [
-      {
-        id: "abc-123", createdAt: "2025-06-01T00:00:00Z",
-        updatedAt: "2025-06-01T00:00:00Z", status: "Draft",
-        pillar: "performance", hook: "Hook text",
-        caption: "Caption", mediaType: "video", tags: ["OL"],
-      },
+      makePost({
+        id: "abc-123",
+        content: "Hook text",
+        pillar: "performance" as const,
+      }),
     ];
     fs.writeFileSync(storePath, JSON.stringify(posts));
     const { getPostById } = await getStore();
     const result = getPostById("abc-123");
     expect(result?.id).toBe("abc-123");
-    expect(result?.hook).toBe("Hook text");
+    expect(result?.content).toBe("Hook text");
   });
 });
 
@@ -105,46 +135,36 @@ describe("getPostById", () => {
 describe("insertPost", () => {
   test("assigns a generated id with post- prefix", async () => {
     const { insertPost } = await getStore();
-    const post = insertPost({
-      status: "Draft", pillar: "performance",
-      hook: "My hook", caption: "Caption", mediaType: "text", tags: [],
-    });
+    const post = insertPost(makeInsertData({ content: "My hook" }));
     expect(post.id).toBeTruthy();
     expect(post.id.startsWith("post-")).toBe(true);
   });
 
   test("auto-fills createdAt and updatedAt as ISO strings", async () => {
     const { insertPost } = await getStore();
-    const post = insertPost({
-      status: "Draft", pillar: "performance",
-      hook: "H", caption: "C", mediaType: "text", tags: [],
-    });
+    const post = insertPost(makeInsertData());
     expect(new Date(post.createdAt).getTime()).not.toBeNaN();
     expect(new Date(post.updatedAt).getTime()).not.toBeNaN();
   });
 
   test("preserves all provided fields", async () => {
     const { insertPost } = await getStore();
-    const post = insertPost({
-      status: "Ready", pillar: "work_ethic",
-      hook: "The hook", caption: "The cap",
-      mediaType: "video", tags: ["OL", "Film"],
-    });
-    expect(post.status).toBe("Ready");
+    const post = insertPost(makeInsertData({
+      status: "approved" as const,
+      pillar: "work_ethic" as const,
+      content: "The hook",
+      hashtags: ["OL", "Film"],
+    }));
+    expect(post.status).toBe("approved");
     expect(post.pillar).toBe("work_ethic");
-    expect(post.hook).toBe("The hook");
-    expect(post.caption).toBe("The cap");
-    expect(post.mediaType).toBe("video");
-    expect(post.tags).toEqual(["OL", "Film"]);
+    expect(post.content).toBe("The hook");
+    expect(post.hashtags).toEqual(["OL", "Film"]);
   });
 
   test("persists post to store file", async () => {
     const storePath = path.join(tempDir, ".posts-store.json");
     const { insertPost, getAllPosts } = await getStore();
-    insertPost({
-      status: "Draft", pillar: "performance",
-      hook: "H", caption: "C", mediaType: "text", tags: [],
-    });
+    insertPost(makeInsertData());
     expect(fs.existsSync(storePath)).toBe(true);
     const stored = JSON.parse(fs.readFileSync(storePath, "utf8")) as object[];
     expect(stored).toHaveLength(1);
@@ -152,8 +172,8 @@ describe("insertPost", () => {
 
   test("sequential inserts accumulate in store", async () => {
     const { insertPost, getAllPosts } = await getStore();
-    insertPost({ status: "Draft", pillar: "performance", hook: "H1", caption: "C1", mediaType: "text", tags: [] });
-    insertPost({ status: "Draft", pillar: "work_ethic", hook: "H2", caption: "C2", mediaType: "text", tags: [] });
+    insertPost(makeInsertData({ content: "H1" }));
+    insertPost(makeInsertData({ pillar: "work_ethic" as const, content: "H2" }));
     expect(getAllPosts()).toHaveLength(2);
   });
 });
@@ -163,42 +183,33 @@ describe("insertPost", () => {
 describe("updatePost", () => {
   test("returns null when post is not found", async () => {
     const { updatePost } = await getStore();
-    expect(updatePost("not-found", { status: "Posted" })).toBeNull();
+    expect(updatePost("not-found", { status: "posted" })).toBeNull();
   });
 
   test("updates status and returns updated post", async () => {
     const { insertPost, updatePost } = await getStore();
-    const post = insertPost({
-      status: "Draft", pillar: "performance",
-      hook: "Old hook", caption: "Old cap", mediaType: "text", tags: [],
-    });
-    const updated = updatePost(post.id, { status: "Posted" });
-    expect(updated?.status).toBe("Posted");
-    expect(updated?.hook).toBe("Old hook"); // unchanged fields preserved
+    const post = insertPost(makeInsertData({ content: "Old hook" }));
+    const updated = updatePost(post.id, { status: "posted" });
+    expect(updated?.status).toBe("posted");
+    expect(updated?.content).toBe("Old hook"); // unchanged fields preserved
   });
 
   test("id is preserved after update", async () => {
     const { insertPost, updatePost } = await getStore();
-    const post = insertPost({
-      status: "Draft", pillar: "performance",
-      hook: "H", caption: "C", mediaType: "text", tags: [],
-    });
-    const updated = updatePost(post.id, { status: "Ready" });
+    const post = insertPost(makeInsertData());
+    const updated = updatePost(post.id, { status: "approved" });
     expect(updated?.id).toBe(post.id);
   });
 
   test("updatedAt is refreshed after update", async () => {
     const { insertPost, updatePost } = await getStore();
-    const post = insertPost({
-      status: "Draft", pillar: "performance",
-      hook: "H", caption: "C", mediaType: "text", tags: [],
-    });
+    const post = insertPost(makeInsertData());
     const originalUpdated = post.updatedAt;
 
     // Ensure at least 1ms passes
     await new Promise((r) => setTimeout(r, 2));
 
-    const updated = updatePost(post.id, { status: "Ready" });
+    const updated = updatePost(post.id, { status: "approved" });
     expect(updated?.updatedAt).not.toBe(originalUpdated);
   });
 });

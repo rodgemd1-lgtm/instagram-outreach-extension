@@ -5,7 +5,7 @@ import {
   getCoachDMPriority,
   getTierForDivision,
 } from "@/lib/alex/coach-ranker";
-import type { Coach } from "@/lib/types";
+import type { Coach, DivisionTier } from "@/lib/types";
 
 // ─── scoreCoach ───────────────────────────────────────────────────────────────
 
@@ -52,8 +52,8 @@ describe("scoreCoach", () => {
   });
 
   test("unknown division defaults to low base score without crashing", () => {
-    expect(() => scoreCoach({ division: "Unknown" })).not.toThrow();
-    const score = scoreCoach({ division: "Unknown" });
+    expect(() => scoreCoach({ division: "Unknown" as DivisionTier })).not.toThrow();
+    const score = scoreCoach({ division: "Unknown" as DivisionTier });
     expect(score).toBeGreaterThanOrEqual(0);
   });
 
@@ -161,6 +161,6 @@ describe("getTierForDivision", () => {
   });
 
   test("unknown division defaults to Tier 2", () => {
-    expect(getTierForDivision("Unknown", "Unknown")).toBe("Tier 2");
+    expect(getTierForDivision("Unknown" as DivisionTier, "Unknown")).toBe("Tier 2");
   });
 });

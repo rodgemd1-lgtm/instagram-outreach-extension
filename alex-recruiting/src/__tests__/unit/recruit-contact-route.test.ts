@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { NextRequest } from "next/server";
 
 const mockInsert = vi.fn();
 const mockFrom = vi.fn(() => ({ insert: mockInsert }));
@@ -36,7 +37,7 @@ describe("POST /api/recruit/contact", () => {
 
     const { POST } = await import("@/app/api/recruit/contact/route");
     const response = await POST(
-      new Request("http://localhost/api/recruit/contact", {
+      new NextRequest("http://localhost/api/recruit/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -59,7 +60,7 @@ describe("POST /api/recruit/contact", () => {
 
     const { POST } = await import("@/app/api/recruit/contact/route");
     const response = await POST(
-      new Request("http://localhost/api/recruit/contact", {
+      new NextRequest("http://localhost/api/recruit/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -83,7 +84,7 @@ describe("POST /api/recruit/contact", () => {
 
     const { POST } = await import("@/app/api/recruit/contact/route");
     const response = await POST(
-      new Request("http://localhost/api/recruit/contact", {
+      new NextRequest("http://localhost/api/recruit/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -125,7 +126,7 @@ describe("POST /api/recruit/contact", () => {
 
     const { POST } = await import("@/app/api/recruit/contact/route");
     const response = await POST(
-      new Request("http://localhost/api/recruit/contact", {
+      new NextRequest("http://localhost/api/recruit/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -63,7 +63,7 @@ describe("Content Pipeline APIs", () => {
 describe("Outreach Pipeline APIs", () => {
   it("GET /api/outreach/plan returns valid structure", async () => {
     const { GET } = await import("@/app/api/outreach/plan/route");
-    const res = await GET(mockGet("/api/outreach/plan"));
+    const res = await GET();
     expect(res.status).toBeLessThan(500);
     const data = await res.json();
     expect(data).toHaveProperty("stages");
@@ -71,7 +71,7 @@ describe("Outreach Pipeline APIs", () => {
 
   it("POST /api/outreach/plan generates outreach plan", async () => {
     const { POST } = await import("@/app/api/outreach/plan/route");
-    const res = await POST(mockPost("/api/outreach/plan"));
+    const res = await POST();
     expect(res.status).toBeLessThan(500);
     const data = await res.json();
     expect(data.success).toBe(true);
@@ -79,7 +79,7 @@ describe("Outreach Pipeline APIs", () => {
 
   it("POST /api/outreach/follow-plan generates follow plan", async () => {
     const { POST } = await import("@/app/api/outreach/follow-plan/route");
-    const res = await POST(mockPost("/api/outreach/follow-plan"));
+    const res = await POST();
     expect(res.status).toBeLessThan(500);
     const data = await res.json();
     expect(data.success).toBe(true);
@@ -89,7 +89,7 @@ describe("Outreach Pipeline APIs", () => {
 
   it("POST /api/outreach/dm-sequence generates DM sequences", async () => {
     const { POST } = await import("@/app/api/outreach/dm-sequence/route");
-    const res = await POST(mockPost("/api/outreach/dm-sequence"));
+    const res = await POST();
     expect(res.status).toBeLessThan(500);
     const data = await res.json();
     expect(data.success).toBe(true);
@@ -160,13 +160,13 @@ describe("Core API Endpoints", () => {
 
   it("GET /api/analytics returns valid response", async () => {
     const { GET } = await import("@/app/api/analytics/route");
-    const res = await GET(mockGet("/api/analytics"));
+    const res = await GET();
     expect(res.status).toBeLessThan(500);
   });
 
   it("GET /api/dms returns valid response", async () => {
     const { GET } = await import("@/app/api/dms/route");
-    const res = await GET(mockGet("/api/dms"));
+    const res = await GET();
     expect(res.status).toBeLessThan(500);
   });
 
@@ -178,13 +178,13 @@ describe("Core API Endpoints", () => {
 
   it("GET /api/camps returns valid response", async () => {
     const { GET } = await import("@/app/api/camps/route");
-    const res = await GET(mockGet("/api/camps"));
+    const res = await GET();
     expect(res.status).toBeLessThan(500);
   });
 
   it("GET /api/videos returns valid response", async () => {
     const { GET } = await import("@/app/api/videos/route");
-    const res = await GET(mockGet("/api/videos"));
+    const res = await GET();
     expect(res.status).toBeLessThan(500);
   });
 
@@ -200,7 +200,7 @@ describe("Core API Endpoints", () => {
 describe("Agent System APIs", () => {
   it("GET /api/agents/status returns agent states", async () => {
     const { GET } = await import("@/app/api/agents/status/route");
-    const res = await GET(mockGet("/api/agents/status"));
+    const res = await GET();
     expect(res.status).toBeLessThan(500);
   });
 
@@ -244,13 +244,13 @@ describe("REC Team APIs", () => {
 describe("Recruit Site APIs", () => {
   it("GET /api/recruit/data returns recruit profile", async () => {
     const { GET } = await import("@/app/api/recruit/data/route");
-    const res = await GET(mockGet("/api/recruit/data"));
+    const res = await GET();
     expect(res.status).toBeLessThan(500);
   });
 
   it("GET /api/recruit/social-proof returns social proof", async () => {
     const { GET } = await import("@/app/api/recruit/social-proof/route");
-    const res = await GET(mockGet("/api/recruit/social-proof"));
+    const res = await GET();
     expect(res.status).toBeLessThan(500);
   });
 });

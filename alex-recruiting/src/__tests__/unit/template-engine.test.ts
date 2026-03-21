@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import type { Post, ContentPillar } from '@/lib/types';
 
 describe('Content Engine', () => {
   it('exports getTodayRecommendation', async () => {
@@ -61,13 +62,18 @@ describe('Content Engine', () => {
     const { calculatePillarDistribution } = await import(
       '@/lib/alex/content-engine'
     );
-    const posts = [
-      { pillar: 'performance' },
-      { pillar: 'performance' },
-      { pillar: 'work_ethic' },
-      { pillar: 'work_ethic' },
-      { pillar: 'character' },
-    ] as { pillar: string }[];
+    const base: Omit<Post, 'id' | 'pillar'> = {
+      content: '', hashtags: [], mediaUrl: null, scheduledFor: '', bestTime: '',
+      status: 'draft', xPostId: null, impressions: 0, engagements: 0,
+      engagementRate: 0, createdAt: '', updatedAt: '',
+    };
+    const posts: Post[] = [
+      { ...base, id: '1', pillar: 'performance' },
+      { ...base, id: '2', pillar: 'performance' },
+      { ...base, id: '3', pillar: 'work_ethic' },
+      { ...base, id: '4', pillar: 'work_ethic' },
+      { ...base, id: '5', pillar: 'character' },
+    ];
     const dist = calculatePillarDistribution(posts);
     expect(dist.performance).toBe(40);
     expect(dist.work_ethic).toBe(40);
@@ -79,13 +85,18 @@ describe('Content Engine', () => {
     const { calculatePillarDistribution } = await import(
       '@/lib/alex/content-engine'
     );
-    const posts = [
-      { pillar: 'performance' },
-      { pillar: 'performance' },
-      { pillar: 'performance' },
-      { pillar: 'performance' },
-      { pillar: 'performance' },
-    ] as { pillar: string }[];
+    const base: Omit<Post, 'id' | 'pillar'> = {
+      content: '', hashtags: [], mediaUrl: null, scheduledFor: '', bestTime: '',
+      status: 'draft', xPostId: null, impressions: 0, engagements: 0,
+      engagementRate: 0, createdAt: '', updatedAt: '',
+    };
+    const posts: Post[] = [
+      { ...base, id: '1', pillar: 'performance' },
+      { ...base, id: '2', pillar: 'performance' },
+      { ...base, id: '3', pillar: 'performance' },
+      { ...base, id: '4', pillar: 'performance' },
+      { ...base, id: '5', pillar: 'performance' },
+    ];
     const dist = calculatePillarDistribution(posts);
     expect(dist.balanced).toBe(false);
   });
@@ -173,7 +184,7 @@ describe('Profile Audit', () => {
     const { runProfileAudit } = await import('@/lib/alex/profile-audit');
     const posts = Array.from({ length: 20 }, (_, i) => ({
       id: `post-${i}`,
-      pillar: ['performance', 'work_ethic', 'character'][i % 3],
+      pillar: (['performance', 'work_ethic', 'character'] as const)[i % 3],
       engagementRate: 5,
       content: '',
       hashtags: [],

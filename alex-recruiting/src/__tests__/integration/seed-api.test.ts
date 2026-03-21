@@ -12,7 +12,7 @@ import { describe, it, expect } from "vitest";
 describe("POST /api/data/seed-full", () => {
   it("returns a successful response", async () => {
     const { POST } = await import("@/app/api/data/seed-full/route");
-    const response = await POST();
+    const response = await POST(new Request("http://localhost:3000/api/data/seed-full", { method: "POST" }));
     const data = await response.json();
 
     expect(data.success).toBe(true);
@@ -20,7 +20,7 @@ describe("POST /api/data/seed-full", () => {
 
   it("runs in preview mode without a database", async () => {
     const { POST } = await import("@/app/api/data/seed-full/route");
-    const response = await POST();
+    const response = await POST(new Request("http://localhost:3000/api/data/seed-full", { method: "POST" }));
     const data = await response.json();
 
     expect(data.mode).toBe("preview");
@@ -29,7 +29,7 @@ describe("POST /api/data/seed-full", () => {
 
   it("returns seeded counts matching expectations", async () => {
     const { POST } = await import("@/app/api/data/seed-full/route");
-    const response = await POST();
+    const response = await POST(new Request("http://localhost:3000/api/data/seed-full", { method: "POST" }));
     const data = await response.json();
 
     expect(data).toHaveProperty("seeded");
@@ -59,7 +59,7 @@ describe("POST /api/data/seed-full", () => {
 
   it("returns generated data arrays in the response", async () => {
     const { POST } = await import("@/app/api/data/seed-full/route");
-    const response = await POST();
+    const response = await POST(new Request("http://localhost:3000/api/data/seed-full", { method: "POST" }));
     const data = await response.json();
 
     expect(data).toHaveProperty("data");
@@ -74,7 +74,7 @@ describe("POST /api/data/seed-full", () => {
 
   it("school rows have required fields", async () => {
     const { POST } = await import("@/app/api/data/seed-full/route");
-    const response = await POST();
+    const response = await POST(new Request("http://localhost:3000/api/data/seed-full", { method: "POST" }));
     const data = await response.json();
 
     for (const school of data.data.schools) {
@@ -91,7 +91,7 @@ describe("POST /api/data/seed-full", () => {
 
   it("coach rows have required fields and valid data", async () => {
     const { POST } = await import("@/app/api/data/seed-full/route");
-    const response = await POST();
+    const response = await POST(new Request("http://localhost:3000/api/data/seed-full", { method: "POST" }));
     const data = await response.json();
 
     const coachTitles = ["Head Coach", "Offensive Line Coach", "Recruiting Coordinator"];
@@ -119,7 +119,7 @@ describe("POST /api/data/seed-full", () => {
 
   it("fit score rows have valid numeric scores", async () => {
     const { POST } = await import("@/app/api/data/seed-full/route");
-    const response = await POST();
+    const response = await POST(new Request("http://localhost:3000/api/data/seed-full", { method: "POST" }));
     const data = await response.json();
 
     for (const score of data.data.fitScores) {
@@ -142,7 +142,7 @@ describe("POST /api/data/seed-full", () => {
 
   it("posting windows cover all 7 days of the week", async () => {
     const { POST } = await import("@/app/api/data/seed-full/route");
-    const response = await POST();
+    const response = await POST(new Request("http://localhost:3000/api/data/seed-full", { method: "POST" }));
     const data = await response.json();
 
     const daysInWindows = new Set(
@@ -165,7 +165,7 @@ describe("POST /api/data/seed-full", () => {
 
   it("growth snapshots cover 30 days with increasing followers", async () => {
     const { POST } = await import("@/app/api/data/seed-full/route");
-    const response = await POST();
+    const response = await POST(new Request("http://localhost:3000/api/data/seed-full", { method: "POST" }));
     const data = await response.json();
 
     expect(data.data.snapshots.length).toBe(30);
@@ -186,7 +186,7 @@ describe("POST /api/data/seed-full", () => {
 
   it("competitor rows have valid recruit data", async () => {
     const { POST } = await import("@/app/api/data/seed-full/route");
-    const response = await POST();
+    const response = await POST(new Request("http://localhost:3000/api/data/seed-full", { method: "POST" }));
     const data = await response.json();
 
     expect(data.data.competitors.length).toBe(8);
@@ -206,7 +206,7 @@ describe("POST /api/data/seed-full", () => {
 
   it("camp rows have valid event data", async () => {
     const { POST } = await import("@/app/api/data/seed-full/route");
-    const response = await POST();
+    const response = await POST(new Request("http://localhost:3000/api/data/seed-full", { method: "POST" }));
     const data = await response.json();
 
     expect(data.data.camps.length).toBe(8);
