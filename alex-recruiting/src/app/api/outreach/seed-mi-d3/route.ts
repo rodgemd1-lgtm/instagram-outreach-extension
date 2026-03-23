@@ -159,11 +159,15 @@ export async function POST(request: NextRequest) {
 
       if (!dmInserted) {
         insertDM({
+          coachId: "",
           coachName: coach.coachName,
           schoolName: coach.schoolName,
-          coachHandle: coach.xHandle ?? undefined,
-          message: coach.dmDraft,
-          status: "draft",
+          templateType: "mi_d3_outreach",
+          content: coach.dmDraft,
+          status: "drafted",
+          sentAt: null,
+          respondedAt: null,
+          responseContent: null,
         });
         results.dms.push({ coachName: coach.coachName, schoolName: coach.schoolName, status: "created" });
       }

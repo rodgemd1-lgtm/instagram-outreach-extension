@@ -121,8 +121,15 @@ export async function POST(request: NextRequest) {
       }
       if (!dmInserted) {
         insertDM({
-          coachName: coach.coachName, schoolName: coach.schoolName,
-          coachHandle: coach.xHandle ?? undefined, message: coach.dmDraft, status: "draft",
+          coachId: "",
+          coachName: coach.coachName,
+          schoolName: coach.schoolName,
+          templateType: "mn_d3_outreach",
+          content: coach.dmDraft,
+          status: "drafted",
+          sentAt: null,
+          respondedAt: null,
+          responseContent: null,
         });
         results.dms.push({ coachName: coach.coachName, schoolName: coach.schoolName, status: "created" });
       }
