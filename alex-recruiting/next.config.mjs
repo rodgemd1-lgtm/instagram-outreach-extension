@@ -8,12 +8,19 @@ const nextConfig = {
   outputFileTracingRoot: __dirname,
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: false },
-  serverExternalPackages: ["puppeteer-core"],
+  serverExternalPackages: ["puppeteer-core", "playwright", "@playwright/test"],
   outputFileTracingExcludes: {
     "*": [
       "./public/recruit/**/*",
       "./public/optimized-media/**/*",
       "./public/Media Clips For Mike to Add/**/*",
+      "./node_modules/puppeteer-core/**/*",
+      "./node_modules/playwright/**/*",
+      "./node_modules/@playwright/**/*",
+      "./node_modules/@mendable/firecrawl-js/**/*",
+      "./node_modules/firecrawl/**/*",
+      "./node_modules/exa-js/**/*",
+      "./node_modules/@fal-ai/**/*",
     ],
   },
   headers: async () => [
