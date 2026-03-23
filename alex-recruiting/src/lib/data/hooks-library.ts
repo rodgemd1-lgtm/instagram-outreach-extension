@@ -737,7 +737,7 @@ export const hooksLibrary: Hook[] = [
   },
   {
     id: "mile-004",
-    text: "Camp MVP at {CAMP_NAME}. Competed against the best and earned it.",
+    text: "Camp MVP at Elite Prospects Camp. Competed against the best and earned it.",
     category: "milestone",
     pillar: "performance",
     viralScore: 9,
@@ -819,7 +819,7 @@ export const hooksLibrary: Hook[] = [
   },
   {
     id: "camp-003",
-    text: "Great day at {CAMP_NAME}. Got better in every drill.",
+    text: "Great day at Elite Prospects Camp. Got better in every drill.",
     category: "camp_showcase",
     pillar: "work_ethic",
     viralScore: 6,
@@ -827,7 +827,7 @@ export const hooksLibrary: Hook[] = [
   },
   {
     id: "camp-004",
-    text: "Earned an invite to {CAMP_NAME}. Ready to compete.",
+    text: "Earned an invite to Elite Prospects Camp. Ready to compete.",
     category: "camp_showcase",
     pillar: "performance",
     viralScore: 7,
@@ -835,7 +835,7 @@ export const hooksLibrary: Hook[] = [
   },
   {
     id: "camp-005",
-    text: "Just wrapped up at {CAMP_NAME}. The coaching was elite.",
+    text: "Just wrapped up at Elite Prospects Camp. The coaching was elite.",
     category: "camp_showcase",
     pillar: "work_ethic",
     viralScore: 6,
@@ -851,7 +851,7 @@ export const hooksLibrary: Hook[] = [
   },
   {
     id: "camp-007",
-    text: "Grateful for the feedback from coaches at {CAMP_NAME}. Back to work.",
+    text: "Grateful for the feedback from coaches at Elite Prospects Camp. Back to work.",
     category: "camp_showcase",
     pillar: "work_ethic",
     viralScore: 6,
@@ -875,7 +875,7 @@ export const hooksLibrary: Hook[] = [
   },
   {
     id: "camp-010",
-    text: "Heading to {CAMP_NAME} this weekend. Excited for the competition.",
+    text: "Heading to Elite Prospects Camp this weekend. Excited for the competition.",
     category: "camp_showcase",
     pillar: "work_ethic",
     viralScore: 6,

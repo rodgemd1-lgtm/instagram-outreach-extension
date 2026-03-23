@@ -128,7 +128,7 @@ export const coldDMLibrary: ColdDM[] = [
   {
     id: "fu2-002",
     name: "Follow-Up 2 — Camp/Event Mention",
-    template: `Coach {COACH_LAST_NAME}, I just competed at {CAMP_NAME} and wanted to reach out again. The camp coaches had great feedback on my technique and I'm continuing to develop every week. I'm Jacob Rodgers, 2029 OL from Pewaukee, WI. Would love to connect about {SCHOOL_NAME} when you have a moment. Film: {NCSA_LINK}.`,
+    template: `Coach {COACH_LAST_NAME}, I just competed at Elite Prospects Camp and wanted to reach out again. The camp coaches had great feedback on my technique and I'm continuing to develop every week. I'm Jacob Rodgers, 2029 OL from Pewaukee, WI. Would love to connect about {SCHOOL_NAME} when you have a moment. Film: {NCSA_LINK}.`,
     sequence: "follow_up_2",
     tier: "all",
     trigger: "After a camp/showcase — 2nd follow-up attempt",
@@ -184,7 +184,7 @@ export const coldDMLibrary: ColdDM[] = [
   {
     id: "trig-003",
     name: "After Camp Performance",
-    template: `Coach {COACH_LAST_NAME}, just got back from {CAMP_NAME} where I competed in OL vs. DL one-on-ones and technique sessions. I received great feedback on my {SKILL_AREA}. I'm Jacob Rodgers, 2029 OL, 6'4" 285 from Pewaukee, WI. Wanted to make sure I'm on your radar at {SCHOOL_NAME}. Updated film: {NCSA_LINK}. Thank you, Coach!`,
+    template: `Coach {COACH_LAST_NAME}, just got back from Elite Prospects Camp where I competed in OL vs. DL one-on-ones and technique sessions. I received great feedback on my {SKILL_AREA}. I'm Jacob Rodgers, 2029 OL, 6'4" 285 from Pewaukee, WI. Wanted to make sure I'm on your radar at {SCHOOL_NAME}. Updated film: {NCSA_LINK}. Thank you, Coach!`,
     sequence: "trigger",
     tier: "all",
     trigger: "Within 48 hours of attending a camp or showcase",
