@@ -181,11 +181,11 @@ export async function enrichArticleBatch(
 
     if (enrichment) {
       results.set(article.url, enrichment);
-      console.log(
+      console.warn(
         `[ai-enrichment] (${i + 1}/${articles.length}) ${article.url} — relevance: ${enrichment.relevanceScore}`
       );
     } else {
-      console.log(
+      console.warn(
         `[ai-enrichment] (${i + 1}/${articles.length}) ${article.url} — enrichment failed`
       );
     }

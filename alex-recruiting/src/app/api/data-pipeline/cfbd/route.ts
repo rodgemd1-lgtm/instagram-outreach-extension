@@ -192,14 +192,14 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    console.log(
+    console.warn(
       `[cfbd-pipeline] Starting full FBS/FCS data pull for year ${year ?? "current"}...`,
     );
 
     // 1. Fetch all teams + coaches from CFBD
     const pipelineResult = await fetchAllFBSFCSData(year);
 
-    console.log(
+    console.warn(
       `[cfbd-pipeline] Fetched ${pipelineResult.meta.totalTeams} teams, ${pipelineResult.meta.totalCoaches} coaches`,
     );
 

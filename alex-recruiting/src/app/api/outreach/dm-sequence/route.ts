@@ -50,7 +50,7 @@ function getVarsForSchool(
     COACH_LAST_NAME: coachLastName,
     SCHOOL_NAME: school.name,
     NCSA_LINK,
-    CAMP_NAME: "recent prospect showcase",
+    CAMP_NAME: "Elite Prospects Camp",
     SPECIFIC_DETAIL: `the way ${school.name} develops offensive linemen`,
     ACHIEVEMENT: "earned All-Conference honors and set a new bench press PR",
     SEASON_RECORD: "undefeated through 4 games",

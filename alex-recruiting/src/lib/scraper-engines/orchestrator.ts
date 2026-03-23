@@ -145,23 +145,23 @@ export async function scrapeWithFallback(
 
   for (const engine of engines) {
     if (!isEngineAvailable(engine)) {
-      console.log(
+      console.warn(
         `[orchestrator] Skipping "${engine}" — required env var missing`
       );
       continue;
     }
 
-    console.log(`[orchestrator] Trying "${engine}" for ${url}...`);
+    console.warn(`[orchestrator] Trying "${engine}" for ${url}...`);
     const result = await tryEngine(engine, url);
 
     if (result) {
-      console.log(
+      console.warn(
         `[orchestrator] Success with "${engine}" for ${url} (${result.wordCount} words)`
       );
       return result;
     }
 
-    console.log(`[orchestrator] "${engine}" returned no result for ${url}`);
+    console.warn(`[orchestrator] "${engine}" returned no result for ${url}`);
   }
 
   console.error(`[orchestrator] All engines failed for ${url}`);
@@ -186,13 +186,13 @@ export async function scrapeCoachesForSchool(
 
   // 1. Try Firecrawl's structured coaching staff scraper
   if (isEngineAvailable("firecrawl")) {
-    console.log(
+    console.warn(
       `[orchestrator] Trying firecrawl coaching staff scraper for ${school.name}...`
     );
     try {
       const fcResult = await firecrawl.scrapeCoachingStaffPage(staffUrl);
       if (fcResult && fcResult.coaches.length > 0) {
-        console.log(
+        console.warn(
           `[orchestrator] Firecrawl found ${fcResult.coaches.length} coaches for ${school.name}`
         );
         const raw: UnifiedScrapeResult = fcResult.raw
@@ -215,14 +215,14 @@ export async function scrapeCoachesForSchool(
         return { raw, coaches: fcResult.coaches };
       }
     } catch {
-      console.log(
+      console.warn(
         `[orchestrator] Firecrawl coaching staff scraper failed for ${school.name}`
       );
     }
   }
 
   // 2. Fallback: get raw content from any available engine
-  console.log(
+  console.warn(
     `[orchestrator] Falling back to raw scrape for ${school.name} staff page...`
   );
   const raw = await scrapeWithFallback(staffUrl);

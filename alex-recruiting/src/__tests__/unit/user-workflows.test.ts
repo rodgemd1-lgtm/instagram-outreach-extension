@@ -73,18 +73,18 @@ describe("User Workflows — Page Exports", () => {
 });
 
 describe("User Workflows — Navigation Behavior", () => {
-  it("keeps the primary publishing tab active through nested publishing routes", () => {
-    expect(getActiveNavItem("/posts/queued")?.label).toBe("Publish");
-    expect(getNavSectionLabel("/posts/queued")).toBe("Publishing");
+  it("keeps the content section active through nested content routes", () => {
+    expect(getActiveNavItem("/content/queue")?.label).toBe("Content");
+    expect(getNavSectionLabel("/content/queue")).toBe("Content");
   });
 
-  it("keeps the coach pipeline active through nested outreach routes", () => {
-    expect(getActiveNavItem("/coaches/priority")?.label).toBe("Outreach");
-    expect(getNavSectionLabel("/coaches/priority")).toBe("Outreach");
+  it("keeps the coaches section active through nested coach routes", () => {
+    expect(getActiveNavItem("/coaches/priority")?.label).toBe("Coaches");
+    expect(getNavSectionLabel("/coaches/priority")).toBe("Coaches");
   });
 
-  it("falls back to the Today route when no route matches", () => {
-    expect(getActiveNavItem("/totally-unknown")?.label).toBe("Today");
+  it("falls back to the Command route when no route matches", () => {
+    expect(getActiveNavItem("/totally-unknown")?.label).toBe("Command");
     expect(getNavSectionLabel("/totally-unknown")).toBe("Command");
   });
 });

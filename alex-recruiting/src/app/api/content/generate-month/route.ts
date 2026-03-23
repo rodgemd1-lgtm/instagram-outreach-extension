@@ -25,7 +25,7 @@ import { fillTemplate } from "@/lib/data/templates";
 
 // Default template variables for content generation
 const DEFAULT_TEMPLATE_VARS: Record<string, string> = {
-  CAMP_NAME: "recent prospect showcase",
+  CAMP_NAME: "Elite Prospects Camp",
   SCHOOL_NAME: "Pewaukee",
   NCSA_LINK: "https://www.ncsasports.org/mens-football/jacob-rodgers",
   HUDL_LINK: "hudl.com/profile/jacob-rodgers",
