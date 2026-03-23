@@ -72,7 +72,7 @@ Full film: {NCSA_LINK}
     notes: "Post BEFORE and AFTER every camp, combine, 7v7, or school visit.",
     examples: [
       "Excited to compete at the @IMGAcademy OL camp this weekend",
-      "Just wrapped up at {CAMP_NAME}. Great feedback on my footwork and hand placement — grateful for the coaching",
+      "Just wrapped up at Elite Prospects Camp. Great feedback on my footwork and hand placement — grateful for the coaching",
     ],
   },
 
@@ -95,7 +95,7 @@ export const dmTemplates = {
 
   postCamp: {
     name: "Post-Camp Follow-Up",
-    template: `Coach {COACH_LAST_NAME}, just got back from {CAMP_NAME}. Worked hard and got some great feedback on my footwork and hand placement. Wanted to stay on your radar — I'm Jacob Rodgers, 2029 OL from Pewaukee HS, WI. Updated film: {NCSA_LINK}. Looking forward to continuing to improve!`,
+    template: `Coach {COACH_LAST_NAME}, just got back from Elite Prospects Camp. Worked hard and got some great feedback on my footwork and hand placement. Wanted to stay on your radar — I'm Jacob Rodgers, 2029 OL from Pewaukee HS, WI. Updated film: {NCSA_LINK}. Looking forward to continuing to improve!`,
     useCase: "After attending a camp or showcase",
   },
 

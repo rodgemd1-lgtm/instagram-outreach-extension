@@ -825,7 +825,7 @@ Preparation is the foundation of confidence. I'm ready.
   {
     id: "cpc-005",
     title: "Camp Invite",
-    fullCaption: `Honored to receive an invite to {CAMP_NAME}. Another opportunity to compete against top talent and get coached by the best.
+    fullCaption: `Honored to receive an invite to Elite Prospects Camp. Another opportunity to compete against top talent and get coached by the best.
 
 Every camp is a chance to get better and show coaches what I bring to the table. Let's go.
 
@@ -868,7 +868,7 @@ Taking notes, recording drills, and bringing it all back to my daily training. E
   {
     id: "cpc-008",
     title: "Camp MVP Announcement",
-    fullCaption: `Honored to be named Camp MVP at {CAMP_NAME}. Competed against some of the best OL and DL in the 2029 class and left it all on the field.
+    fullCaption: `Honored to be named Camp MVP at Elite Prospects Camp. Competed against some of the best OL and DL in the 2029 class and left it all on the field.
 
 This means a lot, but the work doesn't stop here. Back to training tomorrow.
 
