@@ -1,0 +1,277 @@
+# alex-recruiting-outreach.yaml
+# Reusable recipe: D3 coach outreach pipeline for Jacob Rodgers recruiting campaign
+# Usage: Run each phase in order. Each phase has inputs, actions, outputs, and a gate.
+# Version: 1.0 | Updated: 2026-03-23
+
+meta:
+  athlete:
+    name: Jacob Rodgers
+    school: Pewaukee High School
+    state: WI
+    class: "2029"
+    positions: [OL, DL]
+    specs:
+      height: "6'4\""
+      weight: 285
+      bench: 265
+      squat: 350
+    ncsa_url: https://www.ncsasports.org/mens-football/jacob-rodgers
+
+  campaign:
+    wave_cadence: Mon/Wed/Fri only  # No sends on weekends
+    max_per_wave: 5
+    send_window: "2:00 PM - 7:00 PM local"  # Coach office hours
+    blackout_periods:  # NCAA dead periods — never reach out
+      - Early June (NCAA evaluation period starts)
+      - December (early signing period)
+    email_from: jacob@alexrecruiting.com  # must match verified Resend domain
+
+# ─────────────────────────────────────────────
+# PHASE 1: SCRAPE — Research coach data
+# ─────────────────────────────────────────────
+phases:
+  - id: scrape
+    name: Scrape Coach Data
+    description: Identify D3 programs in the target state and find OL coaches with contact info
+    inputs:
+      - target_state: "MN | MI | WI | OH | IN | ..."
+      - target_conference: "MIAC | MIAA | OAC | ..."
+    actions:
+      - type: web_search
+        prompt: |
+          Research D3 football OL coaches for {target_state} programs.
+          For each coach return:
+          - Coach name + title (Head Coach, OL Coach, etc.)
+          - School name + conference
+          - Email (verified or inferred from school domain pattern, e.g. coach@school.edu)
+          - X/Twitter handle if public
+          - One specific personalization detail (recent record, championship, coach background, notable OL alumni)
+        sources:
+          - "{school}.edu/athletics/football/coaches"
+          - "d3football.com/teams/{school}/coaches"
+          - "{conference}.com/sports/football"
+          - Google: '"{school_name} football" OL coach email site:{school}.edu'
+      - type: validate
+        checks:
+          - has_name: true
+          - has_school: true
+          - has_contact: true  # email OR x_handle required
+    output_schema:
+      - coach_name: string
+        school_name: string
+        state: string
+        conference: string
+        position: string
+        email: "string | null"
+        email_verified: boolean
+        x_handle: "string | null"
+        program_detail: string
+    gate:
+      required_fields: [coach_name, school_name, email OR x_handle, program_detail]
+      minimum_coaches: 5
+
+# ─────────────────────────────────────────────
+# PHASE 2: CURATE — Filter and prioritize
+# ─────────────────────────────────────────────
+  - id: curate
+    name: Curate and Prioritize
+    description: Filter scraped data and assign coaches to waves by priority
+    inputs:
+      - raw_coach_data: from phase scrape
+    filters:
+      geographic:
+        description: Within reasonable drive from Pewaukee WI
+        max_distance_hours: 6
+      academic: Verify school is academically aligned with Jacob's goals
+      program_quality:
+        - OL development history (All-Conference linemen)
+        - Recent winning records (>.500 preferred)
+        - Active recruiting in Jacob's class window (2029)
+      personalization: Must have 1+ specific detail strong enough to reference
+    priority_tiers:
+      tier_1:
+        label: Wave — send immediately
+        criteria:
+          - Verified email
+          - Specific personalization detail
+          - Program win rate >.500 recent 2 seasons
+      tier_2:
+        label: Reserve — send wave+1 if tier_1 < 5
+        criteria:
+          - Inferred email (not verified)
+          - OR only X handle available
+      tier_3:
+        label: Hold — needs more research
+        criteria:
+          - Missing contact info
+          - Can't find personalization angle
+    output: curated list with tier assignments
+
+# ─────────────────────────────────────────────
+# PHASE 3: PERSONALIZE — Draft messages
+# ─────────────────────────────────────────────
+  - id: personalize
+    name: Write Personalized Messages
+    description: Draft email, DM, and X callout for each coach using program-specific details
+    inputs:
+      - curated_coaches: from phase curate (tier_1 + tier_2)
+    templates:
+      email:
+        subject: "Jacob Rodgers — Class of 2029 OL/DL, Pewaukee HS (WI)"
+        structure:
+          - greeting: "Coach {last_name},"
+          - hook: Reference the specific program_detail (1–2 sentences, specific not generic)
+          - intro: State name, position, class, school, measurables
+          - why_fit: Why Jacob wants THIS program (academic/athletic)
+          - cta: Ask about camps/prospect days this spring/summer
+          - sig: "Jacob Rodgers | Pewaukee High School | Class of 2029 | NCSA: {ncsa_url}"
+        length: 175-250 words
+        tone: Professional, confident, humble. No fluff.
+        rules:
+          - NEVER use religious, political, or financial references
+          - NEVER mention salary, cost, scholarships unprompted
+          - Verify all facts — no hallucinated records or awards
+          - Every email must include at least 1 program-specific detail
+      dm:
+        max_chars: 280
+        structure: "Coach {last_name} — [intro] [specific hook] [CTA] 🏈"
+        tone: Confident, brief, direct
+      x_callout:
+        max_chars: 280
+        format: '@{school_handle} reference + program-specific insight + Jacob's stats + hashtags'
+        hashtags: ["#MIAC", "#D3Football", "#RecruitJacob", "#ClassOf2029"]
+    quality_checks:
+      - No template variables left unfilled ({COACH_LAST_NAME}, {CAMP_NAME}, etc.)
+      - Program detail verified against real source
+      - Email under 250 words
+      - DM under 280 chars
+      - X callout under 280 chars
+    output_schema:
+      - coach_name: string
+        school_name: string
+        email_draft:
+          subject: string
+          body: string
+        dm_draft: string
+        x_callout: string
+        wave: integer
+
+# ─────────────────────────────────────────────
+# PHASE 4: SEED — Stage in database
+# ─────────────────────────────────────────────
+  - id: seed
+    name: Seed Outreach to Database
+    description: Insert personalized coach outreach into the app database for review
+    inputs:
+      - personalized_coaches: from phase personalize
+      - wave_number: integer
+    api_route: POST /api/outreach/seed-{state}-d3
+    seed_file: src/lib/data/{state}-d3-outreach.ts
+    seed_file_format:
+      export_name: "{STATE}_D3_OUTREACH"
+      type_name: "{State}CoachOutreach"
+      fields: [coachName, schoolName, state, conference, position, email, emailVerified, xHandle, programDetail, emailDraft, dmDraft, xCallout, wave]
+    status_after_seed: staged  # Coaches appear in /outreach with status "staged"
+    gate:
+      verify_via: GET /api/outreach/plan → coaches should appear in response
+      minimum_seeded: all from personalize phase
+
+# ─────────────────────────────────────────────
+# PHASE 5: REVIEW — Human review before send
+# ─────────────────────────────────────────────
+  - id: review
+    name: Human Review
+    description: Mike or Jacob reviews staged outreach before any sends
+    inputs:
+      - staged_coaches: from database after seed
+    review_checklist:
+      - "[ ] Coach name and school name correct?"
+      - "[ ] Email address looks right (not obviously wrong domain)?"
+      - "[ ] Program detail is accurate and specific?"
+      - "[ ] Email reads naturally — not robotic?"
+      - "[ ] DM is under 280 chars and sounds like Jacob?"
+      - "[ ] No template variables left over?"
+      - "[ ] Schedule timing is not a dead period?"
+    approval: Mike or Jacob marks coaches as 'approved' in /outreach UI
+    gate: No messages sent until explicitly approved
+
+# ─────────────────────────────────────────────
+# PHASE 6: SEND — Execute approved outreach
+# ─────────────────────────────────────────────
+  - id: send
+    name: Send Approved Outreach
+    description: Execute emails and DMs for approved coaches on schedule
+    inputs:
+      - approved_coaches: coaches with status=approved
+    channels:
+      email:
+        provider: Resend
+        route: POST /api/outreach/send-emails
+        params:
+          wave: integer
+          dry_run: false
+        requires_env: RESEND_API_KEY
+      dm_x:
+        provider: X API v2
+        route: POST /api/dms/send
+        requires_env: [X_API_BEARER_TOKEN, X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET]
+        fallback: mock mode if no API key (logs send, no actual delivery)
+    send_schedule:
+      days: [Monday, Wednesday, Friday]
+      time: "2:00 PM - 7:00 PM coach local time"
+      max_per_day: 5
+    tracking:
+      open_tracking: via Resend webhook (/api/outreach/webhooks/resend)
+      dm_tracking: manual check of X DM status
+    output: delivery receipts + status updates in /outreach UI
+
+# ─────────────────────────────────────────────
+# COMPLETED CAMPAIGNS
+# ─────────────────────────────────────────────
+completed_campaigns:
+  - state: IA
+    conference: Iowa D3 / CCIW
+    wave: 1
+    coaches: [Summers, Jones, Scott, Heffernan, Riebock]
+    seed_file: src/lib/data/iowa-d3-outreach.ts
+    status: Wave 1 DMs sent, emails pending domain verification
+
+  - state: IL
+    conference: CCIW / Illinois D3
+    wave: 2
+    coaches: 11 coaches seeded
+    seed_file: src/lib/data/illinois-d3-outreach.ts
+    status: Seeded, pending send
+
+  - state: MN
+    conference: MIAC
+    wave: 3
+    coaches: [Bethel, Gustavus, St. Olaf, St. John's, Concordia Moorhead]
+    seed_file: src/lib/data/mn-mi-d3-outreach.ts
+    status: Seeded, pending review
+
+  - state: MI
+    conference: MIAA / MSFA
+    wave: 3
+    coaches: [Adrian, Albion, Alma, Hope, Olivet, Concordia Ann Arbor, Trine]
+    seed_file: src/lib/data/mn-mi-d3-outreach.ts
+    status: Seeded, pending review
+
+# ─────────────────────────────────────────────
+# NEXT TARGETS
+# ─────────────────────────────────────────────
+next_campaigns:
+  - state: WI
+    conference: WIAC (D3) + NACC
+    priority: HIGH  # Home state — coaches know Pewaukee HS
+    schools_to_research: [UW-Whitewater, UW-Oshkosh, UW-La Crosse, UW-Platteville, UW-Stevens Point, UW-River Falls, UW-Stout]
+
+  - state: OH
+    conference: OAC
+    priority: MEDIUM
+    schools_to_research: [Ohio Wesleyan, Capital, Kenyon, Marietta, Otterbein, Heidelberg, Mount Union, Baldwin Wallace]
+
+  - state: IN
+    conference: HCAC / Independents
+    priority: MEDIUM
+    schools_to_research: [DePauw, Wabash, Manchester, Hanover, Rose-Hulman, Taylor]
