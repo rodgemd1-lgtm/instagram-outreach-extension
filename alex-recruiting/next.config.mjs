@@ -5,16 +5,22 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  outputFileTracingRoot: __dirname,
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: false },
-  serverExternalPackages: ["puppeteer-core"],
-  outputFileTracingExcludes: {
-    "*": [
-      "./public/recruit/**/*",
-      "./public/optimized-media/**/*",
-      "./public/Media Clips For Mike to Add/**/*",
-    ],
+  // Keep large native binaries out of serverless function bundles.
+  // serverExternalPackages is the Next.js 14.1+ stable key;
+  // experimental.serverComponentsExternalPackages is the v13/early-v14 fallback.
+  serverExternalPackages: ["puppeteer-core", "sharp", "@sparticuz/chromium"],
+  experimental: {
+    serverComponentsExternalPackages: ["puppeteer-core", "sharp", "@sparticuz/chromium"],
+    outputFileTracingRoot: __dirname,
+    outputFileTracingExcludes: {
+      "*": [
+        "./public/recruit/**/*",
+        "./public/optimized-media/**/*",
+        "./public/Media Clips For Mike to Add/**/*",
+      ],
+    },
   },
   headers: async () => [
     {
