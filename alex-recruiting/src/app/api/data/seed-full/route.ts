@@ -625,9 +625,6 @@ function generateCampRows() {
 export async function POST(request: Request) {
   const authHeader = request.headers.get("authorization");
   const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
 
   try {
     // Generate all data first
@@ -666,6 +663,11 @@ export async function POST(request: Request) {
           camps: campRows,
         },
       });
+    }
+
+    // Auth required before any database writes
+    if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     // ---------------------------------------------------------------------------

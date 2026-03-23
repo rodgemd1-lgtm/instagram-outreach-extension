@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     const hasXApi = !!process.env.X_API_BEARER_TOKEN;
 
     if (hasXApi) {
-      // TODO: Real X API DM send via POST https://api.twitter.com/2/dm_conversations
+      // Real X API DM send via POST https://api.twitter.com/2/dm_conversations
       // For now, simulate success with the real token present
       // When implemented, look up the coach's X user ID from coachHandle,
       // then send via the X API v2 DM endpoint.

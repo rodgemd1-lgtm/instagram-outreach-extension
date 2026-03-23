@@ -524,7 +524,7 @@ export async function POST(request: NextRequest) {
     );
     const offset = Math.max(0, rawOffset ?? 0);
 
-    console.log(
+    console.error(
       `[scrape-coaches] Starting batch: division=${division ?? "all"}, offset=${offset}, batchSize=${batchSize}`
     );
 
@@ -566,7 +566,7 @@ export async function POST(request: NextRequest) {
     for (let i = 0; i < batch.length; i++) {
       const school = batch[i];
 
-      console.log(
+      console.error(
         `[scrape-coaches] Processing ${i + 1}/${batch.length}: ${school.name} (${school.division})`
       );
 
@@ -610,7 +610,7 @@ export async function POST(request: NextRequest) {
     ).length;
     const scrapeErrors = errors.length;
 
-    console.log(
+    console.error(
       `[scrape-coaches] Batch complete: ${olCoachesFound} OL, ${dlCoachesFound} DL coaches found. ${upsertResult.upserted} upserted. ${scrapeErrors} errors.`
     );
 
