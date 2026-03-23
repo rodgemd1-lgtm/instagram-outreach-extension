@@ -9,7 +9,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
     "check:supabase-schema": "node scripts/check-coach-inquiries-schema.mjs",
     "ncsa:sync": "node scripts/ncsa-sync.mjs",
     "test": "vitest run",
